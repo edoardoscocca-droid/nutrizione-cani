@@ -11,7 +11,7 @@
         "resourceClass": "default"
       },
       "env": {
-        "EXPO_PUBLIC_ENGINE_URL": "https://nutrizione-cani-motore.onrender.com"
+        "EXPO_PUBLIC_ENGINE_URL": "https://nutrizione-cani-motore-q58c.onrender.com"
       }
     },
     "testflight": {
@@ -19,7 +19,7 @@
       "channel": "interna",
       "autoIncrement": true,
       "env": {
-        "EXPO_PUBLIC_ENGINE_URL": "https://nutrizione-cani-motore.onrender.com"
+        "EXPO_PUBLIC_ENGINE_URL": "https://nutrizione-cani-motore-q58c.onrender.com"
       }
     }
   },

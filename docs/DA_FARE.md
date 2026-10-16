@@ -18,7 +18,7 @@ Aggiornato al 18/10/2026, dopo l'importazione dei 6 alimenti e dei 3 integratori
   esistono fonti migliori o se si accetta che restino non verificabili.
 
 ## 3. App iPhone (senza pubblicarla)
-L'app è pronta (`mobile/`), il server di calcolo è online (https://nutrizione-cani-motore.onrender.com) e il progetto è
+L'app è pronta (`mobile/`), il server di calcolo è online (https://nutrizione-cani-motore-q58c.onrender.com) e il progetto è
 registrato su Expo (https://expo.dev/accounts/edoardodroid/projects/nutrizione-cani). Per installarla serve l'account
 Apple Developer (titolare: la tua ragazza):
 1. **Chiave App Store Connect API**: App Store Connect → Utenti e accessi → Integrazioni → App Store Connect API → nuova chiave

@@ -1,7 +1,7 @@
 // Il calcolo dei grammi (ottimizzazione + verifica) avviene sul server di calcolo, con lo stesso motore dell'app web.
 import type { FormulationInput, FormulationResult, PreliminaryResult } from '../../src/engine/formulate';
 
-export const ENGINE_URL = (process.env.EXPO_PUBLIC_ENGINE_URL ?? 'https://nutrizione-cani-motore.onrender.com').replace(/\/$/, '');
+export const ENGINE_URL = (process.env.EXPO_PUBLIC_ENGINE_URL ?? 'https://nutrizione-cani-motore-q58c.onrender.com').replace(/\/$/, '');
 
 /** Il catalogo per i suggerimenti si invia solo con i prodotti utilizzabili (richiesta più leggera). */
 function slim(input: FormulationInput): FormulationInput {
