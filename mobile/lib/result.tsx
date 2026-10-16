@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import type { AuditResult, CheckRow, RecipeStatus } from '../../src/engine/audit';
 import { CATALOG_STATUS_HELP, CATALOG_STATUS_LABEL, type CatalogStatus } from '../../src/engine/catalogStatus';
 import type { CostSummary } from '../../src/engine/cost';
@@ -8,7 +8,7 @@ import type { RecipeSnapshot } from '../../src/engine/snapshot';
 import type { Color, RecipeItem } from '../../src/engine/types';
 import { PROCESSING_LABEL } from '../../src/data/packageCatalog';
 import { COLOR_LABEL, dose, euro, GROUP_LABEL, num, smart } from '../../src/ui/format';
-import { Badge, Box, Bullets, Card, Check, Disclaimer, Divider, Dot, H, Row, Sheet, T, useTheme } from './ui';
+import { Badge, Box, Bullets, Card, Check, Disclaimer, Divider, Dot, FONTS, H, Row, Sheet, T, useTheme } from './ui';
 import { methodsSummary } from '../../src/engine/energy';
 
 const STATUS_COLOR: Record<RecipeStatus, Color> = {
@@ -20,29 +20,36 @@ const STATUS_COLOR: Record<RecipeStatus, Color> = {
 };
 
 export function StatusBox({ audit }: { audit: AuditResult }) {
+  const t = useTheme();
+  const sum = audit.summary;
+  const total = sum ? sum.satisfied.length + sum.notMet.length + sum.unverifiable.length : 0;
+  const ring = sum && sum.notMet.length ? t.red : sum && sum.unverifiable.length ? t.grey : t.green;
   return (
-    <Box color={STATUS_COLOR[audit.status]}>
-      {audit.dataFlags.testData && <T bold style={{ color: '#c46f1c' }}>PROVA — dati fittizi, non usare per alimentare un cane</T>}
-      <T bold>{audit.statusLabel}</T>
-      {audit.status === 'VERIFIED_AVAILABLE_CHECKS' && <T small>Non è una garanzia di completezza clinica: vale solo per i controlli e i dati disponibili.</T>}
-      {audit.summary && (
-        <>
-          <T small>
-            <T small bold>Fabbisogni dimostrabilmente soddisfatti ({audit.summary.satisfied.length}): </T>
-            {audit.summary.satisfied.join(', ') || '—'}
-          </T>
-          <T small>
-            <T small bold>Non soddisfatti ({audit.summary.notMet.length}): </T>
-            {audit.summary.notMet.join(', ') || '—'}
-          </T>
-          <T small>
-            <T small bold>Non verificabili per dati mancanti ({audit.summary.unverifiable.length}): </T>
-            {audit.summary.unverifiable.join(', ') || '—'}
-          </T>
-        </>
-      )}
+    <Card>
+      {audit.dataFlags.testData && <Badge label="PROVA — dati fittizi, non usare per alimentare un cane" color="orange" />}
+      {sum ? (
+        <Row style={{ gap: 14, alignItems: 'center' }}>
+          <View style={{ width: 66, height: 66, borderRadius: 33, borderWidth: 7, borderColor: ring, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontFamily: FONTS.display, fontSize: 20, color: t.text }}>{sum.satisfied.length}</Text>
+          </View>
+          <View style={{ flex: 1, gap: 2 }}>
+            <T bold>
+              {sum.satisfied.length} di {total} fabbisogni soddisfatti
+            </T>
+            {sum.notMet.length > 0 && <T small style={{ color: t.red }}>Non soddisfatti: {sum.notMet.join(', ')}</T>}
+            {sum.unverifiable.length > 0 && <T small muted>Senza dati per verificarli: {sum.unverifiable.join(', ')}</T>}
+          </View>
+        </Row>
+      ) : null}
+      <Row style={{ gap: 8, alignItems: 'flex-start' }}>
+        <View style={{ marginTop: 5 }}>
+          <Dot color={STATUS_COLOR[audit.status]} />
+        </View>
+        <T bold style={{ flex: 1 }}>{audit.statusLabel}</T>
+      </Row>
+      {audit.status === 'VERIFIED_AVAILABLE_CHECKS' && <T small muted>Non è una garanzia di completezza clinica: vale solo per i controlli e i dati disponibili.</T>}
       {audit.blockers.length > 0 && <Bullets small items={audit.blockers} />}
-    </Box>
+    </Card>
   );
 }
 

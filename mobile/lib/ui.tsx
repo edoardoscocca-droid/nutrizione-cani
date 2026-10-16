@@ -15,51 +15,75 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Feather } from '@expo/vector-icons';
 import type { Color } from '../../src/engine/types';
 import { COLOR_LABEL, DISCLAIMER } from '../../src/ui/format';
 
+// Stile «Caldo e naturale» (scelto il 17/10/2026): crema, terracotta e pesca; titoli Fraunces, testo Nunito Sans.
 const light = {
-  bg: '#f6f5f1',
+  bg: '#f7f1e8',
   card: '#ffffff',
-  text: '#1f2421',
-  muted: '#69716c',
-  line: '#e2e0d9',
-  accent: '#2f6b4f',
+  input: '#fbf8f3',
+  text: '#2c241c',
+  muted: '#6e5f50',
+  line: '#e6dccf',
+  accent: '#9a4a26',
   accentText: '#ffffff',
-  red: '#c0392b',
-  redBg: '#fbeae7',
-  orange: '#c46f1c',
-  orangeBg: '#fdf1e3',
-  green: '#2e8b57',
-  greenBg: '#e7f5ec',
-  blue: '#2f6fb3',
-  blueBg: '#e8f0fa',
-  grey: '#8a8f8c',
-  greyBg: '#eeefed',
+  peach: '#f2b48a',
+  peachBg: '#fbe6d4',
+  sage: '#3d5a43',
+  sageBg: '#e3eedf',
+  nav: '#2c241c',
+  navText: '#e9dccb',
+  red: '#b3392b',
+  redBg: '#fbe4df',
+  orange: '#a85f16',
+  orangeBg: '#fff1df',
+  green: '#3d7a52',
+  greenBg: '#e3eedf',
+  blue: '#33669c',
+  blueBg: '#e6eef7',
+  grey: '#776d61',
+  greyBg: '#efe8dd',
   purple: '#7d4cb3',
-  purpleBg: '#f2ebfa',
+  purpleBg: '#f1eafa',
 };
 const dark: typeof light = {
-  bg: '#141715',
-  card: '#1d211f',
-  text: '#e8ebe9',
-  muted: '#9aa39e',
-  line: '#2f3532',
-  accent: '#5bb38a',
-  accentText: '#0d1a13',
-  red: '#e06b5d',
-  redBg: '#3a1d19',
-  orange: '#e3a052',
+  bg: '#1b1713',
+  card: '#26201b',
+  input: '#2e2721',
+  text: '#f3ece2',
+  muted: '#b9ab99',
+  line: '#3a322a',
+  accent: '#f2b48a',
+  accentText: '#2c241c',
+  peach: '#f2b48a',
+  peachBg: '#3b2a1f',
+  sage: '#b7d3bd',
+  sageBg: '#223026',
+  nav: '#0f0c0a',
+  navText: '#d8cab7',
+  red: '#f09a8c',
+  redBg: '#3a201b',
+  orange: '#efb36b',
   orangeBg: '#3a2a17',
-  green: '#5cc28a',
-  greenBg: '#183225',
-  blue: '#6aa3e0',
-  blueBg: '#172537',
-  grey: '#9aa39e',
-  greyBg: '#262a28',
-  purple: '#b08ae0',
-  purpleBg: '#2a1f38',
+  green: '#86c99a',
+  greenBg: '#1f3326',
+  blue: '#8fb7e6',
+  blueBg: '#1b2838',
+  grey: '#b0a596',
+  greyBg: '#2d2620',
+  purple: '#c3a2ea',
+  purpleBg: '#2c2138',
 };
+/** Famiglie dei caratteri (caricati in app/_layout.tsx; finché non ci sono, iOS usa il carattere di sistema). */
+export const FONTS = {
+  display: 'Fraunces_600SemiBold',
+  body: 'NunitoSans_400Regular',
+  bodySemi: 'NunitoSans_600SemiBold',
+  bodyBold: 'NunitoSans_700Bold',
+};
+const shadow = { shadowColor: '#3c2814', shadowOpacity: 0.08, shadowRadius: 3, shadowOffset: { width: 0, height: 1 }, elevation: 1 };
 export type Theme = typeof light;
 
 export function useTheme(): Theme {
@@ -77,7 +101,7 @@ export function Screen({ children, scroll = true }: { children: ReactNode; scrol
   const t = useTheme();
   if (!scroll) return <View style={{ flex: 1, backgroundColor: t.bg, padding: 16 }}>{children}</View>;
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: t.bg }} contentContainerStyle={{ padding: 16, paddingBottom: 64, gap: 12 }} keyboardShouldPersistTaps="handled">
+    <ScrollView style={{ flex: 1, backgroundColor: t.bg }} contentContainerStyle={{ padding: 16, paddingBottom: 120, gap: 14 }} keyboardShouldPersistTaps="handled">
       {children}
     </ScrollView>
   );
@@ -88,8 +112,7 @@ export function T({ children, style, muted, small, bold, size }: { children: Rea
   return (
     <Text
       style={[
-        { color: muted ? t.muted : t.text, fontSize: size ?? (small ? 13 : 16), lineHeight: (size ?? (small ? 13 : 16)) * 1.4 },
-        bold && { fontWeight: '700' },
+        { color: muted ? t.muted : t.text, fontSize: size ?? (small ? 14 : 16), lineHeight: (size ?? (small ? 14 : 16)) * 1.4, fontFamily: bold ? FONTS.bodyBold : FONTS.body },
         style,
       ]}
     >
@@ -99,16 +122,14 @@ export function T({ children, style, muted, small, bold, size }: { children: Rea
 }
 
 export function H({ children, level = 2 }: { children: ReactNode; level?: 1 | 2 | 3 }) {
-  return (
-    <T bold size={level === 1 ? 24 : level === 2 ? 19 : 16}>
-      {children}
-    </T>
-  );
+  const t = useTheme();
+  const size = level === 1 ? 30 : level === 2 ? 21 : 18;
+  return <Text accessibilityRole="header" style={{ color: t.text, fontFamily: FONTS.display, fontSize: size, lineHeight: size * 1.18 }}>{children}</Text>;
 }
 
 export function Card({ children, style, onPress }: { children: ReactNode; style?: StyleProp<ViewStyle>; onPress?: () => void }) {
   const t = useTheme();
-  const s = [{ backgroundColor: t.card, borderRadius: 14, padding: 14, borderWidth: StyleSheet.hairlineWidth, borderColor: t.line, gap: 8 }, style];
+  const s = [{ backgroundColor: t.card, borderRadius: 22, padding: 16, gap: 8, ...shadow }, style];
   if (onPress)
     return (
       <Pressable onPress={onPress} style={({ pressed }) => [...s, pressed && { opacity: 0.7 }]}>
@@ -138,7 +159,7 @@ export function Button({
   small?: boolean;
 }) {
   const t = useTheme();
-  const bg = kind === 'primary' ? t.accent : kind === 'secondary' ? t.greyBg : kind === 'danger' ? t.redBg : 'transparent';
+  const bg = kind === 'primary' ? t.accent : kind === 'secondary' ? t.peachBg : kind === 'danger' ? t.redBg : 'transparent';
   const fg = kind === 'primary' ? t.accentText : kind === 'danger' ? t.red : kind === 'ghost' ? t.accent : t.text;
   return (
     <Pressable
@@ -148,15 +169,17 @@ export function Button({
       onPress={onPress}
       style={({ pressed }) => ({
         backgroundColor: bg,
-        borderRadius: 11,
-        paddingVertical: small ? 7 : 12,
-        paddingHorizontal: small ? 11 : 16,
+        borderRadius: 16,
+        minHeight: small ? 38 : 50,
+        justifyContent: 'center',
+        paddingVertical: small ? 8 : 13,
+        paddingHorizontal: small ? 14 : 18,
         opacity: disabled ? 0.45 : pressed ? 0.75 : 1,
         alignItems: 'center',
         alignSelf: small ? 'flex-start' : 'stretch',
       })}
     >
-      {busy ? <ActivityIndicator color={fg} /> : <Text style={{ color: fg, fontWeight: '700', fontSize: small ? 14 : 16 }}>{title}</Text>}
+      {busy ? <ActivityIndicator color={fg} /> : <Text style={{ color: fg, fontFamily: FONTS.bodyBold, fontSize: small ? 14 : 16 }}>{title}</Text>}
     </Pressable>
   );
 }
@@ -175,7 +198,7 @@ export function Field({ label, value, onChange, placeholder, multiline, keyboard
         multiline={multiline}
         keyboardType={keyboard ?? 'default'}
         autoCapitalize={autoCapitalize}
-        style={{ backgroundColor: t.bg, color: t.text, borderRadius: 10, borderWidth: StyleSheet.hairlineWidth, borderColor: t.line, padding: 10, fontSize: 16, minHeight: multiline ? 70 : undefined }}
+        style={{ backgroundColor: t.input, color: t.text, borderRadius: 14, borderWidth: 1, borderColor: t.line, paddingHorizontal: 12, paddingVertical: 11, fontSize: 16, fontFamily: FONTS.body, minHeight: multiline ? 76 : 46 }}
       />
     </View>
   );
@@ -225,9 +248,9 @@ export function Choice<V extends string | null>({ options, value, onChange }: { 
           accessibilityRole="radio"
           accessibilityState={{ selected: o.value === value }}
           onPress={() => onChange(o.value)}
-          style={{ paddingVertical: 8, paddingHorizontal: 12, borderRadius: 999, backgroundColor: o.value === value ? t.accent : t.greyBg }}
+          style={{ paddingVertical: 9, paddingHorizontal: 14, borderRadius: 999, minHeight: 38, justifyContent: 'center', backgroundColor: o.value === value ? t.accent : t.peachBg }}
         >
-          <Text style={{ color: o.value === value ? t.accentText : t.text, fontWeight: '600' }}>{o.label}</Text>
+          <Text style={{ color: o.value === value ? t.accentText : t.text, fontFamily: FONTS.bodySemi }}>{o.label}</Text>
         </Pressable>
       ))}
     </Row>
@@ -239,7 +262,7 @@ export function Check({ label, value, onChange, right }: { label: ReactNode; val
   return (
     <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: value }} onPress={() => onChange(!value)} style={{ flexDirection: 'row', gap: 10, alignItems: 'flex-start', paddingVertical: 8 }}>
       <View style={{ width: 22, height: 22, borderRadius: 6, borderWidth: 2, borderColor: value ? t.accent : t.muted, backgroundColor: value ? t.accent : 'transparent', alignItems: 'center', justifyContent: 'center', marginTop: 1 }}>
-        {value ? <Text style={{ color: t.accentText, fontWeight: '900', fontSize: 13 }}>✓</Text> : null}
+        {value ? <Feather name="check" size={15} color={t.accentText} /> : null}
       </View>
       <View style={{ flex: 1 }}>{typeof label === 'string' ? <T>{label}</T> : label}</View>
       {right}
@@ -250,8 +273,8 @@ export function Check({ label, value, onChange, right }: { label: ReactNode; val
 export function Badge({ label, color = 'green' }: { label: string; color?: 'green' | 'orange' | 'grey' | 'red' | 'purple' | 'blue' }) {
   const t = useTheme();
   return (
-    <View style={{ backgroundColor: bgOf(t, color), borderRadius: 999, paddingHorizontal: 8, paddingVertical: 2, alignSelf: 'flex-start' }}>
-      <Text style={{ color: colorOf(t, color), fontSize: 12, fontWeight: '700' }}>{label}</Text>
+    <View style={{ backgroundColor: bgOf(t, color), borderRadius: 999, paddingHorizontal: 10, paddingVertical: 3, alignSelf: 'flex-start' }}>
+      <Text style={{ color: colorOf(t, color), fontSize: 12, fontFamily: FONTS.bodyBold }}>{label}</Text>
     </View>
   );
 }
@@ -263,7 +286,7 @@ export function Dot({ color }: { color: Color }) {
 
 export function Box({ color, children }: { color: Color; children: ReactNode }) {
   const t = useTheme();
-  return <View style={{ backgroundColor: bgOf(t, color), borderLeftWidth: 4, borderLeftColor: colorOf(t, color), borderRadius: 12, padding: 12, gap: 6 }}>{children}</View>;
+  return <View style={{ backgroundColor: bgOf(t, color), borderRadius: 18, paddingVertical: 12, paddingHorizontal: 16, gap: 6 }}>{children}</View>;
 }
 
 export function ErrorBox({ error }: { error: string | null | undefined }) {
@@ -290,8 +313,8 @@ export function Bullets({ items, small }: { items: string[]; small?: boolean }) 
 export function Disclaimer({ compact }: { compact?: boolean }) {
   const t = useTheme();
   return (
-    <View style={{ backgroundColor: t.blueBg, borderRadius: 12, padding: 12 }}>
-      <T small={compact}>⚕︎ {DISCLAIMER}</T>
+    <View style={{ backgroundColor: t.sageBg, borderRadius: 18, paddingVertical: 12, paddingHorizontal: 16 }}>
+      <T small={compact}>{DISCLAIMER}</T>
     </View>
   );
 }
@@ -326,5 +349,5 @@ export function Loading({ label = 'Caricamento…' }: { label?: string }) {
 
 export function Divider() {
   const t = useTheme();
-  return <View style={{ height: StyleSheet.hairlineWidth, backgroundColor: t.line, marginVertical: 4 }} />;
+  return <View style={{ height: 0, borderTopWidth: 1, borderStyle: 'dashed', borderColor: t.line, marginVertical: 4 }} />;
 }

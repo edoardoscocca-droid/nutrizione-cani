@@ -1,10 +1,10 @@
 import { router } from 'expo-router';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import { KCAL_SOURCE_LABEL } from '../../../src/data/model';
 import { staleFor } from '../../../src/data/recipeService';
 import { num } from '../../../src/ui/format';
 import { useApp, useData } from '../../lib/AppContext';
-import { Badge, Box, Button, Card, ErrorBox, Row, Screen, T, useTheme } from '../../lib/ui';
+import { Badge, Box, Button, Card, ErrorBox, FONTS, Row, Screen, T, useTheme } from '../../lib/ui';
 
 export default function DogsScreen() {
   const { catalog, repo } = useApp();
@@ -48,10 +48,8 @@ export default function DogsScreen() {
         return (
           <Card key={d.id} onPress={() => router.push(`/cane/${d.id}`)}>
             <Row>
-              <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: t.accent, alignItems: 'center', justifyContent: 'center' }}>
-                <T bold style={{ color: t.accentText }} size={20}>
-                  {d.name.slice(0, 1).toUpperCase()}
-                </T>
+              <View style={{ width: 52, height: 52, borderRadius: 26, backgroundColor: t.peachBg, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ color: t.accent, fontFamily: FONTS.display, fontSize: 24 }}>{d.name.slice(0, 1).toUpperCase()}</Text>
               </View>
               <View style={{ flex: 1 }}>
                 <T bold>
