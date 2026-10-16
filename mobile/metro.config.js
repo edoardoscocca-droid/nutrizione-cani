@@ -9,7 +9,9 @@ const sharedDirs = [path.join(sharedRoot, 'src'), path.join(sharedRoot, 'dati')]
 const config = getDefaultConfig(projectRoot);
 config.watchFolders = sharedDirs;
 // il motore di ottimizzazione gira sul server: nell'app non si include mai
-config.resolver.blockList = [/nutrizione-cani\/src\/ui\/.*\.tsx$/, /nutrizione-cani\/src\/engine\/lp\.ts$/, /nutrizione-cani\/src\/engine\/formulate\.ts$/];
+const esc = (p) => p.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
+const blocked = ['src/ui/[^/]*\\.tsx', 'src/engine/lp\\.ts', 'src/engine/formulate\\.ts'];
+config.resolver.blockList = blocked.map((b) => new RegExp('^' + esc(sharedRoot + '/') + b + '$'));
 const isBare = (name) => !name.startsWith('.') && !path.isAbsolute(name);
 config.resolver.resolveRequest = (context, moduleName, platform) => {
   if (isBare(moduleName) && sharedDirs.some((d) => context.originModulePath.startsWith(d))) {
