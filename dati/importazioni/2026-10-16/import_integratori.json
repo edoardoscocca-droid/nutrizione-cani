@@ -209,6 +209,16 @@
      "source": "https://www.qdiet.it/products/compensa-250-g",
      "per_dose": "1 g",
      "declared_total_or_added": "added"
+    },
+    "vitamin_e": {
+     "value": 2,
+     "unit": "mg",
+     "form": "all_rac_alpha_tocopheryl_acetate",
+     "status": "PER_KG_ASSUMED_CONFIRM",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1",
+     "declared_total_or_added": "added",
+     "method": "Vitamina E tutto-rac-alfa-tocoferolo acetato: 2000 mg per kg PROBABILE, da confermare"
     }
    }
   },
@@ -253,6 +263,15 @@
      "source": "https://www.omegor.com/products/omegor-vitality-1000/",
      "per_dose": "1 capsula",
      "declared_total_or_added": "reported_or_estimated"
+    },
+    "vitamin_e": {
+     "value": 10,
+     "unit": "mg",
+     "form": "d_alpha_tocopherol",
+     "status": "MANUFACTURER_DECLARED",
+     "source": "https://www.omegor.com/products/omegor-vitality-1000/",
+     "per_dose": "1",
+     "method": "Vitamina E d-alfa-tocoferolo: 10 mg per capsula"
     }
    }
   },

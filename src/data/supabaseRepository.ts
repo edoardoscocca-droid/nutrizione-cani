@@ -1,7 +1,8 @@
 // Archivio Supabase. Tutti i permessi sono applicati dal database (RLS): l'app usa solo la chiave pubblica "anon".
 
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { CustomThreshold, EnergyFactors, Food, NutrientKind, NutrientLimit, NutrientValue, Supplement } from '../engine/types';
+import type { CustomThreshold, EnergyAssignment, EnergyMethod, Food, NutrientKind, NutrientLimit, NutrientValue, Supplement, UnitConversion } from '../engine/types';
+import { applyEnergyMethods } from '../engine/energy';
 import { DEFAULT_SETTINGS } from '../engine/types';
 import type { AppSettings, Dog, Recipe, RecipeVersion, UserPrice, WeightEntry } from './model';
 import type { Category } from './packageCatalog';
@@ -47,12 +48,14 @@ export class SupabaseRepository implements Repository {
   }
 
   async loadCatalog(): Promise<FullCatalog> {
-    const [nutrients, refs, limits, thresholds, factors, cats, foods, fn, supps, sn, breed] = await Promise.all([
+    const [nutrients, refs, limits, thresholds, methods, assignments, conversions, cats, foods, fn, supps, sn, breed] = await Promise.all([
       all(this.client, 'nutrients'),
       all(this.client, 'reference_versions'),
       all(this.client, 'nutrient_limits'),
       all(this.client, 'custom_thresholds'),
-      all(this.client, 'energy_factors', 'version'),
+      all(this.client, 'energy_methods'),
+      all(this.client, 'energy_method_assignments', 'category_id'),
+      all(this.client, 'unit_conversions'),
       all(this.client, 'food_categories', 'sort'),
       all(this.client, 'foods'),
       all(this.client, 'food_nutrients', 'food_id'),
@@ -78,7 +81,6 @@ export class SupabaseRepository implements Repository {
       m[r.nutrient_id as string] = val(r, 'amount_per_unit');
       suppNut.set(r.supplement_id as string, m);
     }
-    const active = factors.find((f) => f.active);
     const customThresholds: CustomThreshold[] = thresholds.map((t) => ({
       id: t.id as string,
       metric: t.metric as string,
@@ -91,7 +93,7 @@ export class SupabaseRepository implements Repository {
       requiresReview: t.requires_review as boolean,
       enabled: t.enabled as boolean,
     }));
-    return {
+    return applyEnergyMethods({
       nutrients: nutrients.map((r) => ({
         id: r.id as string,
         label: r.label_it as string,
@@ -124,9 +126,19 @@ export class SupabaseRepository implements Repository {
           }),
         ),
       customThresholds,
-      energyFactors: active
-        ? { version: active.version as string, protein: n(active.protein), fat: n(active.fat), carbohydrate: n(active.carbohydrate), source: `${active.source} — approvato da ${active.approved_by}` }
-        : { version: 'non-impostati', protein: null, fat: null, carbohydrate: null, source: null },
+      energyMethods: methods.map((m): EnergyMethod => ({
+        id: m.id as string, version: m.version as string, label: m.label as string,
+        protein: Number(m.protein), fat: Number(m.fat), carbohydrate: Number(m.carbohydrate),
+        source: m.source as string, approvedBy: m.approved_by as string, approvedAt: (m.approved_at as string) ?? null,
+        notes: (m.notes as string) ?? null, active: m.active as boolean,
+      })),
+      energyAssignments: assignments.map((a): EnergyAssignment => ({
+        categoryId: a.category_id as string, processing: a.processing as EnergyAssignment['processing'], methodId: a.method_id as string, caution: (a.caution as string) ?? null,
+      })),
+      unitConversions: conversions.map((c): UnitConversion => ({
+        id: c.id as string, nutrientId: c.nutrient_id as string, fromUnit: c.from_unit as string, toUnit: c.to_unit as string,
+        form: (c.form as string) ?? null, formLabel: c.form_label as string, factor: Number(c.factor), source: c.source as string,
+      })),
       categories: cats.map((c): Category => ({ id: c.id as string, parentId: (c.parent_id as string) ?? null, label: c.label_it as string, secretingOffal: c.secreting_offal as boolean })),
       foods: foods.map(
         (f): Food => ({
@@ -139,6 +151,9 @@ export class SupabaseRepository implements Repository {
           preparation: (f.preparation as string) ?? null,
           ediblePortion: (f.edible_portion as string) ?? null,
           kcalMePer100g: n(f.kcal_me_per_100g),
+          // nel database c'è solo l'EM inserita; quella calcolata si ricava dal metodo energetico al caricamento
+          kcalMeOrigin: f.kcal_me_per_100g === null ? null : 'declared',
+          energyMethodId: (f.energy_method_id as string) ?? null,
           meMethod: (f.me_method as string) ?? null,
           source: (f.source_identifier as string) ?? null,
           sourceVersion: (f.source_version as string) ?? null,
@@ -178,7 +193,7 @@ export class SupabaseRepository implements Repository {
         }),
       ),
       breedNotes: breed.map((b) => ({ id: b.id as string, breedMatch: b.breed_match as string[], text: b.note as string, source: b.source as string, metrics: b.metrics as string[] })),
-    };
+    });
   }
 
   // ── cani ──
@@ -311,7 +326,10 @@ export class SupabaseRepository implements Repository {
       await this.client.from('foods').upsert({
         id: f.id, name_it: f.name, category_id: f.categoryId, subcategory_id: f.subcategoryId, species_cut: f.speciesCut ?? null,
         processing_state: f.processingState, preparation: f.preparation ?? null, edible_portion: f.ediblePortion ?? null,
-        kcal_me_per_100g: f.kcalMePer100g, me_method: f.meMethod ?? null, source_identifier: f.source ?? null, source_version: f.sourceVersion ?? null,
+        // l'EM calcolata non si salva: il database la ricalcola dal metodo energetico
+        kcal_me_per_100g: f.kcalMeOrigin === 'calculated' ? null : f.kcalMePer100g,
+        me_method: f.kcalMeOrigin === 'calculated' ? null : (f.meMethod ?? null),
+        energy_method_id: f.energyMethodId ?? null, source_identifier: f.source ?? null, source_version: f.sourceVersion ?? null,
         data_status: f.dataStatus, uncertainty: f.uncertainty ?? null, notes: f.notes ?? null,
       }),
     );
@@ -344,13 +362,16 @@ export class SupabaseRepository implements Repository {
   async saveThreshold(t: CustomThreshold) {
     check(await this.client.from('custom_thresholds').update({ enabled: t.enabled, lower_value: t.lower, upper_value: t.upper }).eq('id', t.id));
   }
-  async saveEnergyFactors(f: EnergyFactors & { approvedBy: string }) {
-    check(await this.client.from('energy_factors').update({ active: false }).eq('active', true));
+  async saveEnergyMethod(m: EnergyMethod) {
     check(
-      await this.client.from('energy_factors').upsert({
-        version: f.version, protein: f.protein, fat: f.fat, carbohydrate: f.carbohydrate, source: f.source ?? '', approved_by: f.approvedBy, active: true,
+      await this.client.from('energy_methods').upsert({
+        id: m.id, version: m.version, label: m.label, protein: m.protein, fat: m.fat, carbohydrate: m.carbohydrate,
+        source: m.source, approved_by: m.approvedBy, approved_at: m.approvedAt ?? null, notes: m.notes ?? null, active: m.active,
       }),
     );
+  }
+  async saveEnergyAssignments(a: EnergyAssignment[]) {
+    check(await this.client.rpc('admin_set_energy_assignments', { rows: a.map((x) => ({ category_id: x.categoryId, processing: x.processing, method_id: x.methodId, caution: x.caution ?? null })) }));
   }
   async applyCatalogImport(plan: ImportPlan) {
     check(await this.client.rpc('admin_import_catalog', { payload: toPayload(plan) }));

@@ -1,6 +1,6 @@
 // Interfaccia unica per i dati: Supabase (uso reale) o archivio locale del browser (modalità prova).
 
-import type { Food, Supplement, EnergyFactors, CustomThreshold } from '../engine/types';
+import type { Food, Supplement, EnergyAssignment, EnergyMethod, CustomThreshold } from '../engine/types';
 import type { ImportPlan } from './catalogImport';
 import type { Category } from './packageCatalog';
 import type { AppSettings, Dog, Recipe, RecipeVersion, UserPrice, WeightEntry } from './model';
@@ -42,7 +42,10 @@ export interface Repository {
   saveFood(food: Food): Promise<void>;
   saveSupplement(s: Supplement): Promise<void>;
   saveThreshold(t: CustomThreshold): Promise<void>;
-  saveEnergyFactors(f: EnergyFactors & { approvedBy: string }): Promise<void>;
+  /** crea o aggiorna un metodo energetico (solo amministratori): la versione va cambiata a ogni modifica dei fattori. */
+  saveEnergyMethod(m: EnergyMethod): Promise<void>;
+  /** sostituisce le associazioni tipologia → metodo energetico (solo amministratori). */
+  saveEnergyAssignments(a: EnergyAssignment[]): Promise<void>;
   /** applica un piano d'importazione già verificato, tutto o niente. */
   applyCatalogImport(plan: ImportPlan): Promise<void>;
   /** convalida esplicita: riesce solo se i criteri di qualità sono soddisfatti. */

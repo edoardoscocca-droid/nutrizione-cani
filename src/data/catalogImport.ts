@@ -6,8 +6,9 @@
 //    conservando le versioni precedenti; le ricette collegate risultano "da ricalcolare".
 
 import { foodStatus, supplementStatus, type CatalogStatus, type StatusResult } from '../engine/catalogStatus';
+import { resolveFoodEnergy } from '../engine/energy';
 import { isMassUnit, normalizeUnit, toCanonical } from '../engine/units';
-import type { DataStatus, DoseUnit, Food, Nutrient, NutrientValue, ProcessingState, Supplement, ValueStatus } from '../engine/types';
+import type { DataStatus, DoseUnit, EnergyAssignment, EnergyMethod, Food, Nutrient, NutrientValue, ProcessingState, Supplement, UnitConversion, ValueStatus } from '../engine/types';
 import type { Category } from './packageCatalog';
 
 export type ImportKind = 'foods' | 'supplements';
@@ -31,6 +32,8 @@ interface RawValue {
   basis?: string;
   perDose?: string;
   declared?: string;
+  /** forma chimica (necessaria per convertire la vitamina E da mg a UI). */
+  form?: string;
 }
 
 interface RawProduct {
@@ -97,6 +100,27 @@ export interface CatalogForImport {
   supplements: Supplement[];
   categories: Category[];
   nutrients: Nutrient[];
+  /** conversioni approvate tra unità non di massa (vitamina D µg → UI, vitamina E mg → UI per forma chimica). */
+  unitConversions?: UnitConversion[];
+  /** metodi energetici: lo stato dopo l'importazione considera l'energia calcolata. */
+  energyMethods?: EnergyMethod[];
+  energyAssignments?: EnergyAssignment[];
+}
+
+/** Forma chimica scritta nel file → codice delle conversioni approvate (null se non riconosciuta). */
+export function normalizeForm(raw: string | undefined): string | null {
+  const f = norm(raw ?? '');
+  if (!f) return null;
+  const code = (raw ?? '').trim();
+  if (['d_alpha_tocopherol', 'all_rac_alpha_tocopheryl_acetate', 'd_alpha_tocopheryl_acetate'].includes(code)) return code;
+  const vitE = /tocofer|tocopher/.test(f);
+  if (vitE && /acetat/.test(f)) {
+    if (/all rac|tutto rac|\bdl\b|sintet|synthetic/.test(f)) return 'all_rac_alpha_tocopheryl_acetate';
+    if (/\bd alfa|\bd alpha|rrr|natural/.test(f)) return 'd_alpha_tocopheryl_acetate';
+    return null;
+  }
+  if (vitE && /\bd alfa|\bd alpha|rrr|natural/.test(f)) return 'd_alpha_tocopherol';
+  return null;
 }
 
 // ───────────────────────── utilità ─────────────────────────
@@ -267,6 +291,7 @@ const LONG_COLS = {
   method: ['method', 'metodo'],
   perDose: ['per dose'],
   declared: ['declared total or added'],
+  form: ['form', 'chemical form', 'forma', 'forma chimica'],
 };
 
 function fieldOf(map: Record<string, string[]>, header: string): string | null {
@@ -318,6 +343,7 @@ export function parseImport(text: string, kind: ImportKind, nutrients: Nutrient[
         basis: get(cells, LONG_COLS.basis),
         perDose: get(cells, LONG_COLS.perDose),
         declared: get(cells, LONG_COLS.declared),
+        form: get(cells, LONG_COLS.form),
       });
     }
     return out;
@@ -414,6 +440,7 @@ function parseJson(text: string, kind: ImportKind, out: ParsedImport): ParsedImp
         basis: o.basis !== undefined ? String(o.basis) : '',
         perDose: o.per_dose !== undefined ? String(o.per_dose) : '',
         declared: o.declared_total_or_added !== undefined ? String(o.declared_total_or_added) : '',
+        form: o.form !== undefined ? String(o.form) : o.chemical_form !== undefined ? String(o.chemical_form) : '',
       });
     }
   });
@@ -518,7 +545,7 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
       fieldChanges: [],
       valueChanges: [],
       statusBefore: prev ? (kind === 'foods' ? foodStatus(prev as Food, catalog.nutrients) : supplementStatus(prev as Supplement, catalog.nutrients)).status : null,
-      statusAfter: { status: 'to_complete', reasons: [], missing: [], readyForValidation: false },
+      statusAfter: { status: 'to_complete', reasons: [], missing: [], info: [], readyForValidation: false },
       errors: [],
       warnings: [],
       pendingConversions: [],
@@ -649,14 +676,28 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
       continue;
     }
     let conv: { value: number; rule: string } | undefined;
+    let converted: UnitConversion | null = null;
     try {
       conv = toCanonical(value, v.unit, nut.unit);
     } catch {
-      if (value === 0 && KNOWN_UNITS.has(normalizeUnit(v.unit))) {
-        conv = { value: 0, rule: `zero: uguale in ogni unità (${normalizeUnit(v.unit)} → ${nut.unit})` };
-      } else if (KNOWN_UNITS.has(normalizeUnit(v.unit)) && KNOWN_UNITS.has(normalizeUnit(nut.unit))) {
-        // unità valida ma di altra natura (es. µg → UI): serve un fattore approvato per la forma chimica
-        it.warnings.push({ line: v.line, productId: v.productId, message: `${nut.label}: ${v.raw} ${v.unit} non importato — da convertire in ${nut.unit} con un fattore approvato per la forma chimica; resta «non disponibile».` });
+      const from = normalizeUnit(v.unit);
+      const candidates = (catalog.unitConversions ?? []).filter((c) => c.nutrientId === nut.id && normalizeUnit(c.fromUnit) === from && normalizeUnit(c.toUnit) === normalizeUnit(nut.unit));
+      const form = normalizeForm(v.form);
+      converted = candidates.find((c) => c.form === null) ?? (form ? (candidates.find((c) => c.form === form) ?? null) : null);
+      if (value === 0 && KNOWN_UNITS.has(from)) {
+        conv = { value: 0, rule: `zero: uguale in ogni unità (${from} → ${nut.unit})` };
+      } else if (converted) {
+        // conversione approvata (per la vitamina E solo con la forma chimica indicata)
+        conv = { value: Math.round(value * converted.factor * 1e6) / 1e6, rule: `${from}→${nut.unit} × ${String(converted.factor).replace('.', ',')} (${converted.formLabel}; ${converted.source})` };
+      } else if (KNOWN_UNITS.has(from) && KNOWN_UNITS.has(normalizeUnit(nut.unit))) {
+        // unità valida ma di altra natura (es. mg → UI): serve un fattore approvato per la forma chimica
+        const forms = candidates.map((c) => c.formLabel).join('; ');
+        const why = candidates.length
+          ? v.form
+            ? `forma «${v.form}» non tra quelle approvate (${forms})`
+            : `indicare la forma chimica (${forms}): nessun fattore unico per tutte le forme`
+          : `nessun fattore approvato per ${from} → ${nut.unit}`;
+        it.warnings.push({ line: v.line, productId: v.productId, message: `${nut.label}: ${v.raw} ${v.unit} non importato, da convertire in ${nut.unit} — ${why}; resta «non disponibile».` });
         it.pendingConversions.push({ nutrientId: nut.id, label: nut.label, value: parseNumber(v.raw) ?? NaN, unit: v.unit, targetUnit: nut.unit });
       } else {
         err(`${nut.label}: unità «${v.unit}» non riconosciuta o non convertibile in ${nut.unit}.`);
@@ -701,7 +742,8 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
       it.fieldChanges.push({ field: 'labelAddedOnly', before: false, after: true });
     }
     const sourceCode = v.status && !['measured', 'label', 'calculated', 'estimated', 'analytical_zero', ''].includes(norm(v.status).replace(' ', '_')) ? v.status : null;
-    const nv: NutrientValue = { value, status, source, method: v.method || sourceCode || null };
+    const convNote = converted ? `convertito da ${v.raw} ${normalizeUnit(v.unit)} (${converted.formLabel}, × ${String(converted.factor).replace('.', ',')})` : null;
+    const nv: NutrientValue = { value, status, source, method: [v.method || sourceCode, convNote].filter(Boolean).join(' · ') || null };
     if (!same(cur?.value, nv.value) || !same(cur?.status ?? null, nv.status) || !same(cur?.source ?? null, nv.source) || !same(cur?.method ?? null, nv.method)) {
       it.valueChanges.push({
         nutrientId: nut.id,
@@ -778,7 +820,10 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
       (p as Supplement).status = 'review_required';
     }
     it.name = p.name || it.id;
-    it.statusAfter = kind === 'foods' ? foodStatus(p as Food, catalog.nutrients) : supplementStatus(p as Supplement, catalog.nutrients);
+    // EM inserita nel file = dichiarata; altrimenti si calcola dal metodo energetico della tipologia
+    if (kind === 'foods' && it.fieldChanges.some((c) => c.field === 'kcalMePer100g')) (p as Food).kcalMeOrigin = (p as Food).kcalMePer100g === null ? null : 'declared';
+    const resolved = kind === 'foods' && catalog.energyMethods ? resolveFoodEnergy(p as Food, catalog.energyMethods, catalog.energyAssignments ?? []) : p;
+    it.statusAfter = kind === 'foods' ? foodStatus(resolved as Food, catalog.nutrients) : supplementStatus(p as Supplement, catalog.nutrients);
     const active = kind === 'foods' ? (p as Food).availableToFormulate : (p as Supplement).usableForOptimization;
     if (active && it.statusAfter.status === 'to_complete') {
       if (kind === 'foods') (p as Food).availableToFormulate = false;
@@ -826,7 +871,7 @@ export function toPayload(plan: ImportPlan): ImportPayload {
       return {
         id: f.id, name_it: f.name, category_id: f.categoryId, subcategory_id: f.subcategoryId, species_cut: f.speciesCut ?? null,
         processing_state: f.processingState, preparation: f.preparation ?? null, edible_portion: f.ediblePortion ?? null,
-        kcal_me_per_100g: f.kcalMePer100g, me_method: f.meMethod ?? null, source_identifier: f.source ?? null, source_version: f.sourceVersion ?? null,
+        kcal_me_per_100g: f.kcalMeOrigin === 'calculated' ? null : f.kcalMePer100g, me_method: f.kcalMeOrigin === 'calculated' ? null : (f.meMethod ?? null), source_identifier: f.source ?? null, source_version: f.sourceVersion ?? null,
         data_status: f.dataStatus === 'verified' ? 'review_required' : f.dataStatus, uncertainty: f.uncertainty ?? null, notes: f.notes ?? null,
         available_to_formulate: f.availableToFormulate,
       };

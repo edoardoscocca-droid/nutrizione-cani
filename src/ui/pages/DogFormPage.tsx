@@ -83,7 +83,7 @@ export function DogFormPage() {
     const cur = dog.macroPreferences.find((m) => m.metric === metric) ?? { metric, lower: null, upper: null, locked: false };
     set('macroPreferences', [...dog.macroPreferences.filter((m) => m.metric !== metric), { ...cur, ...patch }]);
   };
-  const factorsOk = catalog?.energyFactors.protein !== null && catalog?.energyFactors.protein !== undefined;
+  const factorsOk = !catalog || (catalog.energyMethods.some((m) => m.active) && catalog.energyAssignments.length > 0);
 
   return (
     <div>
@@ -195,7 +195,7 @@ export function DogFormPage() {
         <p className="small muted">
           Percentuali delle <strong>kcal</strong> (non del peso degli ingredienti). Sono preferenze flessibili: i limiti nutrizionali vengono prima. Nessun intervallo «ufficiale» è precaricato.
         </p>
-        {!factorsOk && <div className="box box-grey small">I fattori energetici per calcolare le quote non sono ancora approvati: le preferenze vengono salvate ma non usate nel calcolo.</div>}
+        {!factorsOk && <div className="box box-grey small">Nessun metodo energetico approvato: le preferenze vengono salvate ma non usate nel calcolo.</div>}
         {MACROS.map((m) => {
           const cur = dog.macroPreferences.find((x) => x.metric === m.metric);
           return (

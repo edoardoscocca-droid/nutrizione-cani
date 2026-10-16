@@ -31,7 +31,6 @@ export function input(foods: string[], supps: string[], over: Partial<Formulatio
     supplements: supps.map((id) => ({ supplement: supplement(id), constraint: constraints[id] })),
     nutrients: refs.nutrients,
     limits: refs.limits,
-    factors: refs.energyFactors,
     dietMoisture: 'wet',
     settings: DEFAULT_SETTINGS,
     catalogForSuggestions: { foods: TEST_FOODS, supplements: TEST_SUPPLEMENTS },

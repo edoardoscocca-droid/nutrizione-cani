@@ -39,6 +39,13 @@ sql += insert('custom_thresholds', ['id', 'metric', 'lower_value', 'upper_value'
 const sorted = [...CATEGORIES].sort((a, b) => (a.parentId ? 1 : 0) - (b.parentId ? 1 : 0));
 sql += insert('food_categories', ['id', 'parent_id', 'label_it', 'secreting_offal', 'sort'],
   sorted.map((c) => [c.id, c.parentId, c.label, !!c.secretingOffal, CATEGORIES.indexOf(c)]), '(id) do nothing');
+// metodi energetici e conversioni approvati (dati/riferimenti)
+sql += insert('energy_methods', ['id', 'version', 'label', 'protein', 'fat', 'carbohydrate', 'source', 'approved_by', 'approved_at', 'notes', 'active'],
+  refs.energyMethods.map((m) => [m.id, m.version, m.label, m.protein, m.fat, m.carbohydrate, m.source, m.approvedBy, m.approvedAt ?? null, m.notes ?? null, m.active]), '(id) do nothing');
+sql += insert('energy_method_assignments', ['category_id', 'processing', 'method_id', 'caution'],
+  refs.energyAssignments.map((a) => [a.categoryId, a.processing, a.methodId, a.caution ?? null]), '(category_id, processing) do nothing');
+sql += insert('unit_conversions', ['id', 'nutrient_id', 'from_unit', 'to_unit', 'form', 'form_label', 'factor', 'source'],
+  refs.unitConversions.map((c) => [c.id, c.nutrientId, c.fromUnit, c.toUnit, c.form, c.formLabel, c.factor, c.source]), '(id) do nothing');
 
 function foodRows(foods: Food[]) {
   return foods.map((f) => [f.id, f.name, f.categoryId, f.subcategoryId, f.processingState, f.ediblePortion ?? null, f.kcalMePer100g, f.meMethod ?? null, f.source ?? null, f.sourceVersion ?? null, f.dataStatus, f.availableToFormulate, f.notes ?? null]);

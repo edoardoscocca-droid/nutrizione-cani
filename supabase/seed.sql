@@ -151,6 +151,27 @@ insert into public.food_categories (id, parent_id, label_it, secreting_offal, so
   ('fat_oil', 'other', 'Oli e grassi', false, 16)
 on conflict (id) do nothing;
 
+insert into public.energy_methods (id, version, label, protein, fat, carbohydrate, source, approved_by, approved_at, notes, active) values
+  ('fediaf_2025_ingredienti_naturali', '2025.1', 'FEDIAF 2025 · 4/9/4 (ingredienti naturali)', 4, 9, 4, 'FEDIAF Nutritional Guidelines 2025, formula per il cane: 4 kcal/g proteine, 9 kcal/g grassi, 4 kcal/g carboidrati disponibili (ENA/NFE)', 'Nutrizionista — decisione D4 del 16/10/2026', '2026-10-16', 'Riferimento iniziale per gli ingredienti naturali della dieta casalinga. Si applica alla composizione dell''alimento nello stato in cui si pesa (crudo o cotto). Carboidrati = carboidrati disponibili; con i dati USDA sono «per differenza meno fibra alimentare totale», un''approssimazione dell''ENA (che sottrae la fibra grezza). Non applicare i fattori 3,5/8,5/3,5 in modo indiscriminato.', true)
+on conflict (id) do nothing;
+
+insert into public.energy_method_assignments (category_id, processing, method_id, caution) values
+  ('animal', 'any', 'fediaf_2025_ingredienti_naturali', null),
+  ('starch', 'cooked', 'fediaf_2025_ingredienti_naturali', null),
+  ('starch', 'raw', 'fediaf_2025_ingredienti_naturali', 'Amido non cotto: nel cane è meno digeribile; l''energia calcolata può essere sovrastimata.'),
+  ('vegetable', 'cooked', 'fediaf_2025_ingredienti_naturali', null),
+  ('vegetable', 'raw', 'fediaf_2025_ingredienti_naturali', 'Verdura cruda: fibra e pareti cellulari ne riducono la digeribilità; l''energia calcolata può essere sovrastimata.'),
+  ('fat_oil', 'any', 'fediaf_2025_ingredienti_naturali', null),
+  ('supplement', 'any', 'fediaf_2025_ingredienti_naturali', 'Integratori: i fattori servono solo per le quote di energia dei macronutrienti dichiarati; l''energia per dose è quella dell''etichetta.')
+on conflict (category_id, processing) do nothing;
+
+insert into public.unit_conversions (id, nutrient_id, from_unit, to_unit, form, form_label, factor, source) values
+  ('vitd_ug_iu', 'vitamin_d', 'µg', 'IU', null, 'vitamina D (colecalciferolo)', 40, '1 µg = 40 UI — approvato dalla nutrizionista il 16/10/2026'),
+  ('vite_rrr', 'vitamin_e', 'mg', 'IU', 'd_alpha_tocopherol', 'd-alfa-tocoferolo naturale (RRR)', 1.49, '1,49 UI/mg — approvato dalla nutrizionista il 16/10/2026'),
+  ('vite_allrac_acetate', 'vitamin_e', 'mg', 'IU', 'all_rac_alpha_tocopheryl_acetate', 'tutto-rac/dl-alfa-tocoferil acetato (sintetico)', 1, '1 UI/mg — approvato dalla nutrizionista il 16/10/2026'),
+  ('vite_rrr_acetate', 'vitamin_e', 'mg', 'IU', 'd_alpha_tocopheryl_acetate', 'd-alfa-tocoferil acetato naturale', 1.36, 'circa 1,36 UI/mg — approvato dalla nutrizionista il 16/10/2026')
+on conflict (id) do nothing;
+
 insert into public.foods (id, name_it, category_id, subcategory_id, processing_state, edible_portion, kcal_me_per_100g, me_method, source_identifier, source_version, data_status, available_to_formulate, notes) values
   ('beef_ground_unverified', 'Macinato di manzo', 'animal', 'muscle', 'raw_or_unspecified', null, null, null, null, null, 'unverified', false, 'Compilare nutrienti, kcal ME, preparazione, fonte e copertura prima di attivare.'),
   ('beef_lean', 'Manzo magro', 'animal', 'muscle', 'raw_or_unspecified', null, null, null, null, null, 'unverified', false, 'Compilare nutrienti, kcal ME, preparazione, fonte e copertura prima di attivare.'),

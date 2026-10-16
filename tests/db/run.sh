@@ -56,8 +56,16 @@ echo "ok: stessi stati nell'app e nel database per $(echo "$DB_STATUS" | wc -l) 
 "${PSQL[@]}" -d t -f "$ROOT/supabase/data/2026-10-16_alimenti.sql" >/dev/null
 "${PSQL[@]}" -d t -f "$ROOT/supabase/data/2026-10-16_integratori.sql" >/dev/null
 R=$("${PSQL[@]}" -d t -tA -c "select string_agg(id || ':' || status, ' ' order by id) from catalog_status where id in ('beef_03','beef_15','beef_30','oat_dry','carrot_cooked','pumpkin_cooked','qdiet','omegor_vitality','bone_meal')")
-[ "$R" = "beef_03:to_complete beef_15:to_complete beef_30:to_complete bone_meal:partial carrot_cooked:to_complete oat_dry:to_complete omegor_vitality:partial pumpkin_cooked:to_complete qdiet:partial" ] || { echo "FALLITO: stati dati reali: $R"; exit 1; }
-[ "$("${PSQL[@]}" -d t -tA -c "select count(*) from food_nutrients where food_id in ('beef_03','beef_15','beef_30','oat_dry','carrot_cooked','pumpkin_cooked')")" = "256" ] || { echo "FALLITO: valori importati"; exit 1; }
-[ "$("${PSQL[@]}" -d t -tA -c "select count(*) from food_nutrients where nutrient_id in ('vitamin_d','vitamin_e') and amount_per_100g > 0 and food_id in ('beef_03','beef_15','beef_30','oat_dry','carrot_cooked','pumpkin_cooked')")" = "0" ] || { echo "FALLITO: vitamine D/E convertite senza fattore"; exit 1; }
-echo "ok: dati reali del 16/10/2026 importati (256 valori alimenti), alimenti «da completare» (manca EM cane), integratori «dati parziali», vitamine D/E non convertite"
+[ "$R" = "beef_03:partial beef_15:partial beef_30:partial bone_meal:partial carrot_cooked:partial oat_dry:partial omegor_vitality:partial pumpkin_cooked:partial qdiet:partial" ] || { echo "FALLITO: stati dati reali: $R"; exit 1; }
+[ "$("${PSQL[@]}" -d t -tA -c "select count(*) from food_nutrients where food_id in ('beef_03','beef_15','beef_30','oat_dry','carrot_cooked','pumpkin_cooked')")" = "265" ] || { echo "FALLITO: valori importati"; exit 1; }
+# D4: EM calcolata dal metodo FEDIAF 2025 4/9/4, mai salvata come «inserita»
+[ "$("${PSQL[@]}" -d t -tA -c "select string_agg(food_id || ':' || kcal_me_in_use || ':' || kcal_me_origin, ' ' order by food_id) from food_completeness where food_id in ('beef_03','oat_dry')")" = "beef_03:114.9:calculated oat_dry:341.7:calculated" ] || { echo "FALLITO: EM calcolata"; exit 1; }
+[ "$("${PSQL[@]}" -d t -tA -c "select count(*) from foods where kcal_me_per_100g is not null and id in ('beef_03','beef_15','beef_30','oat_dry','carrot_cooked','pumpkin_cooked')")" = "0" ] || { echo "FALLITO: EM calcolata salvata nel profilo"; exit 1; }
+# il metodo energetico non cambia i fattori senza una nuova versione; le associazioni solo per amministratori
+"${PSQL[@]}" -d t -c "do \$\$ begin update energy_methods set fat = 8.5 where id = 'fediaf_2025_ingredienti_naturali'; raise exception 'accettato'; exception when others then if sqlerrm = 'accettato' then raise; end if; end \$\$" >/dev/null || { echo "FALLITO: fattori cambiati senza versione"; exit 1; }
+[ "$("${PSQL[@]}" -d t -tA -c "set role authenticated; select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-0000000000b1', false);" -c "do \$\$ begin perform admin_set_energy_assignments('[]'); raise exception 'accettato'; exception when others then if sqlerrm = 'accettato' then raise; end if; end \$\$; select count(*) from energy_method_assignments" | tail -1)" = "7" ] || { echo "FALLITO: associazioni modificabili da un utente"; exit 1; }
+# D19: vitamina D µg → UI × 40, vitamina E mg → UI con la forma chimica
+[ "$("${PSQL[@]}" -d t -tA -c "select amount_per_100g || ':' || source_value || source_unit from food_nutrients where food_id = 'beef_03' and nutrient_id = 'vitamin_d'")" = "4:0.1µg" ] || { echo "FALLITO: vitamina D convertita"; exit 1; }
+[ "$("${PSQL[@]}" -d t -tA -c "select amount_per_unit from supplement_nutrients where supplement_id = 'omegor_vitality' and nutrient_id = 'vitamin_e'")" = "14.9" ] || { echo "FALLITO: vitamina E per forma"; exit 1; }
+echo "ok: dati reali del 16/10/2026 (265 valori alimenti): EM calcolata con FEDIAF 2025 4/9/4, vitamine D/E convertite con i fattori approvati, integratori sulla composizione dichiarata"
 echo "Test database: tutti superati"

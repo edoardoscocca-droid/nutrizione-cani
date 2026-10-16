@@ -9,6 +9,8 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { CATALOG_STATUS_LABEL } from '../../src/engine/catalogStatus';
 import { parseCsv, parseImport, planImport, type ImportPlan } from '../../src/data/catalogImport';
 import { LocalRepository } from '../../src/data/localRepository';
+import { resolveFoodEnergy } from '../../src/engine/energy';
+import type { Food } from '../../src/engine/types';
 
 const DIR = new URL('../../dati/importazioni/2026-10-16/', import.meta.url);
 const read = (p: string) => parseCsv(readFileSync(new URL(`originali/${p}`, DIR), 'utf8')).rows.map((r) => r.cells);
@@ -35,7 +37,9 @@ const foods = foodsCatalog.map((f) => {
   const nutrients: Record<string, unknown> = {};
   for (const r of foodsComp.filter((x) => x.product_id === f.id)) {
     if (!r.value_per_100g) continue; // NOT_REPORTED: resta «non disponibile»
-    nutrients[r.nutrient_id] = { value: r.value_per_100g, unit: r.unit, status: r.status, source: r.source_id };
+    // vitamina E degli alimenti (USDA, mg di alfa-tocoferolo): forma naturale d-alfa-tocoferolo (RRR)
+    const form = r.nutrient_id === 'vitamin_e' && r.unit === 'mg' ? 'd_alpha_tocopherol' : undefined;
+    nutrients[r.nutrient_id] = { value: r.value_per_100g, unit: r.unit, status: r.status, source: r.source_id, ...(form ? { form } : {}) };
   }
   return {
     id: f.id,
@@ -58,6 +62,7 @@ const suppComp = read('integratori/E_composizione_integratori_IMPORT.csv');
 const extra = read('integratori/E_componenti_da_convertire_o_non_mappati.csv');
 const VARIANT: Record<string, string> = { qdiet: 'Compensa standard (non Crescita, non Ultra)', omegor_vitality: 'Vitality 1000', bone_meal: 'marca/prodotto non confermato' };
 const skippedDerived: string[] = [];
+const convertedExtra: string[] = [];
 const supplements = suppCatalog.map((s) => {
   const nutrients: Record<string, unknown> = {};
   for (const r of suppComp.filter((x) => x.supplement_id === s.id)) {
@@ -73,6 +78,23 @@ const supplements = suppCatalog.map((s) => {
       source: r.source_id,
       per_dose: r.per_dose,
       declared_total_or_added: r.declared_total_or_added,
+    };
+  }
+  // vitamina E dichiarata con la forma chimica (file dei componenti da convertire): ora convertibile (D19)
+  for (const e of extra.filter((x) => x.product_id === s.id && x.mapping_status === 'NEEDS_IU_FORM_CONVERSION')) {
+    const form = /tutto-rac|all-rac/i.test(e.component) ? 'all_rac_alpha_tocopheryl_acetate' : /d-alfa-tocoferolo/i.test(e.component) && !/acetat/i.test(e.component) ? 'd_alpha_tocopherol' : null;
+    if (!form) continue;
+    const perKg = /per kg/i.test(e.declared_basis);
+    convertedExtra.push(`${s.id} · ${e.component} ${e.declared_amount} ${e.declared_unit} (${e.declared_basis})`);
+    nutrients.vitamin_e = {
+      value: perKg ? Number(e.declared_amount) / 1000 : Number(e.declared_amount), // per kg di prodotto → per 1 g
+      unit: e.declared_unit,
+      form,
+      status: perKg ? 'PER_KG_ASSUMED_CONFIRM' : 'MANUFACTURER_DECLARED',
+      source: s.source_label_url,
+      per_dose: '1',
+      ...(suppComp.some((x) => x.supplement_id === s.id && x.declared_total_or_added === 'added') ? { declared_total_or_added: 'added' } : {}),
+      method: `${e.component}: ${e.declared_amount} ${e.declared_unit} ${e.declared_basis}`,
     };
   }
   return {
@@ -108,13 +130,25 @@ for (const [title, plan] of plans) {
     report.push(`| ${it.name} | \`${it.id}\` | ${it.action === 'create' ? 'nuovo' : 'aggiornato'} | ${CATALOG_STATUS_LABEL[it.statusAfter.status]} | ${it.statusAfter.reasons.join('; ')} |`);
   }
   const pending = plan.items.flatMap((i) => i.pendingConversions.map((p) => `${i.id} · ${p.label}: ${p.value} ${p.unit} → ${p.targetUnit}`));
+  const conv = plan.items.flatMap((i) => i.valueChanges.filter((v) => v.rule && v.rule.includes('×')).map((v) => `${i.id} · ${v.label}: ${v.sourceValue} ${v.sourceUnit} → ${v.after} ${v.unit} — ${v.rule}`));
+  if (conv.length) report.push('', '**Valori convertiti con i fattori approvati (D19)**:', '', ...conv.map((p) => `- ${p}`), '');
   if (pending.length) report.push('', '**Valori NON importati, in attesa di un fattore di conversione approvato** (restano «non disponibili»):', '', ...pending.map((p) => `- ${p}`));
   report.push('');
 }
+report.push('## Energia metabolizzabile calcolata (D4)', '');
+report.push('Metodo della tipologia applicato alla composizione importata. L’energia «umana» USDA è riportata solo per confronto: non è usata.', '');
+report.push('| Alimento | Proteine g | Grassi g | Carboidrati disp. g | EM cane kcal/100 g | Metodo | Avvertenza | Energia USDA uomo (non usata) |', '|---|---|---|---|---|---|---|---|');
+for (const it of plans[0][1].items) {
+  const f = resolveFoodEnergy(it.next as Food, cat.energyMethods, cat.energyAssignments);
+  const v = (k: string) => f.nutrients[k]?.value ?? '—';
+  report.push(`| ${f.name} | ${v('protein')} | ${v('fat')} | ${v('carbohydrate_available')} | ${f.kcalMePer100g ?? '—'} | ${f.energyMethod ? `${f.energyMethod.label} v. ${f.energyMethod.version}` : 'nessuno'} | ${f.energyMethod?.caution ?? ''} | ${v('energy_food_kcal')} |`);
+}
+report.push('');
 report.push('## Non caricati di proposito', '');
-report.push('- Energia: i file contengono solo l’energia alimentare **umana** USDA (`energy_food_kcal`, conservata come dato informativo). L’energia metabolizzabile per il cane resta vuota finché non si approva un metodo (decisione D4): per questo i 6 alimenti risultano «Da completare» e non entrano nel calcolo.');
+report.push('- Energia: i file contengono solo l’energia alimentare **umana** USDA (`energy_food_kcal`, conservata come dato informativo, mai usata). L’energia metabolizzabile per il cane si calcola nell’app con il metodo energetico della tipologia (decisione D4: FEDIAF 2025, 4/9/4 su proteine, grassi e carboidrati disponibili; vedi `dati/riferimenti/metodi_energetici.json`).');
 for (const d of skippedDerived) report.push(`- Riga derivata non importata: ${d}.`);
-for (const e of extra) report.push(`- Componente da convertire, non importato: ${e.product_id} · ${e.component} ${e.declared_amount} ${e.declared_unit} (${e.declared_basis}) — ${e.mapping_status}. ${e.notes}`);
+for (const c of convertedExtra) report.push(`- Vitamina E convertita con la forma chimica dichiarata (D19): ${c}.`);
+for (const e of extra.filter((x) => !convertedExtra.some((c) => c.startsWith(`${x.product_id} · ${x.component} `)))) report.push(`- Componente da convertire, non importato: ${e.product_id} · ${e.component} ${e.declared_amount} ${e.declared_unit} (${e.declared_basis}) — ${e.mapping_status}. ${e.notes}`);
 report.push('- Voci di fonte conservate solo come informazione (nessun limite, nessun calcolo): ' + ['energy_food_kcal', 'carbohydrate_by_difference', 'c18_2_undifferentiated', 'c20_4_undifferentiated', 'vitamin_a_retinol_ug', 'vitamin_a_carotenoid_iu', 'beta_carotene_ug'].map((id) => L.get(id) ?? id).join(', ') + '.');
 report.push('- Cistina e tirosina: importate e usate per Metionina + cistina e Fenilalanina + tirosina (formula dell’allegato F).');
 report.push('- Attivazione: i file chiedono «available_to_formulate = true»; l’importazione non attiva mai i prodotti. Si attivano dal Catalogo quando non sono più «Da completare».');

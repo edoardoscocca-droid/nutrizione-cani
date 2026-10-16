@@ -48,7 +48,7 @@ export default function DogForm({ id }: { id?: string }) {
   const gap = validWeights && weightGapNeedsWarning(dog.weightCurrentKg, dog.weightIdealKg);
   const estimate = validWeights ? mer(dog.weightIdealKg, dog.activityFactor) : null;
   const notes = catalog ? breedNotesFor(dog.breed, catalog.breedNotes) : [];
-  const factorsOk = catalog?.energyFactors.protein != null;
+  const factorsOk = !catalog || (catalog.energyMethods.some((m) => m.active) && catalog.energyAssignments.length > 0);
 
   const persist = async (next: Dog) => {
     await repo.saveDog(next);
@@ -177,7 +177,7 @@ export default function DogForm({ id }: { id?: string }) {
         <T small muted>Percentuali delle kcal, non del peso degli ingredienti. Preferenze flessibili: i limiti nutrizionali vengono prima. Nessun intervallo «ufficiale» precaricato.</T>
         {!factorsOk && (
           <Box color="grey">
-            <T small>I fattori energetici non sono ancora approvati: le preferenze si salvano ma non entrano nel calcolo.</T>
+            <T small>Nessun metodo energetico approvato: le preferenze si salvano ma non entrano nel calcolo.</T>
           </Box>
         )}
         {MACROS.map((m) => {

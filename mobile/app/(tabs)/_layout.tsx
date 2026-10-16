@@ -2,7 +2,12 @@ import { Tabs } from 'expo-router';
 import { Text, type ColorValue } from 'react-native';
 import { useTheme } from '../../lib/ui';
 
-const icon = (s: string) => ({ color }: { color: ColorValue }) => <Text style={{ color, fontSize: 18 }}>{s}</Text>;
+const icon = (s: string) => {
+  function TabIcon({ color }: { color: ColorValue }) {
+    return <Text style={{ color, fontSize: 18 }}>{s}</Text>;
+  }
+  return TabIcon;
+};
 
 export default function TabsLayout() {
   const t = useTheme();

@@ -1,32 +1,49 @@
 // Somma degli apporti di TUTTI gli alimenti e integratori, con tracciamento dei dati mancanti.
 // Questo modulo è usato dalla verifica indipendente: non dipende dal modello dell'ottimizzatore.
+//
+// Tre stati per ogni valore (decisione della nutrizionista sugli integratori):
+//  - valore dichiarato o misurato (anche lo zero documentato, status analytical_zero) → entra nella somma;
+//  - alimento senza il dato → «dato mancante»: il totale è incompleto;
+//  - integratore che non dichiara il nutriente → «non dichiarato»: NON vale zero, ma il calcolo prosegue sulla
+//    composizione dichiarata; il totale è un limite inferiore e la verifica lo segnala come incertezza.
 
 import type { EnergyFactors, Food, Nutrient, RecipeItem, Supplement } from './types';
 
 export interface ItemData {
   item: RecipeItem;
+  kind: 'food' | 'supplement';
+  /** massa di una unità di quantità in grammi (1 per gli alimenti), se nota. */
+  gramsPerQty: number | null;
   name: string;
   /** apporto per unità di quantità (per 1 g di alimento, per 1 unità di integratore). */
   kcalPerQty: number | null;
+  /** kcal/g di proteine, grassi e carboidrati disponibili del metodo energetico del componente (null = nessun metodo). */
+  macroFactors: { protein: number; fat: number; carbohydrate: number } | null;
   valuePerQty: (nutrientId: string) => number | null;
 }
 
 export interface Total {
   /** somma dei soli contributi noti. */
   known: number;
-  /** true se tutti i componenti con quantità > 0 hanno il dato. */
+  /** true se tutti gli ALIMENTI con quantità > 0 hanno il dato (gli integratori valgono per quanto dichiarano). */
   complete: boolean;
   /** nessun componente con quantità > 0 ha il dato. */
   noData: boolean;
+  /** alimenti senza il dato. */
   missingFrom: string[];
+  /** integratori che non dichiarano il nutriente: valore sconosciuto, non zero. */
+  undeclaredFrom: string[];
   contributions: { name: string; amount: number }[];
 }
 
 export function foodData(item: RecipeItem, food: Food): ItemData {
   return {
     item,
+    kind: 'food',
+    gramsPerQty: 1,
     name: food.name,
     kcalPerQty: food.kcalMePer100g === null ? null : food.kcalMePer100g / 100,
+    macroFactors: food.energyMethod ?? null,
     valuePerQty: (id) => {
       const v = food.nutrients[id]?.value;
       return v === null || v === undefined ? null : v / 100;
@@ -37,8 +54,11 @@ export function foodData(item: RecipeItem, food: Food): ItemData {
 export function supplementData(item: RecipeItem, s: Supplement): ItemData {
   return {
     item,
+    kind: 'supplement',
+    gramsPerQty: s.doseUnit === 'g' ? 1 : s.massPerUnitG,
     name: s.name,
     kcalPerQty: s.kcalPerUnit,
+    macroFactors: s.energyMethod ?? null,
     valuePerQty: (id) => {
       const v = s.nutrients[id]?.value;
       return v === null || v === undefined ? null : v;
@@ -47,13 +67,15 @@ export function supplementData(item: RecipeItem, s: Supplement): ItemData {
 }
 
 function sum(items: ItemData[], get: (d: ItemData) => number | null): Total {
-  const t: Total = { known: 0, complete: true, noData: true, missingFrom: [], contributions: [] };
+  const t: Total = { known: 0, complete: true, noData: true, missingFrom: [], undeclaredFrom: [], contributions: [] };
   let anyPositive = false;
   for (const d of items) {
     if (!(d.item.qty > 0)) continue;
     anyPositive = true;
     const v = get(d);
-    if (v === null) {
+    if (v === null && d.kind === 'supplement') {
+      t.undeclaredFrom.push(d.name);
+    } else if (v === null) {
       t.complete = false;
       t.missingFrom.push(d.name);
     } else {
@@ -67,8 +89,31 @@ function sum(items: ItemData[], get: (d: ItemData) => number | null): Total {
   return t;
 }
 
-export function totalEnergy(items: ItemData[]): Total {
-  return sum(items, (d) => d.kcalPerQty);
+/** Energia del grasso puro: limite fisico superiore dell'energia di un grammo di qualsiasi componente. */
+export const MAX_KCAL_PER_G = 9;
+
+export interface EnergyTotal extends Total {
+  /**
+   * Energia massima possibile degli integratori che non dichiarano le kcal (peso della dose × 9 kcal/g);
+   * null se il peso della dose non è noto (energia non delimitabile → totale incompleto).
+   */
+  undeclaredMax: number | null;
+}
+
+export function totalEnergy(items: ItemData[]): EnergyTotal {
+  const t = sum(items, (d) => d.kcalPerQty);
+  let max: number | null = 0;
+  for (const d of items) {
+    if (!(d.item.qty > 0) || d.kind !== 'supplement' || d.kcalPerQty !== null) continue;
+    if (d.gramsPerQty === null) max = null;
+    else if (max !== null) max += d.gramsPerQty * d.item.qty * MAX_KCAL_PER_G;
+  }
+  // senza peso della dose l'energia non dichiarata non ha un limite: dato essenziale mancante
+  if (max === null) {
+    t.complete = false;
+    t.missingFrom.push(...t.undeclaredFrom.filter((n) => !t.missingFrom.includes(n)));
+  }
+  return { ...t, undeclaredMax: max };
 }
 
 /**
@@ -95,18 +140,43 @@ export function itemValue(d: ItemData, nutrientId: string): number | null {
   return null;
 }
 
+/**
+ * Totali di gruppo che un integratore può non dichiarare ma che comprendono acidi grassi dichiarati:
+ * in quel caso la somma delle parti dichiarate è un limite inferiore (mai sommata a un totale dichiarato).
+ */
+export const GROUP_PARTS: Record<string, string[]> = {
+  omega3_total: ['ala', 'epa', 'dha'],
+  omega6_total: ['linoleic_acid'],
+};
+
 export function totalNutrient(items: ItemData[], nutrientId: string): Total {
-  return sum(items, (d) => itemValue(d, nutrientId));
+  const t = sum(items, (d) => itemValue(d, nutrientId));
+  const parts = GROUP_PARTS[nutrientId];
+  if (parts) {
+    // integratore senza il totale di gruppo ma con le parti: le parti dichiarate contano come minimo noto
+    for (const d of items) {
+      if (!(d.item.qty > 0) || d.kind !== 'supplement' || itemValue(d, nutrientId) !== null) continue;
+      const known = parts.map((p) => itemValue(d, p)).filter((v): v is number => v !== null);
+      if (!known.length) continue;
+      const amount = known.reduce((a, b) => a + b, 0) * d.item.qty;
+      t.known += amount;
+      t.noData = false;
+      t.contributions.push({ name: `${d.name} (parti dichiarate, minimo)`, amount });
+    }
+  }
+  return t;
 }
 
 export interface DerivedValue {
   value: number | null;
   complete: boolean;
   reason?: string;
+  /** integratori che non dichiarano una delle parti: valore calcolato sulla composizione dichiarata. */
+  undeclaredFrom?: string[];
 }
 
 export interface RecipeTotals {
-  energy: Total;
+  energy: EnergyTotal;
   nutrients: Record<string, Total>;
   derived: Record<string, DerivedValue>;
 }
@@ -116,10 +186,11 @@ function ratio(num: Total, den: Total, label: string): DerivedValue {
     return { value: null, complete: false, reason: `dati incompleti per ${label}` };
   }
   if (!(den.known > 0)) return { value: null, complete: false, reason: 'denominatore zero: rapporto non definito' };
-  return { value: num.known / den.known, complete: true };
+  return { value: num.known / den.known, complete: true, undeclaredFrom: [...new Set([...num.undeclaredFrom, ...den.undeclaredFrom])] };
 }
 
-export function computeTotals(items: ItemData[], nutrients: Nutrient[], factors: EnergyFactors): RecipeTotals {
+/** legacyFactors: fattori unici delle istantanee salvate prima dei metodi per tipologia. */
+export function computeTotals(items: ItemData[], nutrients: Nutrient[], legacyFactors?: EnergyFactors | null): RecipeTotals {
   const energy = totalEnergy(items);
   const out: Record<string, Total> = {};
   for (const n of nutrients) {
@@ -136,17 +207,28 @@ export function computeTotals(items: ItemData[], nutrients: Nutrient[], factors:
     derived.omega6_omega3_ratio = r.complete && !(o6.known > 0) ? { value: null, complete: false, reason: 'omega-6 pari a zero' } : r;
   }
   const kcal = energy.complete && !energy.noData && energy.known > 0 ? energy.known : null;
-  const macro: [string, string, number | null][] = [
-    ['protein_energy_pct', 'protein', factors.protein],
-    ['fat_energy_pct', 'fat', factors.fat],
-    ['carb_energy_pct', 'carbohydrate_available', factors.carbohydrate],
+  // Quote energetiche: ogni componente con i fattori del proprio metodo energetico (tipologia di alimento).
+  const macro: [string, 'protein' | 'fat' | 'carbohydrate_available', 'protein' | 'fat' | 'carbohydrate'][] = [
+    ['protein_energy_pct', 'protein', 'protein'],
+    ['fat_energy_pct', 'fat', 'fat'],
+    ['carb_energy_pct', 'carbohydrate_available', 'carbohydrate'],
   ];
-  for (const [id, nut, f] of macro) {
+  for (const [id, nut, key] of macro) {
     const t = out[nut];
-    if (f === null) derived[id] = { value: null, complete: false, reason: 'fattori energetici non approvati (decisione D4)' };
+    let macroKcal = 0;
+    const noMethod: string[] = [];
+    for (const d of items) {
+      if (!(d.item.qty > 0)) continue;
+      const g = itemValue(d, nut);
+      if (g === null || g === 0) continue;
+      const f = d.macroFactors?.[key] ?? legacyFactors?.[key] ?? null;
+      if (f === null || f === undefined) noMethod.push(d.name);
+      else macroKcal += g * d.item.qty * f;
+    }
+    if (noMethod.length) derived[id] = { value: null, complete: false, reason: `nessun metodo energetico per ${noMethod.join(', ')}` };
     else if (!t || !t.complete || t.noData) derived[id] = { value: null, complete: false, reason: 'dati dei macronutrienti incompleti' };
     else if (kcal === null) derived[id] = { value: null, complete: false, reason: 'energia della ricetta incompleta' };
-    else derived[id] = { value: (100 * t.known * f) / kcal, complete: true };
+    else derived[id] = { value: (100 * macroKcal) / kcal, complete: true, undeclaredFrom: [...new Set([...t.undeclaredFrom, ...(energy.undeclaredMax ? energy.undeclaredFrom : [])])] };
   }
   return { energy, nutrients: out, derived };
 }

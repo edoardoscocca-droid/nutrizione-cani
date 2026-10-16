@@ -1,5 +1,5 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { foodStatus, supplementStatus } from '../../../../src/engine/catalogStatus';
 import type { FormulationInput, FormulationResult, PreliminaryResult } from '../../../../src/engine/formulate';
@@ -44,12 +44,13 @@ export default function NewRecipe() {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (data?.source) {
-      setSel(data.source.selection);
-      setName(`${data.source.recipe.name} (copia)`);
-    }
-  }, [data?.source]);
+  // duplicazione: la selezione della ricetta di partenza si copia una volta, appena caricata
+  const [seededFrom, setSeededFrom] = useState<unknown>(null);
+  if (data?.source && seededFrom !== data.source) {
+    setSeededFrom(data.source);
+    setSel(data.source.selection);
+    setName(`${data.source.recipe.name} (copia)`);
+  }
 
   const groups = useMemo(() => {
     if (!catalog) return [];
@@ -270,7 +271,7 @@ export default function NewRecipe() {
             <ResultBlock
               audit={result.r.audit}
               items={result.r.items}
-              snapshot={{ ...snap, referenceVersionIds: [...new Set(result.input.limits.map((l) => l.referenceVersionId))], factors: result.input.factors, engineVersion: result.r.engineVersion }}
+              snapshot={{ ...snap, referenceVersionIds: [...new Set(result.input.limits.map((l) => l.referenceVersionId))], engineVersion: result.r.engineVersion }}
               cost={costOf({ chosenItems: result.r.items, snapshot: snap as never }, prices)}
               constraints={result.r.constraints}
               notes={result.r.notes}

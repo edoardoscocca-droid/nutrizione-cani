@@ -19,7 +19,9 @@ function catalog(over: Partial<CatalogState> = {}): CatalogState {
     nutrients: refs.nutrients,
     limits: refs.limits,
     referenceVersions: refs.referenceVersions,
-    energyFactors: refs.energyFactors,
+    energyMethods: refs.energyMethods,
+    energyAssignments: refs.energyAssignments,
+    unitConversions: refs.unitConversions,
     customThresholds: refs.customThresholds,
     foods: structuredClone(TEST_FOODS),
     supplements: structuredClone(TEST_SUPPLEMENTS),
@@ -43,7 +45,6 @@ function auditOf(foods: Food[], qty: number[], d = dog()) {
     supplements: {},
     nutrients: refs.nutrients,
     limits: refs.limits,
-    factors: refs.energyFactors,
     dog: d,
     dietMoisture: 'wet',
     settings: DEFAULT_SETTINGS,
@@ -263,9 +264,13 @@ describe('T12 ricette', () => {
 
 describe('T13 macro', () => {
   test('70% proteine è quota di energia, non 70% di carne; nessuna etichetta BARF', async () => {
-    const factors = { version: 'test', protein: 3.5, fat: 8.5, carbohydrate: 3.5, source: 'fattori di TEST' };
+    // metodo energetico di TEST applicato a tutti i componenti (fattori qualsiasi: si verifica la definizione)
+    const method = { id: 'test', version: '1', label: 'fattori di TEST', protein: 3.5, fat: 8.5, carbohydrate: 3.5, caution: null };
     const d = dog({ targets: [{ id: 'p', metric: 'protein_energy_pct', lower: 70, upper: null, unit: '%', basis: 'energy_pct', locked: false, setBy: 'utente', setAt: '2026-10-16' }] });
-    const r = await formulate(input(['test_beef', 'test_oats', 'test_beef_heart'], ['test_multi', 'test_bone_meal'], { dog: d, factors }));
+    const base = input(['test_beef', 'test_oats', 'test_beef_heart'], ['test_multi', 'test_bone_meal'], { dog: d });
+    base.foods = base.foods.map((f) => ({ ...f, food: { ...f.food, energyMethod: method } }));
+    base.supplements = base.supplements.map((s) => ({ ...s, supplement: { ...s.supplement, energyMethod: method } }));
+    const r = await formulate(base);
     expect(r.outcome).toBe('solved');
     const pct = r.audit!.totals.derived.protein_energy_pct;
     const protein = r.audit!.totals.nutrients.protein.known;
@@ -275,10 +280,11 @@ describe('T13 macro', () => {
     expect(Math.abs((100 * meatG) / totalG - pct.value!)).toBeGreaterThan(1);
     expect(JSON.stringify(r)).not.toMatch(/BARF/i);
   });
-  test('senza fattori approvati le preferenze macro non sono applicate e lo si dice', async () => {
+  test('senza metodo energetico per un componente le preferenze macro non sono applicate e lo si dice', async () => {
     const d = dog({ targets: [{ id: 'p', metric: 'protein_energy_pct', lower: 70, upper: null, unit: '%', basis: 'energy_pct', locked: false, setBy: 'utente', setAt: '2026-10-16' }] });
     const r = await formulate(input(['test_beef', 'test_oats'], ['test_multi', 'test_bone_meal'], { dog: d }));
-    expect(r.notes.join(' ')).toMatch(/fattori energetici/);
+    expect(r.notes.join(' ')).toMatch(/nessun metodo energetico/);
+    expect(r.audit!.totals.derived.protein_energy_pct.value).toBeNull();
   });
 });
 
@@ -372,6 +378,7 @@ describe('Dati reali del pacchetto', () => {
     expect(ca.find((l) => l.limitClass === 'OFFICIAL_NUTRITIONAL_MAX')!.upper).toBe(6.25);
     expect(refs.limits.some((l) => l.metric === 'taurine')).toBe(false);
     expect(refs.limits.find((l) => l.id === 'custom_preferred_ca_p')!.limitClass).toBe('NON_OFFICIAL_ATTENTION');
-    expect(refs.energyFactors.protein).toBeNull();
+    // D4: un solo metodo approvato, FEDIAF 2025 4/9/4, per gli ingredienti naturali
+    expect(refs.energyMethods.map((m) => [m.protein, m.fat, m.carbohydrate])).toEqual([[4, 9, 4]]);
   });
 });

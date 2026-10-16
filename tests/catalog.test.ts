@@ -95,8 +95,7 @@ describe('Stato e motore', () => {
       supplements: {},
       nutrients: N,
       limits: refs.limits,
-      factors: refs.energyFactors,
-      dog: dog(),
+        dog: dog(),
       dietMoisture: 'wet',
       settings: DEFAULT_SETTINGS,
     });
@@ -158,12 +157,32 @@ describe('Importazione: lettura e associazione dei nutrienti', () => {
 });
 
 describe('Importazione: conversioni non approvate', () => {
-  test('µg → UI non si converte da sola: valore non importato, segnalato, resto importabile', async () => {
-    const plan = planImport(parseImport('product_id,nutrient_id,value_per_100g,unit,basis,source_id,status\nanchovies,vitamin_d,0.1,µg,,F,\nanchovies,protein,20,g,,F,REPORTED_USDA_PROXY\n', 'foods', N), await catalogFor(), 'x');
+  test('vitamina E mg → UI senza forma chimica: valore non importato, segnalato, resto importabile', async () => {
+    const plan = planImport(parseImport('product_id,nutrient_id,value_per_100g,unit,basis,source_id,status\nanchovies,vitamin_e,0.5,mg,,F,\nanchovies,protein,20,g,,F,REPORTED_USDA_PROXY\n', 'foods', N), await catalogFor(), 'x');
     expect(plan.errors).toEqual([]);
-    expect(plan.items[0].pendingConversions).toEqual([expect.objectContaining({ nutrientId: 'vitamin_d', unit: 'µg', targetUnit: 'IU' })]);
-    expect(plan.items[0].next.nutrients.vitamin_d).toBeUndefined();
+    expect(plan.items[0].pendingConversions).toEqual([expect.objectContaining({ nutrientId: 'vitamin_e', unit: 'mg', targetUnit: 'IU' })]);
+    expect(plan.items[0].warnings.map((w) => w.message).join(' ')).toMatch(/indicare la forma chimica/);
+    expect(plan.items[0].next.nutrients.vitamin_e).toBeUndefined();
     expect(plan.items[0].next.nutrients.protein).toEqual(expect.objectContaining({ value: 20, status: 'estimated', method: 'REPORTED_USDA_PROXY' }));
+  });
+  test('D19: vitamina D 1 µg = 40 UI; vitamina E con il fattore della sua forma chimica, mai uno unico', async () => {
+    const csv =
+      'product_id,nutrient_id,value_per_100g,unit,source_id,status,form\n' +
+      'anchovies,vitamin_d,0.5,µg,F,measured,\n' +
+      'anchovies,vitamin_e,10,mg,F,measured,d-alfa-tocoferolo\n' +
+      'sardines,vitamin_e,10,mg,F,measured,dl-alfa-tocoferil acetato\n' +
+      'beef_lean,vitamin_e,10,mg,F,measured,d-alpha-tocopheryl acetate\n' +
+      'lamb_meat,vitamin_e,10,mg,F,measured,tocoferoli misti\n';
+    const plan = planImport(parseImport(csv, 'foods', N), await catalogFor(), 'x');
+    const v = (id: string, n: string) => plan.items.find((i) => i.id === id)!.next.nutrients[n];
+    expect(v('anchovies', 'vitamin_d')).toEqual(expect.objectContaining({ value: 20, status: 'measured' }));
+    expect(v('anchovies', 'vitamin_e')?.value).toBeCloseTo(14.9, 9);
+    expect(v('anchovies', 'vitamin_e')?.method).toMatch(/d-alfa-tocoferolo naturale/);
+    expect(v('sardines', 'vitamin_e')?.value).toBe(10);
+    expect(v('beef_lean', 'vitamin_e')?.value).toBeCloseTo(13.6, 9);
+    expect(v('lamb_meat', 'vitamin_e')).toBeUndefined(); // forma non approvata: nessuna conversione
+    const ch = plan.items.find((i) => i.id === 'anchovies')!.valueChanges.find((c) => c.nutrientId === 'vitamin_e')!;
+    expect([ch.sourceValue, ch.sourceUnit]).toEqual([10, 'mg']); // valore originale conservato
   });
 });
 
@@ -263,24 +282,34 @@ describe('Dati reali del 16/10/2026', () => {
   test('i file convertiti passano le verifiche e arrivano nel catalogo con lo stato corretto', async () => {
     const cat = await new LocalRepository(null).loadCatalog();
     const f = (id: string) => cat.foods.find((x) => x.id === id)!;
-    for (const id of ['beef_03', 'beef_15', 'beef_30', 'oat_dry', 'carrot_cooked', 'pumpkin_cooked']) {
+    // D4: EM calcolata con FEDIAF 2025 4/9/4 (proteine, grassi, carboidrati disponibili) → dati parziali, non più «da completare»
+    const me: Record<string, number> = { beef_03: 114.9, beef_15: 209.4, beef_30: 327.4, oat_dry: 341.7, carrot_cooked: 25.5, pumpkin_cooked: 18.7 };
+    for (const [id, kcal] of Object.entries(me)) {
       const st = foodStatus(f(id), cat.nutrients);
-      expect(st.status).toBe('to_complete');
-      expect(st.reasons[0]).toMatch(/energia metabolizzabile/);
-      expect(f(id).kcalMePer100g).toBeNull();
+      expect(st.status).toBe('partial');
+      expect(f(id).kcalMePer100g).toBe(kcal);
+      expect(f(id).kcalMeOrigin).toBe('calculated');
+      expect(f(id).energyMethod?.id).toBe('fediaf_2025_ingredienti_naturali');
     }
+    expect(f('beef_15').kcalMePer100g).toBeCloseTo(18.59 * 4 + 15 * 9, 1);
+    expect(f('oat_dry').energyMethod?.caution).toMatch(/Amido non cotto/); // crudo: avvertenza di digeribilità
+    expect(f('carrot_cooked').energyMethod?.caution).toBeNull();
     expect(f('beef_15').nutrients.calcium).toEqual(expect.objectContaining({ value: 0.015, status: 'estimated', method: 'REPORTED_USDA_PROXY' }));
     expect(f('beef_15').nutrients.carbohydrate_available).toEqual(expect.objectContaining({ value: 0, status: 'analytical_zero' }));
-    expect(f('beef_15').nutrients.vitamin_d).toBeUndefined(); // µg → UI non convertito
+    // D19: vitamina D 1 µg = 40 UI; vitamina E degli alimenti (alfa-tocoferolo naturale) 1,49 UI/mg
+    expect(f('beef_15').nutrients.vitamin_d?.value).toBe(4);
+    expect(f('beef_15').nutrients.vitamin_e?.value).toBeCloseTo(0.17 * 1.49, 9);
     expect(f('oat_dry').nutrients.vitamin_d?.value).toBe(0); // zero: uguale in ogni unità
     expect(f('beef_15').nutrients.energy_food_kcal?.value).toBe(215); // solo informativo
     const q = cat.supplements.find((s) => s.id === 'qdiet')!;
     expect(q.labelAddedOnly).toBe(true);
     expect(q.nutrients.vitamin_a.value).toBe(250);
-    expect(q.nutrients.vitamin_e).toBeUndefined();
+    expect(q.nutrients.vitamin_e?.value).toBe(2); // 2000 mg/kg tutto-rac acetato × 1 UI/mg → 2 UI per g (per kg da confermare: stima)
+    expect(q.nutrients.vitamin_e?.status).toBe('estimated');
     const o = cat.supplements.find((s) => s.id === 'omegor_vitality')!;
     expect(o.massPerUnitG).toBeNull();
     expect(o.nutrients.epa_dha).toBeUndefined();
+    expect(o.nutrients.vitamin_e?.value).toBeCloseTo(14.9, 9); // 10 mg d-alfa-tocoferolo × 1,49
     expect(supplementStatus(o, cat.nutrients).status).toBe('partial');
   });
   test('Met+Cys dalla somma di metionina e cistina (allegato F)', async () => {
@@ -289,7 +318,7 @@ describe('Dati reali del 16/10/2026', () => {
     const a = auditRecipe({
       items: [{ kind: 'food', id: 'beef_15', qty: 100 }],
       foods: { beef_15: { ...beef, kcalMePer100g: 100 } },
-      supplements: {}, nutrients: cat.nutrients, limits: refs.limits, factors: refs.energyFactors, dog: dog(), dietMoisture: 'wet', settings: DEFAULT_SETTINGS,
+      supplements: {}, nutrients: cat.nutrients, limits: refs.limits, dog: dog(), dietMoisture: 'wet', settings: DEFAULT_SETTINGS,
     });
     expect(a.totals.nutrients.methionine_cystine.known).toBeCloseTo(0.478 + 0.191, 9);
     expect(a.totals.nutrients.methionine_cystine.complete).toBe(true);

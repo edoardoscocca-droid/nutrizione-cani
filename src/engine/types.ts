@@ -93,6 +93,12 @@ export interface Food {
   /** kcal di energia metabolizzabile per 100 g di parte edibile nello stato indicato. */
   kcalMePer100g: number | null;
   meMethod?: string | null;
+  /** declared = EM inserita da un amministratore (misurata o da fonte); calculated = calcolata con il metodo energetico. */
+  kcalMeOrigin?: 'declared' | 'calculated' | null;
+  /** metodo energetico scelto per questo alimento (sostituisce quello della sua tipologia). */
+  energyMethodId?: string | null;
+  /** metodo energetico applicato (risolto al caricamento del catalogo; congelato nelle istantanee). */
+  energyMethod?: AppliedEnergyMethod | null;
   source?: string | null;
   sourceVersion?: string | null;
   dataStatus: DataStatus;
@@ -119,6 +125,8 @@ export interface Supplement {
   /** contenuto della singola unità (g per capsula/misurino), se noto. */
   massPerUnitG: number | null;
   kcalPerUnit: number | null;
+  /** metodo energetico per le quote di energia dei macronutrienti dichiarati (risolto al caricamento). */
+  energyMethod?: AppliedEnergyMethod | null;
   /** true = solo dosi intere (capsule, compresse). */
   integerDose: boolean;
   maxDailyUnits: number | null;
@@ -137,12 +145,67 @@ export interface Supplement {
   nutrients: Record<string, NutrientValue>;
 }
 
+/** Fattori unici delle versioni precedenti (solo per leggere le istantanee già salvate). */
 export interface EnergyFactors {
   version: string;
   protein: number | null;
   fat: number | null;
   carbohydrate: number | null;
   source?: string | null;
+}
+
+/**
+ * Metodo di stima dell'energia metabolizzabile da proteine, grassi e carboidrati disponibili (ENA), in kcal/g.
+ * Approvato e aggiornabile da un amministratore; si associa alle tipologie di alimento (EnergyAssignment).
+ */
+export interface EnergyMethod {
+  id: string;
+  version: string;
+  label: string;
+  protein: number;
+  fat: number;
+  /** kcal/g di carboidrati disponibili (estrattivi inazotati, ENA/NFE). */
+  carbohydrate: number;
+  source: string;
+  approvedBy: string;
+  approvedAt?: string | null;
+  notes?: string | null;
+  active: boolean;
+}
+
+/** raw = crudo; cooked = cotto (bollito, al forno, altro, in scatola); any = qualsiasi stato. */
+export type ProcessingGroup = 'any' | 'raw' | 'cooked';
+
+/** Associazione tipologia di alimento (+ stato di preparazione) → metodo energetico, con avvertenza facoltativa. */
+export interface EnergyAssignment {
+  categoryId: string;
+  processing: ProcessingGroup;
+  methodId: string;
+  /** avvertenza su digeribilità o preparazione (testo, nessun coefficiente numerico). */
+  caution?: string | null;
+}
+
+/** Conversione approvata tra unità non di massa (es. vitamina E mg → UI per una forma chimica precisa). */
+export interface UnitConversion {
+  id: string;
+  nutrientId: string;
+  fromUnit: string;
+  toUnit: string;
+  /** forma chimica; null = vale per qualsiasi forma del nutriente. */
+  form: string | null;
+  formLabel: string;
+  factor: number;
+  source: string;
+}
+
+export interface AppliedEnergyMethod {
+  id: string;
+  version: string;
+  label: string;
+  protein: number;
+  fat: number;
+  carbohydrate: number;
+  caution: string | null;
 }
 
 export interface CustomThreshold {
@@ -199,7 +262,9 @@ export interface Catalog {
   nutrients: Nutrient[];
   limits: NutrientLimit[];
   referenceVersions: ReferenceVersion[];
-  energyFactors: EnergyFactors;
+  energyMethods: EnergyMethod[];
+  energyAssignments: EnergyAssignment[];
+  unitConversions: UnitConversion[];
   customThresholds: CustomThreshold[];
   foods: Food[];
   supplements: Supplement[];

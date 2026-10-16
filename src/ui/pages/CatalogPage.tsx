@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { CATALOG_STATUS_HELP, CATALOG_STATUS_LABEL, foodStatus, supplementStatus, type CatalogStatus, type StatusResult } from '../../engine/catalogStatus';
-import type { DataStatus, Food, NutrientValue, ProcessingState, Supplement } from '../../engine/types';
+import type { DataStatus, EnergyAssignment, EnergyMethod, Food, NutrientValue, ProcessingGroup, ProcessingState, Supplement } from '../../engine/types';
 import { PROCESSING_LABEL } from '../../data/packageCatalog';
-import { estimateMeFromMacros } from '../../engine/energy';
+import { SUPPLEMENT_ENERGY_CATEGORY } from '../../engine/energy';
 import { uid } from '../../data/repository';
 import { useApp, useData } from '../AppContext';
 import { ErrorBox, Modal, NumberInput } from '../components';
@@ -32,6 +32,13 @@ export function StatusPanel({ st, validatedBy, validatedAt }: { st: StatusResult
       {st.reasons.length > 0 && (
         <ul className="small">
           {st.reasons.map((r) => (
+            <li key={r}>{r}</li>
+          ))}
+        </ul>
+      )}
+      {st.info.length > 0 && (
+        <ul className="small muted">
+          {st.info.map((r) => (
             <li key={r}>{r}</li>
           ))}
         </ul>
@@ -215,8 +222,6 @@ function ValidateButton({ kind, id, st }: { kind: 'food' | 'supplement'; id: str
 
 function RefsTab() {
   const { catalog, isAdmin, repo, refresh } = useApp();
-  const [f, setF] = useState({ version: '', protein: null as number | null, fat: null as number | null, carbohydrate: null as number | null, source: '', approvedBy: '' });
-  const [error, setError] = useState<string | null>(null);
   if (!catalog || !repo) return null;
   const label = new Map(catalog.nutrients.map((n) => [n.id, n.label]));
   return (
@@ -257,83 +262,155 @@ function RefsTab() {
           </div>
         ))}
       </div>
-      {isAdmin && <MeFromFactors />}
-      <div className="card form">
-        <h3>Fattori energetici (kcal/g)</h3>
-        <p className="small">
-          In uso: {catalog.energyFactors.protein === null ? <strong>nessuno — quote energetiche non calcolabili (decisione D4)</strong> : `proteine ${catalog.energyFactors.protein}, grassi ${catalog.energyFactors.fat}, carboidrati ${catalog.energyFactors.carbohydrate} — ${catalog.energyFactors.source}`}
-        </p>
-        {isAdmin && (
-          <>
-            <ErrorBox error={error} />
-            <div className="grid3">
-              <NumberInput placeholder="proteine" value={f.protein} onChange={(v) => setF({ ...f, protein: v })} />
-              <NumberInput placeholder="grassi" value={f.fat} onChange={(v) => setF({ ...f, fat: v })} />
-              <NumberInput placeholder="carboidrati" value={f.carbohydrate} onChange={(v) => setF({ ...f, carbohydrate: v })} />
-            </div>
-            <input placeholder="versione (es. NRC-2006-modificati)" value={f.version} onChange={(e) => setF({ ...f, version: e.target.value })} />
-            <input placeholder="fonte" value={f.source} onChange={(e) => setF({ ...f, source: e.target.value })} />
-            <input placeholder="approvato da" value={f.approvedBy} onChange={(e) => setF({ ...f, approvedBy: e.target.value })} />
-            <button
-              className="small"
-              onClick={async () => {
-                if (!f.version || !f.source || !f.approvedBy || !f.protein || !f.fat || !f.carbohydrate) return setError('Compila tutti i campi: valori, versione, fonte e approvazione.');
-                await repo.saveEnergyFactors(f);
-                await refresh();
-              }}
-            >
-              Attiva questi fattori
-            </button>
-          </>
-        )}
-      </div>
+      <EnergyMethodsCard />
+      <ConversionsCard />
+    </div>
+  );
+}
+
+const PROCESSING_GROUP_LABEL: Record<ProcessingGroup, string> = { any: 'qualsiasi stato', raw: 'crudo', cooked: 'cotto' };
+
+function ConversionsCard() {
+  const { catalog } = useApp();
+  if (!catalog) return null;
+  return (
+    <div className="card">
+      <h3>Conversioni di unità approvate</h3>
+      <p className="small muted">Usate dall’importazione. La vitamina E si converte solo se il file indica la forma chimica.</p>
+      <ul className="small">
+        {catalog.unitConversions.map((c) => (
+          <li key={c.id}>{c.formLabel}: 1 {c.fromUnit} = {String(c.factor).replace('.', ',')} {c.toUnit} — {c.source}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/** Metodi energetici (D4): fattori versionati e associazione alle tipologie di alimento. Modifiche solo per gli amministratori. */
+function EnergyMethodsCard() {
+  const { catalog, isAdmin, repo, refresh } = useApp();
+  const empty = { id: '', version: '', label: '', protein: null as number | null, fat: null as number | null, carbohydrate: null as number | null, source: '', approvedBy: '', notes: '' };
+  const [edit, setEdit] = useState<typeof empty | null>(null);
+  const [rows, setRows] = useState<EnergyAssignment[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  if (!catalog || !repo) return null;
+  const methods = catalog.energyMethods;
+  const assignments = rows ?? catalog.energyAssignments;
+  const catLabel = (id: string) => (id === SUPPLEMENT_ENERGY_CATEGORY ? 'Integratori (solo quote energetiche)' : (catalog.categories.find((c) => c.id === id)?.label ?? id));
+  const calculated = catalog.foods.filter((f) => f.kcalMeOrigin === 'calculated').length;
+  const save = async () => {
+    if (!edit) return;
+    const prev = methods.find((m) => m.id === edit.id);
+    if (!edit.id || !edit.version || !edit.label || !edit.source || !edit.approvedBy || !edit.protein || !edit.fat || !edit.carbohydrate) return setError('Compila tutti i campi: fattori, versione, nome, fonte e approvazione.');
+    if (prev && prev.version === edit.version && (prev.protein !== edit.protein || prev.fat !== edit.fat || prev.carbohydrate !== edit.carbohydrate)) return setError('Hai cambiato i fattori: indica una nuova versione (le ricette verranno segnalate da ricalcolare).');
+    try {
+      await repo.saveEnergyMethod({ id: edit.id, version: edit.version, label: edit.label, protein: edit.protein, fat: edit.fat, carbohydrate: edit.carbohydrate, source: edit.source, approvedBy: edit.approvedBy, approvedAt: new Date().toISOString().slice(0, 10), notes: edit.notes || null, active: true });
+      setEdit(null);
+      setError(null);
+      await refresh();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
+  };
+  return (
+    <div className="card form">
+      <h3>Energia metabolizzabile: metodi per tipologia di alimento</h3>
+      <p className="small">
+        L’EM per il cane si calcola da proteine, grassi e carboidrati disponibili con il metodo della tipologia (e dello stato crudo/cotto) dell’alimento,
+        se un amministratore non ha inserito un valore misurato. L’energia «umana» delle tabelle non viene mai usata. Oggi {calculated} alimenti usano l’EM calcolata.
+      </p>
+      <ErrorBox error={error} />
+      {methods.map((m) => (
+        <div key={m.id} className="box small">
+          <strong>{m.label}</strong> · v. {m.version} · proteine {m.protein}, grassi {m.fat}, carboidrati disponibili {m.carbohydrate} kcal/g{!m.active && ' · non attivo'}
+          <div className="muted">{m.source} — approvato da {m.approvedBy}{m.approvedAt ? ` (${m.approvedAt})` : ''}</div>
+          {m.notes && <div className="muted">{m.notes}</div>}
+          {isAdmin && <button className="small" onClick={() => setEdit({ ...m, notes: m.notes ?? '' })}>Modifica</button>}
+        </div>
+      ))}
+      {isAdmin && !edit && <button className="small" onClick={() => setEdit({ ...empty })}>Nuovo metodo</button>}
+      {edit && (
+        <>
+          <input placeholder="codice (es. fediaf_2025_ingredienti_naturali)" value={edit.id} disabled={methods.some((m) => m.id === edit.id && edit.label === m.label)} onChange={(e) => setEdit({ ...edit, id: e.target.value.trim() })} />
+          <input placeholder="nome" value={edit.label} onChange={(e) => setEdit({ ...edit, label: e.target.value })} />
+          <div className="grid3">
+            <NumberInput placeholder="proteine kcal/g" value={edit.protein} onChange={(v) => setEdit({ ...edit, protein: v })} />
+            <NumberInput placeholder="grassi kcal/g" value={edit.fat} onChange={(v) => setEdit({ ...edit, fat: v })} />
+            <NumberInput placeholder="carboidrati kcal/g" value={edit.carbohydrate} onChange={(v) => setEdit({ ...edit, carbohydrate: v })} />
+          </div>
+          <input placeholder="versione" value={edit.version} onChange={(e) => setEdit({ ...edit, version: e.target.value })} />
+          <input placeholder="fonte" value={edit.source} onChange={(e) => setEdit({ ...edit, source: e.target.value })} />
+          <input placeholder="approvato da" value={edit.approvedBy} onChange={(e) => setEdit({ ...edit, approvedBy: e.target.value })} />
+          <input placeholder="note (preparazione, digeribilità…)" value={edit.notes} onChange={(e) => setEdit({ ...edit, notes: e.target.value })} />
+          <div className="actions">
+            <button className="small" onClick={save}>Salva metodo</button>
+            <button className="small ghost" onClick={() => setEdit(null)}>Annulla</button>
+          </div>
+        </>
+      )}
+      <h4>Associazioni</h4>
+      <table className="nut">
+        <thead>
+          <tr><th>Tipologia</th><th>Stato</th><th>Metodo</th><th>Avvertenza (digeribilità, preparazione)</th></tr>
+        </thead>
+        <tbody>
+          {assignments.map((a, i) => (
+            <tr key={`${a.categoryId}:${a.processing}`}>
+              <td>{catLabel(a.categoryId)}</td>
+              <td>{PROCESSING_GROUP_LABEL[a.processing]}</td>
+              <td>
+                {isAdmin ? (
+                  <select value={a.methodId} onChange={(e) => setRows(assignments.map((x, j) => (j === i ? { ...x, methodId: e.target.value } : x)))}>
+                    {methods.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
+                  </select>
+                ) : (methods.find((m) => m.id === a.methodId)?.label ?? a.methodId)}
+              </td>
+              <td className="small">
+                {isAdmin ? <input value={a.caution ?? ''} onChange={(e) => setRows(assignments.map((x, j) => (j === i ? { ...x, caution: e.target.value || null } : x)))} /> : a.caution}
+                {isAdmin && <button className="small ghost" onClick={() => setRows(assignments.filter((_, j) => j !== i))}>Togli</button>}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {isAdmin && <AddAssignment methods={methods} categories={catalog.categories} onAdd={(a) => setRows([...assignments.filter((x) => !(x.categoryId === a.categoryId && x.processing === a.processing)), a])} />}
+      {isAdmin && rows && (
+        <button
+          className="small"
+          onClick={async () => {
+            try {
+              await repo.saveEnergyAssignments(rows);
+              setRows(null);
+              await refresh();
+            } catch (e) {
+              setError(e instanceof Error ? e.message : String(e));
+            }
+          }}
+        >
+          Salva associazioni
+        </button>
+      )}
+    </div>
+  );
+}
+
+function AddAssignment({ methods, categories, onAdd }: { methods: EnergyMethod[]; categories: { id: string; label: string }[]; onAdd: (a: EnergyAssignment) => void }) {
+  const [a, setA] = useState<EnergyAssignment>({ categoryId: categories[0]?.id ?? '', processing: 'any', methodId: methods[0]?.id ?? '', caution: null });
+  return (
+    <div className="grid3">
+      <select value={a.categoryId} onChange={(e) => setA({ ...a, categoryId: e.target.value })}>
+        {categories.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}
+        <option value={SUPPLEMENT_ENERGY_CATEGORY}>Integratori</option>
+      </select>
+      <select value={a.processing} onChange={(e) => setA({ ...a, processing: e.target.value as ProcessingGroup })}>
+        {(Object.keys(PROCESSING_GROUP_LABEL) as ProcessingGroup[]).map((k) => <option key={k} value={k}>{PROCESSING_GROUP_LABEL[k]}</option>)}
+      </select>
+      <button className="small" disabled={!a.categoryId || !a.methodId} onClick={() => onAdd(a)}>Aggiungi associazione</button>
     </div>
   );
 }
 
 // qualità dichiarata del profilo; lo stato «Verificato» si ottiene solo con la convalida
-function MeFromFactors() {
-  const { catalog, repo, refresh } = useApp();
-  const [msg, setMsg] = useState<string | null>(null);
-  if (!catalog || !repo) return null;
-  const f = catalog.energyFactors;
-  const candidates = catalog.foods.filter((x) => x.kcalMePer100g === null && x.dataStatus !== 'test_fixture' && estimateMeFromMacros(x.nutrients, f) !== null);
-  const waiting = catalog.foods.filter((x) => x.kcalMePer100g === null && x.nutrients.protein?.value != null && x.nutrients.fat?.value != null);
-  return (
-    <div className="card">
-      <h3>Energia metabolizzabile per il cane</h3>
-      {f.protein === null ? (
-        <p className="small">
-          {waiting.length} alimenti hanno proteine e grassi ma non l’energia metabolizzabile per il cane (l’energia «umana» delle tabelle non viene usata).
-          Per calcolarla servono i <strong>fattori energetici approvati</strong> qui sotto (decisione D4).
-        </p>
-      ) : (
-        <>
-          <p className="small">
-            Calcolo con i fattori in uso ({f.version}): EM = proteine × {f.protein} + grassi × {f.fat} + carboidrati disponibili × {f.carbohydrate} kcal per 100 g.
-            Il metodo viene scritto nel profilo; ogni alimento ottiene una nuova versione.
-          </p>
-          <button
-            className="small"
-            disabled={!candidates.length}
-            onClick={async () => {
-              for (const x of candidates) {
-                await repo.saveFood({ ...x, kcalMePer100g: estimateMeFromMacros(x.nutrients, f), meMethod: `Calcolata da macronutrienti, fattori ${f.version} (${f.source ?? ''})` });
-              }
-              await refresh();
-              setMsg(`Energia calcolata per ${candidates.length} alimenti.`);
-            }}
-          >
-            Calcola per {candidates.length} alimenti senza energia
-          </button>
-          {waiting.length > candidates.length && <p className="small muted">{waiting.length - candidates.length} non calcolabili: mancano i carboidrati disponibili.</p>}
-        </>
-      )}
-      {msg && <div className="box box-green small">{msg}</div>}
-    </div>
-  );
-}
-
 const STATUS_OPTS: DataStatus[] = ['unverified', 'review_required', 'estimated'];
 
 function NutrientGrid({ values, onChange, perLabel }: { values: Record<string, NutrientValue>; onChange: (v: Record<string, NutrientValue>) => void; perLabel: string }) {
@@ -411,8 +488,16 @@ function FoodEditor({ food, onClose }: { food: Food; onClose: () => void }) {
           </label>
           <label>Taglio / parte<input value={f.speciesCut ?? ''} onChange={(e) => setF({ ...f, speciesCut: e.target.value || null })} /></label>
           <label>Parte edibile<input value={f.ediblePortion ?? ''} onChange={(e) => setF({ ...f, ediblePortion: e.target.value || null })} /></label>
-          <label>kcal EM per 100 g<NumberInput value={f.kcalMePer100g} onChange={(v) => setF({ ...f, kcalMePer100g: v })} /></label>
-          <label>Metodo EM<input value={f.meMethod ?? ''} onChange={(e) => setF({ ...f, meMethod: e.target.value || null })} /></label>
+          <label>
+            kcal EM per 100 g (vuoto = calcolata con il metodo della tipologia)
+            <NumberInput
+              placeholder={f.kcalMeOrigin === 'calculated' ? `calcolata: ${num(f.kcalMePer100g, 1)}` : 'calcolata dal metodo'}
+              value={f.kcalMeOrigin === 'calculated' ? null : f.kcalMePer100g}
+              onChange={(v) => setF({ ...f, kcalMePer100g: v, kcalMeOrigin: v === null ? null : 'declared', meMethod: v === null ? null : f.kcalMeOrigin === 'calculated' ? null : f.meMethod })}
+            />
+          </label>
+          {f.kcalMeOrigin !== 'calculated' && <label>Metodo EM (come è stata ottenuta)<input value={f.meMethod ?? ''} onChange={(e) => setF({ ...f, meMethod: e.target.value || null })} /></label>}
+          {f.kcalMeOrigin === 'calculated' && f.energyMethod && <p className="small muted">{f.meMethod}{f.energyMethod.caution ? ` — ${f.energyMethod.caution}` : ''}</p>}
           <label>Fonte (es. FDC id)<input value={f.source ?? ''} onChange={(e) => setF({ ...f, source: e.target.value || null })} /></label>
           <label>Versione fonte<input value={f.sourceVersion ?? ''} onChange={(e) => setF({ ...f, sourceVersion: e.target.value || null })} /></label>
           <label>

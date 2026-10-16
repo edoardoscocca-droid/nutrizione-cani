@@ -1,0 +1,9 @@
+{
+  "_nota": "Conversioni approvate tra unità non di massa (decisione della nutrizionista del 16/10/2026, D19). La vitamina E si converte SOLO se la forma chimica è indicata: nessun fattore unico per tutte le forme.",
+  "conversions": [
+    { "id": "vitd_ug_iu", "nutrientId": "vitamin_d", "fromUnit": "µg", "toUnit": "IU", "form": null, "formLabel": "vitamina D (colecalciferolo)", "factor": 40, "source": "1 µg = 40 UI — approvato dalla nutrizionista il 16/10/2026" },
+    { "id": "vite_rrr", "nutrientId": "vitamin_e", "fromUnit": "mg", "toUnit": "IU", "form": "d_alpha_tocopherol", "formLabel": "d-alfa-tocoferolo naturale (RRR)", "factor": 1.49, "source": "1,49 UI/mg — approvato dalla nutrizionista il 16/10/2026" },
+    { "id": "vite_allrac_acetate", "nutrientId": "vitamin_e", "fromUnit": "mg", "toUnit": "IU", "form": "all_rac_alpha_tocopheryl_acetate", "formLabel": "tutto-rac/dl-alfa-tocoferil acetato (sintetico)", "factor": 1.0, "source": "1 UI/mg — approvato dalla nutrizionista il 16/10/2026" },
+    { "id": "vite_rrr_acetate", "nutrientId": "vitamin_e", "fromUnit": "mg", "toUnit": "IU", "form": "d_alpha_tocopheryl_acetate", "formLabel": "d-alfa-tocoferil acetato naturale", "factor": 1.36, "source": "circa 1,36 UI/mg — approvato dalla nutrizionista il 16/10/2026" }
+  ]
+}

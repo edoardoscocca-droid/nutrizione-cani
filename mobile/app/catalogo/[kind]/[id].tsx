@@ -41,6 +41,7 @@ export default function ProductScreen() {
       </Row>
       <T small muted>{CATALOG_STATUS_HELP[st.status]}</T>
       {st.reasons.length > 0 && <Box color={st.status === 'to_complete' ? 'grey' : 'orange'}><Bullets small items={st.reasons} /></Box>}
+      {st.info.length > 0 && <Box color="blue"><Bullets small items={st.info} /></Box>}
       {p.validatedAt && <T small muted>Convalidato da {p.validatedBy} il {new Date(p.validatedAt).toLocaleString('it-IT')}</T>}
       {isAdmin && (
         <Card>
@@ -63,6 +64,7 @@ export default function ProductScreen() {
           <>
             <T small>Stato: {PROCESSING_LABEL[(p as Food).processingState]}{(p as Food).preparation ? ` — ${(p as Food).preparation}` : ''}</T>
             <T small>Energia EM: {(p as Food).kcalMePer100g === null ? 'non disponibile' : `${num((p as Food).kcalMePer100g, 1)} kcal/100 g`}{(p as Food).meMethod ? ` (${(p as Food).meMethod})` : ''}</T>
+            {(p as Food).kcalMeOrigin === 'calculated' && (p as Food).energyMethod?.caution ? <T small muted>{(p as Food).energyMethod!.caution}</T> : null}
             <T small>Fonte: {(p as Food).source ?? '—'} {(p as Food).sourceVersion ?? ''}</T>
           </>
         ) : (

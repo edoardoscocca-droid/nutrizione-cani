@@ -1,7 +1,8 @@
 // Archivio locale (modalità prova): tutto resta nel browser di questo dispositivo.
 // Catalogo = riferimenti e nomi del pacchetto (non verificati) + dati di prova fittizi [TEST].
 
-import type { CustomThreshold, EnergyFactors, Food, Supplement } from '../engine/types';
+import type { CustomThreshold, EnergyAssignment, EnergyMethod, Food, Supplement } from '../engine/types';
+import { applyEnergyMethods, resolveFoodEnergy } from '../engine/energy';
 import { DEFAULT_SETTINGS } from '../engine/types';
 import { MAX_RECIPES_PER_DOG, type AppSettings, type Dog, type Recipe, type RecipeVersion, type UserPrice, type WeightEntry } from './model';
 import { BREED_NOTES, CATEGORIES, packageFoods, packageReferences, packageSupplements } from './packageCatalog';
@@ -22,7 +23,8 @@ interface Store {
   foods: Food[];
   supplements: Supplement[];
   thresholds: CustomThreshold[] | null;
-  factors: EnergyFactors | null;
+  energyMethods: EnergyMethod[] | null;
+  energyAssignments: EnergyAssignment[] | null;
   history: { kind: 'food' | 'supplement'; id: string; entry: ProfileHistoryEntry }[];
   imports: ImportLogEntry[];
 }
@@ -31,7 +33,7 @@ export const LOCAL_STORE_KEY = 'nutrizione-cani:prova:v1';
 const KEY = LOCAL_STORE_KEY;
 
 function empty(): Store {
-  return { dogs: [], weights: [], recipes: [], versions: [], prices: [], settings: null, foods: [], supplements: [], thresholds: null, factors: null, history: [], imports: [] };
+  return { dogs: [], weights: [], recipes: [], versions: [], prices: [], settings: null, foods: [], supplements: [], thresholds: null, energyMethods: null, energyAssignments: null, history: [], imports: [] };
 }
 
 export class LocalRepository implements Repository {
@@ -76,7 +78,8 @@ export class LocalRepository implements Repository {
     const cat: FullCatalog = {
       ...refs,
       customThresholds: this.store.thresholds ?? refs.customThresholds,
-      energyFactors: this.store.factors ?? refs.energyFactors,
+      energyMethods: this.store.energyMethods ?? refs.energyMethods,
+      energyAssignments: this.store.energyAssignments ?? refs.energyAssignments,
       foods: [...packageFoods(), ...structuredClone(TEST_FOODS)],
       supplements: [...packageSupplements(), ...structuredClone(TEST_SUPPLEMENTS)],
       breedNotes: BREED_NOTES,
@@ -93,7 +96,7 @@ export class LocalRepository implements Repository {
     }
     cat.foods = override(cat.foods, this.store.foods);
     cat.supplements = override(cat.supplements, this.store.supplements);
-    return cat;
+    return applyEnergyMethods(cat);
   }
 
   async listDogs() {
@@ -184,7 +187,7 @@ export class LocalRepository implements Repository {
     const changed = !prev || this.profileKey(prev) !== this.profileKey(f);
     const next: Food = { ...f, profileVersion: prev ? (changed ? prev.profileVersion + 1 : prev.profileVersion) : 1 };
     if (changed) Object.assign(next, { validatedAt: null, validatedBy: null });
-    if (next.availableToFormulate && foodStatus(next, cat.nutrients).status === 'to_complete') {
+    if (next.availableToFormulate && foodStatus(resolveFoodEnergy(next, cat.energyMethods, cat.energyAssignments), cat.nutrients).status === 'to_complete') {
       throw new Error('Un alimento «da completare» non si può attivare: servono almeno energia, proteine e grassi.');
     }
     if (prev && changed) this.remember('food', prev);
@@ -247,8 +250,17 @@ export class LocalRepository implements Repository {
     this.store.thresholds = cat.customThresholds.map((x) => (x.id === t.id ? t : x));
     this.save();
   }
-  async saveEnergyFactors(f: EnergyFactors & { approvedBy: string }) {
-    this.store.factors = { version: f.version, protein: f.protein, fat: f.fat, carbohydrate: f.carbohydrate, source: `${f.source} — approvato da ${f.approvedBy}` };
+  async saveEnergyMethod(m: EnergyMethod) {
+    const cat = await this.loadCatalog();
+    this.store.energyMethods = [...cat.energyMethods.filter((x) => x.id !== m.id), m];
+    this.save();
+  }
+  async saveEnergyAssignments(a: EnergyAssignment[]) {
+    const cat = await this.loadCatalog();
+    const ids = new Set(cat.energyMethods.map((m) => m.id));
+    const bad = a.find((x) => !ids.has(x.methodId));
+    if (bad) throw new Error(`Metodo energetico inesistente: ${bad.methodId}`);
+    this.store.energyAssignments = a;
     this.save();
   }
 }

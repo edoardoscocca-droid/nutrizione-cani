@@ -54,6 +54,6 @@ npx tsx scripts/import-catalog.ts alimenti dati/mio_file.csv > import.sql   # im
 ## Stato dei dati reali
 
 Dati ricevuti il 16/10/2026: 6 alimenti (USDA) e 3 integratori (Q.Diet Compensa, Omegor Vitality 1000, farina d'ossa),
-importati senza modifiche (`dati/importazioni/2026-10-16/RAPPORTO.md`). Gli alimenti sono ancora «Da completare» perché manca
-l'energia metabolizzabile per il cane (decisione D4); gli integratori sono «Dati parziali». Per attivarli:
+importati senza modifiche (`dati/importazioni/2026-10-16/RAPPORTO.md`). Gli alimenti hanno l'energia metabolizzabile calcolata
+con il metodo FEDIAF 2025 4/9/4 (decisione D4) e sono «Dati parziali», come gli integratori. Per attivarli:
 importare o inserire le composizioni (Catalogo → Importa), controllare i motivi dello stato, convalidare e attivare il prodotto.

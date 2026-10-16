@@ -123,6 +123,7 @@ export function NutrientTable({ audit, onlyIssues = false }: { audit: AuditResul
                     <td>
                       {r.label}
                       {!r.complete && r.missingFrom.length > 0 && <span className="muted small"> · dati mancanti</span>}
+                      {r.checks.some((c) => c.uncertain) && <span className="muted small"> · sulla composizione dichiarata</span>}
                     </td>
                     <td className="r">{amountText(r)}</td>
                     <td className="r">{r.per1000kcal === null || r.unit === 'ratio' || r.unit === '%' ? '' : smart(r.per1000kcal)}</td>
@@ -199,6 +200,9 @@ export function NutrientDetail({ row, kcal, onClose }: { row: CheckRow; kcal: nu
       ))}
       {row.missingFrom.length > 0 && (
         <div className="box box-grey small">Dato mancante (non considerato zero) in: {row.missingFrom.join(', ')}</div>
+      )}
+      {(row.undeclaredFrom ?? []).length > 0 && (
+        <div className="box box-grey small">Non dichiarato in etichetta (sconosciuto, non zero) da: {row.undeclaredFrom.join(', ')}. Il totale comprende solo i valori dichiarati.</div>
       )}
       {row.contributions.length > 0 && (
         <>

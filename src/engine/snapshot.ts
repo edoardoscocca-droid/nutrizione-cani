@@ -3,6 +3,7 @@
 // o degli standard non cambia i valori delle ricette esistenti, ma le segnala come da aggiornare.
 
 import type { DietMoisture } from './audit';
+import { methodKey } from './energy';
 import type { DogFormulationProfile, EnergyFactors, EngineSettings, Food, ItemConstraint, Nutrient, NutrientLimit, RecipeItem, Supplement } from './types';
 
 export interface RecipeSnapshot {
@@ -15,13 +16,14 @@ export interface RecipeSnapshot {
   nutrients: Nutrient[];
   limits: NutrientLimit[];
   referenceVersionIds: string[];
-  factors: EnergyFactors;
+  /** solo nelle istantanee salvate prima dei metodi energetici per tipologia (oggi il metodo è dentro ogni alimento). */
+  factors?: EnergyFactors;
   dietMoisture: DietMoisture;
   settings: EngineSettings;
 }
 
 export interface Dependency {
-  kind: 'food' | 'supplement' | 'reference' | 'dog' | 'energy_factors' | 'limits';
+  kind: 'food' | 'supplement' | 'reference' | 'dog' | 'energy_method' | 'limits';
   id: string;
   name: string;
   frozen: string;
@@ -32,7 +34,6 @@ export interface CurrentState {
   foods: Food[];
   supplements: Supplement[];
   limits: NutrientLimit[];
-  factors: EnergyFactors;
   dog: DogFormulationProfile;
 }
 
@@ -51,11 +52,17 @@ export function staleDependencies(snap: RecipeSnapshot, cur: CurrentState): Depe
     const now = cur.foods.find((x) => x.id === f.id);
     if (!now) out.push({ kind: 'food', id: f.id, name: f.name, frozen: `v${f.profileVersion}`, current: 'rimosso dal catalogo' });
     else if (now.profileVersion !== f.profileVersion) out.push({ kind: 'food', id: f.id, name: f.name, frozen: `v${f.profileVersion}`, current: `v${now.profileVersion}` });
+    else if (methodKey(now.energyMethod) !== methodKey(f.energyMethod) || now.kcalMePer100g !== f.kcalMePer100g) {
+      out.push({ kind: 'energy_method', id: f.id, name: `${f.name}: metodo energetico`, frozen: methodKey(f.energyMethod), current: methodKey(now.energyMethod) });
+    }
   }
   for (const s of Object.values(snap.supplements)) {
     const now = cur.supplements.find((x) => x.id === s.id);
     if (!now) out.push({ kind: 'supplement', id: s.id, name: s.name, frozen: `v${s.profileVersion}`, current: 'rimosso dal catalogo' });
     else if (now.profileVersion !== s.profileVersion) out.push({ kind: 'supplement', id: s.id, name: s.name, frozen: `v${s.profileVersion}`, current: `v${now.profileVersion}` });
+    else if (s.energyMethod !== undefined && methodKey(now.energyMethod) !== methodKey(s.energyMethod)) {
+      out.push({ kind: 'energy_method', id: s.id, name: `${s.name}: metodo energetico`, frozen: methodKey(s.energyMethod), current: methodKey(now.energyMethod) });
+    }
   }
   const frozenRefs = new Set(snap.limits.map((l) => l.referenceVersionId));
   const curRefs = new Set(cur.limits.map((l) => l.referenceVersionId));
@@ -67,7 +74,10 @@ export function staleDependencies(snap: RecipeSnapshot, cur: CurrentState): Depe
   if (limitsSignature(snap.limits) !== limitsSignature(cur.limits) && !out.some((d) => d.kind === 'reference')) {
     out.push({ kind: 'limits', id: 'limits', name: 'Valori di riferimento o soglie', frozen: 'istantanea', current: 'modificati' });
   }
-  if (snap.factors.version !== cur.factors.version) out.push({ kind: 'energy_factors', id: 'factors', name: 'Fattori energetici', frozen: snap.factors.version, current: cur.factors.version });
+  // istantanee precedenti ai metodi per tipologia: fattori unici, oggi sostituiti
+  if (snap.factors && !Object.values(snap.foods).some((f) => f.energyMethod)) {
+    out.push({ kind: 'energy_method', id: 'factors', name: 'Metodo energetico', frozen: snap.factors.version, current: 'metodi per tipologia di alimento' });
+  }
   if (snap.dog.formulationRevision !== cur.dog.formulationRevision) {
     out.push({ kind: 'dog', id: snap.dog.id, name: `Profilo di ${snap.dog.name}`, frozen: `rev. ${snap.dog.formulationRevision}`, current: `rev. ${cur.dog.formulationRevision}` });
   }

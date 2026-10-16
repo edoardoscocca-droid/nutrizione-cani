@@ -9,6 +9,7 @@ import type { Color, RecipeItem } from '../../src/engine/types';
 import { PROCESSING_LABEL } from '../../src/data/packageCatalog';
 import { COLOR_LABEL, dose, euro, GROUP_LABEL, num, smart } from '../../src/ui/format';
 import { Badge, Box, Bullets, Card, Check, Disclaimer, Divider, Dot, H, Row, Sheet, T, useTheme } from './ui';
+import { methodsSummary } from '../../src/engine/energy';
 
 const STATUS_COLOR: Record<RecipeStatus, Color> = {
   VERIFIED_AVAILABLE_CHECKS: 'green',
@@ -111,6 +112,11 @@ export function NutrientList({ audit }: { audit: AuditResult }) {
                     dati mancanti
                   </T>
                 )}
+                {r.checks.some((c) => c.uncertain) && (
+                  <T small muted style={{ marginLeft: 20 }}>
+                    sulla composizione dichiarata
+                  </T>
+                )}
               </Pressable>
             ))}
         </View>
@@ -188,6 +194,11 @@ function NutrientDetail({ row, kcal, onClose }: { row: CheckRow; kcal: number | 
       {row.missingFrom.length > 0 && (
         <Box color="grey">
           <T small>Dato mancante (non considerato zero) in: {row.missingFrom.join(', ')}</T>
+        </Box>
+      )}
+      {(row.undeclaredFrom ?? []).length > 0 && (
+        <Box color="grey">
+          <T small>Non dichiarato in etichetta (sconosciuto, non zero) da: {row.undeclaredFrom.join(', ')}. Il totale comprende solo i valori dichiarati.</T>
         </Box>
       )}
       {row.contributions.length > 0 && (
@@ -303,7 +314,7 @@ export function ResultBlock({
       {constraints && <ConstraintsCard constraints={constraints} />}
       {snapshot.referenceVersionIds && (
         <T small muted>
-          Fonti: {snapshot.referenceVersionIds.join(', ')} · fattori energetici: {snapshot.factors?.version} · motore {snapshot.engineVersion ?? ''}
+          Fonti: {snapshot.referenceVersionIds.join(', ')} · metodo energetico: {methodsSummary(snapshot.foods, snapshot.factors?.version)} · motore {snapshot.engineVersion ?? ''}
         </T>
       )}
       <Disclaimer compact />

@@ -294,7 +294,7 @@ export function RecipeWizard() {
               <ResultView
                 audit={result.r.audit}
                 items={result.r.items}
-                snapshot={{ foods: Object.fromEntries(result.input.foods.map((f) => [f.food.id, f.food])), supplements: Object.fromEntries(result.input.supplements.map((s) => [s.supplement.id, s.supplement])), referenceVersionIds: [...new Set(result.input.limits.map((l) => l.referenceVersionId))], factors: result.input.factors }}
+                snapshot={{ foods: Object.fromEntries(result.input.foods.map((f) => [f.food.id, f.food])), supplements: Object.fromEntries(result.input.supplements.map((s) => [s.supplement.id, s.supplement])), referenceVersionIds: [...new Set(result.input.limits.map((l) => l.referenceVersionId))] }}
                 cost={costOf({ chosenItems: result.r.items, snapshot: { foods: Object.fromEntries(result.input.foods.map((f) => [f.food.id, f.food])), supplements: Object.fromEntries(result.input.supplements.map((s) => [s.supplement.id, s.supplement])) } as never }, prices)}
                 constraints={result.r.constraints}
                 notes={result.r.notes}

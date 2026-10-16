@@ -67,7 +67,6 @@ export function buildInput(dog: Dog, sel: Selection, cat: CatalogState, settings
     supplements,
     nutrients: cat.nutrients,
     limits: activeLimits(cat),
-    factors: cat.energyFactors,
     dietMoisture: sel.dietMoisture,
     settings,
     unitPrices: pricesByItem(cat, prices),
@@ -90,7 +89,6 @@ export function snapshotOf(input: FormulationInput, engineVersion: string, now =
     nutrients: input.nutrients,
     limits: input.limits,
     referenceVersionIds: [...new Set(input.limits.map((l) => l.referenceVersionId))],
-    factors: input.factors,
     dietMoisture: input.dietMoisture,
     settings: input.settings,
   });
@@ -139,7 +137,7 @@ export function auditOnSnapshot(snapshot: RecipeSnapshot, items: RecipeItem[], e
     supplements: snapshot.supplements,
     nutrients: snapshot.nutrients,
     limits: snapshot.limits,
-    factors: snapshot.factors,
+    legacyFactors: snapshot.factors ?? null,
     dog: snapshot.dog,
     dietMoisture: snapshot.dietMoisture,
     settings: snapshot.settings,
@@ -176,7 +174,6 @@ export function staleFor(version: RecipeVersion, dog: Dog, cat: CatalogState): D
     foods: cat.foods,
     supplements: cat.supplements,
     limits: activeLimits(cat),
-    factors: cat.energyFactors,
     dog: toFormulationProfile(dog, cat.breedNotes),
   });
 }

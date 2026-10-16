@@ -1,14 +1,15 @@
 # Cosa serve per le prime ricette reali
 
-Aggiornato al 18/10/2026, dopo l'importazione dei 6 alimenti e dei 3 integratori.
+Aggiornato al 16/10/2026, dopo le decisioni della nutrizionista su energia (D4), vitamine (D19) e integratori (D20).
 
-## 1. Decisioni con la nutrizionista (bloccanti)
-1. **Energia per il cane (D4)** — approvare i fattori kcal/g per proteine, grassi e carboidrati disponibili
-   (proposta comune: Atwater modificati NRC 2006, 3,5 / 8,5 / 3,5). Senza questo nessun alimento entra nel calcolo.
-   Poi: Catalogo → Riferimenti → «Fattori energetici» (con nome di chi approva) → «Calcola».
-2. **Vitamina D ed E (D19)** — approvare i fattori di conversione in UI per forma chimica.
-3. **Etichette incomplete (D20)** — decidere se e quando i nutrienti non dichiarati di un integratore si possono considerare assenti.
-4. Confermare le altre scelte tecniche (D1–D18 in `ANALISI.md`), soprattutto i criteri di «Verificato» (D18).
+## 1. Decisioni con la nutrizionista
+Già decise e applicate: energia FEDIAF 2025 4/9/4 per tipologia (D4), conversioni vitamina D ed E per forma chimica (D19),
+integratori sulla composizione dichiarata (D20). I 6 alimenti ora hanno l'energia calcolata e sono «Dati parziali».
+1. **Criteri di «Verificato» (D18)** — la nutrizionista deve confermare il testo in `docs/CATALOGO.md` («Criteri di Verificato»).
+2. **Energia per dose degli integratori (D21)** — kcal per dose dall'etichetta (o 0 se documentato): senza, con Q-Diet in ricetta
+   alcuni minimi (proteine, metionina, triptofano, B5) restano «non dimostrati».
+3. Facoltativo: coefficienti di digeribilità per amido o verdure crude (oggi solo un'avvertenza).
+4. Confermare le altre scelte tecniche (D1–D17 in `ANALISI.md`).
 
 ## 2. Dati da procurare (foto o schede)
 - **Q.Diet Compensa**: foto della tabella sulla confezione, per confermare che vitamine e minerali sono «per kg»; kcal se indicate; lotto.

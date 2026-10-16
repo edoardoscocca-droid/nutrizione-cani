@@ -130,7 +130,8 @@
      "value": "0.17",
      "unit": "mg",
      "status": "REPORTED_USDA_PROXY",
-     "source": "USDA SR Legacy FDC 173111"
+     "source": "USDA SR Legacy FDC 173111",
+     "form": "d_alpha_tocopherol"
     },
     "vitamin_b1": {
      "value": "0.041",
@@ -420,7 +421,8 @@
      "value": "0.17",
      "unit": "mg",
      "status": "REPORTED_USDA_PROXY",
-     "source": "USDA SR Legacy FDC 171796"
+     "source": "USDA SR Legacy FDC 171796",
+     "form": "d_alpha_tocopherol"
     },
     "vitamin_b1": {
      "value": "0.042",
@@ -710,7 +712,8 @@
      "value": "0.17",
      "unit": "mg",
      "status": "REPORTED_USDA_PROXY",
-     "source": "USDA SR Legacy FDC 168652"
+     "source": "USDA SR Legacy FDC 168652",
+     "form": "d_alpha_tocopherol"
     },
     "vitamin_b1": {
      "value": "0.044",
@@ -994,7 +997,8 @@
      "value": "0.42",
      "unit": "mg",
      "status": "REPORTED_USDA_PROXY",
-     "source": "USDA SR Legacy FDC 173904"
+     "source": "USDA SR Legacy FDC 173904",
+     "form": "d_alpha_tocopherol"
     },
     "vitamin_b1": {
      "value": "0.46",
@@ -1266,7 +1270,8 @@
      "value": "1.03",
      "unit": "mg",
      "status": "REPORTED_USDA_PROXY",
-     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore",
+     "form": "d_alpha_tocopherol"
     },
     "vitamin_b1": {
      "value": "0.066",
@@ -1532,7 +1537,8 @@
      "value": "1.06",
      "unit": "mg",
      "status": "REPORTED_USDA_PROXY",
-     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",
+     "form": "d_alpha_tocopherol"
     },
     "vitamin_b1": {
      "value": "0.031",

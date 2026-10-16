@@ -11,9 +11,10 @@ Nessuna chiave va mai scritta in chat o nel codice.
    2. `supabase/migrations/20261016000002_rules_and_security.sql`
    3. `supabase/migrations/20261017000003_catalog_status_import.sql` (stati del catalogo, convalida, importazioni)
    4. `supabase/migrations/20261018000004_compounds_capsules.sql`
-   5. `supabase/seed.sql` (dizionario, FEDIAF 2025, soglie C, categorie, nomi di alimenti e integratori, nota Irish Wolfhound)
-   6. i dati reali ricevuti: `supabase/data/2026-10-16_alimenti.sql` e `supabase/data/2026-10-16_integratori.sql`
-   7. facoltativo, solo per provare: `supabase/seed_test_fixtures.sql` (dati **[TEST] fittizi**; si tolgono con le due righe in cima al file)
+   5. `supabase/migrations/20261019000005_energy_methods_declared.sql` (metodi energetici, conversioni vitamine, integratori)
+   6. `supabase/seed.sql` (dizionario, FEDIAF 2025, soglie C, categorie, nomi di alimenti e integratori, nota Irish Wolfhound)
+   7. i dati reali ricevuti: `supabase/data/2026-10-16_alimenti.sql` e `supabase/data/2026-10-16_integratori.sql`
+   8. facoltativo, solo per provare: `supabase/seed_test_fixtures.sql` (dati **[TEST] fittizi**; si tolgono con le due righe in cima al file)
 
    In alternativa, con la Supabase CLI: `supabase link` e `supabase db push`, poi il seed.
 
@@ -32,7 +33,7 @@ insert into public.app_admins (user_id, note)
 select id, 'gestione catalogo' from auth.users where email = 'indirizzo@esempio.it';
 ```
 
-Gli amministratori modificano alimenti, integratori, soglie e fattori energetici dalla pagina **Catalogo** dell'app
+Gli amministratori modificano alimenti, integratori, soglie e metodi energetici dalla pagina **Catalogo** dell'app
 oppure direttamente dalle tabelle di Supabase. Ogni modifica a una composizione crea una nuova versione del profilo
 (`food_profile_history`, `supplement_profile_history`) e una riga in `audit_log`; le ricette collegate vengono segnalate
 «da ricalcolare» ma non cambiano finché l'utente non conferma.

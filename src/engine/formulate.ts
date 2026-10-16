@@ -10,7 +10,6 @@ import { applicableLimits, auditRecipe, type AuditResult, type DietMoisture } fr
 import { solve, type Model, type Row, type SolveResult, type Term, type VarDef, loadSolver } from './lp';
 import type {
   DogFormulationProfile,
-  EnergyFactors,
   EngineSettings,
   Food,
   ItemConstraint,
@@ -28,7 +27,6 @@ export interface FormulationInput {
   supplements: { supplement: Supplement; constraint?: ItemConstraint }[];
   nutrients: Nutrient[];
   limits: NutrientLimit[];
-  factors: EnergyFactors;
   dietMoisture: DietMoisture;
   settings: EngineSettings;
   /** €/unità di quantità (€/g o €/dose) per id, se l'utente ha prezzi. Solo per l'ultimo criterio. */
@@ -91,6 +89,7 @@ interface ModelItem {
   step: number;
   integerUnits: boolean;
   kcal: number; // per passo (noto; per gli integratori senza kcal è 0 nel modello e la verifica lo segnala)
+  macro: { protein: number; fat: number; carbohydrate: number } | null;
   value: (n: string) => number | null; // per passo
   lb: number; // in passi
   ub: number | null;
@@ -165,6 +164,7 @@ function buildItems(input: FormulationInput, foods: FormulationInput['foods'], s
       step,
       integerUnits: true,
       kcal: ((food.kcalMePer100g as number) / 100) * step,
+      macro: food.energyMethod ?? null,
       value: (n) => {
         const x = rawValue(food.nutrients, n);
         return x === null ? null : (x / 100) * step;
@@ -187,6 +187,7 @@ function buildItems(input: FormulationInput, foods: FormulationInput['foods'], s
       step,
       integerUnits: true,
       kcal: (s.kcalPerUnit ?? 0) * step,
+      macro: s.energyMethod ?? null,
       value: (n) => {
         const x = rawValue(s.nutrients, n);
         return x === null ? null : x * step;
@@ -235,13 +236,14 @@ function buildRows(
   const rows: BuiltRow[] = [];
   const extraVars: VarDef[] = [];
   let devCount = 0;
-  const complete = (n: string) => items.every((it) => it.value(n) !== null);
+  // gli integratori valgono per la composizione dichiarata (non dichiarato = sconosciuto, nel modello conta 0:
+  // per i minimi e per i massimi i contributi noti sono un limite inferiore del vero totale)
+  const complete = (n: string) => items.every((it) => it.kind === 'supplement' || it.value(n) !== null);
   const coef = (n: string) => items.map((it) => ({ v: it.v, c: it.value(n) ?? 0 }));
   const minDaily = (n: string) => {
     const l = limits.find((x) => x.metric === n && x.limitClass === 'OFFICIAL_MIN' && x.basis === 'per_1000_kcal_me');
     return l?.lower ? (l.lower * K) / 1000 : 1;
   };
-  const factors: EnergyFactors = input.factors;
 
   const kindOf = (l: NutrientLimit, isUpper: boolean): ConstraintKind => {
     if (l.limitClass === 'OFFICIAL_MIN') return l.basis === 'ratio' ? 'official_ratio' : 'official_min';
@@ -267,6 +269,8 @@ function buildRows(
         dataComplete = complete(l.metric);
         terms = coef(l.metric);
         if (l.basis === 'per_1000_kcal_me') {
+          // energia dichiarata (composizione dichiarata degli integratori): se un integratore non dichiara le kcal,
+          // la verifica finale controlla anche l'energia massima possibile e segnala i minimi non dimostrati
           for (const it of items) terms.push({ v: it.v, c: (-bound / 1000) * it.kcal });
           scale = Math.max((bound * K) / 1000, 1e-9);
           unitLabel = `${unit.get(l.metric)}/1000 kcal`;
@@ -284,13 +288,18 @@ function buildRows(
         unitLabel = '';
       } else if (l.basis === 'energy_pct') {
         const part = MACRO_PARTS[l.metric];
-        const f = part === 'protein' ? factors.protein : part === 'fat' ? factors.fat : factors.carbohydrate;
-        if (!part || f === null) {
-          notes.push(`${label.get(l.metric) ?? l.metric}: preferenza non applicata, mancano i fattori energetici approvati (D4).`);
+        if (!part) continue;
+        const key = part === 'carbohydrate_available' ? 'carbohydrate' : part;
+        const noMethod = items.filter((it) => (it.value(part) ?? 0) > 0 && !it.macro);
+        if (noMethod.length) {
+          notes.push(`${label.get(l.metric) ?? l.metric}: preferenza non applicata, nessun metodo energetico per ${noMethod.map((i) => i.name).join(', ')}.`);
           continue;
         }
         dataComplete = complete(part);
-        terms = [...coef(part).map((t) => ({ v: t.v, c: t.c * f })), ...items.map((it) => ({ v: it.v, c: (-bound / 100) * it.kcal }))];
+        terms = [
+          ...items.map((it) => ({ v: it.v, c: (it.value(part) ?? 0) * (it.macro?.[key] ?? 0) })),
+          ...items.map((it) => ({ v: it.v, c: (-bound / 100) * it.kcal })),
+        ];
         scale = K;
         unitLabel = '% kcal';
       } else {
@@ -636,7 +645,6 @@ export async function formulate(input: FormulationInput): Promise<FormulationRes
     supplements: suppById,
     nutrients: input.nutrients,
     limits: input.limits,
-    factors: input.factors,
     dog: input.dog,
     dietMoisture: input.dietMoisture,
     settings: input.settings,

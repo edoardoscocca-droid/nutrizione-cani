@@ -60,7 +60,7 @@ function readJson(req: IncomingMessage): Promise<unknown> {
 
 function validInput(x: unknown): x is FormulationInput {
   const i = x as FormulationInput;
-  return !!i && typeof i === 'object' && !!i.dog && Array.isArray(i.foods) && Array.isArray(i.supplements) && Array.isArray(i.nutrients) && Array.isArray(i.limits) && !!i.settings && !!i.factors;
+  return !!i && typeof i === 'object' && !!i.dog && Array.isArray(i.foods) && Array.isArray(i.supplements) && Array.isArray(i.nutrients) && Array.isArray(i.limits) && !!i.settings;
 }
 
 // il risolutore è sincrono: le richieste si eseguono una alla volta, in ordine

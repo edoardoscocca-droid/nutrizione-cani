@@ -6,6 +6,7 @@ import type { RecipeItem } from '../engine/types';
 import { PROCESSING_LABEL } from '../data/packageCatalog';
 import { CostBox, Disclaimer, NutrientTable, StatusBox, Warnings } from './components';
 import { dose, num } from './format';
+import { methodsSummary } from '../engine/energy';
 
 export function ItemsTable({ items, snapshot, suggested }: { items: RecipeItem[]; snapshot: Pick<RecipeSnapshot, 'foods' | 'supplements'>; suggested?: RecipeItem[] }) {
   return (
@@ -101,7 +102,7 @@ export function ResultView({
       )}
       {snapshot.referenceVersionIds && (
         <p className="small muted">
-          Fonti: {snapshot.referenceVersionIds.join(', ')} · fattori energetici: {snapshot.factors?.version} · {meta}
+          Fonti: {snapshot.referenceVersionIds.join(', ')} · metodo energetico: {methodsSummary(snapshot.foods, snapshot.factors?.version)} · {meta}
         </p>
       )}
       <Disclaimer compact />

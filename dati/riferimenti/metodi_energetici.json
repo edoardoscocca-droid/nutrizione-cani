@@ -1,0 +1,27 @@
+{
+  "_nota": "Metodi per stimare l'energia metabolizzabile (EM) degli alimenti dai macronutrienti, e loro associazione alle tipologie di alimento. Decisione della nutrizionista del 16/10/2026 (D4). Modificabili solo dagli amministratori (Catalogo → Riferimenti); ogni modifica cambia la versione e segnala le ricette da ricalcolare.",
+  "methods": [
+    {
+      "id": "fediaf_2025_ingredienti_naturali",
+      "version": "2025.1",
+      "label": "FEDIAF 2025 · 4/9/4 (ingredienti naturali)",
+      "protein": 4,
+      "fat": 9,
+      "carbohydrate": 4,
+      "source": "FEDIAF Nutritional Guidelines 2025, formula per il cane: 4 kcal/g proteine, 9 kcal/g grassi, 4 kcal/g carboidrati disponibili (ENA/NFE)",
+      "approvedBy": "Nutrizionista — decisione D4 del 16/10/2026",
+      "approvedAt": "2026-10-16",
+      "notes": "Riferimento iniziale per gli ingredienti naturali della dieta casalinga. Si applica alla composizione dell'alimento nello stato in cui si pesa (crudo o cotto). Carboidrati = carboidrati disponibili; con i dati USDA sono «per differenza meno fibra alimentare totale», un'approssimazione dell'ENA (che sottrae la fibra grezza). Non applicare i fattori 3,5/8,5/3,5 in modo indiscriminato.",
+      "active": true
+    }
+  ],
+  "assignments": [
+    { "categoryId": "animal", "processing": "any", "methodId": "fediaf_2025_ingredienti_naturali", "caution": null },
+    { "categoryId": "starch", "processing": "cooked", "methodId": "fediaf_2025_ingredienti_naturali", "caution": null },
+    { "categoryId": "starch", "processing": "raw", "methodId": "fediaf_2025_ingredienti_naturali", "caution": "Amido non cotto: nel cane è meno digeribile; l'energia calcolata può essere sovrastimata." },
+    { "categoryId": "vegetable", "processing": "cooked", "methodId": "fediaf_2025_ingredienti_naturali", "caution": null },
+    { "categoryId": "vegetable", "processing": "raw", "methodId": "fediaf_2025_ingredienti_naturali", "caution": "Verdura cruda: fibra e pareti cellulari ne riducono la digeribilità; l'energia calcolata può essere sovrastimata." },
+    { "categoryId": "fat_oil", "processing": "any", "methodId": "fediaf_2025_ingredienti_naturali", "caution": null },
+    { "categoryId": "supplement", "processing": "any", "methodId": "fediaf_2025_ingredienti_naturali", "caution": "Integratori: i fattori servono solo per le quote di energia dei macronutrienti dichiarati; l'energia per dose è quella dell'etichetta." }
+  ]
+}
