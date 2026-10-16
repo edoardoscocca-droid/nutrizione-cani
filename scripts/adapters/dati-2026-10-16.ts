@@ -70,6 +70,27 @@ const BASIS_CONFIRMED: Record<string, { note: string; sources: string }> = {
     sources: 'Catalogo Q.Diet 2024, Compensa polvere cod. Q40543 (250 g), «Additivi per kg»: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf · Scheda prodotto: https://www.pacopetshop.it/it/qdiet/4805-qdiet-compensa-per-cani-e-gatti.htm',
   },
 };
+// Dati del catalogo Q.Diet 2024 (Compensa polvere standard) approvati dalla nutrizionista il 17/10/2026.
+const CATALOG_2024 = 'Catalogo Q.Diet 2024, Compensa polvere cod. Q40543 (250 g): https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf';
+const QDIET_APPROVED = {
+  kcalPerG: 0.96, // 96 kcal/100 g
+  nutrients: {
+    potassium: { value: 0.075, unit: 'g', status: 'ANALYTICAL_DECLARED', source: CATALOG_2024, per_dose: '1', method: 'Componente analitico: potassio 7,5 % → 0,075 g (75 mg) per 1 g' },
+    // dato originale: cloruro di colina 90.000 mg/kg = 90 mg/g; si registra SOLO la colina risultante (× 0,746), niente doppio conteggio
+    choline: { value: 90, unit: 'mg', form: 'choline_chloride', status: 'MANUFACTURER_DECLARED', source: CATALOG_2024, per_dose: '1', declared_total_or_added: 'added', method: 'Additivo: colina cloruro 90.000 mg/kg = 90 mg/g di cloruro di colina (assunto puro)' },
+  },
+  doseGuide: {
+    points: [
+      { weight_kg: 5, min: 1, max: 1.5 },
+      { weight_kg: 10, min: 1.5, max: 3 },
+      { weight_kg: 20, min: 3, max: 6 },
+      { weight_kg: 30, min: 4.5, max: 9 },
+      { weight_kg: 40, min: 6, max: 12 },
+    ],
+    source: `${CATALOG_2024} — «Modalità di impiego» (intervalli consigliati dal produttore, non limiti tossicologici)`,
+    note: 'Un misurino raso = 3 g.',
+  },
+};
 const confirmBasis = (id: string, status: string) => (status === 'PER_KG_ASSUMED_CONFIRM' && BASIS_CONFIRMED[id] ? 'MANUFACTURER_DECLARED' : status);
 const VARIANT: Record<string, string> = { qdiet: 'Compensa standard in polvere (non Crescita, non Ultra)', omegor_vitality: 'Vitality 1000', bone_meal: 'marca/prodotto non confermato' };
 const skippedDerived: string[] = [];
@@ -110,15 +131,17 @@ const supplements = suppCatalog.map((s) => {
       method: `${e.component}: ${e.declared_amount} ${e.declared_unit} per kg${perKg && BASIS_CONFIRMED[s.id] ? ` — ${BASIS_CONFIRMED[s.id].note}` : ` (${e.declared_basis})`}`,
     };
   }
+  if (s.id === 'qdiet') Object.assign(nutrients, QDIET_APPROVED.nutrients);
   return {
     id: s.id,
     name_it: s.name_it,
     variant: VARIANT[s.id] ?? null,
+    ...(s.id === 'qdiet' ? { kcal_per_unit: QDIET_APPROVED.kcalPerG, dose_guide: QDIET_APPROVED.doseGuide } : {}),
     class: s.class,
     dose_unit: s.dose_unit,
     mass_per_unit_g: s.dose_unit === 'gram' ? s.dose_mass_g || null : null, // capsula: peso non noto, non si assume 1 g
     label_source: s.source_label_url,
-    notes: `${s.notes} · Stato nel file: ${s.nutrient_profile_status}, uso in ottimizzazione: ${s.usable_for_optimization}`,
+    notes: `${s.notes} · Stato nel file: ${s.nutrient_profile_status}, uso in ottimizzazione: ${s.usable_for_optimization}${s.id === 'qdiet' ? ` · Energia metabolizzabile 96 kcal/100 g (0,96 kcal/g): ${CATALOG_2024}` : ''}`,
     nutrients,
   };
 });
@@ -170,7 +193,7 @@ report.push('- Voci di fonte conservate solo come informazione (nessun limite, n
 report.push('- Cistina e tirosina: importate e usate per Metionina + cistina e Fenilalanina + tirosina (formula dell’allegato F).');
 report.push('- Attivazione: i 6 alimenti sono **utilizzabili nella formulazione** come chiede il file (decisione della nutrizionista: dati parziali o stimati non impediscono l’uso; fonte, approssimazioni e nutrienti mancanti sono indicati). Gli integratori restano da attivare dall’amministratore: nel file Q-Diet e Omegor sono «condizionali», la farina d’ossa «no».');
 report.push('- **Q.Diet Compensa standard — base degli additivi confermata (17/10/2026)**: tutti gli additivi sono dichiarati per 1 kg di prodotto (catalogo Q.Diet 2024, Compensa polvere cod. Q40543 250 g, «Additivi per kg»; scheda prodotto pacopetshop). Valore per 1 g = valore per kg ÷ 1000; i valori diventano «da etichetta». Non vale per Compensa Crescita né Ultra. I nutrienti non dichiarati restano sconosciuti.');
-report.push('- **Nel catalogo Q.Diet 2024 (Compensa polvere) ci sono dati non presenti nei file ricevuti, NON importati in attesa di conferma**: energia metabolizzabile 96 kcal/100 g; potassio 7,5 % (nei file «non dichiarato»); colina cloruro 90.000 mg/kg (sale di colina: serve un fattore approvato per la colina; non compare nella scheda prodotto); dosi d’uso per peso (es. 30 kg: 4,5–9 g/die; misurino raso = 3 g).');
+report.push('- **Q.Diet Compensa standard — dati del catalogo Q.Diet 2024 approvati dalla nutrizionista (17/10/2026)**: energia metabolizzabile 96 kcal/100 g → 0,96 kcal/g (energia per dose dichiarata); potassio 7,5 % → 75 mg/g; colina cloruro 90.000 mg/kg → 90 mg/g di cloruro di colina × 0,746 (fattore stechiometrico, cloruro di colina assunto puro) = 67,14 mg/g di colina — si registra solo la colina, con il dato originale e la conversione (nessun doppio conteggio); tabella d’impiego per peso (5 kg 1–1,5 · 10 kg 1,5–3 · 20 kg 3–6 · 30 kg 4,5–9 · 40 kg 6–12 g/die; misurino raso = 3 g): intervalli consigliati dal produttore, non limiti tossicologici. Nel calcolo il minimo è una preferenza (arancione sotto), il massimo non viene mai superato in automatico (oltre serve una valutazione veterinaria); tra due righe l’intervallo è interpolato linearmente, fuori tabella (sotto 5 o sopra 40 kg) non si applica.');
 report.push('', '## Scelte di conversione (nessun valore modificato)', '');
 report.push('- ID: quelli dei file. Gli alimenti sono nuovi prodotti (le voci generiche del pacchetto iniziale, es. «Avena», «Carote», «Macinato di manzo», restano «Da completare»). Gli integratori aggiornano `qdiet`, `omegor_vitality`, `bone_meal`.');
 report.push('- Categorie: cereal/oats → Cereali; vegetable/root e vegetable/pumpkin → Verdure.');

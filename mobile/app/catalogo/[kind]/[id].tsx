@@ -70,6 +70,17 @@ export default function ProductScreen() {
         ) : (
           <>
             <T small>Dose: {(p as Supplement).doseUnit}{(p as Supplement).massPerUnitG ? ` · ${(p as Supplement).massPerUnitG} g per unità` : ''}{(p as Supplement).maxDailyUnits ? ` · max ${(p as Supplement).maxDailyUnits}/die (${(p as Supplement).maxDailySource})` : ''}</T>
+            {(p as Supplement).kcalPerUnit !== null ? <T small>Energia: {num((p as Supplement).kcalPerUnit, 2)} kcal per {(p as Supplement).doseUnit}{(p as Supplement).kcalOrigin === 'calculated' ? ' (stimata dai macronutrienti dichiarati)' : ''}</T> : <T small>Energia: sconosciuta</T>}
+            {(p as Supplement).doseGuide ? (
+              <>
+                <T small bold>Dosi consigliate dal produttore (non limiti tossicologici)</T>
+                {(p as Supplement).doseGuide!.points.map((g) => (
+                  <T key={g.weightKg} small>{g.weightKg} kg: {num(g.min, 2)}–{num(g.max, 2)} {(p as Supplement).doseUnit}/die</T>
+                ))}
+                {(p as Supplement).doseGuide!.note ? <T small muted>{(p as Supplement).doseGuide!.note}</T> : null}
+                <T small muted>Nel calcolo: sotto il minimo segnalazione arancione; il massimo non viene superato in automatico (oltre serve una valutazione veterinaria). Fonte: {(p as Supplement).doseGuide!.source}</T>
+              </>
+            ) : null}
             <T small>Energia per dose: {(p as Supplement).kcalPerUnit ?? 'non indicata'}</T>
             <T small>Etichetta: {(p as Supplement).labelSource ?? '—'}</T>
           </>

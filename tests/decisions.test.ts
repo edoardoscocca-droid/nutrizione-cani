@@ -9,6 +9,8 @@ import { staleDependencies } from '../src/engine/snapshot';
 import type { EnergyMethod, Food, NutrientLimit, Supplement } from '../src/engine/types';
 import { DEFAULT_SETTINGS } from '../src/engine/types';
 import { snapshotOf } from '../src/data/recipeService';
+import { LocalRepository } from '../src/data/localRepository';
+import { doseRangeFor } from '../src/engine/doseGuide';
 import { dog, input, refs } from './helpers';
 
 const M = refs.energyMethods;
@@ -182,5 +184,47 @@ describe('D20 — integratori: composizione dichiarata, non dichiarato ≠ zero'
     const r = await formulate(input(['test_beef', 'test_oats', 'test_carrot'], ['test_multi', 'test_bone_meal']));
     expect(r.outcome).toBe('solved');
     expect(r.constraints.some((c) => c.kind === 'coverage_partial' && /Calcio/.test(c.label))).toBe(false);
+  });
+});
+
+describe('Q.Diet Compensa standard — dati approvati il 17/10/2026', () => {
+  const guide = { points: [{ weightKg: 5, min: 1, max: 1.5 }, { weightKg: 10, min: 1.5, max: 3 }, { weightKg: 20, min: 3, max: 6 }, { weightKg: 30, min: 4.5, max: 9 }, { weightKg: 40, min: 6, max: 12 }], source: 'Catalogo Q.Diet 2024', note: 'Un misurino raso = 3 g.' };
+  test('tabella d’impiego: valori della tabella, interpolazione tra due righe, nessuna estrapolazione', () => {
+    expect(doseRangeFor(guide, 30)).toEqual(expect.objectContaining({ min: 4.5, max: 9, interpolated: false }));
+    expect(doseRangeFor(guide, 25)).toEqual(expect.objectContaining({ min: 3.75, max: 7.5, interpolated: true }));
+    expect(doseRangeFor(guide, 45)).toBeNull();
+    expect(doseRangeFor(guide, 3)).toBeNull();
+  });
+  test('verifica: sotto l’intervallo → arancione; sopra il massimo → arancione e valutazione veterinaria', () => {
+    const s = supp({ doseGuide: guide });
+    const run = (qty: number) => auditRecipe({
+      items: [{ kind: 'food', id: 'f', qty: 500 }, { kind: 'supplement', id: 's', qty }],
+      foods: { f: meat }, supplements: { s }, nutrients: refs.nutrients, limits: [], dog: dog({ weightIdealKg: 30, kcalTarget: 1000 }), dietMoisture: 'wet', settings: DEFAULT_SETTINGS,
+    });
+    expect(run(6).doseChecks![0].color).toBe('green');
+    const low = run(3);
+    expect(low.doseChecks![0].color).toBe('orange');
+    expect(low.status).toBe('PREFERENCES_VIOLATED');
+    const high = run(10);
+    expect(high.doseChecks![0].message).toMatch(/supera la dose massima consigliata.*valutazione veterinaria/);
+  });
+  test('ottimizzatore: il massimo consigliato non si supera mai in automatico; il minimo è una preferenza', async () => {
+    const inp = input(['test_beef', 'test_oats', 'test_carrot'], ['test_multi', 'test_bone_meal'], { dog: dog({ weightIdealKg: 30 }) });
+    inp.supplements = inp.supplements.map((x) => (x.supplement.id === 'test_bone_meal' ? { ...x, supplement: { ...x.supplement, doseGuide: { ...guide, points: guide.points.map((p) => ({ ...p, max: p.max / 10, min: p.min / 10 })) } } } : x));
+    const r = await formulate(inp);
+    const bone = r.items.find((i) => i.id === 'test_bone_meal');
+    if (r.outcome === 'solved') expect(bone!.qty).toBeLessThanOrEqual(0.9 + 1e-9);
+    else expect(r.conflicts.some((c) => /Dose massima del produttore/.test(c.label))).toBe(true);
+    expect(r.constraints.some((c) => c.kind === 'product_range' && c.hardness === 'soft')).toBe(true);
+    expect(r.constraints.some((c) => /non superata in automatico/.test(c.label))).toBe(true);
+  });
+  test('catalogo: energia 0,96 kcal/g dichiarata, potassio 75 mg/g, colina da cloruro × 0,746 senza doppio conteggio', async () => {
+    const cat = await new LocalRepository(null).loadCatalog();
+    const q = cat.supplements.find((x) => x.id === 'qdiet')!;
+    expect([q.kcalPerUnit, q.kcalOrigin]).toEqual([0.96, 'declared']);
+    expect(q.nutrients.potassium?.value).toBe(0.075);
+    expect(q.nutrients.choline).toEqual(expect.objectContaining({ value: 67.14, sourceValue: 90, sourceUnit: 'mg', form: 'choline_chloride' }));
+    expect(Object.keys(q.nutrients).filter((k) => /colin|choline/.test(k))).toEqual(['choline']);
+    expect(q.doseGuide?.points).toHaveLength(5);
   });
 });

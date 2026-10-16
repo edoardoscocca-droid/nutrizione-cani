@@ -169,7 +169,8 @@ insert into public.unit_conversions (id, nutrient_id, from_unit, to_unit, form, 
   ('vitd_ug_iu', 'vitamin_d', 'µg', 'IU', null, 'vitamina D (colecalciferolo)', 40, '1 µg = 40 UI — approvato dalla nutrizionista il 16/10/2026'),
   ('vite_rrr', 'vitamin_e', 'mg', 'IU', 'd_alpha_tocopherol', 'd-alfa-tocoferolo naturale (RRR)', 1.49, '1,49 UI/mg — approvato dalla nutrizionista il 16/10/2026'),
   ('vite_allrac_acetate', 'vitamin_e', 'mg', 'IU', 'all_rac_alpha_tocopheryl_acetate', 'tutto-rac/dl-alfa-tocoferil acetato (sintetico)', 1, '1 UI/mg — approvato dalla nutrizionista il 16/10/2026'),
-  ('vite_rrr_acetate', 'vitamin_e', 'mg', 'IU', 'd_alpha_tocopheryl_acetate', 'd-alfa-tocoferil acetato naturale', 1.36, 'circa 1,36 UI/mg — approvato dalla nutrizionista il 16/10/2026')
+  ('vite_rrr_acetate', 'vitamin_e', 'mg', 'IU', 'd_alpha_tocopheryl_acetate', 'd-alfa-tocoferil acetato naturale', 1.36, 'circa 1,36 UI/mg — approvato dalla nutrizionista il 16/10/2026'),
+  ('choline_chloride', 'choline', 'mg', 'mg', 'choline_chloride', 'cloruro di colina (puro) → colina', 0.746, 'fattore stechiometrico 0,746 — approvato dalla nutrizionista il 17/10/2026')
 on conflict (id) do nothing;
 
 insert into public.foods (id, name_it, category_id, subcategory_id, processing_state, edible_portion, kcal_me_per_100g, me_method, source_identifier, source_version, data_status, available_to_formulate, notes) values

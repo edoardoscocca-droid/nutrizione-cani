@@ -30,17 +30,18 @@ Esito della verifica: nessun errore · 6 nuovi · 0 aggiornati · 265 valori imp
 
 ## Integratori
 
-Esito della verifica: nessun errore · 0 nuovi · 3 aggiornati · 38 valori importati.
+Esito della verifica: nessun errore · 0 nuovi · 3 aggiornati · 40 valori importati.
 
 | Prodotto | ID | Azione | Utilizzabile nel calcolo | Stato dei dati | Motivi |
 |---|---|---|---|---|---|
-| Q.Diet Compensa (standard, NON Crescita/Ultra) | `qdiet` | aggiornato | no (da attivare) | Dati parziali | variante/lotto o versione del prodotto non indicati; non ancora convalidato da un amministratore; 17 nutrienti richiesti non dichiarati in etichetta: sconosciuti, non zero.; Energia per dose non dichiarata e non stimabile dai macronutrienti dichiarati: sconosciuta.; L’etichetta dichiara gli additivi aggiunti e alcuni componenti analitici: verificati i dati dichiarati, non la composizione completa. |
+| Q.Diet Compensa (standard, NON Crescita/Ultra) | `qdiet` | aggiornato | no (da attivare) | Dati parziali | variante/lotto o versione del prodotto non indicati; non ancora convalidato da un amministratore; 15 nutrienti richiesti non dichiarati in etichetta: sconosciuti, non zero.; L’etichetta dichiara gli additivi aggiunti e alcuni componenti analitici: verificati i dati dichiarati, non la composizione completa. |
 | Omegor Vitality 1000 (capsula) | `omegor_vitality` | aggiornato | no (da attivare) | Dati parziali | 1 valori stimati o di qualità non dichiarata; peso della singola unità non indicato; variante/lotto o versione del prodotto non indicati; non ancora convalidato da un amministratore; 36 nutrienti richiesti non dichiarati in etichetta: sconosciuti, non zero.; Energia per dose non dichiarata e non stimabile dai macronutrienti dichiarati: sconosciuta. |
 | Farina d ossa (marca/prodotto NON confermato) | `bone_meal` | aggiornato | no (da attivare) | Dati parziali | 7 valori stimati o di qualità non dichiarata; variante/lotto o versione del prodotto non indicati; non ancora convalidato da un amministratore; 33 nutrienti richiesti non dichiarati in etichetta: sconosciuti, non zero.; Energia per dose non dichiarata e non stimabile dai macronutrienti dichiarati: sconosciuta. |
 
 **Valori convertiti con i fattori approvati (D19)**:
 
 - qdiet · Vitamina E: 2 mg → 2 IU — mg→IU × 1 (tutto-rac/dl-alfa-tocoferil acetato (sintetico); 1 UI/mg — approvato dalla nutrizionista il 16/10/2026)
+- qdiet · Colina: 90 mg → 67.14 mg — cloruro di colina (puro) → colina × 0,746 (fattore stechiometrico 0,746 — approvato dalla nutrizionista il 17/10/2026)
 - omegor_vitality · Vitamina E: 10 mg → 14.9 IU — mg→IU × 1,49 (d-alfa-tocoferolo naturale (RRR); 1,49 UI/mg — approvato dalla nutrizionista il 16/10/2026)
 
 
@@ -71,7 +72,7 @@ Metodo della tipologia applicato alla composizione importata. L’energia «uman
 - Cistina e tirosina: importate e usate per Metionina + cistina e Fenilalanina + tirosina (formula dell’allegato F).
 - Attivazione: i 6 alimenti sono **utilizzabili nella formulazione** come chiede il file (decisione della nutrizionista: dati parziali o stimati non impediscono l’uso; fonte, approssimazioni e nutrienti mancanti sono indicati). Gli integratori restano da attivare dall’amministratore: nel file Q-Diet e Omegor sono «condizionali», la farina d’ossa «no».
 - **Q.Diet Compensa standard — base degli additivi confermata (17/10/2026)**: tutti gli additivi sono dichiarati per 1 kg di prodotto (catalogo Q.Diet 2024, Compensa polvere cod. Q40543 250 g, «Additivi per kg»; scheda prodotto pacopetshop). Valore per 1 g = valore per kg ÷ 1000; i valori diventano «da etichetta». Non vale per Compensa Crescita né Ultra. I nutrienti non dichiarati restano sconosciuti.
-- **Nel catalogo Q.Diet 2024 (Compensa polvere) ci sono dati non presenti nei file ricevuti, NON importati in attesa di conferma**: energia metabolizzabile 96 kcal/100 g; potassio 7,5 % (nei file «non dichiarato»); colina cloruro 90.000 mg/kg (sale di colina: serve un fattore approvato per la colina; non compare nella scheda prodotto); dosi d’uso per peso (es. 30 kg: 4,5–9 g/die; misurino raso = 3 g).
+- **Q.Diet Compensa standard — dati del catalogo Q.Diet 2024 approvati dalla nutrizionista (17/10/2026)**: energia metabolizzabile 96 kcal/100 g → 0,96 kcal/g (energia per dose dichiarata); potassio 7,5 % → 75 mg/g; colina cloruro 90.000 mg/kg → 90 mg/g di cloruro di colina × 0,746 (fattore stechiometrico, cloruro di colina assunto puro) = 67,14 mg/g di colina — si registra solo la colina, con il dato originale e la conversione (nessun doppio conteggio); tabella d’impiego per peso (5 kg 1–1,5 · 10 kg 1,5–3 · 20 kg 3–6 · 30 kg 4,5–9 · 40 kg 6–12 g/die; misurino raso = 3 g): intervalli consigliati dal produttore, non limiti tossicologici. Nel calcolo il minimo è una preferenza (arancione sotto), il massimo non viene mai superato in automatico (oltre serve una valutazione veterinaria); tra due righe l’intervallo è interpolato linearmente, fuori tabella (sotto 5 o sopra 40 kg) non si applica.
 
 ## Scelte di conversione (nessun valore modificato)
 

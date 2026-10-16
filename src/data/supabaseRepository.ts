@@ -181,6 +181,7 @@ export class SupabaseRepository implements Repository {
           massPerUnitG: n(s.mass_per_unit_g),
           kcalPerUnit: n(s.kcal_per_unit),
           kcalOrigin: s.kcal_per_unit === null ? null : 'declared',
+          doseGuide: (s.dose_guide as Supplement['doseGuide']) ?? null,
           integerDose: s.integer_dose as boolean,
           maxDailyUnits: n(s.max_daily_units),
           maxDailySource: (s.max_daily_source as string) ?? null,
@@ -352,7 +353,7 @@ export class SupabaseRepository implements Repository {
         id: s.id, name_it: s.name, brand: s.brand ?? null, product_variant: s.variant ?? null, class: s.supplementClass ?? null, dose_unit: s.doseUnit,
         mass_per_unit_g: s.massPerUnitG, kcal_per_unit: s.kcalOrigin === 'calculated' ? null : s.kcalPerUnit, integer_dose: s.integerDose, max_daily_units: s.maxDailyUnits,
         max_daily_source: s.maxDailySource ?? null, label_source: s.labelSource ?? null, label_added_only: !!s.labelAddedOnly,
-        product_version: s.version ?? null, status: s.status, notes: s.notes ?? null,
+        product_version: s.version ?? null, status: s.status, notes: s.notes ?? null, dose_guide: s.doseGuide ?? null,
       }),
     );
     const units = await this.units();

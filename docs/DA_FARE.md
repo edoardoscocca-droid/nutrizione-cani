@@ -6,9 +6,8 @@ Aggiornato al 16/10/2026, dopo le decisioni della nutrizionista su energia (D4),
 Decise e applicate: energia FEDIAF 2025 4/9/4 per tipologia (D4), vitamine D ed E per forma chimica (D19), integratori sulla
 composizione dichiarata (D20), criteri di «Verificato» e utilizzabilità (D18), energia degli integratori senza valori sostitutivi (D21).
 I 6 alimenti sono utilizzabili nella formulazione («Dati parziali»).
-1. **Q-Diet** (base «per kg» confermata il 17/10): il catalogo Q.Diet 2024 riporta anche energia 96 kcal/100 g, potassio 7,5 %
-   e colina cloruro 90.000 mg/kg, assenti nei file ricevuti. Non importati: serve l'ok della nutrizionista
-   (per la colina anche il fattore sale → colina).
+1. **Q-Diet**: dati completati il 17/10 (base per kg, energia, potassio, colina, tabella d'impiego). Da fare in app: lotto e convalida,
+   poi attivarlo per il calcolo dal Catalogo.
 2. Facoltativo: coefficienti di digeribilità per amido o verdure crude (oggi solo un'avvertenza).
 3. Confermare le altre scelte tecniche (D1–D17 in `ANALISI.md`).
 

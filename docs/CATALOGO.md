@@ -78,7 +78,11 @@ Regole:
 - controlli di coerenza: niente valori negativi, nessun nutriente oltre 100 g per 100 g, somma di proteine+grassi+carboidrati+fibra+umidità ≤ 105 g,
   acidi grassi non oltre i grassi totali, nutrienti di un integratore non più pesanti della dose, zeri solo come dato analitico o di etichetta;
 - l'importazione **non convalida** mai; applica l'attivazione indicata nel file (`available_to_formulate` / `usable_for_optimization`), che non crea una nuova versione del profilo; un prodotto «da completare» non resta mai attivo;
-- di ogni valore restano registrati valore, unità e forma chimica originali (colonna facoltativa `form`).
+- di ogni valore restano registrati valore, unità e forma chimica originali (colonna facoltativa `form`);
+- composti dichiarati (es. `form: choline_chloride`): si convertono nel nutriente con il fattore approvato (cloruro di colina
+  × 0,746 = colina) e si registra solo il nutriente, con il dato originale (niente doppio conteggio);
+- integratori: tabella d'impiego del produttore nel campo JSON `dose_guide`
+  (`{"points": [{"weight_kg": 30, "min": 4.5, "max": 9}], "source": "…", "note": "…"}`), intervalli consigliati, non limiti tossicologici.
 
 Da riga di comando (stesse verifiche): `npx tsx scripts/import-catalog.ts alimenti file.csv > import.sql`, poi eseguire `import.sql`
 nell'SQL Editor di Supabase come amministratore.

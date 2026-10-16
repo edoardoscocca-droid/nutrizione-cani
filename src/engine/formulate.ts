@@ -6,6 +6,7 @@
 
 import { foodStatus, supplementStatus } from './catalogStatus';
 import { COMPOUNDS } from './totals';
+import { doseRangeFor, weightSpan } from './doseGuide';
 import { applicableLimits, auditRecipe, type AuditResult, type DietMoisture } from './audit';
 import { solve, type Model, type Row, type SolveResult, type Term, type VarDef, loadSolver } from './lp';
 import type {
@@ -46,7 +47,8 @@ export type ConstraintKind =
   | 'personal_locked'
   | 'personal_soft'
   | 'non_official'
-  | 'coverage_partial';
+  | 'coverage_partial'
+  | 'product_range';
 
 export interface ConstraintInfo {
   name: string;
@@ -96,6 +98,10 @@ interface ModelItem {
   minQty: number | null;
   maxQty: number | null;
   productMax: number | null;
+  /** dose minima consigliata dal produttore per il peso del cane (unità di dose), preferenza morbida. */
+  guideMin: number | null;
+  /** testo dell'intervallo consigliato (per le etichette dei vincoli). */
+  guideText: string | null;
 }
 
 function rawValue(nutrients: Record<string, { value: number | null } | undefined>, id: string): number | null {
@@ -151,7 +157,7 @@ export function checkUsability(input: FormulationInput) {
   return { foods, supplements, excluded };
 }
 
-function buildItems(input: FormulationInput, foods: FormulationInput['foods'], supplements: FormulationInput['supplements']): ModelItem[] {
+function buildItems(input: FormulationInput, foods: FormulationInput['foods'], supplements: FormulationInput['supplements'], notes: string[] = []): ModelItem[] {
   const st = input.settings;
   const items: ModelItem[] = [];
   foods.forEach(({ food, constraint }, i) => {
@@ -174,11 +180,17 @@ function buildItems(input: FormulationInput, foods: FormulationInput['foods'], s
       minQty: constraint?.minQty ?? null,
       maxQty: constraint?.maxQty ?? null,
       productMax: null,
+      guideMin: null,
+      guideText: null,
     });
   });
   supplements.forEach(({ supplement: s, constraint }, i) => {
     const step = supplementStep(s, st);
-    const productMax = s.maxDailyUnits !== null && s.maxDailySource ? s.maxDailyUnits : null;
+    // tabella d'impiego del produttore: il massimo consigliato non si supera in automatico (serve una valutazione veterinaria)
+    const range = doseRangeFor(s.doseGuide, input.dog.weightIdealKg);
+    if (s.doseGuide && !range) notes.push(`${s.name}: la tabella d’impiego del produttore copre ${weightSpan(s.doseGuide)}; per ${input.dog.weightIdealKg} kg nessun intervallo applicato.`);
+    const declaredMax = s.maxDailyUnits !== null && s.maxDailySource ? s.maxDailyUnits : null;
+    const productMax = range ? (declaredMax === null ? range.max : Math.min(declaredMax, range.max)) : declaredMax;
     items.push({
       kind: 'supplement',
       id: s.id,
@@ -197,6 +209,8 @@ function buildItems(input: FormulationInput, foods: FormulationInput['foods'], s
       minQty: constraint?.minQty ?? null,
       maxQty: constraint?.maxQty ?? null,
       productMax: productMax !== null ? Math.floor(productMax / step + 1e-9) : null,
+      guideMin: range ? range.min : null,
+      guideText: range ? `${range.text} ${s.doseUnit}/die — ${s.doseGuide!.source}` : null,
     });
   });
   return items;
@@ -337,6 +351,22 @@ function buildRows(
       rows.push(row);
     }
   }
+  // dose minima consigliata dal produttore: preferenza (arancione se non raggiunta), mai sopra i limiti nutrizionali
+  for (const it of items) {
+    if (it.guideMin === null || !(it.guideMin > 0)) continue;
+    const dv = `d${devCount++}`;
+    extraVars.push({ name: dv, lb: 0, ub: null, integer: false });
+    const name = `r${rows.length}`;
+    rows.push({
+      name,
+      terms: [{ v: it.v, c: it.step }, { v: dv, c: 1 }],
+      op: '>=',
+      rhs: it.guideMin,
+      scale: Math.max(it.guideMin, 1e-9),
+      dev: { v: dv, group: 'preference' },
+      info: { name, label: `${it.name}: dose consigliata dal produttore ${it.guideText}`, kind: 'product_range', hardness: 'soft' },
+    });
+  }
   return { rows, extraVars };
 }
 
@@ -438,7 +468,7 @@ function diagnoseWith(built: Built, highsSolve: (m: Model) => SolveResult, relax
       const s = addSlack(
         {
           name: `ub_${it.v}`,
-          label: isProduct ? `Dose massima del produttore: ${it.name} ${fmt(u * it.step)}` : `Limite scelto: ${it.name} non oltre ${fmt(it.maxQty ?? u * it.step)}`,
+          label: isProduct ? `Dose massima del produttore: ${it.name} ${fmt(u * it.step)} (superarla richiede una valutazione veterinaria)` : `Limite scelto: ${it.name} non oltre ${fmt(it.maxQty ?? u * it.step)}`,
           kind: isProduct ? 'product_max' : 'user_bound',
           hardness: 'hard',
         },
@@ -552,14 +582,14 @@ export async function formulate(input: FormulationInput): Promise<FormulationRes
   if (input.dog.lifeStage !== 'adult_maintenance') {
     notes.push('Nessuno standard disponibile per questa fase di vita: il calcolo considera solo energia e target personali.');
   }
-  const items = buildItems(input, foods, supplements);
+  const items = buildItems(input, foods, supplements, notes);
   const built = buildModel(input, items, limits, notes);
   const constraints = built.rows.map((r) => r.info);
   for (const it of items) {
     if (it.minQty) constraints.push({ name: `lb_${it.v}`, label: `${it.name}: almeno ${fmt(it.minQty)}`, kind: 'user_bound', hardness: 'hard' });
     if (it.maxQty !== null) constraints.push({ name: `ub_${it.v}`, label: `${it.name}: non oltre ${fmt(it.maxQty)}`, kind: 'user_bound', hardness: 'hard' });
     if (it.productMax !== null)
-      constraints.push({ name: `pm_${it.v}`, label: `${it.name}: dose massima del produttore ${fmt(it.productMax * it.step)}`, kind: 'product_max', hardness: 'hard' });
+      constraints.push({ name: `pm_${it.v}`, label: `${it.name}: dose massima del produttore ${fmt(it.productMax * it.step)} — non superata in automatico: oltre serve una valutazione veterinaria`, kind: 'product_max', hardness: 'hard' });
     if (it.kind === 'supplement' && it.step === 1) constraints.push({ name: `int_${it.v}`, label: `${it.name}: solo dosi intere`, kind: 'product_max', hardness: 'hard' });
   }
 
@@ -687,7 +717,7 @@ export async function preliminaryAnalysis(input: FormulationInput): Promise<Prel
     return { provisional: true, excluded, potentialGaps: [], dataGaps, message: 'Nessun alimento utilizzabile o obiettivo kcal mancante.' };
   }
   const notes: string[] = [];
-  const items = buildItems(input, foods, []);
+  const items = buildItems(input, foods, [], notes);
   const limits = applicableLimits(input.limits, input.dog, input.dietMoisture);
   const built = buildModel(input, items, limits, notes);
   const p = runSolve({ ...built.model, objective: devObjective(built.rows, 'coverage') });

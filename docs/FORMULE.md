@@ -55,6 +55,9 @@ Variabili: grammi di ogni alimento e dosi di ogni integratore selezionato, come 
 2. Copertura dei minimi con dati parziali.
 3. Kcal il più vicine possibile all'obiettivo.
 4. Preferenze flessibili (target personali, Ca:P 1,2–1,4 non ufficiale, quote energetiche).
+   Tabella d'impiego del produttore (es. Q-Diet, per peso ideale del cane; interpolazione lineare tra due righe, nessuna
+   estrapolazione fuori tabella): il massimo è un vincolo rigido — non si supera mai in automatico, oltre serve una valutazione
+   veterinaria; il minimo è una preferenza (arancione se non raggiunto). Non sostituisce i controlli su minerali e vitamine.
 5. Praticità (D17): meno integratori, porzione più compatta, costo minore se tutti i prezzi sono noti.
 
 Ogni fase fissa il risultato della precedente. Se la fase 1 è impossibile, un modello «elastico» trova la violazione

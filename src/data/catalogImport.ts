@@ -113,7 +113,8 @@ export function normalizeForm(raw: string | undefined): string | null {
   const f = norm(raw ?? '');
   if (!f) return null;
   const code = (raw ?? '').trim();
-  if (['d_alpha_tocopherol', 'all_rac_alpha_tocopheryl_acetate', 'd_alpha_tocopheryl_acetate'].includes(code)) return code;
+  if (['d_alpha_tocopherol', 'all_rac_alpha_tocopheryl_acetate', 'd_alpha_tocopheryl_acetate', 'choline_chloride'].includes(code)) return code;
+  if (/colina cloruro|cloruro di colina|choline chloride/.test(f)) return 'choline_chloride';
   const vitE = /tocofer|tocopher/.test(f);
   if (vitE && /acetat/.test(f)) {
     if (/all rac|tutto rac|\bdl\b|sintet|synthetic/.test(f)) return 'all_rac_alpha_tocopheryl_acetate';
@@ -266,6 +267,7 @@ const FOOD_FIELDS: Record<string, string[]> = {
 const SUPP_FIELDS: Record<string, string[]> = {
   id: ['id', 'product id', 'supplement id', 'codice'],
   usableForOptimization: ['usable for optimization', 'utilizzabile', 'attivo per la formulazione'],
+  doseGuide: ['dose guide', 'tabella d impiego', 'dosi per peso'],
   name: ['name it', 'name', 'nome'],
   brand: ['brand', 'marca'],
   variant: ['product variant', 'variant', 'variante'],
@@ -417,7 +419,7 @@ function parseJson(text: string, kind: ImportKind, out: ParsedImport): ParsedImp
       const f = fieldOf(fields, k);
       if (f === 'id') id = String(v ?? '');
       else if (f) {
-        if (v !== null && v !== undefined && v !== '') pf[f] = String(v);
+        if (v !== null && v !== undefined && v !== '') pf[f] = typeof v === 'object' ? JSON.stringify(v) : String(v);
       } else if (IGNORED.includes(norm(k))) out.warnings.push({ line, message: `Campo «${k}» ignorato.` });
       else out.errors.push({ line, message: `Campo «${k}» non riconosciuto.` });
     }
@@ -629,6 +631,18 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
         if (v === null || Number.isNaN(v) || v < 0 || (k !== 'kcalPerUnit' && v === 0)) err(`Valore «${f[k]}» non valido per ${k}.`);
         else set(k, v);
       }
+      if (f.doseGuide !== undefined) {
+        // { "points": [{ "weight_kg": 5, "min": 1, "max": 1.5 }, …], "source": "…", "note": "…" }
+        try {
+          const g = JSON.parse(f.doseGuide) as { points?: Record<string, unknown>[]; source?: string; note?: string };
+          const points = (g.points ?? []).map((x) => ({ weightKg: Number(x.weight_kg ?? x.weightKg), min: Number(x.min), max: Number(x.max) }));
+          if (!g.source) err('Tabella d’impiego senza fonte.');
+          else if (!points.length || points.some((x) => !(x.weightKg > 0) || !(x.min >= 0) || !(x.max >= x.min))) err('Tabella d’impiego non valida: servono peso > 0 e 0 ≤ minimo ≤ massimo.');
+          else set('doseGuide', { points, source: g.source, note: g.note ?? null });
+        } catch {
+          err('Tabella d’impiego non leggibile (JSON).');
+        }
+      }
       if (f.usableForOptimization !== undefined) {
         const b = parseBool(f.usableForOptimization);
         if (b === null) err(`Valore «${f.usableForOptimization}» non valido per usable_for_optimization (sì/no).`);
@@ -690,8 +704,18 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
     }
     let conv: { value: number; rule: string } | undefined;
     let converted: UnitConversion | null = null;
+    // composto dichiarato (es. cloruro di colina): si converte nel nutriente con il fattore approvato per quella forma
+    const compoundForm = normalizeForm(v.form);
+    const compound = compoundForm
+      ? (catalog.unitConversions ?? []).find((c) => c.nutrientId === nut.id && c.form === compoundForm && isMassUnit(c.fromUnit) && isMassUnit(c.toUnit) && isMassUnit(v.unit))
+      : undefined;
     try {
       conv = toCanonical(value, v.unit, nut.unit);
+      if (compound) {
+        converted = compound;
+        const inFrom = toCanonical(value, v.unit, compound.fromUnit).value * compound.factor;
+        conv = { value: Math.round(toCanonical(inFrom, compound.toUnit, nut.unit).value * 1e6) / 1e6, rule: `${compound.formLabel} × ${String(compound.factor).replace('.', ',')} (${compound.source})` };
+      }
     } catch {
       const from = normalizeUnit(v.unit);
       const candidates = (catalog.unitConversions ?? []).filter((c) => c.nutrientId === nut.id && normalizeUnit(c.fromUnit) === from && normalizeUnit(c.toUnit) === normalizeUnit(nut.unit));
@@ -907,7 +931,7 @@ export function toPayload(plan: ImportPlan): ImportPayload {
       mass_per_unit_g: s.massPerUnitG, kcal_per_unit: s.kcalOrigin === 'calculated' ? null : s.kcalPerUnit, integer_dose: s.integerDose, max_daily_units: s.maxDailyUnits,
       max_daily_source: s.maxDailySource ?? null, label_source: s.labelSource ?? null, label_added_only: !!s.labelAddedOnly,
       product_version: s.version ?? null, status: s.status === 'verified' ? 'review_required' : s.status === 'missing' && i.statusAfter.status !== 'to_complete' ? 'review_required' : s.status,
-      notes: s.notes ?? null, usable_for_optimization: s.usableForOptimization,
+      notes: s.notes ?? null, usable_for_optimization: s.usableForOptimization, dose_guide: s.doseGuide ?? null,
     };
   });
   const values = changed.flatMap((i) =>

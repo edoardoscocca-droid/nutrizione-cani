@@ -314,7 +314,7 @@ describe('Dati reali del 16/10/2026', () => {
     expect(q.nutrients.vitamin_e?.status).toBe('label'); // base «per kg» confermata dalla nutrizionista (catalogo Q.Diet 2024)
     expect(q.nutrients.zinc).toEqual(expect.objectContaining({ value: 2, status: 'label' })); // 2000 mg/kg ÷ 1000
     expect(supplementStatus(q, cat.nutrients).reasons.join()).not.toMatch(/base quantitativa/);
-    expect(q.nutrients.potassium).toBeUndefined(); // non dichiarato nei file: sconosciuto
+    expect(q.nutrients.potassium?.value).toBe(0.075); // potassio 7,5 % dal catalogo Q.Diet 2024 (approvato)
     const o = cat.supplements.find((s) => s.id === 'omegor_vitality')!;
     expect(o.massPerUnitG).toBeNull();
     expect(o.nutrients.epa_dha).toBeUndefined();

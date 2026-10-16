@@ -4,6 +4,7 @@
 
 import { CATALOG_STATUS_LABEL, foodStatus, supplementStatus } from './catalogStatus';
 import { fediafReferenceKcal } from './energy';
+import { doseRangeFor, weightSpan, type DoseRange } from './doseGuide';
 import { computeTotals, foodData, supplementData, type DerivedValue, type ItemData, type RecipeTotals, type Total } from './totals';
 import type {
   Color,
@@ -79,6 +80,15 @@ export interface AuditInput {
   excluded?: { name: string; reason: string }[];
 }
 
+export interface DoseCheck {
+  name: string;
+  qty: number;
+  unit: string;
+  range: DoseRange | null;
+  color: Color;
+  message: string;
+}
+
 export interface AuditResult {
   status: RecipeStatus;
   statusLabel: string;
@@ -86,6 +96,8 @@ export interface AuditResult {
   declaredCompositionOnly?: boolean;
   /** fabbisogni (limiti ufficiali e target rigidi): dimostrabilmente soddisfatti, non soddisfatti, non verificabili per dati mancanti. */
   summary?: { satisfied: string[]; notMet: string[]; unverifiable: string[] };
+  /** dosi degli integratori rispetto alla tabella d'impiego del produttore (arancione fuori intervallo). */
+  doseChecks?: DoseCheck[];
   /** componenti con dati stimati o non convalidati; integratori con energia sconosciuta. */
   dataQuality?: { lowQuality: string[]; unknownEnergy: string[] };
   kcal: number | null;
@@ -452,6 +464,27 @@ export function auditRecipe(input: AuditInput): AuditResult {
     }
     if (it.kind === 'food' && foods[it.id].preparation) warnings.push(`${name} — preparazione: ${foods[it.id].preparation}`);
   }
+  // Tabella d'impiego del produttore: intervalli consigliati (non limiti tossicologici, non sostituiscono i controlli nutrizionali)
+  const doseChecks: DoseCheck[] = [];
+  for (const it of items) {
+    const s = it.kind === 'supplement' && it.qty > 0 ? supplements[it.id] : undefined;
+    if (!s?.doseGuide) continue;
+    const r = doseRangeFor(s.doseGuide, dog.weightIdealKg);
+    const u = s.doseUnit;
+    if (!r) {
+      doseChecks.push({ name: s.name, qty: it.qty, unit: u, range: null, color: 'grey', message: `${s.name}: la tabella d’impiego del produttore copre ${weightSpan(s.doseGuide)}; per ${fmt(dog.weightIdealKg)} kg non c’è un intervallo consigliato.` });
+      continue;
+    }
+    const where = `intervallo consigliato dal produttore ${r.text} ${u}/die`;
+    if (it.qty > r.max + 1e-9) {
+      doseChecks.push({ name: s.name, qty: it.qty, unit: u, range: r, color: 'orange', message: `${s.name}: ${fmt(it.qty)} ${u}/die supera la dose massima consigliata (${where}). Serve una valutazione veterinaria.` });
+    } else if (it.qty < r.min - 1e-9) {
+      doseChecks.push({ name: s.name, qty: it.qty, unit: u, range: r, color: 'orange', message: `${s.name}: ${fmt(it.qty)} ${u}/die è sotto la dose consigliata (${where}).` });
+    } else {
+      doseChecks.push({ name: s.name, qty: it.qty, unit: u, range: r, color: 'green', message: `${s.name}: ${fmt(it.qty)} ${u}/die entro l’${where}.` });
+    }
+  }
+  for (const d of doseChecks) if (d.color !== 'green') warnings.push(d.message);
   for (const it of items) {
     const f = it.kind === 'food' && it.qty > 0 ? foods[it.id] : undefined;
     if (f?.kcalMeOrigin === 'calculated' && f.energyMethod?.caution) warnings.push(`${f.name} — energia calcolata (${f.energyMethod.label}): ${f.energyMethod.caution}`);
@@ -486,7 +519,7 @@ export function auditRecipe(input: AuditInput): AuditResult {
   let status: RecipeStatus;
   if (allChecks.some((c) => c.color === 'red')) status = 'FAILS_OFFICIAL_LIMITS';
   else if (blockers.length) status = 'INSUFFICIENT_DATA';
-  else if (allChecks.some((c) => c.color === 'orange') || energyColor === 'orange') status = 'PREFERENCES_VIOLATED';
+  else if (allChecks.some((c) => c.color === 'orange') || energyColor === 'orange' || doseChecks.some((d) => d.color === 'orange')) status = 'PREFERENCES_VIOLATED';
   else status = 'VERIFIED_AVAILABLE_CHECKS';
 
   // Sintesi richiesta: fabbisogni dimostrabilmente soddisfatti, non soddisfatti, non verificabili (limiti ufficiali e target rigidi)
@@ -507,6 +540,7 @@ export function auditRecipe(input: AuditInput): AuditResult {
         ? `${STATUS_LABEL[status]} — ${qualifiers.join('; ')}`
         : STATUS_LABEL[status],
     summary,
+    doseChecks,
     dataQuality: { lowQuality, unknownEnergy: energyUncertainFrom },
     declaredCompositionOnly: uncertainRows.length > 0,
     kcal,

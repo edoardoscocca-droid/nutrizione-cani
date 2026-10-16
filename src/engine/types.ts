@@ -135,6 +135,8 @@ export interface Supplement {
   kcalOrigin?: 'declared' | 'calculated' | null;
   /** metodo energetico per le quote di energia dei macronutrienti dichiarati (risolto al caricamento). */
   energyMethod?: AppliedEnergyMethod | null;
+  /** tabella d'impiego del produttore per peso del cane: intervalli consigliati, non limiti tossicologici. */
+  doseGuide?: DoseGuide | null;
   /** true = solo dosi intere (capsule, compresse). */
   integerDose: boolean;
   maxDailyUnits: number | null;
@@ -151,6 +153,17 @@ export interface Supplement {
   validatedAt?: string | null;
   /** valori per 1 unità di dose (1 g, 1 ml, 1 capsula…). */
   nutrients: Record<string, NutrientValue>;
+}
+
+/**
+ * Tabella d'impiego del produttore (dosi giornaliere per peso del cane, nell'unità di dose del prodotto).
+ * Nel calcolo: il minimo è una preferenza (arancione se non raggiunto), il massimo non si supera mai in automatico.
+ */
+export interface DoseGuide {
+  points: { weightKg: number; min: number; max: number }[];
+  source: string;
+  /** es. «un misurino raso = 3 g». */
+  note?: string | null;
 }
 
 /** Fattori unici delle versioni precedenti (solo per leggere le istantanee già salvate). */

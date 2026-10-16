@@ -75,5 +75,7 @@ R=$("${PSQL[@]}" -d t -tA -c "select string_agg(id || ':' || status, ' ' order b
 R2=$("${PSQL[@]}" -d t -tA -c "select reasons::text from catalog_status where id = 'qdiet'")
 ! echo "$R2" | grep -q "base quantitativa" && ! echo "$R2" | grep -q "energia per dose" && ! echo "$R2" | grep -q "quantità aggiunte" || { echo "FALLITO: motivi Q-Diet: $R2"; exit 1; }
 [ "$("${PSQL[@]}" -d t -tA -c "select amount_per_unit || ':' || value_status from supplement_nutrients where supplement_id = 'qdiet' and nutrient_id = 'zinc'")" = "2:label" ] || { echo "FALLITO: zinco Q-Diet per g"; exit 1; }
+[ "$("${PSQL[@]}" -d t -tA -c "select amount_per_unit || ':' || source_value || source_unit || ':' || chemical_form from supplement_nutrients where supplement_id = 'qdiet' and nutrient_id = 'choline'")" = "67.14:90mg:choline_chloride" ] || { echo "FALLITO: colina da cloruro di colina"; exit 1; }
+[ "$("${PSQL[@]}" -d t -tA -c "select kcal_per_unit || ':' || jsonb_array_length(dose_guide -> 'points') from supplements where id = 'qdiet'")" = "0.96:5" ] || { echo "FALLITO: energia e tabella d'impiego Q-Diet"; exit 1; }
 echo "ok: dati reali del 16/10/2026 (265 valori alimenti): EM calcolata con FEDIAF 2025 4/9/4, vitamine D/E convertite con i fattori approvati, integratori sulla composizione dichiarata"
 echo "Test database: tutti superati"
