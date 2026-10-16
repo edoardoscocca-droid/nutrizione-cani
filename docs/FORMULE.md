@@ -10,9 +10,10 @@ Versione del motore: `motore-1.0.0` (salvata in ogni versione di ricetta).
   (kcal/100 g) con i fattori del metodo della sua tipologia e del suo stato crudo/cotto. Oggi un solo metodo: FEDIAF 2025, 4/9/4.
   Senza stato crudo/cotto, metodo o uno dei tre macronutrienti: nessuna EM (mai zero). L'energia «umana» delle tabelle non si usa.
 - Energia della ricetta = Σ kcal EM/100 g × g/100 + Σ kcal per dose × dosi. Se un alimento non ha kcal, l'energia è incompleta.
-  Integratore senza kcal dichiarate: se il peso della dose è noto l'energia vera sta tra quella dichiarata e +9 kcal per grammo di
-  prodotto (limite fisico del grasso puro); i minimi per 1000 kcal si considerano dimostrati solo anche con l'energia massima.
-  Senza peso della dose l'energia è incompleta.
+  Integratore senza kcal dichiarate: si stimano solo con proteine, grassi e carboidrati disponibili dichiarati e il metodo
+  approvato per gli integratori; altrimenti l'energia è **sconosciuta** (nessun valore sostitutivo). Le kcal della ricetta
+  comprendono allora solo i componenti con energia nota e la verifica indica il peso di quei prodotti sulla razione;
+  l'energia mancante non diventa incertezza su aminoacidi o vitamine.
 
 ## Somme dei nutrienti
 - Alimento: valore per 100 g × grammi / 100. Integratore: valore per dose × numero di dosi.
@@ -37,7 +38,10 @@ Versione del motore: `motore-1.0.0` (salvata in ogni versione di ricetta).
 - Colori: rosso (limite ufficiale violato, anche dimostrato con soli dati noti per i massimi), arancione (soglia non
   ufficiale/preferenza), verde, blu (nessun limite numerico), grigio (non verificabile), viola (nota individuale/di razza).
 - Stato ricetta: *Non rispetta limiti ufficiali* > *Dati insufficienti* > *Rispetta i limiti ma non tutte le preferenze* >
-  *Verificata rispetto ai controlli disponibili* (mai «clinicamente completa»).
+  *Verificata rispetto ai controlli disponibili* (mai «clinicamente completa»). Con componenti a dati stimati o non convalidati,
+  o integratori valutati sulla composizione dichiarata, lo stato lo dice esplicitamente.
+- Sintesi della verifica (limiti ufficiali e target rigidi): fabbisogni **dimostrabilmente soddisfatti**, **non soddisfatti**,
+  **non verificabili** per dati mancanti. Con anche un solo fabbisogno non verificabile la ricetta non è dichiarata completa.
 
 ## Ottimizzazione (HiGHS, programmazione lineare a interi)
 Variabili: grammi di ogni alimento e dosi di ogni integratore selezionato, come multipli del passo di arrotondamento

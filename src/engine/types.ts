@@ -68,11 +68,17 @@ export interface NutrientValue {
   status?: ValueStatus;
   source?: string | null;
   method?: string | null;
+  /** valore e unità come nella fonte, prima di una conversione (es. 10 mg di vitamina E). */
+  sourceValue?: number | null;
+  sourceUnit?: string | null;
+  /** forma chimica dichiarata nella fonte (es. d_alpha_tocopherol). */
+  form?: string | null;
 }
 
 export type ProcessingState =
   | 'raw'
   | 'cooked_boiled'
+  | 'cooked_steamed'
   | 'cooked_baked'
   | 'cooked_other'
   | 'dried'
@@ -125,6 +131,8 @@ export interface Supplement {
   /** contenuto della singola unità (g per capsula/misurino), se noto. */
   massPerUnitG: number | null;
   kcalPerUnit: number | null;
+  /** declared = energia per dose dall'etichetta; calculated = stimata dai macronutrienti dichiarati con un metodo approvato. */
+  kcalOrigin?: 'declared' | 'calculated' | null;
   /** metodo energetico per le quote di energia dei macronutrienti dichiarati (risolto al caricamento). */
   energyMethod?: AppliedEnergyMethod | null;
   /** true = solo dosi intere (capsule, compresse). */

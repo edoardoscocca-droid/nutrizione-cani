@@ -84,6 +84,10 @@ export interface AuditResult {
   statusLabel: string;
   /** almeno un controllo rispettato solo sulla composizione dichiarata degli integratori. */
   declaredCompositionOnly?: boolean;
+  /** fabbisogni (limiti ufficiali e target rigidi): dimostrabilmente soddisfatti, non soddisfatti, non verificabili per dati mancanti. */
+  summary?: { satisfied: string[]; notMet: string[]; unverifiable: string[] };
+  /** componenti con dati stimati o non convalidati; integratori con energia sconosciuta. */
+  dataQuality?: { lowQuality: string[]; unknownEnergy: string[] };
   kcal: number | null;
   kcalComplete: boolean;
   kcalTarget: number | null;
@@ -205,7 +209,8 @@ function measure(
       low: (t.known / energy.kcalMax) * 1000,
       complete: t.complete,
       undeclared: t.undeclaredFrom,
-      energyUncertain: energy.uncertainFrom,
+      // l'energia sconosciuta di un integratore non rende incerti i controlli dei nutrienti (decisione della nutrizionista)
+      energyUncertain: [],
       reason: missing,
     };
   }
@@ -282,6 +287,16 @@ function evaluate(l: NutrientLimit, m: Measured, kcal: number | null, unit: stri
   return { limit: l, color: 'green', dailyReference, message: `${what}: rispettato.${noMax}${uncertain ? ` ${uncertain}` : ''}`, uncertain };
 }
 
+/** limite che definisce un fabbisogno: ufficiale (minimo, massimo, legale) o target fissato da un professionista. */
+function isEssential(l: NutrientLimit): boolean {
+  return l.limitClass === 'OFFICIAL_MIN' || l.limitClass === 'OFFICIAL_NUTRITIONAL_MAX' || l.limitClass === 'LEGAL_MAX' || (l.limitClass === 'PERSONAL_TARGET' && l.hardness === 'hard');
+}
+
+/** valori dell'integratore la cui base (per dose, per kg…) va ancora confermata dalla fonte. */
+export function needsBasisConfirmation(s: Supplement | undefined): boolean {
+  return !!s && Object.values(s.nutrients).some((v) => v.value !== null && /PER_KG_ASSUMED_CONFIRM/.test(v.method ?? ''));
+}
+
 const COLOR_RANK: Record<Color, number> = { red: 5, grey: 4, orange: 3, green: 2, blue: 1, purple: 0 };
 
 function worst(colors: Color[]): Color {
@@ -302,10 +317,10 @@ export function auditRecipe(input: AuditInput): AuditResult {
   const totals = computeTotals(data, nutrients, input.legacyFactors);
   const kcalComplete = totals.energy.complete && !totals.energy.noData;
   const kcal = kcalComplete ? totals.energy.known : null;
-  // energia non dichiarata di integratori con peso noto: fino a 9 kcal/g (limite fisico) → intervallo di energia
-  const kcalMax = kcal !== null && totals.energy.undeclaredMax !== null ? kcal + totals.energy.undeclaredMax : null;
-  const energyUncertainFrom = totals.energy.undeclaredMax ? totals.energy.undeclaredFrom : [];
-  const energyCtx = { kcal, kcalMax, complete: kcalComplete, uncertainFrom: energyUncertainFrom };
+  // integratori senza kcal (né dichiarate né stimabili con un metodo): energia sconosciuta, nessun valore sostitutivo;
+  // incide solo sull'incertezza dell'energia e delle quote energetiche, non sui controlli di aminoacidi e vitamine
+  const energyUncertainFrom = totals.energy.undeclaredFrom;
+  const energyCtx = { kcal, kcalMax: kcal, complete: kcalComplete, uncertainFrom: energyUncertainFrom };
   const limits = applicableLimits(input.limits, dog, input.dietMoisture);
   const moisture = totals.nutrients.moisture;
   const totalMass = items.reduce((a, it) => {
@@ -370,12 +385,20 @@ export function auditRecipe(input: AuditInput): AuditResult {
   let energyColor: Color = 'grey';
   let energyMsg = 'Energia non calcolabile: dati kcal mancanti.';
   if (kcal !== null && dog.kcalTarget) {
-    const within = (k: number) => Math.abs((k - dog.kcalTarget!) / dog.kcalTarget!) <= tol + 1e-9;
-    const top = kcalMax ?? kcal;
-    energyColor = within(kcal) && within(top) ? 'green' : 'orange';
+    const dev = (kcal - dog.kcalTarget) / dog.kcalTarget;
+    energyColor = Math.abs(dev) <= tol + 1e-9 ? 'green' : 'orange';
     energyMsg = `${fmt(kcal)} kcal su obiettivo ${fmt(dog.kcalTarget)} (tolleranza ±${settings.energyTolerancePct}%)`;
-    if (top > kcal + 1e-9) {
-      energyMsg += `. Energia non dichiarata di ${names(energyUncertainFrom)}: il totale può arrivare fino a ${fmt(top)} kcal (stima prudente, 9 kcal per grammo di prodotto).`;
+    if (energyUncertainFrom.length) {
+      // impatto: quanto pesano, nella razione, i componenti con energia sconosciuta
+      const unknown = items.filter((it) => it.kind === 'supplement' && it.qty > 0 && supplements[it.id]?.kcalPerUnit === null);
+      const mass = (it: RecipeItem) => (supplements[it.id]?.doseUnit === 'g' ? it.qty : (supplements[it.id]?.massPerUnitG ?? null) === null ? null : supplements[it.id]!.massPerUnitG! * it.qty);
+      const parts = unknown.map((it) => {
+        const g = mass(it);
+        return `${supplements[it.id].name} ${g === null ? `${fmt(it.qty)} ${supplements[it.id].doseUnit}` : `${fmt(g)} g`}`;
+      });
+      const knownMass = unknown.every((it) => mass(it) !== null) && Number.isFinite(totalMass) && totalMass > 0;
+      const share = knownMass ? (100 * unknown.reduce((a, it) => a + (mass(it) as number), 0)) / totalMass : null;
+      energyMsg += `. Energia sconosciuta per ${parts.join(', ')}${share !== null ? ` (${fmt(Math.round(share * 10) / 10)}% del peso della razione)` : ''}: le kcal comprendono solo i componenti con energia nota.`;
     }
   } else if (!dog.kcalTarget) {
     energyMsg = 'Obiettivo kcal non impostato.';
@@ -413,14 +436,21 @@ export function auditRecipe(input: AuditInput): AuditResult {
   }
   for (const n of dog.attentionNotes) warnings.push(`Nota di attenzione: ${n.text} (${n.source})`);
 
-  // Stato di catalogo dei componenti usati: con dati parziali la ricetta non può essere dichiarata completa.
+  // Qualità dei dati dei componenti (stato del catalogo): non impedisce il calcolo né la verifica, ma si dichiara.
+  // I nutrienti davvero mancanti emergono nei controlli (grigi); qui si elencano fonti, stime e convalide.
+  const lowQuality: string[] = [];
   for (const it of items) {
     if (!(it.qty > 0)) continue;
     const st = it.kind === 'food' ? foodStatus(foods[it.id], nutrients) : supplementStatus(supplements[it.id], nutrients);
+    const name = it.kind === 'food' ? foods[it.id].name : supplements[it.id].name;
     if (st.status !== 'verified') {
-      const name = it.kind === 'food' ? foods[it.id].name : supplements[it.id].name;
-      blockers.push(`${name}: ${CATALOG_STATUS_LABEL[st.status].toLowerCase()} (${st.reasons.join('; ')}) — la ricetta non può essere dichiarata completa.`);
+      lowQuality.push(name);
+      warnings.push(`${name}: ${CATALOG_STATUS_LABEL[st.status].toLowerCase()} — ${st.reasons.join('; ')}.`);
     }
+    if (it.kind === 'supplement' && needsBasisConfirmation(supplements[it.id])) {
+      blockers.push(`${name}: base quantitativa degli additivi da confermare (es. «per kg»): valori da non usare per una formulazione reale finché non è confermata.`);
+    }
+    if (it.kind === 'food' && foods[it.id].preparation) warnings.push(`${name} — preparazione: ${foods[it.id].preparation}`);
   }
   for (const it of items) {
     const f = it.kind === 'food' && it.qty > 0 ? foods[it.id] : undefined;
@@ -459,12 +489,25 @@ export function auditRecipe(input: AuditInput): AuditResult {
   else if (allChecks.some((c) => c.color === 'orange') || energyColor === 'orange') status = 'PREFERENCES_VIOLATED';
   else status = 'VERIFIED_AVAILABLE_CHECKS';
 
+  // Sintesi richiesta: fabbisogni dimostrabilmente soddisfatti, non soddisfatti, non verificabili (limiti ufficiali e target rigidi)
+  const essentialRows = rows.filter((r) => r.checks.some((c) => isEssential(c.limit)));
+  const summary = {
+    satisfied: essentialRows.filter((r) => r.checks.filter((c) => isEssential(c.limit)).every((c) => c.color === 'green')).map((r) => r.label),
+    notMet: essentialRows.filter((r) => r.checks.some((c) => isEssential(c.limit) && c.color === 'red')).map((r) => r.label),
+    unverifiable: essentialRows.filter((r) => !r.checks.some((c) => isEssential(c.limit) && c.color === 'red') && r.checks.some((c) => isEssential(c.limit) && c.color === 'grey')).map((r) => r.label),
+  };
+  const qualifiers = [
+    uncertainRows.length || energyUncertainFrom.length ? 'sulla composizione dichiarata degli integratori' : null,
+    lowQuality.length ? `con dati di composizione stimati o non convalidati (${lowQuality.join(', ')})` : null,
+  ].filter(Boolean);
   return {
     status,
     statusLabel:
-      uncertainRows.length && (status === 'VERIFIED_AVAILABLE_CHECKS' || status === 'PREFERENCES_VIOLATED')
-        ? `${STATUS_LABEL[status]} — sulla composizione dichiarata degli integratori`
+      qualifiers.length && (status === 'VERIFIED_AVAILABLE_CHECKS' || status === 'PREFERENCES_VIOLATED')
+        ? `${STATUS_LABEL[status]} — ${qualifiers.join('; ')}`
         : STATUS_LABEL[status],
+    summary,
+    dataQuality: { lowQuality, unknownEnergy: energyUncertainFrom },
     declaredCompositionOnly: uncertainRows.length > 0,
     kcal,
     kcalComplete,

@@ -24,8 +24,8 @@ const CATEGORY: Record<string, [string, string]> = {
 };
 const PROCESSING: Record<string, { state: string; preparation: string | null }> = {
   raw: { state: 'raw', preparation: null },
-  dry_weighed_before_soaking: { state: 'raw', preparation: 'Fiocchi secchi non cotti: pesare SECCHI prima dell’ammollo; acqua di ammollo non scolata.' },
-  steam_proxy_boiled: { state: 'cooked_boiled', preparation: 'In casa cotta al vapore; il profilo è quello USDA del prodotto bollito e scolato, usato come approssimazione.' },
+  dry_weighed_before_soaking: { state: 'raw', preparation: 'Pesare i fiocchi SECCHI, poi metterli in ammollo (non cotti); l’acqua di ammollo non si scola. Il profilo è quello dei fiocchi secchi.' },
+  steam_proxy_boiled: { state: 'cooked_steamed', preparation: 'Cotta al vapore. Approssimazione: il profilo è quello USDA del prodotto bollito e scolato (la cottura al vapore perde meno minerali e vitamine idrosolubili).' },
 };
 const report: string[] = [];
 const foodsCatalog = read('alimenti/D_catalogo_sei_alimenti.csv');
@@ -37,8 +37,8 @@ const foods = foodsCatalog.map((f) => {
   const nutrients: Record<string, unknown> = {};
   for (const r of foodsComp.filter((x) => x.product_id === f.id)) {
     if (!r.value_per_100g) continue; // NOT_REPORTED: resta «non disponibile»
-    // vitamina E degli alimenti (USDA, mg di alfa-tocoferolo): forma naturale d-alfa-tocoferolo (RRR)
-    const form = r.nutrient_id === 'vitamin_e' && r.unit === 'mg' ? 'd_alpha_tocopherol' : undefined;
+    // vitamina E: conversione solo se la fonte la identifica esplicitamente come alfa-tocoferolo (USDA «alpha-tocopherol»)
+    const form = r.nutrient_id === 'vitamin_e' && r.unit === 'mg' && /alfa-tocoferolo|alpha-tocopherol/i.test(r.notes) ? 'd_alpha_tocopherol' : undefined;
     nutrients[r.nutrient_id] = { value: r.value_per_100g, unit: r.unit, status: r.status, source: r.source_id, ...(form ? { form } : {}) };
   }
   return {
@@ -51,6 +51,8 @@ const foods = foodsCatalog.map((f) => {
     edible_portion: f.basis,
     source_identifier: f.source_id,
     data_status: f.nutrition_status === 'PARTIAL_RESEARCH' ? 'estimated' : 'unverified',
+    // decisione della nutrizionista: utilizzabili nella formulazione anche con dati parziali (PARTIAL_RESEARCH)
+    available_to_formulate: f.available_to_formulate,
     notes: `${f.notes} · Fonte: ${f.source_url}`,
     nutrients,
   };
@@ -125,9 +127,10 @@ for (const [title, plan] of plans) {
   report.push(`## ${title}`, '');
   report.push(`Esito della verifica: ${plan.errors.length ? `**${plan.errors.length} errori**` : 'nessun errore'} · ${plan.summary.create} nuovi · ${plan.summary.update} aggiornati · ${plan.summary.values} valori importati.`, '');
   for (const e of plan.errors) report.push(`- ERRORE: ${e.productId ?? ''} ${e.message}`);
-  report.push('| Prodotto | ID | Azione | Stato dopo l’importazione | Motivi |', '|---|---|---|---|---|');
+  report.push('| Prodotto | ID | Azione | Utilizzabile nel calcolo | Stato dei dati | Motivi |', '|---|---|---|---|---|---|');
   for (const it of plan.items) {
-    report.push(`| ${it.name} | \`${it.id}\` | ${it.action === 'create' ? 'nuovo' : 'aggiornato'} | ${CATALOG_STATUS_LABEL[it.statusAfter.status]} | ${it.statusAfter.reasons.join('; ')} |`);
+    const usable = 'availableToFormulate' in it.next ? (it.next as Food).availableToFormulate : (it.next as { usableForOptimization: boolean }).usableForOptimization;
+    report.push(`| ${it.name} | \`${it.id}\` | ${it.action === 'create' ? 'nuovo' : 'aggiornato'} | ${usable ? 'sì' : 'no (da attivare)'} | ${CATALOG_STATUS_LABEL[it.statusAfter.status]} | ${[...it.statusAfter.reasons, ...it.statusAfter.info].join('; ')} |`);
   }
   const pending = plan.items.flatMap((i) => i.pendingConversions.map((p) => `${i.id} · ${p.label}: ${p.value} ${p.unit} → ${p.targetUnit}`));
   const conv = plan.items.flatMap((i) => i.valueChanges.filter((v) => v.rule && v.rule.includes('×')).map((v) => `${i.id} · ${v.label}: ${v.sourceValue} ${v.sourceUnit} → ${v.after} ${v.unit} — ${v.rule}`));
@@ -151,11 +154,11 @@ for (const c of convertedExtra) report.push(`- Vitamina E convertita con la form
 for (const e of extra.filter((x) => !convertedExtra.some((c) => c.startsWith(`${x.product_id} · ${x.component} `)))) report.push(`- Componente da convertire, non importato: ${e.product_id} · ${e.component} ${e.declared_amount} ${e.declared_unit} (${e.declared_basis}) — ${e.mapping_status}. ${e.notes}`);
 report.push('- Voci di fonte conservate solo come informazione (nessun limite, nessun calcolo): ' + ['energy_food_kcal', 'carbohydrate_by_difference', 'c18_2_undifferentiated', 'c20_4_undifferentiated', 'vitamin_a_retinol_ug', 'vitamin_a_carotenoid_iu', 'beta_carotene_ug'].map((id) => L.get(id) ?? id).join(', ') + '.');
 report.push('- Cistina e tirosina: importate e usate per Metionina + cistina e Fenilalanina + tirosina (formula dell’allegato F).');
-report.push('- Attivazione: i file chiedono «available_to_formulate = true»; l’importazione non attiva mai i prodotti. Si attivano dal Catalogo quando non sono più «Da completare».');
+report.push('- Attivazione: i 6 alimenti sono **utilizzabili nella formulazione** come chiede il file (decisione della nutrizionista: dati parziali o stimati non impediscono l’uso; fonte, approssimazioni e nutrienti mancanti sono indicati). Gli integratori restano da attivare dall’amministratore: nel file Q-Diet e Omegor sono «condizionali», la farina d’ossa «no»; per Q-Diet va prima confermata la base «per kg».');
 report.push('', '## Scelte di conversione (nessun valore modificato)', '');
 report.push('- ID: quelli dei file. Gli alimenti sono nuovi prodotti (le voci generiche del pacchetto iniziale, es. «Avena», «Carote», «Macinato di manzo», restano «Da completare»). Gli integratori aggiornano `qdiet`, `omegor_vitality`, `bone_meal`.');
 report.push('- Categorie: cereal/oats → Cereali; vegetable/root e vegetable/pumpkin → Verdure.');
-report.push('- Stato: avena «secca da pesare prima dell’ammollo» → crudo, con nota di preparazione; carota e zucca «vapore, proxy bollito» → cotto (bollito) con nota: il profilo è del bollito.');
+report.push('- Stato: avena «pesata secca prima dell’ammollo» → crudo (fiocchi secchi), con nota di preparazione e avvertenza sull’amido non cotto; carota e zucca → «cotto al vapore», con nota: il profilo è quello del bollito, usato come approssimazione.');
 report.push('- Qualità dei valori: i codici REPORTED_USDA_PROXY, DERIVED_APPROXIMATION, PER_KG_ASSUMED_CONFIRM, SCREENSHOT_UNVERIFIED, PROXY_OIL_ONLY diventano «stima» (il codice originale resta nel campo metodo); ANALYTICAL_DECLARED e MANUFACTURER_DECLARED diventano «da etichetta».');
 report.push('- Profili alimenti dichiarati «stima» (PARTIAL_RESEARCH). Versione della fonte non indicata nei file.');
 writeFileSync(new URL('RAPPORTO.md', DIR), report.join('\n') + '\n');

@@ -3,7 +3,7 @@
 import { describe, expect, test } from 'vitest';
 import { auditRecipe } from '../src/engine/audit';
 import { supplementStatus } from '../src/engine/catalogStatus';
-import { applyEnergyMethods, findAssignment, resolveFoodEnergy } from '../src/engine/energy';
+import { applyEnergyMethods, findAssignment, resolveFoodEnergy, resolveSupplementEnergy } from '../src/engine/energy';
 import { formulate } from '../src/engine/formulate';
 import { staleDependencies } from '../src/engine/snapshot';
 import type { EnergyMethod, Food, NutrientLimit, Supplement } from '../src/engine/types';
@@ -91,6 +91,29 @@ function audit(s: Supplement, limits: NutrientLimit[], sQty = 1, foodQty = 500) 
 }
 const check = (a: ReturnType<typeof audit>, metric: string) => a.rows.find((r) => r.metric === metric)!.checks[0];
 
+describe('Revisione della nutrizionista — utilizzabilità, qualità dei dati, verifica della ricetta', () => {
+  test('sintesi della verifica: fabbisogni soddisfatti, non soddisfatti, non verificabili', () => {
+    const a = audit(supp({}), [limit('zinc', 10, null), limit('copper', 50, null), limit('iodine', 0.1, null)]);
+    expect(a.summary).toEqual({ satisfied: ['Zinco'], notMet: [], unverifiable: ['Rame', 'Iodio'] });
+    expect(a.status).toBe('INSUFFICIENT_DATA'); // mancano informazioni essenziali: mai «completa»
+  });
+  test('Q-Diet: base «per kg» da confermare → non usare per una formulazione reale', () => {
+    const q = supp({ nutrients: { zinc: { value: 2, status: 'estimated', source: 'etichetta', method: 'PER_KG_ASSUMED_CONFIRM' } } });
+    const a = audit(q, []);
+    expect(a.blockers.join()).toMatch(/base quantitativa degli additivi da confermare/);
+    expect(supplementStatus(q, refs.nutrients).reasons.join()).toMatch(/base quantitativa/);
+  });
+  test('cottura al vapore: stato «cotto», preparazione mostrata nella verifica', () => {
+    const carrot = food({ id: 'c', name: 'Carota', categoryId: 'vegetable', subcategoryId: 'vegetable_generic', processingState: 'cooked_steamed', preparation: 'Cotta al vapore; profilo del bollito.' });
+    expect(findAssignment(carrot, A)?.processing).toBe('cooked');
+    const c = resolveFoodEnergy(carrot, M, A);
+    expect(c.kcalMePer100g).toBe(170);
+    expect(c.energyMethod?.caution).toBeNull();
+    const a = auditRecipe({ items: [{ kind: 'food', id: 'c', qty: 100 }], foods: { c }, supplements: {}, nutrients: refs.nutrients, limits: [], dog: dog(), dietMoisture: 'wet', settings: DEFAULT_SETTINGS });
+    expect(a.warnings.join()).toMatch(/Carota — preparazione: Cotta al vapore/);
+  });
+});
+
 describe('D20 — integratori: composizione dichiarata, non dichiarato ≠ zero', () => {
   test('rame non dichiarato: massimo rispettato sui valori dichiarati, con incertezza; la ricetta lo dice', () => {
     const a = audit(supp({}), [limit('copper', null, 10)]);
@@ -120,21 +143,27 @@ describe('D20 — integratori: composizione dichiarata, non dichiarato ≠ zero'
     expect(check(a, 'iodine').color).toBe('grey');
     expect(a.rows.find((r) => r.metric === 'iodine')!.missingFrom).toEqual(['Alimento']);
   });
-  test('energia non dichiarata ma peso noto: intervallo prudente (9 kcal/g) per i minimi per 1000 kcal', () => {
-    // 500 g di carne = 1000 kcal; 10 g di integratore senza kcal → fino a 1090 kcal
+  test('energia non dichiarata: sconosciuta, nessun valore sostitutivo; non rende incerti i controlli dei nutrienti', () => {
+    // 500 g di carne = 1000 kcal; 10 g di integratore senza kcal e senza macronutrienti dichiarati
     const s = supp({ kcalPerUnit: null, nutrients: { zinc: { value: 0, status: 'analytical_zero', source: 'etichetta' } } });
     const a = audit(s, [limit('zinc', 19, null, 'per_1000_kcal_me')], 10);
     expect(a.kcal).toBe(1000);
-    expect(a.energyRow.note).toMatch(/fino a 1\.?090 kcal/);
-    const c = check(a, 'zinc'); // 20 mg / 1000 kcal ≥ 19, ma 20 / 1090 × 1000 < 19
-    expect(c.color).toBe('grey');
-    expect(c.message).toMatch(/energia di Integratore non è dichiarata/);
+    expect(a.kcalComplete).toBe(true);
+    expect(a.energyRow.note).toMatch(/Energia sconosciuta per Integratore 10 g \(2% del peso della razione\)/);
+    expect(a.dataQuality!.unknownEnergy).toEqual(['Integratore']);
+    expect(check(a, 'zinc').color).toBe('green'); // 20 mg / 1000 kcal: l'energia mancante non diventa una carenza di zinco
+    expect(a.statusLabel).toMatch(/composizione dichiarata/);
   });
-  test('energia non dichiarata e peso della dose ignoto: energia incompleta (dato essenziale)', () => {
-    const s = supp({ doseUnit: 'capsule', massPerUnitG: null, kcalPerUnit: null });
-    const a = audit(s, [], 1);
-    expect(a.kcalComplete).toBe(false);
-    expect(a.blockers.join(' ')).toMatch(/Energia incompleta/);
+  test('energia stimata solo con un metodo documentabile: macronutrienti dichiarati + metodo approvato', () => {
+    const method = { id: 'fediaf_2025_ingredienti_naturali', version: '2025.1', label: 'FEDIAF 2025', protein: 4, fat: 9, carbohydrate: 4, caution: null };
+    const full = resolveSupplementEnergy(supp({ kcalPerUnit: null, nutrients: { protein: { value: 0.1 }, fat: { value: 0.5 }, carbohydrate_available: { value: 0 } } }), method);
+    expect(full.kcalPerUnit).toBeCloseTo(0.1 * 4 + 0.5 * 9, 6);
+    expect(full.kcalOrigin).toBe('calculated');
+    // senza carboidrati dichiarati (es. Q-Diet, farina d'ossa) o senza metodo: sconosciuta
+    expect(resolveSupplementEnergy(supp({ kcalPerUnit: null, nutrients: { protein: { value: 0.1 }, fat: { value: 0.5 } } }), method).kcalPerUnit).toBeNull();
+    expect(resolveSupplementEnergy(supp({ kcalPerUnit: null, nutrients: { protein: { value: 0.1 }, fat: { value: 0.5 }, carbohydrate_available: { value: 0 } } }), null).kcalPerUnit).toBeNull();
+    // energia dichiarata in etichetta: resta quella
+    expect(resolveSupplementEnergy(supp({ kcalPerUnit: 3 }), method).kcalOrigin).toBe('declared');
   });
   test('omega-3 totali non dichiarati ma EPA e DHA sì: le parti contano come minimo, senza doppio conteggio', () => {
     const fish = supp({ nutrients: { epa: { value: 0.5 }, dha: { value: 0.25 } } });

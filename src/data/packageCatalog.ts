@@ -54,6 +54,7 @@ export const CATEGORIES: Category[] = [
 export const PROCESSING_LABEL: Record<ProcessingState, string> = {
   raw: 'crudo',
   cooked_boiled: 'cotto (bollito)',
+  cooked_steamed: 'cotto al vapore',
   cooked_baked: 'cotto (al forno)',
   cooked_other: 'cotto',
   dried: 'essiccato',

@@ -62,7 +62,7 @@ export function estimateMeFromMacros(
 
 export function processingGroup(state: ProcessingState): ProcessingGroup | null {
   if (state === 'raw') return 'raw';
-  if (state === 'cooked_boiled' || state === 'cooked_baked' || state === 'cooked_other' || state === 'canned') return 'cooked';
+  if (state === 'cooked_boiled' || state === 'cooked_steamed' || state === 'cooked_baked' || state === 'cooked_other' || state === 'canned') return 'cooked';
   if (state === 'dried') return 'any';
   return null; // crudo o non specificato: la preparazione non è nota
 }
@@ -125,6 +125,18 @@ export function energyGap(food: Food, methods: EnergyMethod[], assignments: Ener
 /** Categoria con cui si associa un metodo energetico agli integratori (solo quote dei macronutrienti dichiarati). */
 export const SUPPLEMENT_ENERGY_CATEGORY = 'supplement';
 
+/**
+ * Energia per dose di un integratore che non la dichiara: si stima SOLO se l'etichetta dichiara proteine, grassi e
+ * carboidrati disponibili (anche come zero documentato) e c'è un metodo approvato per gli integratori.
+ * Altrimenti resta sconosciuta: nessun valore sostitutivo.
+ */
+export function resolveSupplementEnergy(s: Supplement, method: AppliedEnergyMethod | null): Supplement {
+  if (s.kcalOrigin !== 'calculated' && s.kcalPerUnit !== null) return { ...s, kcalOrigin: 'declared', energyMethod: method };
+  const kcal = method ? estimateMeFromMacros(s.nutrients, method) : null; // per dose: i macronutrienti sono in g per dose
+  if (kcal === null) return { ...s, kcalPerUnit: null, kcalOrigin: null, energyMethod: method };
+  return { ...s, kcalPerUnit: kcal, kcalOrigin: 'calculated', energyMethod: method };
+}
+
 /** Applica i metodi energetici a tutto il catalogo: EM calcolata degli alimenti e fattori per le quote energetiche. */
 export function applyEnergyMethods<C extends { foods: Food[]; supplements: Supplement[]; energyMethods: EnergyMethod[]; energyAssignments: EnergyAssignment[] }>(cat: C): C {
   const a = cat.energyAssignments.find((x) => x.categoryId === SUPPLEMENT_ENERGY_CATEGORY);
@@ -135,7 +147,7 @@ export function applyEnergyMethods<C extends { foods: Food[]; supplements: Suppl
   return {
     ...cat,
     foods: cat.foods.map((f) => resolveFoodEnergy(f, cat.energyMethods, cat.energyAssignments)),
-    supplements: cat.supplements.map((s) => ({ ...s, energyMethod: suppMethod })),
+    supplements: cat.supplements.map((s) => resolveSupplementEnergy(s, suppMethod)),
   };
 }
 

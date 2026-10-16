@@ -16,9 +16,20 @@ export const CATALOG_STATUS_LABEL: Record<CatalogStatus, string> = {
 
 export const CATALOG_STATUS_HELP: Record<CatalogStatus, string> = {
   verified: 'Composizione del prodotto documentata e convalidata da un amministratore. Riguarda solo il prodotto: non dice nulla sulla ricetta completa, che ha una verifica a parte.',
-  partial: 'Composizione disponibile solo in parte o non convalidata: consultabile, ma una ricetta che lo usa non può essere dichiarata completa.',
+  partial: 'Composizione disponibile in parte, stimata o non convalidata: utilizzabile nel calcolo; fonte, approssimazioni e nutrienti mancanti sono indicati e la verifica della ricetta ne tiene conto.',
   to_complete: 'Presente in catalogo ma senza i dati necessari: non utilizzabile nel calcolo.',
 };
+
+/** Per gli integratori «Verificato» significa: dati dichiarati verificati (non composizione completa). */
+export const SUPPLEMENT_STATUS_HELP: Record<CatalogStatus, string> = {
+  verified: 'Dati DICHIARATI in etichetta verificati e convalidati da un amministratore. I nutrienti non dichiarati restano sconosciuti: non è la composizione nutrizionale completa.',
+  partial: 'Dati dichiarati disponibili ma non ancora verificati del tutto: utilizzabile nel calcolo, con le incertezze indicate.',
+  to_complete: 'Mancano etichetta o composizione dichiarata: non utilizzabile nel calcolo.',
+};
+
+export function statusHelp(kind: 'food' | 'supplement', status: CatalogStatus): string {
+  return kind === 'supplement' ? SUPPLEMENT_STATUS_HELP[status] : CATALOG_STATUS_HELP[status];
+}
 
 export interface StatusResult {
   status: CatalogStatus;
@@ -104,9 +115,15 @@ export function supplementStatus(s: Supplement, nutrients: Nutrient[]): StatusRe
   }
   // i nutrienti sono dichiarati per unità: il peso della capsula serve per costi e sostanza secca, non per il calcolo
   if (s.doseUnit !== 'g' && s.doseUnit !== 'ml' && s.massPerUnitG === null) reasons.push('peso della singola unità non indicato');
-  if (s.kcalPerUnit === null) reasons.push('energia per dose non dichiarata (inserire le kcal, o 0 se documentato)');
+  // Si verificano i dati DICHIARATI: energia non dichiarata e etichetta con soli additivi aggiunti non impediscono la
+  // verifica (decisione della nutrizionista), ma si dichiarano: la composizione completa resta non nota.
+  if (s.kcalPerUnit === null) info.push('Energia per dose non dichiarata e non stimabile dai macronutrienti dichiarati: sconosciuta.');
+  else if (s.kcalOrigin === 'calculated' && s.energyMethod) info.push(`Energia per dose stimata dai macronutrienti dichiarati (${s.energyMethod.label}).`);
+  if (s.labelAddedOnly) info.push('L’etichetta dichiara gli additivi aggiunti e alcuni componenti analitici: verificati i dati dichiarati, non la composizione completa.');
+  if (Object.values(s.nutrients).some((v) => v.value !== null && /PER_KG_ASSUMED_CONFIRM/.test(v.method ?? ''))) {
+    reasons.push('base quantitativa degli additivi da confermare (es. «per kg»)');
+  }
   if (!s.version) reasons.push('variante/lotto o versione del prodotto non indicati');
-  if (s.labelAddedOnly) reasons.push('l’etichetta dichiara solo le quantità aggiunte: non è un’analisi completa');
   const readyForValidation = reasons.length === 0;
   if (!s.validatedAt && s.status !== 'test_fixture') reasons.push('non ancora convalidato da un amministratore');
   return { status: reasons.length ? 'partial' : 'verified', reasons, missing, info, readyForValidation };

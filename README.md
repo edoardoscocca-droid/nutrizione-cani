@@ -55,5 +55,6 @@ npx tsx scripts/import-catalog.ts alimenti dati/mio_file.csv > import.sql   # im
 
 Dati ricevuti il 16/10/2026: 6 alimenti (USDA) e 3 integratori (Q.Diet Compensa, Omegor Vitality 1000, farina d'ossa),
 importati senza modifiche (`dati/importazioni/2026-10-16/RAPPORTO.md`). Gli alimenti hanno l'energia metabolizzabile calcolata
-con il metodo FEDIAF 2025 4/9/4 (decisione D4) e sono «Dati parziali», come gli integratori. Per attivarli:
+con il metodo FEDIAF 2025 4/9/4 (decisione D4), sono «Dati parziali» e già **utilizzabili** nella formulazione.
+Gli integratori sono «Dati parziali» e vanno attivati dall'amministratore (Q-Diet solo dopo aver confermato la base «per kg»). Per attivarli:
 importare o inserire le composizioni (Catalogo → Importa), controllare i motivi dello stato, convalidare e attivare il prodotto.

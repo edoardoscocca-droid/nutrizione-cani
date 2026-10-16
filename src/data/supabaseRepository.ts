@@ -68,6 +68,9 @@ export class SupabaseRepository implements Repository {
       status: r.value_status as NutrientValue['status'],
       source: (r.source_id as string) ?? null,
       method: (r.method as string) ?? null,
+      sourceValue: n(r.source_value),
+      sourceUnit: (r.source_unit as string) ?? null,
+      form: (r.chemical_form as string) ?? null,
     });
     const foodNut = new Map<string, Record<string, NutrientValue>>();
     for (const r of fn) {
@@ -177,6 +180,7 @@ export class SupabaseRepository implements Repository {
           doseUnit: s.dose_unit as Supplement['doseUnit'],
           massPerUnitG: n(s.mass_per_unit_g),
           kcalPerUnit: n(s.kcal_per_unit),
+          kcalOrigin: s.kcal_per_unit === null ? null : 'declared',
           integerDose: s.integer_dose as boolean,
           maxDailyUnits: n(s.max_daily_units),
           maxDailySource: (s.max_daily_source as string) ?? null,
@@ -336,7 +340,7 @@ export class SupabaseRepository implements Repository {
     const units = await this.units();
     const rows = Object.entries(f.nutrients).map(([nid, v]) => ({
       food_id: f.id, nutrient_id: nid, amount_per_100g: v.value, unit: units.get(nid), value_status: v.value === null ? 'unknown' : (v.status ?? 'measured'),
-      source_id: v.source ?? null, method: v.method ?? null,
+      source_id: v.source ?? null, method: v.method ?? null, chemical_form: v.form ?? null,
     }));
     if (rows.length) check(await this.client.from('food_nutrients').upsert(rows));
     // attivazione per ultima: il database la rifiuta se mancano energia o stato dei dati
@@ -346,7 +350,7 @@ export class SupabaseRepository implements Repository {
     check(
       await this.client.from('supplements').upsert({
         id: s.id, name_it: s.name, brand: s.brand ?? null, product_variant: s.variant ?? null, class: s.supplementClass ?? null, dose_unit: s.doseUnit,
-        mass_per_unit_g: s.massPerUnitG, kcal_per_unit: s.kcalPerUnit, integer_dose: s.integerDose, max_daily_units: s.maxDailyUnits,
+        mass_per_unit_g: s.massPerUnitG, kcal_per_unit: s.kcalOrigin === 'calculated' ? null : s.kcalPerUnit, integer_dose: s.integerDose, max_daily_units: s.maxDailyUnits,
         max_daily_source: s.maxDailySource ?? null, label_source: s.labelSource ?? null, label_added_only: !!s.labelAddedOnly,
         product_version: s.version ?? null, status: s.status, notes: s.notes ?? null,
       }),
@@ -354,7 +358,7 @@ export class SupabaseRepository implements Repository {
     const units = await this.units();
     const rows = Object.entries(s.nutrients).map(([nid, v]) => ({
       supplement_id: s.id, nutrient_id: nid, amount_per_unit: v.value, unit: units.get(nid), value_status: v.value === null ? 'unknown' : (v.status ?? 'label'),
-      source_id: v.source ?? null,
+      source_id: v.source ?? null, method: v.method ?? null, chemical_form: v.form ?? null,
     }));
     if (rows.length) check(await this.client.from('supplement_nutrients').upsert(rows));
     check(await this.client.from('supplements').update({ usable_for_optimization: s.usableForOptimization }).eq('id', s.id));

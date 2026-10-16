@@ -59,27 +59,34 @@ describe('Stato del catalogo', () => {
     g.nutrients.protein = { value: null };
     expect(foodStatus(g, N).status).toBe('to_complete');
   });
-  test('integratore con etichetta solo «aggiunti» → parziale', () => {
-    const s = { ...structuredClone(supplement('test_multi')), status: 'review_required' as const, labelAddedOnly: true, validatedAt: null };
-    expect(supplementStatus(s, N).reasons.join()).toMatch(/solo le quantità aggiunte/);
-    expect(supplementStatus(s, N).status).toBe('partial');
+  test('integratore con etichetta solo «aggiunti»: si verificano i dati dichiarati, la composizione completa resta non nota', () => {
+    const s = { ...structuredClone(supplement('test_multi')), status: 'review_required' as const, labelAddedOnly: true, kcalPerUnit: null, version: 'lotto 1', validatedAt: '2026-10-16' };
+    const st = supplementStatus(s, N);
+    expect(st.status).toBe('verified'); // né «solo additivi» né energia non dichiarata impediscono la verifica
+    expect(st.info.join(' ')).toMatch(/additivi aggiunti/);
+    expect(st.info.join(' ')).toMatch(/Energia per dose non dichiarata/);
   });
 });
 
 describe('Stato e motore', () => {
-  test('alimento con dati parziali: entra nel calcolo ma la ricetta non è dichiarata completa', async () => {
+  test('alimento con dati parziali: entra nel calcolo; la ricetta dichiara la qualità dei dati', async () => {
     const partial = realFood({ availableToFormulate: true });
     const inp = input(['test_oats'], ['test_multi', 'test_bone_meal']);
     inp.foods = [{ food: partial }, ...inp.foods];
     const r = await formulate(inp);
     expect(r.outcome).toBe('solved');
     expect(r.items.find((i) => i.id === 'real_beef')!.qty).toBeGreaterThan(0);
-    expect(r.audit!.status).toBe('INSUFFICIENT_DATA');
-    expect(r.audit!.blockers.join()).toMatch(/Manzo reale: dati parziali/);
-    // convalidato → stesso calcolo, ricetta verificata
+    // utilizzabilità ≠ qualità: i controlli si fanno, e il risultato dice su quali dati
+    expect(r.audit!.status).toBe('VERIFIED_AVAILABLE_CHECKS');
+    expect(r.audit!.statusLabel).toMatch(/dati di composizione stimati o non convalidati \(Manzo reale\)/);
+    expect(r.audit!.warnings.join()).toMatch(/Manzo reale: dati parziali/);
+    expect(r.audit!.dataQuality!.lowQuality).toEqual(['Manzo reale']);
+    // convalidato → stesso calcolo, nessuna riserva sulla qualità
     const inp2 = input(['test_oats'], ['test_multi', 'test_bone_meal']);
     inp2.foods = [{ food: { ...partial, validatedAt: '2026-10-17', validatedBy: 'admin' } }, ...inp2.foods];
-    expect((await formulate(inp2)).audit!.status).toBe('VERIFIED_AVAILABLE_CHECKS');
+    const a2 = (await formulate(inp2)).audit!;
+    expect(a2.status).toBe('VERIFIED_AVAILABLE_CHECKS');
+    expect(a2.statusLabel).not.toMatch(/stimati/);
   });
   test('alimento da completare: escluso anche se qualcuno lo avesse attivato', async () => {
     const f = { ...packageFoods()[0], availableToFormulate: true };
@@ -99,7 +106,7 @@ describe('Stato e motore', () => {
       dietMoisture: 'wet',
       settings: DEFAULT_SETTINGS,
     });
-    expect(a.blockers.join()).toMatch(/dati parziali/);
+    expect(a.warnings.join()).toMatch(/dati parziali/);
   });
 });
 
@@ -136,13 +143,12 @@ describe('Importazione: lettura e associazione dei nutrienti', () => {
     expect(plan.items[0].statusAfter.status).toBe('to_complete');
     expect(plan.items[0].statusAfter.reasons[0]).toMatch(/grassi/);
   });
-  test('JSON con nutrienti come oggetto; colonne di attivazione ignorate con avviso', async () => {
+  test('JSON con nutrienti come oggetto; l’attivazione indicata nel file si applica (non è una nuova versione)', async () => {
     const cat = await catalogFor();
     const json = JSON.stringify({ foods: [{ id: 'anchovies', kcal_me_per_100g: 131, available_to_formulate: true, nutrients: { Proteine: { value: 20.3, unit: 'g', source: 'FDC 2' }, fat: { value: 4.8, unit: 'g', source: 'FDC 2' } } }] });
     const plan = planImport(parseImport(json, 'foods', N), cat, 'a.json');
     expect(plan.errors).toEqual([]);
-    expect(plan.warnings.some((w) => /ignorato/.test(w.message))).toBe(true);
-    expect((plan.items[0].next as Food).availableToFormulate).toBe(false);
+    expect((plan.items[0].next as Food).availableToFormulate).toBe(true);
     expect(plan.items[0].statusAfter.status).toBe('partial');
   });
   test('integratore: per_dose convertito per 1 dose, «added» rende l’etichetta non completa', async () => {

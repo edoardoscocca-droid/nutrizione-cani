@@ -3,13 +3,12 @@
 Aggiornato al 16/10/2026, dopo le decisioni della nutrizionista su energia (D4), vitamine (D19) e integratori (D20).
 
 ## 1. Decisioni con la nutrizionista
-Già decise e applicate: energia FEDIAF 2025 4/9/4 per tipologia (D4), conversioni vitamina D ed E per forma chimica (D19),
-integratori sulla composizione dichiarata (D20). I 6 alimenti ora hanno l'energia calcolata e sono «Dati parziali».
-1. **Criteri di «Verificato» (D18)** — la nutrizionista deve confermare il testo in `docs/CATALOGO.md` («Criteri di Verificato»).
-2. **Energia per dose degli integratori (D21)** — kcal per dose dall'etichetta (o 0 se documentato): senza, con Q-Diet in ricetta
-   alcuni minimi (proteine, metionina, triptofano, B5) restano «non dimostrati».
-3. Facoltativo: coefficienti di digeribilità per amido o verdure crude (oggi solo un'avvertenza).
-4. Confermare le altre scelte tecniche (D1–D17 in `ANALISI.md`).
+Decise e applicate: energia FEDIAF 2025 4/9/4 per tipologia (D4), vitamine D ed E per forma chimica (D19), integratori sulla
+composizione dichiarata (D20), criteri di «Verificato» e utilizzabilità (D18), energia degli integratori senza valori sostitutivi (D21).
+I 6 alimenti sono utilizzabili nella formulazione («Dati parziali»).
+1. **Q-Diet**: confermare la base quantitativa degli additivi (per kg?) prima di usarlo in formulazioni reali.
+2. Facoltativo: coefficienti di digeribilità per amido o verdure crude (oggi solo un'avvertenza).
+3. Confermare le altre scelte tecniche (D1–D17 in `ANALISI.md`).
 
 ## 2. Dati da procurare (foto o schede)
 - **Q.Diet Compensa**: foto della tabella sulla confezione, per confermare che vitamine e minerali sono «per kg»; kcal se indicate; lotto.

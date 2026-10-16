@@ -48,6 +48,13 @@ export function StatusBox({ audit }: { audit: AuditResult }) {
       {audit.dataFlags.testData && <div className="test-flag">PROVA — dati fittizi, non usare per alimentare un cane</div>}
       <strong>{audit.statusLabel}</strong>
       {audit.status === 'VERIFIED_AVAILABLE_CHECKS' && <div className="small">Non è una garanzia di completezza clinica: vale solo per i controlli e i dati disponibili.</div>}
+      {audit.summary && (
+        <div className="small">
+          <div><strong>Fabbisogni dimostrabilmente soddisfatti ({audit.summary.satisfied.length}):</strong> {audit.summary.satisfied.join(', ') || '—'}</div>
+          <div><strong>Non soddisfatti ({audit.summary.notMet.length}):</strong> {audit.summary.notMet.join(', ') || '—'}</div>
+          <div><strong>Non verificabili per dati mancanti ({audit.summary.unverifiable.length}):</strong> {audit.summary.unverifiable.join(', ') || '—'}</div>
+        </div>
+      )}
       {audit.blockers.length > 0 && (
         <ul>
           {audit.blockers.map((b) => (

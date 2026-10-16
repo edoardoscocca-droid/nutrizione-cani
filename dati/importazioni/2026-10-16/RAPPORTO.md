@@ -6,14 +6,14 @@ Generato da `scripts/adapters/dati-2026-10-16.ts`. File originali in `originali/
 
 Esito della verifica: nessun errore · 6 nuovi · 0 aggiornati · 265 valori importati.
 
-| Prodotto | ID | Azione | Stato dopo l’importazione | Motivi |
-|---|---|---|---|---|
-| Macinato di manzo crudo 3% grassi | `beef_03` | nuovo | Dati parziali | 4 nutrienti richiesti senza valore; 40 valori stimati o di qualità non dichiarata; versione della fonte non indicata; profilo dichiarato come stima; non ancora convalidato da un amministratore |
-| Macinato di manzo crudo 15% grassi | `beef_15` | nuovo | Dati parziali | 4 nutrienti richiesti senza valore; 42 valori stimati o di qualità non dichiarata; versione della fonte non indicata; profilo dichiarato come stima; non ancora convalidato da un amministratore |
-| Macinato di manzo crudo 30% grassi | `beef_30` | nuovo | Dati parziali | 4 nutrienti richiesti senza valore; 40 valori stimati o di qualità non dichiarata; versione della fonte non indicata; profilo dichiarato come stima; non ancora convalidato da un amministratore |
-| Avena in fiocchi secca non fortificata | `oat_dry` | nuovo | Dati parziali | 4 nutrienti richiesti senza valore; 38 valori stimati o di qualità non dichiarata; versione della fonte non indicata; profilo dichiarato come stima; non ancora convalidato da un amministratore |
-| Carota cotta al vapore (proxy USDA bollita) | `carrot_cooked` | nuovo | Dati parziali | 4 nutrienti richiesti senza valore; 41 valori stimati o di qualità non dichiarata; versione della fonte non indicata; profilo dichiarato come stima; non ancora convalidato da un amministratore |
-| Zucca cotta al vapore (proxy USDA bollita) | `pumpkin_cooked` | nuovo | Dati parziali | 7 nutrienti richiesti senza valore; 39 valori stimati o di qualità non dichiarata; versione della fonte non indicata; profilo dichiarato come stima; non ancora convalidato da un amministratore |
+| Prodotto | ID | Azione | Utilizzabile nel calcolo | Stato dei dati | Motivi |
+|---|---|---|---|---|---|
+| Macinato di manzo crudo 3% grassi | `beef_03` | nuovo | sì | Dati parziali | 4 nutrienti richiesti senza valore; 40 valori stimati o di qualità non dichiarata; versione della fonte non indicata; profilo dichiarato come stima; non ancora convalidato da un amministratore; Energia calcolata con FEDIAF 2025 · 4/9/4 (ingredienti naturali) (v. 2025.1). |
+| Macinato di manzo crudo 15% grassi | `beef_15` | nuovo | sì | Dati parziali | 4 nutrienti richiesti senza valore; 42 valori stimati o di qualità non dichiarata; versione della fonte non indicata; profilo dichiarato come stima; non ancora convalidato da un amministratore; Energia calcolata con FEDIAF 2025 · 4/9/4 (ingredienti naturali) (v. 2025.1). |
+| Macinato di manzo crudo 30% grassi | `beef_30` | nuovo | sì | Dati parziali | 4 nutrienti richiesti senza valore; 40 valori stimati o di qualità non dichiarata; versione della fonte non indicata; profilo dichiarato come stima; non ancora convalidato da un amministratore; Energia calcolata con FEDIAF 2025 · 4/9/4 (ingredienti naturali) (v. 2025.1). |
+| Avena in fiocchi secca non fortificata | `oat_dry` | nuovo | sì | Dati parziali | 4 nutrienti richiesti senza valore; 38 valori stimati o di qualità non dichiarata; versione della fonte non indicata; profilo dichiarato come stima; non ancora convalidato da un amministratore; Energia calcolata con FEDIAF 2025 · 4/9/4 (ingredienti naturali) (v. 2025.1).; Avvertenza energia: Amido non cotto: nel cane è meno digeribile; l'energia calcolata può essere sovrastimata. |
+| Carota cotta al vapore (proxy USDA bollita) | `carrot_cooked` | nuovo | sì | Dati parziali | 4 nutrienti richiesti senza valore; 41 valori stimati o di qualità non dichiarata; versione della fonte non indicata; profilo dichiarato come stima; non ancora convalidato da un amministratore; Energia calcolata con FEDIAF 2025 · 4/9/4 (ingredienti naturali) (v. 2025.1). |
+| Zucca cotta al vapore (proxy USDA bollita) | `pumpkin_cooked` | nuovo | sì | Dati parziali | 7 nutrienti richiesti senza valore; 39 valori stimati o di qualità non dichiarata; versione della fonte non indicata; profilo dichiarato come stima; non ancora convalidato da un amministratore; Energia calcolata con FEDIAF 2025 · 4/9/4 (ingredienti naturali) (v. 2025.1). |
 
 **Valori convertiti con i fattori approvati (D19)**:
 
@@ -32,11 +32,11 @@ Esito della verifica: nessun errore · 6 nuovi · 0 aggiornati · 265 valori imp
 
 Esito della verifica: nessun errore · 0 nuovi · 3 aggiornati · 38 valori importati.
 
-| Prodotto | ID | Azione | Stato dopo l’importazione | Motivi |
-|---|---|---|---|---|
-| Q.Diet Compensa (standard, NON Crescita/Ultra) | `qdiet` | aggiornato | Dati parziali | 18 valori stimati o di qualità non dichiarata; energia per dose non dichiarata (inserire le kcal, o 0 se documentato); variante/lotto o versione del prodotto non indicati; l’etichetta dichiara solo le quantità aggiunte: non è un’analisi completa; non ancora convalidato da un amministratore |
-| Omegor Vitality 1000 (capsula) | `omegor_vitality` | aggiornato | Dati parziali | 1 valori stimati o di qualità non dichiarata; peso della singola unità non indicato; energia per dose non dichiarata (inserire le kcal, o 0 se documentato); variante/lotto o versione del prodotto non indicati; non ancora convalidato da un amministratore |
-| Farina d ossa (marca/prodotto NON confermato) | `bone_meal` | aggiornato | Dati parziali | 7 valori stimati o di qualità non dichiarata; energia per dose non dichiarata (inserire le kcal, o 0 se documentato); variante/lotto o versione del prodotto non indicati; non ancora convalidato da un amministratore |
+| Prodotto | ID | Azione | Utilizzabile nel calcolo | Stato dei dati | Motivi |
+|---|---|---|---|---|---|
+| Q.Diet Compensa (standard, NON Crescita/Ultra) | `qdiet` | aggiornato | no (da attivare) | Dati parziali | 18 valori stimati o di qualità non dichiarata; base quantitativa degli additivi da confermare (es. «per kg»); variante/lotto o versione del prodotto non indicati; non ancora convalidato da un amministratore; 17 nutrienti richiesti non dichiarati in etichetta: sconosciuti, non zero.; Energia per dose non dichiarata e non stimabile dai macronutrienti dichiarati: sconosciuta.; L’etichetta dichiara gli additivi aggiunti e alcuni componenti analitici: verificati i dati dichiarati, non la composizione completa. |
+| Omegor Vitality 1000 (capsula) | `omegor_vitality` | aggiornato | no (da attivare) | Dati parziali | 1 valori stimati o di qualità non dichiarata; peso della singola unità non indicato; variante/lotto o versione del prodotto non indicati; non ancora convalidato da un amministratore; 36 nutrienti richiesti non dichiarati in etichetta: sconosciuti, non zero.; Energia per dose non dichiarata e non stimabile dai macronutrienti dichiarati: sconosciuta. |
+| Farina d ossa (marca/prodotto NON confermato) | `bone_meal` | aggiornato | no (da attivare) | Dati parziali | 7 valori stimati o di qualità non dichiarata; variante/lotto o versione del prodotto non indicati; non ancora convalidato da un amministratore; 33 nutrienti richiesti non dichiarati in etichetta: sconosciuti, non zero.; Energia per dose non dichiarata e non stimabile dai macronutrienti dichiarati: sconosciuta. |
 
 **Valori convertiti con i fattori approvati (D19)**:
 
@@ -69,12 +69,12 @@ Metodo della tipologia applicato alla composizione importata. L’energia «uman
 - Componente da convertire, non importato: qdiet · Ceneri grezze 73 % (per 100g) — ANALYTICAL_DECLARED. Non definito nel dizionario nutrienti corrente
 - Voci di fonte conservate solo come informazione (nessun limite, nessun calcolo): Energia alimentare (uomo, NON EM cane), Carboidrati per differenza (fonte), Acido grasso 18:2 non differenziato (fonte), Acido grasso 20:4 non differenziato (fonte), Retinolo (fonte, µg), Vitamina A da carotenoidi (UI per uso umano), Beta-carotene (fonte).
 - Cistina e tirosina: importate e usate per Metionina + cistina e Fenilalanina + tirosina (formula dell’allegato F).
-- Attivazione: i file chiedono «available_to_formulate = true»; l’importazione non attiva mai i prodotti. Si attivano dal Catalogo quando non sono più «Da completare».
+- Attivazione: i 6 alimenti sono **utilizzabili nella formulazione** come chiede il file (decisione della nutrizionista: dati parziali o stimati non impediscono l’uso; fonte, approssimazioni e nutrienti mancanti sono indicati). Gli integratori restano da attivare dall’amministratore: nel file Q-Diet e Omegor sono «condizionali», la farina d’ossa «no»; per Q-Diet va prima confermata la base «per kg».
 
 ## Scelte di conversione (nessun valore modificato)
 
 - ID: quelli dei file. Gli alimenti sono nuovi prodotti (le voci generiche del pacchetto iniziale, es. «Avena», «Carote», «Macinato di manzo», restano «Da completare»). Gli integratori aggiornano `qdiet`, `omegor_vitality`, `bone_meal`.
 - Categorie: cereal/oats → Cereali; vegetable/root e vegetable/pumpkin → Verdure.
-- Stato: avena «secca da pesare prima dell’ammollo» → crudo, con nota di preparazione; carota e zucca «vapore, proxy bollito» → cotto (bollito) con nota: il profilo è del bollito.
+- Stato: avena «pesata secca prima dell’ammollo» → crudo (fiocchi secchi), con nota di preparazione e avvertenza sull’amido non cotto; carota e zucca → «cotto al vapore», con nota: il profilo è quello del bollito, usato come approssimazione.
 - Qualità dei valori: i codici REPORTED_USDA_PROXY, DERIVED_APPROXIMATION, PER_KG_ASSUMED_CONFIRM, SCREENSHOT_UNVERIFIED, PROXY_OIL_ONLY diventano «stima» (il codice originale resta nel campo metodo); ANALYTICAL_DECLARED e MANUFACTURER_DECLARED diventano «da etichetta».
 - Profili alimenti dichiarati «stima» (PARTIAL_RESEARCH). Versione della fonte non indicata nei file.

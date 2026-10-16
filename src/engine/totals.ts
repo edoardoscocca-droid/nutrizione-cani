@@ -12,8 +12,6 @@ import type { EnergyFactors, Food, Nutrient, RecipeItem, Supplement } from './ty
 export interface ItemData {
   item: RecipeItem;
   kind: 'food' | 'supplement';
-  /** massa di una unità di quantità in grammi (1 per gli alimenti), se nota. */
-  gramsPerQty: number | null;
   name: string;
   /** apporto per unità di quantità (per 1 g di alimento, per 1 unità di integratore). */
   kcalPerQty: number | null;
@@ -40,7 +38,6 @@ export function foodData(item: RecipeItem, food: Food): ItemData {
   return {
     item,
     kind: 'food',
-    gramsPerQty: 1,
     name: food.name,
     kcalPerQty: food.kcalMePer100g === null ? null : food.kcalMePer100g / 100,
     macroFactors: food.energyMethod ?? null,
@@ -55,7 +52,6 @@ export function supplementData(item: RecipeItem, s: Supplement): ItemData {
   return {
     item,
     kind: 'supplement',
-    gramsPerQty: s.doseUnit === 'g' ? 1 : s.massPerUnitG,
     name: s.name,
     kcalPerQty: s.kcalPerUnit,
     macroFactors: s.energyMethod ?? null,
@@ -89,31 +85,9 @@ function sum(items: ItemData[], get: (d: ItemData) => number | null): Total {
   return t;
 }
 
-/** Energia del grasso puro: limite fisico superiore dell'energia di un grammo di qualsiasi componente. */
-export const MAX_KCAL_PER_G = 9;
-
-export interface EnergyTotal extends Total {
-  /**
-   * Energia massima possibile degli integratori che non dichiarano le kcal (peso della dose × 9 kcal/g);
-   * null se il peso della dose non è noto (energia non delimitabile → totale incompleto).
-   */
-  undeclaredMax: number | null;
-}
-
-export function totalEnergy(items: ItemData[]): EnergyTotal {
-  const t = sum(items, (d) => d.kcalPerQty);
-  let max: number | null = 0;
-  for (const d of items) {
-    if (!(d.item.qty > 0) || d.kind !== 'supplement' || d.kcalPerQty !== null) continue;
-    if (d.gramsPerQty === null) max = null;
-    else if (max !== null) max += d.gramsPerQty * d.item.qty * MAX_KCAL_PER_G;
-  }
-  // senza peso della dose l'energia non dichiarata non ha un limite: dato essenziale mancante
-  if (max === null) {
-    t.complete = false;
-    t.missingFrom.push(...t.undeclaredFrom.filter((n) => !t.missingFrom.includes(n)));
-  }
-  return { ...t, undeclaredMax: max };
+/** Energia: gli integratori senza kcal (né dichiarate né stimabili con un metodo) sono «energia sconosciuta», non zero. */
+export function totalEnergy(items: ItemData[]): Total {
+  return sum(items, (d) => d.kcalPerQty);
 }
 
 /**
@@ -176,7 +150,7 @@ export interface DerivedValue {
 }
 
 export interface RecipeTotals {
-  energy: EnergyTotal;
+  energy: Total;
   nutrients: Record<string, Total>;
   derived: Record<string, DerivedValue>;
 }
@@ -228,7 +202,7 @@ export function computeTotals(items: ItemData[], nutrients: Nutrient[], legacyFa
     if (noMethod.length) derived[id] = { value: null, complete: false, reason: `nessun metodo energetico per ${noMethod.join(', ')}` };
     else if (!t || !t.complete || t.noData) derived[id] = { value: null, complete: false, reason: 'dati dei macronutrienti incompleti' };
     else if (kcal === null) derived[id] = { value: null, complete: false, reason: 'energia della ricetta incompleta' };
-    else derived[id] = { value: (100 * macroKcal) / kcal, complete: true, undeclaredFrom: [...new Set([...t.undeclaredFrom, ...(energy.undeclaredMax ? energy.undeclaredFrom : [])])] };
+    else derived[id] = { value: (100 * macroKcal) / kcal, complete: true, undeclaredFrom: [...new Set([...t.undeclaredFrom, ...energy.undeclaredFrom])] };
   }
   return { energy, nutrients: out, derived };
 }

@@ -65,6 +65,7 @@ export interface ValueChange {
   source: string | null;
   basis: string | null;
   method: string | null;
+  form?: string | null;
   declared: string | null;
 }
 
@@ -258,11 +259,13 @@ const FOOD_FIELDS: Record<string, string[]> = {
   sourceUrl: ['source url', 'url fonte'],
   sourceVersion: ['source version', 'versione fonte'],
   dataStatus: ['data status', 'qualita dati'],
+  availableToFormulate: ['available to formulate', 'utilizzabile', 'attivo per la formulazione'],
   uncertainty: ['uncertainty', 'incertezza'],
   notes: ['notes', 'note'],
 };
 const SUPP_FIELDS: Record<string, string[]> = {
   id: ['id', 'product id', 'supplement id', 'codice'],
+  usableForOptimization: ['usable for optimization', 'utilizzabile', 'attivo per la formulazione'],
   name: ['name it', 'name', 'nome'],
   brand: ['brand', 'marca'],
   variant: ['product variant', 'variant', 'variante'],
@@ -451,8 +454,8 @@ function parseJson(text: string, kind: ImportKind, out: ParsedImport): ParsedImp
 
 const ID_RE = /^[a-z0-9][a-z0-9_]{1,62}$/;
 const CLEAR_TOKENS = new Set(['null', 'na', 'n a', 'nd', 'n d', 'non disponibile']);
-const PROCESSING: ProcessingState[] = ['raw', 'cooked_boiled', 'cooked_baked', 'cooked_other', 'dried', 'canned', 'raw_or_unspecified'];
-const PROCESSING_ALIASES: Record<string, ProcessingState> = { crudo: 'raw', bollito: 'cooked_boiled', lesso: 'cooked_boiled', 'al forno': 'cooked_baked', cotto: 'cooked_other', essiccato: 'dried', 'in scatola': 'canned' };
+const PROCESSING: ProcessingState[] = ['raw', 'cooked_boiled', 'cooked_steamed', 'cooked_baked', 'cooked_other', 'dried', 'canned', 'raw_or_unspecified'];
+const PROCESSING_ALIASES: Record<string, ProcessingState> = { crudo: 'raw', bollito: 'cooked_boiled', lesso: 'cooked_boiled', 'al vapore': 'cooked_steamed', vapore: 'cooked_steamed', steamed: 'cooked_steamed', 'al forno': 'cooked_baked', cotto: 'cooked_other', essiccato: 'dried', 'in scatola': 'canned' };
 const DOSE_UNITS: Record<string, DoseUnit> = { g: 'g', gram: 'g', grammi: 'g', ml: 'ml', capsule: 'capsule', capsula: 'capsule', tablet: 'tablet', compressa: 'tablet', scoop: 'scoop', misurino: 'scoop' };
 
 function parseNumber(raw: string): number | null {
@@ -598,6 +601,11 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
         if (v === null || Number.isNaN(v) || v < 0 || v > 900) err(`Energia «${f.kcalMePer100g}» non valida (kcal EM per 100 g, tra 0 e 900).`);
         else set('kcalMePer100g', v);
       }
+      if (f.availableToFormulate !== undefined) {
+        const b = parseBool(f.availableToFormulate);
+        if (b === null) err(`Valore «${f.availableToFormulate}» non valido per available_to_formulate (sì/no).`);
+        else set('availableToFormulate', b);
+      }
       if (f.dataStatus !== undefined) {
         const s = norm(f.dataStatus);
         const map: Record<string, DataStatus> = { estimated: 'estimated', stima: 'estimated', review_required: 'review_required', 'review required': 'review_required', unverified: 'unverified', not_verified: 'unverified', 'not verified': 'unverified' };
@@ -620,6 +628,11 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
         const v = parseNumber(f[k]);
         if (v === null || Number.isNaN(v) || v < 0 || (k !== 'kcalPerUnit' && v === 0)) err(`Valore «${f[k]}» non valido per ${k}.`);
         else set(k, v);
+      }
+      if (f.usableForOptimization !== undefined) {
+        const b = parseBool(f.usableForOptimization);
+        if (b === null) err(`Valore «${f.usableForOptimization}» non valido per usable_for_optimization (sì/no).`);
+        else set('usableForOptimization', b);
       }
       for (const k of ['integerDose', 'labelAddedOnly'] as const) {
         if (f[k] === undefined) continue;
@@ -743,7 +756,16 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
     }
     const sourceCode = v.status && !['measured', 'label', 'calculated', 'estimated', 'analytical_zero', ''].includes(norm(v.status).replace(' ', '_')) ? v.status : null;
     const convNote = converted ? `convertito da ${v.raw} ${normalizeUnit(v.unit)} (${converted.formLabel}, × ${String(converted.factor).replace('.', ',')})` : null;
-    const nv: NutrientValue = { value, status, source, method: [v.method || sourceCode, convNote].filter(Boolean).join(' · ') || null };
+    const nv: NutrientValue = {
+      value,
+      status,
+      source,
+      method: [v.method || sourceCode, convNote].filter(Boolean).join(' · ') || null,
+      // valore, unità e forma chimica originali restano registrati
+      sourceValue: parseNumber(v.raw),
+      sourceUnit: normalizeUnit(v.unit),
+      form: normalizeForm(v.form) ?? (v.form?.trim() || null),
+    };
     if (!same(cur?.value, nv.value) || !same(cur?.status ?? null, nv.status) || !same(cur?.source ?? null, nv.source) || !same(cur?.method ?? null, nv.method)) {
       it.valueChanges.push({
         nutrientId: nut.id,
@@ -758,6 +780,7 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
         source,
         basis: v.basis || null,
         method: nv.method ?? null,
+        form: nv.form ?? null,
         declared,
       });
     }
@@ -809,8 +832,10 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
       if (s.maxDailyUnits !== null && !s.maxDailySource) err('Dose massima senza fonte (etichetta o scheda del produttore).');
     }
     const changed = it.fieldChanges.length > 0 || it.valueChanges.length > 0;
+    // l'attivazione per la formulazione non è un dato del profilo: non crea una nuova versione
+    const profileChanged = it.fieldChanges.some((c) => c.field !== 'availableToFormulate' && c.field !== 'usableForOptimization') || it.valueChanges.length > 0;
     if (it.action === 'update' && !changed) it.action = 'unchanged';
-    if (changed) {
+    if (profileChanged) {
       if (p.validatedAt) it.warnings.push({ productId: it.id, message: 'La convalida decade: andrà ripetuta dopo il controllo dei nuovi dati.' });
       p.validatedAt = null;
       p.validatedBy = null;
@@ -879,7 +904,7 @@ export function toPayload(plan: ImportPlan): ImportPayload {
     const s = i.next as Supplement;
     return {
       id: s.id, name_it: s.name, brand: s.brand ?? null, product_variant: s.variant ?? null, class: s.supplementClass ?? null, dose_unit: s.doseUnit,
-      mass_per_unit_g: s.massPerUnitG, kcal_per_unit: s.kcalPerUnit, integer_dose: s.integerDose, max_daily_units: s.maxDailyUnits,
+      mass_per_unit_g: s.massPerUnitG, kcal_per_unit: s.kcalOrigin === 'calculated' ? null : s.kcalPerUnit, integer_dose: s.integerDose, max_daily_units: s.maxDailyUnits,
       max_daily_source: s.maxDailySource ?? null, label_source: s.labelSource ?? null, label_added_only: !!s.labelAddedOnly,
       product_version: s.version ?? null, status: s.status === 'verified' ? 'review_required' : s.status === 'missing' && i.statusAfter.status !== 'to_complete' ? 'review_required' : s.status,
       notes: s.notes ?? null, usable_for_optimization: s.usableForOptimization,
@@ -889,7 +914,7 @@ export function toPayload(plan: ImportPlan): ImportPayload {
     i.valueChanges.map((v) => ({
       product_id: i.id, nutrient_id: v.nutrientId, amount: v.after, unit: v.unit, value_status: v.after === null ? 'unknown' : v.status,
       source_value: v.sourceValue, source_unit: v.sourceUnit, source_basis: v.basis, conversion_rule: v.rule, source_id: v.source, method: v.method,
-      declared_total_or_added: v.declared,
+      chemical_form: v.form ?? null, declared_total_or_added: v.declared,
     })),
   );
   return { kind: plan.kind, file_name: plan.fileName, summary: plan.summary, products, values };

@@ -1,11 +1,11 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { foodStatus, supplementStatus } from '../../../../src/engine/catalogStatus';
+import { foodStatus, statusHelp, supplementStatus } from '../../../../src/engine/catalogStatus';
 import type { Food, Supplement } from '../../../../src/engine/types';
 import { PROCESSING_LABEL } from '../../../../src/data/packageCatalog';
 import { GROUP_LABEL, num, smart } from '../../../../src/ui/format';
 import { useApp, useData } from '../../../lib/AppContext';
-import { CATALOG_STATUS_HELP, CatalogBadge } from '../../../lib/result';
+import { CatalogBadge } from '../../../lib/result';
 import { Box, Bullets, Button, Card, ErrorBox, H, Loading, Row, Screen, T, Toggle } from '../../../lib/ui';
 
 export default function ProductScreen() {
@@ -39,7 +39,7 @@ export default function ProductScreen() {
       <Row wrap>
         <CatalogBadge status={st.status} test={isTest} />
       </Row>
-      <T small muted>{CATALOG_STATUS_HELP[st.status]}</T>
+      <T small muted>{statusHelp(kind, st.status)}</T>
       {st.reasons.length > 0 && <Box color={st.status === 'to_complete' ? 'grey' : 'orange'}><Bullets small items={st.reasons} /></Box>}
       {st.info.length > 0 && <Box color="blue"><Bullets small items={st.info} /></Box>}
       {p.validatedAt && <T small muted>Convalidato da {p.validatedBy} il {new Date(p.validatedAt).toLocaleString('it-IT')}</T>}

@@ -30,8 +30,8 @@ echo "ok: errori mostrati prima di importare (unità, nutriente, prodotto)"
 ( cd "$ROOT" && npx tsx scripts/import-catalog.ts alimenti "$DATA/full.json" 2>/dev/null ) > "$DATA/full.sql"
 "${PSQL[@]}" -d t -c "$ADMIN" -f "$DATA/full.sql" >/dev/null
 [ "$(q "select status || ':' || profile_version from catalog_status where id = 'imported_lamb'")" = "partial:1" ] || { echo "FALLITO: nuovo prodotto"; exit 1; }
-[ "$(q "select available_to_formulate from foods where id = 'imported_lamb'")" = "f" ] || { echo "FALLITO: l'import non deve attivare"; exit 1; }
-echo "ok: nuovo prodotto creato (versione 1, dati parziali finché non convalidato, non attivato)"
+[ "$(q "select available_to_formulate from foods where id = 'imported_lamb'")" = "t" ] || { echo "FALLITO: attivazione indicata nel file"; exit 1; }
+echo "ok: nuovo prodotto creato (versione 1, dati parziali finché non convalidato, utilizzabile come chiede il file)"
 q "select validate_catalog_item('food', 'imported_lamb')" >/dev/null
 [ "$(q "select status from catalog_status where id = 'imported_lamb'")" = "verified" ] || { echo "FALLITO: convalida"; exit 1; }
 echo "ok: convalida dell'amministratore → verificato"
@@ -67,5 +67,12 @@ R=$("${PSQL[@]}" -d t -tA -c "select string_agg(id || ':' || status, ' ' order b
 # D19: vitamina D µg → UI × 40, vitamina E mg → UI con la forma chimica
 [ "$("${PSQL[@]}" -d t -tA -c "select amount_per_100g || ':' || source_value || source_unit from food_nutrients where food_id = 'beef_03' and nutrient_id = 'vitamin_d'")" = "4:0.1µg" ] || { echo "FALLITO: vitamina D convertita"; exit 1; }
 [ "$("${PSQL[@]}" -d t -tA -c "select amount_per_unit from supplement_nutrients where supplement_id = 'omegor_vitality' and nutrient_id = 'vitamin_e'")" = "14.9" ] || { echo "FALLITO: vitamina E per forma"; exit 1; }
+# utilizzabilità ≠ qualità dei dati: i 6 alimenti (dati parziali) sono attivi; gli integratori restano da attivare
+[ "$("${PSQL[@]}" -d t -tA -c "select count(*) from foods where available_to_formulate and id in ('beef_03','beef_15','beef_30','oat_dry','carrot_cooked','pumpkin_cooked')")" = "6" ] || { echo "FALLITO: alimenti non attivi"; exit 1; }
+[ "$("${PSQL[@]}" -d t -tA -c "select processing_state from foods where id = 'carrot_cooked'")" = "cooked_steamed" ] || { echo "FALLITO: cottura al vapore"; exit 1; }
+[ "$("${PSQL[@]}" -d t -tA -c "select chemical_form || ':' || source_value || source_unit from food_nutrients where food_id = 'beef_03' and nutrient_id = 'vitamin_e'")" = "d_alpha_tocopherol:0.17mg" ] || { echo "FALLITO: forma chimica e unità originali"; exit 1; }
+# integratori: energia non dichiarata ed etichetta «solo additivi» non sono motivi; la base «per kg» da confermare sì
+R2=$("${PSQL[@]}" -d t -tA -c "select reasons::text from catalog_status where id = 'qdiet'")
+echo "$R2" | grep -q "base quantitativa" && ! echo "$R2" | grep -q "energia per dose" && ! echo "$R2" | grep -q "quantità aggiunte" || { echo "FALLITO: motivi Q-Diet: $R2"; exit 1; }
 echo "ok: dati reali del 16/10/2026 (265 valori alimenti): EM calcolata con FEDIAF 2025 4/9/4, vitamine D/E convertite con i fattori approvati, integratori sulla composizione dichiarata"
 echo "Test database: tutti superati"

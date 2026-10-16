@@ -10,6 +10,7 @@
    "edible_portion": "per 100 g parte edibile nelle condizioni dichiarate",
    "source_identifier": "USDA SR Legacy FDC 173111",
    "data_status": "estimated",
+   "available_to_formulate": "true",
    "notes": "USDA profile 97% lean, 3% fat; non analisi lotto specifico · Fonte: https://whatyoueat.io/foods/173111-ground-beef-97-lean",
    "nutrients": {
     "protein": {
@@ -301,6 +302,7 @@
    "edible_portion": "per 100 g parte edibile nelle condizioni dichiarate",
    "source_identifier": "USDA SR Legacy FDC 171796",
    "data_status": "estimated",
+   "available_to_formulate": "true",
    "notes": "USDA profile 85% lean, 15% fat; non analisi lotto specifico · Fonte: https://whatyoueat.io/foods/171796-ground-beef-85-lean",
    "nutrients": {
     "protein": {
@@ -592,6 +594,7 @@
    "edible_portion": "per 100 g parte edibile nelle condizioni dichiarate",
    "source_identifier": "USDA SR Legacy FDC 168652",
    "data_status": "estimated",
+   "available_to_formulate": "true",
    "notes": "USDA profile 70% lean, 30% fat; non analisi lotto specifico · Fonte: https://whatyoueat.io/foods/168652-ground-beef-70-lean",
    "nutrients": {
     "protein": {
@@ -879,10 +882,11 @@
    "category": "starch",
    "subcategory": "cereal",
    "processing_state": "raw",
-   "preparation": "Fiocchi secchi non cotti: pesare SECCHI prima dell’ammollo; acqua di ammollo non scolata.",
+   "preparation": "Pesare i fiocchi SECCHI, poi metterli in ammollo (non cotti); l’acqua di ammollo non si scola. Il profilo è quello dei fiocchi secchi.",
    "edible_portion": "per 100 g parte edibile nelle condizioni dichiarate",
    "source_identifier": "USDA SR Legacy FDC 173904",
    "data_status": "estimated",
+   "available_to_formulate": "true",
    "notes": "Pesare secca; ammollo acqua senza scarico; valori USDA per prodotto secco · Fonte: https://whatyoueat.io/foods/173904-unfortified-oats",
    "nutrients": {
     "protein": {
@@ -1151,11 +1155,12 @@
    "name_it": "Carota cotta al vapore (proxy USDA bollita)",
    "category": "vegetable",
    "subcategory": "vegetable_generic",
-   "processing_state": "cooked_boiled",
-   "preparation": "In casa cotta al vapore; il profilo è quello USDA del prodotto bollito e scolato, usato come approssimazione.",
+   "processing_state": "cooked_steamed",
+   "preparation": "Cotta al vapore. Approssimazione: il profilo è quello USDA del prodotto bollito e scolato (la cottura al vapore perde meno minerali e vitamine idrosolubili).",
    "edible_portion": "per 100 g parte edibile nelle condizioni dichiarate",
    "source_identifier": "USDA SR Legacy FDC 170394; bollite, proxy vapore",
    "data_status": "estimated",
+   "available_to_formulate": "true",
    "notes": "USDA bollita scolata senza sale usata come proxy; ritenzione micronutrienti non identica · Fonte: https://whatyoueat.io/foods/170394",
    "nutrients": {
     "protein": {
@@ -1436,11 +1441,12 @@
    "name_it": "Zucca cotta al vapore (proxy USDA bollita)",
    "category": "vegetable",
    "subcategory": "vegetable_generic",
-   "processing_state": "cooked_boiled",
-   "preparation": "In casa cotta al vapore; il profilo è quello USDA del prodotto bollito e scolato, usato come approssimazione.",
+   "processing_state": "cooked_steamed",
+   "preparation": "Cotta al vapore. Approssimazione: il profilo è quello USDA del prodotto bollito e scolato (la cottura al vapore perde meno minerali e vitamine idrosolubili).",
    "edible_portion": "per 100 g parte edibile nelle condizioni dichiarate",
    "source_identifier": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",
    "data_status": "estimated",
+   "available_to_formulate": "true",
    "notes": "Zucca cotta al vapore; dati USDA bollita senza sale usati come proxy; cultivar e ritenzione micronutrienti possono variare · Fonte: https://www.cooks.com/rec/nutrition?nwal=11423",
    "nutrients": {
     "protein": {

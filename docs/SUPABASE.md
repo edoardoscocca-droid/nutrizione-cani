@@ -12,9 +12,10 @@ Nessuna chiave va mai scritta in chat o nel codice.
    3. `supabase/migrations/20261017000003_catalog_status_import.sql` (stati del catalogo, convalida, importazioni)
    4. `supabase/migrations/20261018000004_compounds_capsules.sql`
    5. `supabase/migrations/20261019000005_energy_methods_declared.sql` (metodi energetici, conversioni vitamine, integratori)
-   6. `supabase/seed.sql` (dizionario, FEDIAF 2025, soglie C, categorie, nomi di alimenti e integratori, nota Irish Wolfhound)
-   7. i dati reali ricevuti: `supabase/data/2026-10-16_alimenti.sql` e `supabase/data/2026-10-16_integratori.sql`
-   8. facoltativo, solo per provare: `supabase/seed_test_fixtures.sql` (dati **[TEST] fittizi**; si tolgono con le due righe in cima al file)
+   6. `supabase/migrations/20261020000006_usability_declared_data.sql` (utilizzabilità, dati dichiarati, cottura al vapore)
+   7. `supabase/seed.sql` (dizionario, FEDIAF 2025, soglie C, categorie, nomi di alimenti e integratori, nota Irish Wolfhound)
+   8. i dati reali ricevuti: `supabase/data/2026-10-16_alimenti.sql` e `supabase/data/2026-10-16_integratori.sql`
+   9. facoltativo, solo per provare: `supabase/seed_test_fixtures.sql` (dati **[TEST] fittizi**; si tolgono con le due righe in cima al file)
 
    In alternativa, con la Supabase CLI: `supabase link` e `supabase db push`, poi il seed.
 

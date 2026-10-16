@@ -25,6 +25,22 @@ export function StatusBox({ audit }: { audit: AuditResult }) {
       {audit.dataFlags.testData && <T bold style={{ color: '#c46f1c' }}>PROVA — dati fittizi, non usare per alimentare un cane</T>}
       <T bold>{audit.statusLabel}</T>
       {audit.status === 'VERIFIED_AVAILABLE_CHECKS' && <T small>Non è una garanzia di completezza clinica: vale solo per i controlli e i dati disponibili.</T>}
+      {audit.summary && (
+        <>
+          <T small>
+            <T small bold>Fabbisogni dimostrabilmente soddisfatti ({audit.summary.satisfied.length}): </T>
+            {audit.summary.satisfied.join(', ') || '—'}
+          </T>
+          <T small>
+            <T small bold>Non soddisfatti ({audit.summary.notMet.length}): </T>
+            {audit.summary.notMet.join(', ') || '—'}
+          </T>
+          <T small>
+            <T small bold>Non verificabili per dati mancanti ({audit.summary.unverifiable.length}): </T>
+            {audit.summary.unverifiable.join(', ') || '—'}
+          </T>
+        </>
+      )}
       {audit.blockers.length > 0 && <Bullets small items={audit.blockers} />}
     </Box>
   );

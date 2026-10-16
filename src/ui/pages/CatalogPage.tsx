@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CATALOG_STATUS_HELP, CATALOG_STATUS_LABEL, foodStatus, supplementStatus, type CatalogStatus, type StatusResult } from '../../engine/catalogStatus';
+import { CATALOG_STATUS_HELP, CATALOG_STATUS_LABEL, foodStatus, statusHelp, supplementStatus, type CatalogStatus, type StatusResult } from '../../engine/catalogStatus';
 import type { DataStatus, EnergyAssignment, EnergyMethod, Food, NutrientValue, ProcessingGroup, ProcessingState, Supplement } from '../../engine/types';
 import { PROCESSING_LABEL } from '../../data/packageCatalog';
 import { SUPPLEMENT_ENERGY_CATEGORY } from '../../engine/energy';
@@ -25,10 +25,10 @@ export function StatusBadge({ status, test }: { status: CatalogStatus; test?: bo
   );
 }
 
-export function StatusPanel({ st, validatedBy, validatedAt }: { st: StatusResult; validatedBy?: string | null; validatedAt?: string | null }) {
+export function StatusPanel({ st, validatedBy, validatedAt, kind = 'food' }: { st: StatusResult; validatedBy?: string | null; validatedAt?: string | null; kind?: 'food' | 'supplement' }) {
   return (
     <div className={`box ${st.status === 'verified' ? 'box-green' : st.status === 'partial' ? 'box-orange' : 'box-grey'}`}>
-      <strong>{CATALOG_STATUS_LABEL[st.status]}</strong> — <span className="small">{CATALOG_STATUS_HELP[st.status]}</span>
+      <strong>{CATALOG_STATUS_LABEL[st.status]}</strong> — <span className="small">{statusHelp(kind, st.status)}</span>
       {st.reasons.length > 0 && (
         <ul className="small">
           {st.reasons.map((r) => (
@@ -539,7 +539,7 @@ function SuppEditor({ supp, onClose }: { supp: Supplement; onClose: () => void }
   };
   return (
     <Modal title={supp.name || 'Nuovo integratore'} onClose={onClose}>
-      <StatusPanel st={supplementStatus(s, catalog.nutrients)} validatedBy={supp.validatedBy} validatedAt={supp.validatedAt} />
+      <StatusPanel kind="supplement" st={supplementStatus(s, catalog.nutrients)} validatedBy={supp.validatedBy} validatedAt={supp.validatedAt} />
       {catalog.supplements.some((x) => x.id === supp.id) && <ValidateButton kind="supplement" id={supp.id} st={supplementStatus(supp, catalog.nutrients)} />}
       <ErrorBox error={error} />
       <fieldset className="form plain" disabled={!isAdmin}>
