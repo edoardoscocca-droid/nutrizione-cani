@@ -10,11 +10,13 @@ Progetto separato da Vita: vive tutto in questa cartella.
 
 ## Documenti
 
-- `docs/ANALISI.md` — analisi del pacchetto, architettura, **decisioni richieste (D1–D18)**, piano.
+- `docs/ANALISI.md` — analisi del pacchetto, architettura, **decisioni richieste (D1–D21)**, piano.
 - `docs/FORMULE.md` — come il motore calcola e verifica (spiegabilità).
 - `docs/SUPABASE.md` — come mettere in funzione database, amministratori e hosting.
 - `docs/CATALOGO.md` — stati del catalogo (Verificato / Dati parziali / Da completare), convalida, importazioni CSV/JSON.
 - `dati/pacchetto/` — il pacchetto di specifiche ricevuto, intatto (fonte dei riferimenti).
+- `dati/importazioni/` — dati reali ricevuti (originali), file convertiti e rapporto di cosa è stato importato e cosa no.
+- `docs/DA_FARE.md` — cosa serve dal committente per arrivare alle prime ricette reali.
 
 ## Struttura
 
@@ -49,6 +51,7 @@ npx tsx scripts/import-catalog.ts alimenti dati/mio_file.csv > import.sql   # im
 
 ## Stato dei dati reali
 
-Il pacchetto non contiene ancora composizioni verificate: i 28 alimenti e i 5 integratori sono solo nomi
-(`NOT_VERIFIED` / `MISSING`). Con questi dati l'app **non formula ricette** e indica cosa manca. Per attivarli:
+Dati ricevuti il 16/10/2026: 6 alimenti (USDA) e 3 integratori (Q.Diet Compensa, Omegor Vitality 1000, farina d'ossa),
+importati senza modifiche (`dati/importazioni/2026-10-16/RAPPORTO.md`). Gli alimenti sono ancora «Da completare» perché manca
+l'energia metabolizzabile per il cane (decisione D4); gli integratori sono «Dati parziali». Per attivarli:
 importare o inserire le composizioni (Catalogo → Importa), controllare i motivi dello stato, convalidare e attivare il prodotto.

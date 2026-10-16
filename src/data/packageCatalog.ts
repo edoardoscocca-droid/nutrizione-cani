@@ -4,6 +4,7 @@
 
 import fediafJson from '../../dati/pacchetto/02_Riferimenti_FEDIAF/FEDIAF_2025_cane_adulto_nutrienti.json';
 import dictA from '../../dati/pacchetto/03_Allegati_A_F/A_dizionario_nutrienti.json';
+import dictExt from '../../dati/estensioni/dizionario_estensioni.json';
 import thresholdsC from '../../dati/pacchetto/03_Allegati_A_F/C_target_e_semaforo.json';
 import foodsD from '../../dati/pacchetto/03_Allegati_A_F/D_catalogo_alimenti_seed.json';
 import suppE from '../../dati/pacchetto/03_Allegati_A_F/E_catalogo_integratori_seed.json';
@@ -17,7 +18,7 @@ import {
   type FediafDataset,
   type ThresholdsC,
 } from '../engine/reference';
-import type { Catalog, DoseUnit, Food, ProcessingState, Supplement } from '../engine/types';
+import type { Catalog, DoseUnit, Food, Nutrient, ProcessingState, Supplement } from '../engine/types';
 
 export interface Category {
   id: string;
@@ -64,7 +65,13 @@ export function packageReferences(): Pick<Catalog, 'nutrients' | 'limits' | 'ref
   const c = thresholdsC as unknown as ThresholdsC;
   const customThresholds = buildCustomThresholds(c);
   return {
-    nutrients: buildNutrients(dictA as DictionaryA, fediaf),
+    nutrients: [
+      ...buildNutrients(dictA as DictionaryA, fediaf),
+      // estensioni documentate in dati/estensioni: solo dati di fonte, nessun limite
+      ...(dictExt as { nutrients: (DictionaryA['nutrients'][number] & { notes: string })[] }).nutrients.map((n) => ({
+        id: n.id, label: n.label_it, unit: n.unit, group: n.group, kind: n.type as Nutrient['kind'], formula: n.formula, notes: n.notes,
+      })),
+    ],
     limits: [...buildOfficialLimits(fediaf), ...thresholdsAsLimits(customThresholds)],
     referenceVersions: buildReferenceVersions(fediaf, c),
     customThresholds,

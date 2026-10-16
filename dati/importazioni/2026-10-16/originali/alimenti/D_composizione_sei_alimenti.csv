@@ -1,0 +1,355 @@
+﻿product_id,nutrient_id,value_per_100g,unit,basis,source_id,source_url,status,notes
+beef_03,protein,21.98,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,fat,3,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,carbohydrate_available,0,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,Profilo USDA indica carboidrati 0; non è stima per tutti i tagli
+beef_03,fiber,0,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,moisture,74.75,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,linoleic_acid,,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,NOT_REPORTED,
+beef_03,ala,0.025,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,epa,0,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,dha,0,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,omega3_total,,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,NOT_REPORTED,
+beef_03,omega6_total,,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,NOT_REPORTED,
+beef_03,arachidonic_acid,,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,NOT_REPORTED,
+beef_03,calcium,8,mg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,phosphorus,203,mg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,potassium,357,mg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,sodium,66,mg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,chloride,,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,NOT_REPORTED,
+beef_03,magnesium,22,mg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,copper,0.08,mg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,iodine,,mg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,NOT_REPORTED,
+beef_03,iron,2.44,mg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,manganese,0.01,mg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,selenium_wet,17.7,µg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,zinc,5.21,mg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,vitamin_a,,IU,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,NOT_REPORTED,Non calcolabile come attività equivalente FEDIAF da soli carotenoidi o retinolo non verificato
+beef_03,vitamin_d,0.1,µg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,"USDA µg, IU da convertire secondo forma; dato arrotondato alla fonte"
+beef_03,vitamin_e,0.17,mg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,Fonte espressa in mg alfa-tocoferolo o equivalenti; conversione in IU FEDIAF necessita scelta chimica esplicita
+beef_03,vitamin_b1,0.041,mg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,vitamin_b2,0.151,mg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,vitamin_b3,5.663,mg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,vitamin_b5,0.673,mg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,vitamin_b6,0.401,mg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,vitamin_b9,4,µg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,vitamin_b12,2.26,µg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,choline,72.8,mg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,vitamin_c,0,mg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,vitamin_b7,,µg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,NOT_REPORTED,
+beef_03,vitamin_k,,µg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,NOT_REPORTED,
+beef_03,arginine,1.432,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,histidine,0.715,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,isoleucine,0.972,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,leucine,1.715,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,lysine,1.822,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,methionine,0.566,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,phenylalanine,0.858,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,threonine,0.851,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,tryptophan,0.112,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,valine,1.081,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,taurine,,mg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,NOT_REPORTED,
+beef_03,l_carnitine,,mg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,NOT_REPORTED,
+beef_03,energy_food_kcal,121,kcal,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,Valore alimentare USDA destinato all'uomo: non assumere automaticamente come energia metabolizzabile del cane
+beef_03,carbohydrate_by_difference,0,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,c18_2_undifferentiated,0.154,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,"Acido grasso 18:2 non distinto per isomero, NON considerare misura specifica certificata di linoleico n-6"
+beef_03,c20_4_undifferentiated,0.035,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,"Acido grasso 20:4 non distinto per isomero, NON assegnare automaticamente ad arachidonico"
+beef_03,cystine,0.226,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,tyrosine,0.677,g,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,vitamin_a_retinol_ug,4,µg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,REPORTED_USDA_PROXY,
+beef_03,vitamin_a_carotenoid_iu,,IU (carotenoids; human labeling),as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,NOT_REPORTED,"IU fonte umana da carotenoidi, NON equiparare a vitamina A retinolo per cane e non sommare a IU FEDIAF"
+beef_03,beta_carotene_ug,,µg,as_edible_100g,USDA SR Legacy FDC 173111,https://whatyoueat.io/foods/173111-ground-beef-97-lean,NOT_REPORTED,
+beef_15,protein,18.59,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,fat,15,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,carbohydrate_available,0,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,Profilo USDA indica carboidrati 0; non è stima per tutti i tagli
+beef_15,fiber,0,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,moisture,65.66,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,linoleic_acid,,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,NOT_REPORTED,
+beef_15,ala,0.042,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,epa,0.002,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,dha,0.001,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,omega3_total,,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,NOT_REPORTED,
+beef_15,omega6_total,,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,NOT_REPORTED,
+beef_15,arachidonic_acid,,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,NOT_REPORTED,
+beef_15,calcium,15,mg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,phosphorus,171,mg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,potassium,295,mg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,sodium,66,mg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,chloride,,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,NOT_REPORTED,
+beef_15,magnesium,18,mg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,copper,0.067,mg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,iodine,,mg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,NOT_REPORTED,
+beef_15,iron,2.09,mg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,manganese,0.01,mg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,selenium_wet,15.8,µg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,zinc,4.48,mg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,vitamin_a,,IU,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,NOT_REPORTED,Non calcolabile come attività equivalente FEDIAF da soli carotenoidi o retinolo non verificato
+beef_15,vitamin_d,0.1,µg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,"USDA µg, IU da convertire secondo forma; dato arrotondato alla fonte"
+beef_15,vitamin_e,0.17,mg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,Fonte espressa in mg alfa-tocoferolo o equivalenti; conversione in IU FEDIAF necessita scelta chimica esplicita
+beef_15,vitamin_b1,0.042,mg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,vitamin_b2,0.151,mg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,vitamin_b3,4.649,mg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,vitamin_b5,0.549,mg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,vitamin_b6,0.346,mg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,vitamin_b9,6,µg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,vitamin_b12,2.17,µg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,choline,61.2,mg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,vitamin_c,0,mg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,vitamin_b7,,µg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,NOT_REPORTED,
+beef_15,vitamin_k,,µg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,NOT_REPORTED,
+beef_15,arginine,1.21,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,histidine,0.604,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,isoleucine,0.822,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,leucine,1.45,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,lysine,1.54,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,methionine,0.478,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,phenylalanine,0.725,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,threonine,0.72,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,tryptophan,0.094,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,valine,0.914,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,taurine,,mg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,NOT_REPORTED,
+beef_15,l_carnitine,,mg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,NOT_REPORTED,
+beef_15,energy_food_kcal,215,kcal,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,Valore alimentare USDA destinato all'uomo: non assumere automaticamente come energia metabolizzabile del cane
+beef_15,carbohydrate_by_difference,0,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,c18_2_undifferentiated,0.331,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,"Acido grasso 18:2 non distinto per isomero, NON considerare misura specifica certificata di linoleico n-6"
+beef_15,c20_4_undifferentiated,0.034,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,"Acido grasso 20:4 non distinto per isomero, NON assegnare automaticamente ad arachidonico"
+beef_15,cystine,0.191,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,tyrosine,0.572,g,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,vitamin_a_retinol_ug,4,µg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,REPORTED_USDA_PROXY,
+beef_15,vitamin_a_carotenoid_iu,,IU (carotenoids; human labeling),as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,NOT_REPORTED,"IU fonte umana da carotenoidi, NON equiparare a vitamina A retinolo per cane e non sommare a IU FEDIAF"
+beef_15,beta_carotene_ug,,µg,as_edible_100g,USDA SR Legacy FDC 171796,https://whatyoueat.io/foods/171796-ground-beef-85-lean,NOT_REPORTED,
+beef_30,protein,14.35,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,fat,30,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,carbohydrate_available,0,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,Profilo USDA indica carboidrati 0; non è stima per tutti i tagli
+beef_30,fiber,0,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,moisture,54.3,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,linoleic_acid,,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,NOT_REPORTED,
+beef_30,ala,0.065,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,epa,0,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,dha,0,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,omega3_total,,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,NOT_REPORTED,
+beef_30,omega6_total,,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,NOT_REPORTED,
+beef_30,arachidonic_acid,,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,NOT_REPORTED,
+beef_30,calcium,24,mg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,phosphorus,132,mg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,potassium,218,mg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,sodium,66,mg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,chloride,,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,NOT_REPORTED,
+beef_30,magnesium,14,mg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,copper,0.05,mg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,iodine,,mg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,NOT_REPORTED,
+beef_30,iron,1.64,mg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,manganese,0.009,mg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,selenium_wet,13.5,µg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,zinc,3.57,mg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,vitamin_a,,IU,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,NOT_REPORTED,Non calcolabile come attività equivalente FEDIAF da soli carotenoidi o retinolo non verificato
+beef_30,vitamin_d,0.1,µg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,"USDA µg, IU da convertire secondo forma; dato arrotondato alla fonte"
+beef_30,vitamin_e,0.17,mg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,Fonte espressa in mg alfa-tocoferolo o equivalenti; conversione in IU FEDIAF necessita scelta chimica esplicita
+beef_30,vitamin_b1,0.044,mg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,vitamin_b2,0.151,mg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,vitamin_b3,3.382,mg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,vitamin_b5,0.395,mg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,vitamin_b6,0.278,mg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,vitamin_b9,9,µg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,vitamin_b12,2.07,µg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,choline,46.8,mg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,vitamin_c,0,mg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,vitamin_b7,,µg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,NOT_REPORTED,
+beef_30,vitamin_k,,µg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,NOT_REPORTED,
+beef_30,arginine,0.933,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,histidine,0.466,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,isoleucine,0.634,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,leucine,1.118,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,lysine,1.188,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,methionine,0.369,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,phenylalanine,0.559,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,threonine,0.555,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,tryptophan,0.073,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,valine,0.705,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,taurine,,mg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,NOT_REPORTED,
+beef_30,l_carnitine,,mg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,NOT_REPORTED,
+beef_30,energy_food_kcal,332,kcal,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,Valore alimentare USDA destinato all'uomo: non assumere automaticamente come energia metabolizzabile del cane
+beef_30,carbohydrate_by_difference,0,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,c18_2_undifferentiated,0.577,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,"Acido grasso 18:2 non distinto per isomero, NON considerare misura specifica certificata di linoleico n-6"
+beef_30,c20_4_undifferentiated,0.035,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,"Acido grasso 20:4 non distinto per isomero, NON assegnare automaticamente ad arachidonico"
+beef_30,cystine,0.148,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,tyrosine,0.441,g,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,vitamin_a_retinol_ug,4,µg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,REPORTED_USDA_PROXY,
+beef_30,vitamin_a_carotenoid_iu,,IU (carotenoids; human labeling),as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,NOT_REPORTED,"IU fonte umana da carotenoidi, NON equiparare a vitamina A retinolo per cane e non sommare a IU FEDIAF"
+beef_30,beta_carotene_ug,,µg,as_edible_100g,USDA SR Legacy FDC 168652,https://whatyoueat.io/foods/168652-ground-beef-70-lean,NOT_REPORTED,
+oat_dry,protein,13.15,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,fat,6.52,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,carbohydrate_available,57.6,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,DERIVED_APPROXIMATION,"Carboidrati per differenza meno fibra; approssimazione, non analisi dei carboidrati realmente digeribili"
+oat_dry,fiber,10.1,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,moisture,10.84,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,linoleic_acid,,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,NOT_REPORTED,
+oat_dry,ala,,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,NOT_REPORTED,
+oat_dry,epa,0,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,dha,0,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,omega3_total,,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,NOT_REPORTED,
+oat_dry,omega6_total,,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,NOT_REPORTED,
+oat_dry,arachidonic_acid,,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,NOT_REPORTED,
+oat_dry,calcium,52,mg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,phosphorus,410,mg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,potassium,362,mg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,sodium,6,mg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,chloride,,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,NOT_REPORTED,
+oat_dry,magnesium,138,mg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,copper,0.391,mg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,iodine,,mg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,NOT_REPORTED,
+oat_dry,iron,4.25,mg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,manganese,3.63,mg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,selenium_wet,28.9,µg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,zinc,3.64,mg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,vitamin_a,,IU,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,NOT_REPORTED,Non calcolabile come attività equivalente FEDIAF da soli carotenoidi o retinolo non verificato
+oat_dry,vitamin_d,0,µg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,"USDA µg, IU da convertire secondo forma; dato arrotondato alla fonte"
+oat_dry,vitamin_e,0.42,mg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,Fonte espressa in mg alfa-tocoferolo o equivalenti; conversione in IU FEDIAF necessita scelta chimica esplicita
+oat_dry,vitamin_b1,0.46,mg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,vitamin_b2,0.155,mg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,vitamin_b3,1.125,mg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,vitamin_b5,1.12,mg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,vitamin_b6,0.1,mg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,vitamin_b9,32,µg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,vitamin_b12,0,µg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,choline,40.4,mg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,vitamin_c,0,mg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,vitamin_b7,,µg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,NOT_REPORTED,
+oat_dry,vitamin_k,,µg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,NOT_REPORTED,
+oat_dry,arginine,0.85,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,histidine,0.275,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,isoleucine,0.503,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,leucine,0.98,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,lysine,0.637,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,methionine,0.207,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,phenylalanine,0.665,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,threonine,0.382,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,tryptophan,0.182,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,valine,0.688,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,taurine,,mg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,NOT_REPORTED,
+oat_dry,l_carnitine,,mg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,NOT_REPORTED,
+oat_dry,energy_food_kcal,379,kcal,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,Valore alimentare USDA destinato all'uomo: non assumere automaticamente come energia metabolizzabile del cane
+oat_dry,carbohydrate_by_difference,67.7,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,c18_2_undifferentiated,2.2,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,"Acido grasso 18:2 non distinto per isomero, NON considerare misura specifica certificata di linoleico n-6"
+oat_dry,c20_4_undifferentiated,,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,NOT_REPORTED,"Acido grasso 20:4 non distinto per isomero, NON assegnare automaticamente ad arachidonico"
+oat_dry,cystine,0.455,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,tyrosine,0.395,g,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,REPORTED_USDA_PROXY,
+oat_dry,vitamin_a_retinol_ug,,µg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,NOT_REPORTED,
+oat_dry,vitamin_a_carotenoid_iu,,IU (carotenoids; human labeling),as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,NOT_REPORTED,"IU fonte umana da carotenoidi, NON equiparare a vitamina A retinolo per cane e non sommare a IU FEDIAF"
+oat_dry,beta_carotene_ug,,µg,as_edible_100g,USDA SR Legacy FDC 173904,https://whatyoueat.io/foods/173904-unfortified-oats,NOT_REPORTED,
+carrot_cooked,protein,0.76,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,fat,0.18,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,carbohydrate_available,5.22,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,DERIVED_APPROXIMATION,"Proxy di cottura bollita/scolata, da verificare per vapore; Carboidrati per differenza meno fibra; approssimazione, non analisi dei carboidrati realmente digeribili"
+carrot_cooked,fiber,3,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,moisture,90.17,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,linoleic_acid,,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,NOT_REPORTED,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,ala,,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,NOT_REPORTED,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,epa,0,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,dha,0,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,omega3_total,,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,NOT_REPORTED,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,omega6_total,,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,NOT_REPORTED,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,arachidonic_acid,,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,NOT_REPORTED,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,calcium,30,mg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,phosphorus,30,mg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,potassium,235,mg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,sodium,58,mg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,chloride,,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,NOT_REPORTED,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,magnesium,10,mg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,copper,0.017,mg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,iodine,,mg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,NOT_REPORTED,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,iron,0.34,mg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,manganese,0.155,mg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,selenium_wet,0.7,µg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,zinc,0.2,mg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,vitamin_a,,IU,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,NOT_REPORTED,"Proxy di cottura bollita/scolata, da verificare per vapore; Non calcolabile come attività equivalente FEDIAF da soli carotenoidi o retinolo non verificato"
+carrot_cooked,vitamin_d,0,µg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore; USDA µg, IU da convertire secondo forma; dato arrotondato alla fonte"
+carrot_cooked,vitamin_e,1.03,mg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore; Fonte espressa in mg alfa-tocoferolo o equivalenti; conversione in IU FEDIAF necessita scelta chimica esplicita"
+carrot_cooked,vitamin_b1,0.066,mg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,vitamin_b2,0.044,mg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,vitamin_b3,0.645,mg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,vitamin_b5,0.232,mg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,vitamin_b6,0.153,mg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,vitamin_b9,14,µg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,vitamin_b12,0,µg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,choline,8.8,mg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,vitamin_c,3.6,mg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,vitamin_b7,,µg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,NOT_REPORTED,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,vitamin_k,,µg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,NOT_REPORTED,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,arginine,0.075,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,histidine,0.033,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,isoleucine,0.063,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,leucine,0.084,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,lysine,0.083,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,methionine,0.017,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,phenylalanine,0.05,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,threonine,0.157,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,tryptophan,0.01,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,valine,0.056,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,taurine,,mg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,NOT_REPORTED,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,l_carnitine,,mg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,NOT_REPORTED,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,energy_food_kcal,35,kcal,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore; Valore alimentare USDA destinato all'uomo: non assumere automaticamente come energia metabolizzabile del cane"
+carrot_cooked,carbohydrate_by_difference,8.22,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,c18_2_undifferentiated,0.087,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore; Acido grasso 18:2 non distinto per isomero, NON considerare misura specifica certificata di linoleico n-6"
+carrot_cooked,c20_4_undifferentiated,,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,NOT_REPORTED,"Proxy di cottura bollita/scolata, da verificare per vapore; Acido grasso 20:4 non distinto per isomero, NON assegnare automaticamente ad arachidonico"
+carrot_cooked,cystine,0.068,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,tyrosine,0.035,g,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,vitamin_a_retinol_ug,,µg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,NOT_REPORTED,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+carrot_cooked,vitamin_a_carotenoid_iu,17033,IU (carotenoids; human labeling),as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore; IU fonte umana da carotenoidi, NON equiparare a vitamina A retinolo per cane e non sommare a IU FEDIAF"
+carrot_cooked,beta_carotene_ug,8332,µg,as_edible_100g,"USDA SR Legacy FDC 170394; bollite, proxy vapore",https://whatyoueat.io/foods/170394,REPORTED_USDA_PROXY,"Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,protein,0.72,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,fat,0.07,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,carbohydrate_available,3.79,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,DERIVED_APPROXIMATION,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore; Carboidrati per differenza meno fibra; approssimazione, non analisi dei carboidrati realmente digeribili"
+pumpkin_cooked,fiber,1.1,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,moisture,93.69,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,linoleic_acid,,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,NOT_REPORTED,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,ala,,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,NOT_REPORTED,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,epa,,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,NOT_REPORTED,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,dha,,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,NOT_REPORTED,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,omega3_total,,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,NOT_REPORTED,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,omega6_total,,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,NOT_REPORTED,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,arachidonic_acid,,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,NOT_REPORTED,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,calcium,15,mg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,phosphorus,30,mg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,potassium,230,mg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,sodium,1,mg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,chloride,,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,NOT_REPORTED,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,magnesium,9,mg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,copper,0.091,mg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,iodine,,mg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,NOT_REPORTED,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,iron,0.57,mg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,manganese,0.089,mg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,selenium_wet,0.2,µg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,zinc,0.23,mg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,vitamin_a,,IU,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,NOT_REPORTED,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore; Non calcolabile come attività equivalente FEDIAF da soli carotenoidi o retinolo non verificato"
+pumpkin_cooked,vitamin_d,,µg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,NOT_REPORTED,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,vitamin_e,1.06,mg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore; Fonte espressa in mg alfa-tocoferolo o equivalenti; conversione in IU FEDIAF necessita scelta chimica esplicita"
+pumpkin_cooked,vitamin_b1,0.031,mg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,vitamin_b2,0.078,mg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,vitamin_b3,0.413,mg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,vitamin_b5,0.201,mg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,vitamin_b6,0.044,mg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,vitamin_b9,8.5,µg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,vitamin_b12,,µg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,NOT_REPORTED,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,choline,,mg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,NOT_REPORTED,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,vitamin_c,4.7,mg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,vitamin_b7,,µg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,NOT_REPORTED,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,vitamin_k,,µg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,NOT_REPORTED,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,arginine,0.039,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,histidine,0.011,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,isoleucine,0.023,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,leucine,0.034,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,lysine,0.039,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,methionine,0.008,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,phenylalanine,0.023,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,threonine,0.021,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,tryptophan,0.009,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,valine,0.025,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,taurine,,mg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,NOT_REPORTED,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,l_carnitine,,mg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,NOT_REPORTED,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,energy_food_kcal,20,kcal,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore; Valore alimentare USDA destinato all'uomo: non assumere automaticamente come energia metabolizzabile del cane"
+pumpkin_cooked,carbohydrate_by_difference,4.89,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,c18_2_undifferentiated,0.002,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore; Acido grasso 18:2 non distinto per isomero, NON considerare misura specifica certificata di linoleico n-6"
+pumpkin_cooked,c20_4_undifferentiated,,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,NOT_REPORTED,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore; Acido grasso 20:4 non distinto per isomero, NON assegnare automaticamente ad arachidonico"
+pumpkin_cooked,cystine,0.002,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,tyrosine,0.03,g,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,vitamin_a_retinol_ug,,µg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,NOT_REPORTED,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+pumpkin_cooked,vitamin_a_carotenoid_iu,1082,IU (carotenoids; human labeling),as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,REPORTED_USDA_PROXY,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore; IU fonte umana da carotenoidi, NON equiparare a vitamina A retinolo per cane e non sommare a IU FEDIAF"
+pumpkin_cooked,beta_carotene_ug,,µg,as_edible_100g,"USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",https://www.cooks.com/rec/nutrition?nwal=11423,NOT_REPORTED,"Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"

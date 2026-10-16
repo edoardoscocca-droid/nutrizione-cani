@@ -381,6 +381,12 @@ export function auditRecipe(input: AuditInput): AuditResult {
     .filter((l) => l.status !== 'verified')
     .map((l) => `${labelOf.get(l.metric) ?? l.metric} ${[l.lower, l.upper].filter((x) => x !== null).map((x) => fmt(x as number)).join('–')} — ${l.source}`);
 
+  const greyEssential = rows.filter((r) => r.checks.some((c) => c.color === 'grey' && c.limit.limitClass === 'OFFICIAL_MIN')).length;
+  if (greyEssential >= 5 || !kcalComplete) {
+    warnings.unshift(
+      `Dati troppo incompleti${!kcalComplete ? ' (energia compresa)' : ''}: le quantità proposte sono solo indicative e possono risultare poco realistiche. Non usarle per preparare la ricetta finché i dati mancanti non sono completati.`,
+    );
+  }
   const allChecks = rows.flatMap((r) => r.checks);
   let status: RecipeStatus;
   if (allChecks.some((c) => c.color === 'red')) status = 'FAILS_OFFICIAL_LIMITS';

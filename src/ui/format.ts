@@ -50,6 +50,7 @@ export const GROUP_LABEL: Record<string, string> = {
   informational_vitamins: 'Altre vitamine (informative)',
   essential_amino_acids: 'Aminoacidi essenziali',
   individual_monitoring: 'Monitoraggio individuale',
+  source_reference: 'Dati di fonte (solo informativi)',
 };
 
 export const DISCLAIMER =

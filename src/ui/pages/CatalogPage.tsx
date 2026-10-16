@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { CATALOG_STATUS_HELP, CATALOG_STATUS_LABEL, foodStatus, supplementStatus, type CatalogStatus, type StatusResult } from '../../engine/catalogStatus';
 import type { DataStatus, Food, NutrientValue, ProcessingState, Supplement } from '../../engine/types';
 import { PROCESSING_LABEL } from '../../data/packageCatalog';
+import { estimateMeFromMacros } from '../../engine/energy';
 import { uid } from '../../data/repository';
 import { useApp, useData } from '../AppContext';
 import { ErrorBox, Modal, NumberInput } from '../components';
@@ -256,6 +257,7 @@ function RefsTab() {
           </div>
         ))}
       </div>
+      {isAdmin && <MeFromFactors />}
       <div className="card form">
         <h3>Fattori energetici (kcal/g)</h3>
         <p className="small">
@@ -290,6 +292,48 @@ function RefsTab() {
 }
 
 // qualità dichiarata del profilo; lo stato «Verificato» si ottiene solo con la convalida
+function MeFromFactors() {
+  const { catalog, repo, refresh } = useApp();
+  const [msg, setMsg] = useState<string | null>(null);
+  if (!catalog || !repo) return null;
+  const f = catalog.energyFactors;
+  const candidates = catalog.foods.filter((x) => x.kcalMePer100g === null && x.dataStatus !== 'test_fixture' && estimateMeFromMacros(x.nutrients, f) !== null);
+  const waiting = catalog.foods.filter((x) => x.kcalMePer100g === null && x.nutrients.protein?.value != null && x.nutrients.fat?.value != null);
+  return (
+    <div className="card">
+      <h3>Energia metabolizzabile per il cane</h3>
+      {f.protein === null ? (
+        <p className="small">
+          {waiting.length} alimenti hanno proteine e grassi ma non l’energia metabolizzabile per il cane (l’energia «umana» delle tabelle non viene usata).
+          Per calcolarla servono i <strong>fattori energetici approvati</strong> qui sotto (decisione D4).
+        </p>
+      ) : (
+        <>
+          <p className="small">
+            Calcolo con i fattori in uso ({f.version}): EM = proteine × {f.protein} + grassi × {f.fat} + carboidrati disponibili × {f.carbohydrate} kcal per 100 g.
+            Il metodo viene scritto nel profilo; ogni alimento ottiene una nuova versione.
+          </p>
+          <button
+            className="small"
+            disabled={!candidates.length}
+            onClick={async () => {
+              for (const x of candidates) {
+                await repo.saveFood({ ...x, kcalMePer100g: estimateMeFromMacros(x.nutrients, f), meMethod: `Calcolata da macronutrienti, fattori ${f.version} (${f.source ?? ''})` });
+              }
+              await refresh();
+              setMsg(`Energia calcolata per ${candidates.length} alimenti.`);
+            }}
+          >
+            Calcola per {candidates.length} alimenti senza energia
+          </button>
+          {waiting.length > candidates.length && <p className="small muted">{waiting.length - candidates.length} non calcolabili: mancano i carboidrati disponibili.</p>}
+        </>
+      )}
+      {msg && <div className="box box-green small">{msg}</div>}
+    </div>
+  );
+}
+
 const STATUS_OPTS: DataStatus[] = ['unverified', 'review_required', 'estimated'];
 
 function NutrientGrid({ values, onChange, perLabel }: { values: Record<string, NutrientValue>; onChange: (v: Record<string, NutrientValue>) => void; perLabel: string }) {

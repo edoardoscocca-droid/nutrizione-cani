@@ -1,0 +1,328 @@
+{
+ "supplements": [
+  {
+   "id": "qdiet",
+   "name_it": "Q.Diet Compensa (standard, NON Crescita/Ultra)",
+   "variant": "Compensa standard (non Crescita, non Ultra)",
+   "class": "multinutrient",
+   "dose_unit": "gram",
+   "mass_per_unit_g": "1",
+   "label_source": "https://www.qdiet.it/products/compensa-250-g",
+   "notes": "Additivi dichiarati presumibilmente per kg secondo convenzione; pagina non specifica esplicitamente unita di riferimento. Confermare etichetta fisica PRIMA dell ottimizzazione. Le quantita degli additivi sono aggiunte, non necessariamente analisi totale. · Stato nel file: LABEL_TRANSCRIBED_BASIS_PER_KG_TO_CONFIRM, uso in ottimizzazione: conditional",
+   "nutrients": {
+    "protein": {
+     "value": "0.0425",
+     "unit": "g",
+     "status": "ANALYTICAL_DECLARED",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "reported_or_estimated"
+    },
+    "fat": {
+     "value": "0.0007000000000000001",
+     "unit": "g",
+     "status": "ANALYTICAL_DECLARED",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "reported_or_estimated"
+    },
+    "fiber": {
+     "value": "0.0001",
+     "unit": "g",
+     "status": "ANALYTICAL_DECLARED",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "reported_or_estimated"
+    },
+    "moisture": {
+     "value": "0.03",
+     "unit": "g",
+     "status": "ANALYTICAL_DECLARED",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "reported_or_estimated"
+    },
+    "calcium": {
+     "value": "0.18",
+     "unit": "g",
+     "status": "ANALYTICAL_DECLARED",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "reported_or_estimated"
+    },
+    "phosphorus": {
+     "value": "0.065",
+     "unit": "g",
+     "status": "ANALYTICAL_DECLARED",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "reported_or_estimated"
+    },
+    "sodium": {
+     "value": "0.02",
+     "unit": "g",
+     "status": "ANALYTICAL_DECLARED",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "reported_or_estimated"
+    },
+    "magnesium": {
+     "value": "0.015",
+     "unit": "g",
+     "status": "ANALYTICAL_DECLARED",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "reported_or_estimated"
+    },
+    "copper": {
+     "value": "0.25",
+     "unit": "mg",
+     "status": "PER_KG_ASSUMED_CONFIRM",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "added"
+    },
+    "iodine": {
+     "value": "0.045",
+     "unit": "mg",
+     "status": "PER_KG_ASSUMED_CONFIRM",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "added"
+    },
+    "iron": {
+     "value": "1.25",
+     "unit": "mg",
+     "status": "PER_KG_ASSUMED_CONFIRM",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "added"
+    },
+    "manganese": {
+     "value": "0.3",
+     "unit": "mg",
+     "status": "PER_KG_ASSUMED_CONFIRM",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "added"
+    },
+    "selenium_wet": {
+     "value": "4.0",
+     "unit": "µg",
+     "status": "PER_KG_ASSUMED_CONFIRM",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "added"
+    },
+    "zinc": {
+     "value": "2.0",
+     "unit": "mg",
+     "status": "PER_KG_ASSUMED_CONFIRM",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "added"
+    },
+    "vitamin_a": {
+     "value": "250.0",
+     "unit": "IU",
+     "status": "PER_KG_ASSUMED_CONFIRM",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "added"
+    },
+    "vitamin_d": {
+     "value": "25.0",
+     "unit": "IU",
+     "status": "PER_KG_ASSUMED_CONFIRM",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "added"
+    },
+    "vitamin_b1": {
+     "value": "0.075",
+     "unit": "mg",
+     "status": "PER_KG_ASSUMED_CONFIRM",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "added"
+    },
+    "vitamin_b2": {
+     "value": "0.25",
+     "unit": "mg",
+     "status": "PER_KG_ASSUMED_CONFIRM",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "added"
+    },
+    "vitamin_b3": {
+     "value": "0.05",
+     "unit": "mg",
+     "status": "PER_KG_ASSUMED_CONFIRM",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "added"
+    },
+    "vitamin_b6": {
+     "value": "0.05",
+     "unit": "mg",
+     "status": "PER_KG_ASSUMED_CONFIRM",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "added"
+    },
+    "vitamin_b9": {
+     "value": "10.0",
+     "unit": "µg",
+     "status": "PER_KG_ASSUMED_CONFIRM",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "added"
+    },
+    "vitamin_b12": {
+     "value": "1.0",
+     "unit": "µg",
+     "status": "PER_KG_ASSUMED_CONFIRM",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "added"
+    },
+    "vitamin_c": {
+     "value": "1.25",
+     "unit": "mg",
+     "status": "PER_KG_ASSUMED_CONFIRM",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "added"
+    },
+    "vitamin_b7": {
+     "value": "2.5",
+     "unit": "µg",
+     "status": "PER_KG_ASSUMED_CONFIRM",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "added"
+    },
+    "taurine": {
+     "value": "50.0",
+     "unit": "mg",
+     "status": "PER_KG_ASSUMED_CONFIRM",
+     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "per_dose": "1 g",
+     "declared_total_or_added": "added"
+    }
+   }
+  },
+  {
+   "id": "omegor_vitality",
+   "name_it": "Omegor Vitality 1000 (capsula)",
+   "variant": "Vitality 1000",
+   "class": "fish_oil",
+   "dose_unit": "capsule",
+   "mass_per_unit_g": null,
+   "label_source": "https://www.omegor.com/products/omegor-vitality-1000/",
+   "notes": "1 capsula contiene 1000 mg olio; massa totale capsula ignota. Vitamina E in mg d-alfa-tocoferolo: conversione in UI richiede regola validata. · Stato nel file: MANUFACTURER_DECLARED, uso in ottimizzazione: conditional",
+   "nutrients": {
+    "fat": {
+     "value": "1",
+     "unit": "g",
+     "status": "PROXY_OIL_ONLY",
+     "source": "https://www.omegor.com/products/omegor-vitality-1000/",
+     "per_dose": "1 capsula",
+     "declared_total_or_added": "reported_or_estimated"
+    },
+    "epa": {
+     "value": "0.535",
+     "unit": "g",
+     "status": "MANUFACTURER_DECLARED",
+     "source": "https://www.omegor.com/products/omegor-vitality-1000/",
+     "per_dose": "1 capsula",
+     "declared_total_or_added": "reported_or_estimated"
+    },
+    "dha": {
+     "value": "0.268",
+     "unit": "g",
+     "status": "MANUFACTURER_DECLARED",
+     "source": "https://www.omegor.com/products/omegor-vitality-1000/",
+     "per_dose": "1 capsula",
+     "declared_total_or_added": "reported_or_estimated"
+    },
+    "omega3_total": {
+     "value": "0.9",
+     "unit": "g",
+     "status": "MANUFACTURER_DECLARED",
+     "source": "https://www.omegor.com/products/omegor-vitality-1000/",
+     "per_dose": "1 capsula",
+     "declared_total_or_added": "reported_or_estimated"
+    }
+   }
+  },
+  {
+   "id": "bone_meal",
+   "name_it": "Farina d ossa (marca/prodotto NON confermato)",
+   "variant": "marca/prodotto non confermato",
+   "class": "calcium_phosphorus",
+   "dose_unit": "gram",
+   "mass_per_unit_g": "1",
+   "label_source": "USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16",
+   "notes": "Valori della schermata non attribuibili con certezza a un prodotto. NON usare in ottimizzazione finche l etichetta fisica non conferma identita e valori. · Stato nel file: UNVERIFIED_MIXED_SOURCE_SCREENSHOT, uso in ottimizzazione: false",
+   "nutrients": {
+    "protein": {
+     "value": "0.006",
+     "unit": "g",
+     "status": "SCREENSHOT_UNVERIFIED",
+     "source": "USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16",
+     "per_dose": "1 g",
+     "declared_total_or_added": "reported_or_estimated"
+    },
+    "fat": {
+     "value": "0.003",
+     "unit": "g",
+     "status": "SCREENSHOT_UNVERIFIED",
+     "source": "USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16",
+     "per_dose": "1 g",
+     "declared_total_or_added": "reported_or_estimated"
+    },
+    "fiber": {
+     "value": "0.003",
+     "unit": "g",
+     "status": "SCREENSHOT_UNVERIFIED",
+     "source": "USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16",
+     "per_dose": "1 g",
+     "declared_total_or_added": "reported_or_estimated"
+    },
+    "moisture": {
+     "value": "0.209",
+     "unit": "g",
+     "status": "SCREENSHOT_UNVERIFIED",
+     "source": "USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16",
+     "per_dose": "1 g",
+     "declared_total_or_added": "reported_or_estimated"
+    },
+    "calcium": {
+     "value": "0.226",
+     "unit": "g",
+     "status": "SCREENSHOT_UNVERIFIED",
+     "source": "USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16",
+     "per_dose": "1 g",
+     "declared_total_or_added": "reported_or_estimated"
+    },
+    "phosphorus": {
+     "value": "0.177",
+     "unit": "g",
+     "status": "SCREENSHOT_UNVERIFIED",
+     "source": "USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16",
+     "per_dose": "1 g",
+     "declared_total_or_added": "reported_or_estimated"
+    },
+    "sodium": {
+     "value": "0.0003",
+     "unit": "g",
+     "status": "SCREENSHOT_UNVERIFIED",
+     "source": "USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16",
+     "per_dose": "1 g",
+     "declared_total_or_added": "reported_or_estimated"
+    }
+   }
+  }
+ ]
+}

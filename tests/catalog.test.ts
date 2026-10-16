@@ -104,7 +104,7 @@ describe('Stato e motore', () => {
   });
 });
 
-const catalogFor = async () => new LocalRepository(null).loadCatalog();
+const catalogFor = async () => new LocalRepository(null).loadCatalog({ withBundledImports: false });
 
 describe('Importazione: lettura e associazione dei nutrienti', () => {
   test('modello lungo D del pacchetto: ID, mg→g, celle vuote ignorate', async () => {
@@ -157,6 +157,16 @@ describe('Importazione: lettura e associazione dei nutrienti', () => {
   });
 });
 
+describe('Importazione: conversioni non approvate', () => {
+  test('µg → UI non si converte da sola: valore non importato, segnalato, resto importabile', async () => {
+    const plan = planImport(parseImport('product_id,nutrient_id,value_per_100g,unit,basis,source_id,status\nanchovies,vitamin_d,0.1,µg,,F,\nanchovies,protein,20,g,,F,REPORTED_USDA_PROXY\n', 'foods', N), await catalogFor(), 'x');
+    expect(plan.errors).toEqual([]);
+    expect(plan.items[0].pendingConversions).toEqual([expect.objectContaining({ nutrientId: 'vitamin_d', unit: 'µg', targetUnit: 'IU' })]);
+    expect(plan.items[0].next.nutrients.vitamin_d).toBeUndefined();
+    expect(plan.items[0].next.nutrients.protein).toEqual(expect.objectContaining({ value: 20, status: 'estimated', method: 'REPORTED_USDA_PROXY' }));
+  });
+});
+
 describe('Importazione: errori mostrati prima di confermare', () => {
   const bad = async (csv: string, kind: 'foods' | 'supplements' = 'foods') => {
     const plan = planImport(parseImport(csv, kind, N), await catalogFor(), 'x');
@@ -166,7 +176,7 @@ describe('Importazione: errori mostrati prima di confermare', () => {
   const H = 'product_id,nutrient_id,value_per_100g,unit,basis,source_id,status\n';
   test('nutriente sconosciuto, unità non convertibile, unità mancante, valore non valido', async () => {
     expect(await bad(H + 'anchovies,sconosciuto,1,g,,F,\n')).toMatch(/non riconosciuto/);
-    expect(await bad(H + 'anchovies,vitamin_a,1,mg,,F,\n')).toMatch(/non convertibile/);
+    expect(await bad(H + 'anchovies,vitamin_a,1,mgg,,F,\n')).toMatch(/non riconosciuta/);
     expect(await bad(H + 'anchovies,protein,1,,,F,\n')).toMatch(/unità mancante/);
     expect(await bad(H + 'anchovies,protein,-3,g,,F,\n')).toMatch(/non valido/);
     expect(await bad(H + 'anchovies,protein,abc,g,,F,\n')).toMatch(/non valido/);
@@ -246,5 +256,42 @@ describe('Importazione: applicazione, storico, ricalcoli', () => {
     const repo = new LocalRepository(null);
     const cat = await repo.loadCatalog();
     await expect(repo.saveFood({ ...cat.foods.find((f) => f.id === 'beef_lean')!, availableToFormulate: true })).rejects.toThrow(/da completare/);
+  });
+});
+
+describe('Dati reali del 16/10/2026', () => {
+  test('i file convertiti passano le verifiche e arrivano nel catalogo con lo stato corretto', async () => {
+    const cat = await new LocalRepository(null).loadCatalog();
+    const f = (id: string) => cat.foods.find((x) => x.id === id)!;
+    for (const id of ['beef_03', 'beef_15', 'beef_30', 'oat_dry', 'carrot_cooked', 'pumpkin_cooked']) {
+      const st = foodStatus(f(id), cat.nutrients);
+      expect(st.status).toBe('to_complete');
+      expect(st.reasons[0]).toMatch(/energia metabolizzabile/);
+      expect(f(id).kcalMePer100g).toBeNull();
+    }
+    expect(f('beef_15').nutrients.calcium).toEqual(expect.objectContaining({ value: 0.015, status: 'estimated', method: 'REPORTED_USDA_PROXY' }));
+    expect(f('beef_15').nutrients.carbohydrate_available).toEqual(expect.objectContaining({ value: 0, status: 'analytical_zero' }));
+    expect(f('beef_15').nutrients.vitamin_d).toBeUndefined(); // µg → UI non convertito
+    expect(f('oat_dry').nutrients.vitamin_d?.value).toBe(0); // zero: uguale in ogni unità
+    expect(f('beef_15').nutrients.energy_food_kcal?.value).toBe(215); // solo informativo
+    const q = cat.supplements.find((s) => s.id === 'qdiet')!;
+    expect(q.labelAddedOnly).toBe(true);
+    expect(q.nutrients.vitamin_a.value).toBe(250);
+    expect(q.nutrients.vitamin_e).toBeUndefined();
+    const o = cat.supplements.find((s) => s.id === 'omegor_vitality')!;
+    expect(o.massPerUnitG).toBeNull();
+    expect(o.nutrients.epa_dha).toBeUndefined();
+    expect(supplementStatus(o, cat.nutrients).status).toBe('partial');
+  });
+  test('Met+Cys dalla somma di metionina e cistina (allegato F)', async () => {
+    const cat = await new LocalRepository(null).loadCatalog();
+    const beef = cat.foods.find((x) => x.id === 'beef_15')!;
+    const a = auditRecipe({
+      items: [{ kind: 'food', id: 'beef_15', qty: 100 }],
+      foods: { beef_15: { ...beef, kcalMePer100g: 100 } },
+      supplements: {}, nutrients: cat.nutrients, limits: refs.limits, factors: refs.energyFactors, dog: dog(), dietMoisture: 'wet', settings: DEFAULT_SETTINGS,
+    });
+    expect(a.totals.nutrients.methionine_cystine.known).toBeCloseTo(0.478 + 0.191, 9);
+    expect(a.totals.nutrients.methionine_cystine.complete).toBe(true);
   });
 });

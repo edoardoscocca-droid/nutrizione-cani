@@ -3,6 +3,7 @@
 // non dal semplice numero di campi compilati. Le stesse regole sono replicate nel database
 // (supabase/migrations/…_catalog_status_import.sql, funzioni food_status / supplement_status).
 
+import { COMPOUNDS } from './totals';
 import type { Food, Nutrient, NutrientValue, Supplement } from './types';
 
 export type CatalogStatus = 'verified' | 'partial' | 'to_complete';
@@ -40,7 +41,8 @@ export function requiredNutrients(nutrients: Nutrient[]): Nutrient[] {
 const known = (v: NutrientValue | undefined) => v !== undefined && v.value !== null && v.value !== undefined;
 
 function valueChecks(values: Record<string, NutrientValue>, required: Nutrient[], reasons: string[]) {
-  const missing = required.filter((n) => !known(values[n.id])).map((n) => n.id);
+  const has = (id: string) => known(values[id]) || (!!COMPOUNDS[id] && COMPOUNDS[id].every((p) => known(values[p])));
+  const missing = required.filter((n) => !has(n.id)).map((n) => n.id);
   if (missing.length) reasons.push(`${missing.length} nutrienti richiesti senza valore`);
   const knownEntries = Object.entries(values).filter(([, v]) => known(v));
   const estimated = knownEntries.filter(([, v]) => !GOOD_QUALITY.has(v.status ?? 'measured')).map(([k]) => k);
@@ -79,12 +81,13 @@ export function supplementStatus(s: Supplement, nutrients: Nutrient[]): StatusRe
   const declared = Object.values(s.nutrients).filter(known).length;
   const hardMissing: string[] = [];
   if (!declared) hardMissing.push('composizione per dose');
-  if (s.doseUnit !== 'g' && s.doseUnit !== 'ml' && s.massPerUnitG === null) hardMissing.push('contenuto della singola dose');
   if (!s.labelSource) hardMissing.push('etichetta o scheda tecnica');
   const missing = valueChecks(s.nutrients, required, reasons);
   if (hardMissing.length) {
     return { status: 'to_complete', reasons: [`mancano: ${hardMissing.join(', ')}`, ...reasons], missing, readyForValidation: false };
   }
+  // i nutrienti sono dichiarati per unità: il peso della capsula serve per costi e sostanza secca, non per il calcolo
+  if (s.doseUnit !== 'g' && s.doseUnit !== 'ml' && s.massPerUnitG === null) reasons.push('peso della singola unità non indicato');
   if (s.kcalPerUnit === null) reasons.push('energia per dose non indicata');
   if (!s.version) reasons.push('variante/lotto o versione del prodotto non indicati');
   if (s.labelAddedOnly) reasons.push('l’etichetta dichiara solo le quantità aggiunte: non è un’analisi completa');

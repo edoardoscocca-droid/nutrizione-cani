@@ -74,15 +74,23 @@ export function totalEnergy(items: ItemData[]): Total {
 /**
  * Valore di un nutriente per unità di quantità, con le regole anti doppio conteggio (allegato F, ratios):
  * - epa_dha: riga composta se presente, altrimenti EPA + DHA se entrambi noti;
- * - methionine_cystine / phenylalanine_tyrosine: solo riga composta (cistina e tirosina non sono nel dizionario A).
+ * - methionine_cystine / phenylalanine_tyrosine: riga composta, altrimenti metionina + cistina / fenilalanina + tirosina.
  */
+/** Valori composti (allegato F): riga propria se presente, altrimenti somma delle due parti se entrambe note. */
+export const COMPOUNDS: Record<string, [string, string]> = {
+  epa_dha: ['epa', 'dha'],
+  methionine_cystine: ['methionine', 'cystine'],
+  phenylalanine_tyrosine: ['phenylalanine', 'tyrosine'],
+};
+
 export function itemValue(d: ItemData, nutrientId: string): number | null {
   const direct = d.valuePerQty(nutrientId);
   if (direct !== null) return direct;
-  if (nutrientId === 'epa_dha') {
-    const e = d.valuePerQty('epa');
-    const h = d.valuePerQty('dha');
-    return e !== null && h !== null ? e + h : null;
+  const pair = COMPOUNDS[nutrientId];
+  if (pair) {
+    const a = d.valuePerQty(pair[0]);
+    const b = d.valuePerQty(pair[1]);
+    return a !== null && b !== null ? a + b : null;
   }
   return null;
 }

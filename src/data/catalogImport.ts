@@ -76,6 +76,8 @@ export interface PlanItem {
   statusAfter: StatusResult;
   errors: ImportIssue[];
   warnings: ImportIssue[];
+  /** valori con unità valida ma non convertibile senza fattore approvato: non importati. */
+  pendingConversions: { nutrientId: string; label: string; value: number; unit: string; targetUnit: string }[];
   next: Food | Supplement;
 }
 
@@ -257,7 +259,7 @@ const IGNORED = ['available to formulate', 'usable for optimization', 'nutrition
 const LONG_COLS = {
   product: ['product id', 'food id', 'supplement id', 'id prodotto'],
   nutrient: ['nutrient id', 'nutrient', 'nutriente'],
-  value: ['value per 100g', 'declared amount', 'amount per unit', 'value', 'valore', 'amount'],
+  value: ['value per 100g', 'declared amount', 'amount per unit', 'amount per dose', 'value', 'valore', 'amount'],
   unit: ['unit', 'unita'],
   basis: ['basis', 'base'],
   source: ['source id', 'source', 'fonte'],
@@ -433,16 +435,30 @@ function parseNumber(raw: string): number | null {
   return Number.isFinite(n) ? n : NaN;
 }
 
+/** Qualità del valore. Accetta anche i codici delle fonti (es. REPORTED_USDA_PROXY), conservati come «metodo». */
 function mapValueStatus(raw: string | undefined, value: number): ValueStatus | null {
   const s = norm(raw ?? '');
   if (value === 0 && (s === '' || s === 'unverified' || s === 'verified' || s === 'zero' || s === 'analytical zero')) return 'analytical_zero';
   if (s === '' || s === 'unverified' || s === 'verified' || s === 'measured' || s === 'misurato' || s === 'analitico') return 'measured';
   if (['estimated', 'stima', 'stimato', 'estimate'].includes(s)) return 'estimated';
   if (['label', 'etichetta', 'dichiarato'].includes(s)) return 'label';
-  if (['calculated', 'calcolato'].includes(s)) return 'calculated';
+  if (['calculated', 'calcolato', 'derived'].includes(s)) return 'calculated';
   if (['analytical zero', 'zero analitico'].includes(s)) return 'analytical_zero';
+  // codici delle fonti: valori tipici di banca dati usati come proxy, schermate, basi da confermare → stima
+  // uno zero riportato esplicitamente dalla fonte è un dato dichiarato, non una stima
+  if (value === 0 && /reported|declared|proxy|approx|screenshot|confirm|assumed/.test(s)) return 'analytical_zero';
+  if (/proxy|approx|screenshot|confirm|assumed|unverified|provvisorio/.test(s)) return 'estimated';
+  if (/analytical declared|manufacturer declared|declared/.test(s)) return 'label';
   return null;
 }
+
+/** "1 g", "1 capsula", "5" → numero di dosi; null se non leggibile. */
+function parseDoseCount(raw: string): number | null {
+  const m = raw.trim().replace(',', '.').match(/^(\d+(?:\.\d+)?)/);
+  return m ? Number(m[1]) : null;
+}
+
+const KNOWN_UNITS = new Set(['g', 'mg', 'µg', 'kg', 'IU', 'kcal', '%']);
 
 function parseBool(raw: string): boolean | null {
   const s = norm(raw);
@@ -505,6 +521,7 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
       statusAfter: { status: 'to_complete', reasons: [], missing: [], readyForValidation: false },
       errors: [],
       warnings: [],
+      pendingConversions: [],
       next,
     };
     items.set(id, it);
@@ -631,17 +648,25 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
       err(`${nut.label}: unità mancante (attesa ${nut.unit} o un’unità di massa convertibile).`);
       continue;
     }
-    let conv;
+    let conv: { value: number; rule: string } | undefined;
     try {
       conv = toCanonical(value, v.unit, nut.unit);
     } catch {
-      err(`${nut.label}: unità «${v.unit}» non convertibile in ${nut.unit} senza un fattore documentato (forma chimica).`);
-      continue;
+      if (value === 0 && KNOWN_UNITS.has(normalizeUnit(v.unit))) {
+        conv = { value: 0, rule: `zero: uguale in ogni unità (${normalizeUnit(v.unit)} → ${nut.unit})` };
+      } else if (KNOWN_UNITS.has(normalizeUnit(v.unit)) && KNOWN_UNITS.has(normalizeUnit(nut.unit))) {
+        // unità valida ma di altra natura (es. µg → UI): serve un fattore approvato per la forma chimica
+        it.warnings.push({ line: v.line, productId: v.productId, message: `${nut.label}: ${v.raw} ${v.unit} non importato — da convertire in ${nut.unit} con un fattore approvato per la forma chimica; resta «non disponibile».` });
+        it.pendingConversions.push({ nutrientId: nut.id, label: nut.label, value: parseNumber(v.raw) ?? NaN, unit: v.unit, targetUnit: nut.unit });
+      } else {
+        err(`${nut.label}: unità «${v.unit}» non riconosciuta o non convertibile in ${nut.unit}.`);
+      }
+      if (!conv) continue;
     }
     value = conv.value;
     if (kind === 'supplements' && v.perDose) {
-      const pd = parseNumber(v.perDose);
-      if (pd === null || Number.isNaN(pd) || pd <= 0) {
+      const pd = parseDoseCount(v.perDose);
+      if (pd === null || pd <= 0) {
         err(`${nut.label}: «per_dose» «${v.perDose}» non valido.`);
         continue;
       }
@@ -668,13 +693,15 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
     if (kind === 'foods' && v.basis && /cook|cott/i.test(v.basis) !== /cook/.test((it.next as Food).processingState)) {
       it.warnings.push({ line: v.line, productId: v.productId, message: `${nut.label}: base «${v.basis}» non coerente con lo stato del prodotto (${(it.next as Food).processingState}). Crudo e cotto sono prodotti distinti.` });
     }
-    const declared = v.declared ? (norm(v.declared) === 'added' ? 'added' : norm(v.declared) === 'total' ? 'total' : null) : null;
-    if (v.declared && !declared) err(`${nut.label}: declared_total_or_added deve essere total o added.`);
+    const dn = norm(v.declared ?? '');
+    const declared = dn === 'added' ? 'added' : dn === 'total' ? 'total' : null;
+    if (v.declared && !declared && !['reported or estimated', 'unknown', ''].includes(dn)) err(`${nut.label}: declared_total_or_added deve essere total o added.`);
     if (declared === 'added' && kind === 'supplements' && !(it.next as Supplement).labelAddedOnly) {
       (it.next as Supplement).labelAddedOnly = true;
       it.fieldChanges.push({ field: 'labelAddedOnly', before: false, after: true });
     }
-    const nv: NutrientValue = { value, status, source, method: v.method || null };
+    const sourceCode = v.status && !['measured', 'label', 'calculated', 'estimated', 'analytical_zero', ''].includes(norm(v.status).replace(' ', '_')) ? v.status : null;
+    const nv: NutrientValue = { value, status, source, method: v.method || sourceCode || null };
     if (!same(cur?.value, nv.value) || !same(cur?.status ?? null, nv.status) || !same(cur?.source ?? null, nv.source) || !same(cur?.method ?? null, nv.method)) {
       it.valueChanges.push({
         nutrientId: nut.id,
@@ -688,7 +715,7 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
         status,
         source,
         basis: v.basis || null,
-        method: v.method || null,
+        method: nv.method ?? null,
         declared,
       });
     }

@@ -189,12 +189,15 @@ describe('T08 capsule', () => {
     expect(r2.outcome).toBe('infeasible');
     expect(r2.conflicts.some((c) => c.kind === 'product_max' || c.metric === 'epa_dha')).toBe(true);
   });
-  test('capsula senza contenuto per unità verificato: non usabile', async () => {
+  test('capsula senza peso dell’unità: dosi intere ancora calcolabili, ma ricetta non dichiarata completa', async () => {
     const caps = { ...supplement('test_fish_oil_caps'), massPerUnitG: null } as Supplement;
-    const inp = input(['test_beef'], []);
-    inp.supplements = [{ supplement: caps }];
+    const d = dog({ targets: [{ id: 't', metric: 'epa_dha', lower: 0.5, upper: null, unit: 'g', basis: 'per_day', locked: true, setBy: 'Dott.ssa Test', setAt: '2026-10-16' }] });
+    const inp = input(['test_beef', 'test_oats'], ['test_multi', 'test_bone_meal'], { dog: d });
+    inp.supplements = [...inp.supplements, { supplement: caps }];
     const r = await formulate(inp);
-    expect(r.excluded.some((e) => e.id === 'test_fish_oil_caps')).toBe(true);
+    expect(r.outcome).toBe('solved');
+    expect(Number.isInteger(r.items.find((i) => i.id === 'test_fish_oil_caps')!.qty)).toBe(true);
+    expect(r.audit!.blockers.join()).toMatch(/peso della singola unità/);
   });
 });
 

@@ -12,7 +12,7 @@ Versione del motore: `motore-1.0.0` (salvata in ogni versione di ricetta).
 - Alimento: valore per 100 g × grammi / 100. Integratore: valore per dose × numero di dosi.
 - Ogni totale tiene separati i contributi noti e i componenti **senza dato** (null ≠ 0).
 - EPA+DHA: riga composta se presente, altrimenti EPA + DHA; mai sommati di nuovo agli omega-3 totali.
-- Met+Cys e Phe+Tyr: solo da riga composta (cistina e tirosina non sono nel dizionario A).
+- Met+Cys e Phe+Tyr: riga composta se presente, altrimenti metionina + cistina e fenilalanina + tirosina (formula dell'allegato F; cistina e tirosina aggiunte al dizionario come voci descrittive).
 
 ## Rapporti e quote
 - Ca:P = Σ Ca (g) / Σ P (g); definito solo con dati completi e P > 0; verificato **insieme** ai minimi assoluti.

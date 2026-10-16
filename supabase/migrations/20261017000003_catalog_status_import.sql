@@ -213,14 +213,21 @@ create constraint trigger supplements_activation after insert or update on publi
 create constraint trigger supplement_nutrients_activation after insert or update or delete on public.supplement_nutrients
   deferrable initially deferred for each row execute function public.check_activation();
 
+-- amministratore dell'app, oppure accesso diretto al database (SQL Editor / chiave di servizio), che ha già pieni poteri
+create or replace function public.is_catalog_admin() returns boolean
+language sql stable set search_path = public as $$
+  select public.is_admin() or current_user in ('postgres', 'service_role', 'supabase_admin');
+$$;
+grant execute on function public.is_catalog_admin() to authenticated;
+
 -- ───────────── convalida esplicita ─────────────
 create or replace function public.validate_catalog_item(item_kind text, item_id text) returns jsonb
 language plpgsql security invoker set search_path = public as $$
 declare
   st jsonb;
-  who text := coalesce(nullif(auth.jwt() ->> 'email', ''), auth.uid()::text);
+  who text := coalesce(nullif(auth.jwt() ->> 'email', ''), auth.uid()::text, current_user);
 begin
-  if not public.is_admin() then raise exception 'Solo gli amministratori possono convalidare il catalogo'; end if;
+  if not public.is_catalog_admin() then raise exception 'Solo gli amministratori possono convalidare il catalogo'; end if;
   if item_kind = 'food' then
     select public.food_status_of(f) into st from public.foods f where f.id = item_id;
   elsif item_kind = 'supplement' then
@@ -269,7 +276,7 @@ declare
   ids text[] := '{}';
   kind text := payload ->> 'kind';
 begin
-  if not public.is_admin() then raise exception 'Solo gli amministratori possono importare nel catalogo'; end if;
+  if not public.is_catalog_admin() then raise exception 'Solo gli amministratori possono importare nel catalogo'; end if;
   if kind not in ('foods','supplements') then raise exception 'Tipo di importazione non valido'; end if;
   for p in select * from jsonb_array_elements(coalesce(payload -> 'products', '[]'::jsonb)) loop
     ids := ids || (p ->> 'id');

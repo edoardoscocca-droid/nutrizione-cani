@@ -8,7 +8,8 @@ import { BREED_NOTES, CATEGORIES, packageFoods, packageReferences, packageSupple
 import { RecipeLimitError } from './recipeService';
 import type { FullCatalog, ImportLogEntry, ProfileHistoryEntry, Repository } from './repository';
 import { foodStatus, supplementStatus } from '../engine/catalogStatus';
-import { toPayload, type ImportPlan } from './catalogImport';
+import { parseImport, planImport, toPayload, type ImportPlan } from './catalogImport';
+import { BUNDLED_IMPORTS } from './bundledImports';
 import { TEST_FOODS, TEST_SUPPLEMENTS } from './testFixtures';
 
 interface Store {
@@ -64,22 +65,34 @@ export class LocalRepository implements Repository {
     return true; // in prova locale l'utente gestisce il proprio catalogo di prova
   }
 
-  async loadCatalog(): Promise<FullCatalog> {
+  async loadCatalog(opts: { withBundledImports?: boolean } = {}): Promise<FullCatalog> {
     const refs = packageReferences();
     const override = <T extends { id: string }>(base: T[], edits: T[]) => {
       const m = new Map(base.map((x) => [x.id, x]));
       for (const e of edits) m.set(e.id, e);
       return [...m.values()];
     };
-    return {
+    const cat: FullCatalog = {
       ...refs,
       customThresholds: this.store.thresholds ?? refs.customThresholds,
       energyFactors: this.store.factors ?? refs.energyFactors,
-      foods: override([...packageFoods(), ...structuredClone(TEST_FOODS)], this.store.foods),
-      supplements: override([...packageSupplements(), ...structuredClone(TEST_SUPPLEMENTS)], this.store.supplements),
+      foods: [...packageFoods(), ...structuredClone(TEST_FOODS)],
+      supplements: [...packageSupplements(), ...structuredClone(TEST_SUPPLEMENTS)],
       breedNotes: BREED_NOTES,
       categories: CATEGORIES,
     };
+    if (opts.withBundledImports !== false) {
+      for (const b of BUNDLED_IMPORTS) {
+        const plan = planImport(parseImport(JSON.stringify(b.data), b.kind, cat.nutrients), cat, b.label);
+        if (plan.errors.length) continue;
+        const next = plan.items.filter((i) => i.action !== 'unchanged').map((i) => i.next);
+        if (b.kind === 'foods') cat.foods = override(cat.foods, next as Food[]);
+        else cat.supplements = override(cat.supplements, next as Supplement[]);
+      }
+    }
+    cat.foods = override(cat.foods, this.store.foods);
+    cat.supplements = override(cat.supplements, this.store.supplements);
+    return cat;
   }
 
   async listDogs() {

@@ -1,0 +1,178 @@
+﻿supplement_id,nutrient_id,amount_per_dose,unit,per_dose,source_id,declared_total_or_added,verified,value_status,notes
+qdiet,protein,0.0425,g,1 g,https://www.qdiet.it/products/compensa-250-g,reported_or_estimated,false,ANALYTICAL_DECLARED,"Percentuale in massa, conversione per 1 grammo"
+qdiet,fat,0.0007000000000000001,g,1 g,https://www.qdiet.it/products/compensa-250-g,reported_or_estimated,false,ANALYTICAL_DECLARED,"Percentuale in massa, conversione per 1 grammo"
+qdiet,carbohydrate_available,,g,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,fiber,0.0001,g,1 g,https://www.qdiet.it/products/compensa-250-g,reported_or_estimated,false,ANALYTICAL_DECLARED,"Percentuale in massa, conversione per 1 grammo"
+qdiet,moisture,0.03,g,1 g,https://www.qdiet.it/products/compensa-250-g,reported_or_estimated,false,ANALYTICAL_DECLARED,"Percentuale in massa, conversione per 1 grammo"
+qdiet,linoleic_acid,,g,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,ala,,g,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,epa,,g,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,dha,,g,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,epa_dha,,g,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,omega3_total,,g,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,omega6_total,,g,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,arachidonic_acid,,mg,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,calcium,0.18,g,1 g,https://www.qdiet.it/products/compensa-250-g,reported_or_estimated,false,ANALYTICAL_DECLARED,"Percentuale in massa, conversione per 1 grammo"
+qdiet,phosphorus,0.065,g,1 g,https://www.qdiet.it/products/compensa-250-g,reported_or_estimated,false,ANALYTICAL_DECLARED,"Percentuale in massa, conversione per 1 grammo"
+qdiet,potassium,,g,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,sodium,0.02,g,1 g,https://www.qdiet.it/products/compensa-250-g,reported_or_estimated,false,ANALYTICAL_DECLARED,"Percentuale in massa, conversione per 1 grammo"
+qdiet,chloride,,g,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,magnesium,0.015,g,1 g,https://www.qdiet.it/products/compensa-250-g,reported_or_estimated,false,ANALYTICAL_DECLARED,"Percentuale in massa, conversione per 1 grammo"
+qdiet,copper,0.25,mg,1 g,https://www.qdiet.it/products/compensa-250-g,added,false,PER_KG_ASSUMED_CONFIRM,Additivo dichiarato per kg PRESUNTO; stato BASIS_TO_CONFIRM
+qdiet,iodine,0.045,mg,1 g,https://www.qdiet.it/products/compensa-250-g,added,false,PER_KG_ASSUMED_CONFIRM,Additivo dichiarato per kg PRESUNTO; stato BASIS_TO_CONFIRM
+qdiet,iron,1.25,mg,1 g,https://www.qdiet.it/products/compensa-250-g,added,false,PER_KG_ASSUMED_CONFIRM,Additivo dichiarato per kg PRESUNTO; stato BASIS_TO_CONFIRM
+qdiet,manganese,0.3,mg,1 g,https://www.qdiet.it/products/compensa-250-g,added,false,PER_KG_ASSUMED_CONFIRM,Additivo dichiarato per kg PRESUNTO; stato BASIS_TO_CONFIRM
+qdiet,selenium_wet,4.0,µg,1 g,https://www.qdiet.it/products/compensa-250-g,added,false,PER_KG_ASSUMED_CONFIRM,Additivo dichiarato per kg PRESUNTO; stato BASIS_TO_CONFIRM
+qdiet,zinc,2.0,mg,1 g,https://www.qdiet.it/products/compensa-250-g,added,false,PER_KG_ASSUMED_CONFIRM,Additivo dichiarato per kg PRESUNTO; stato BASIS_TO_CONFIRM
+qdiet,ca_p_ratio,,ratio,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,vitamin_a,250.0,IU,1 g,https://www.qdiet.it/products/compensa-250-g,added,false,PER_KG_ASSUMED_CONFIRM,Additivo dichiarato per kg PRESUNTO; stato BASIS_TO_CONFIRM
+qdiet,vitamin_d,25.0,IU,1 g,https://www.qdiet.it/products/compensa-250-g,added,false,PER_KG_ASSUMED_CONFIRM,Additivo dichiarato per kg PRESUNTO; stato BASIS_TO_CONFIRM
+qdiet,vitamin_e,,IU,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,vitamin_b1,0.075,mg,1 g,https://www.qdiet.it/products/compensa-250-g,added,false,PER_KG_ASSUMED_CONFIRM,Additivo dichiarato per kg PRESUNTO; stato BASIS_TO_CONFIRM
+qdiet,vitamin_b2,0.25,mg,1 g,https://www.qdiet.it/products/compensa-250-g,added,false,PER_KG_ASSUMED_CONFIRM,Additivo dichiarato per kg PRESUNTO; stato BASIS_TO_CONFIRM
+qdiet,vitamin_b3,0.05,mg,1 g,https://www.qdiet.it/products/compensa-250-g,added,false,PER_KG_ASSUMED_CONFIRM,Additivo dichiarato per kg PRESUNTO; stato BASIS_TO_CONFIRM
+qdiet,vitamin_b5,,mg,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,vitamin_b6,0.05,mg,1 g,https://www.qdiet.it/products/compensa-250-g,added,false,PER_KG_ASSUMED_CONFIRM,Additivo dichiarato per kg PRESUNTO; stato BASIS_TO_CONFIRM
+qdiet,vitamin_b9,10.0,µg,1 g,https://www.qdiet.it/products/compensa-250-g,added,false,PER_KG_ASSUMED_CONFIRM,Additivo dichiarato per kg PRESUNTO; stato BASIS_TO_CONFIRM
+qdiet,vitamin_b12,1.0,µg,1 g,https://www.qdiet.it/products/compensa-250-g,added,false,PER_KG_ASSUMED_CONFIRM,Additivo dichiarato per kg PRESUNTO; stato BASIS_TO_CONFIRM
+qdiet,choline,,mg,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,vitamin_c,1.25,mg,1 g,https://www.qdiet.it/products/compensa-250-g,added,false,PER_KG_ASSUMED_CONFIRM,Additivo dichiarato per kg PRESUNTO; stato BASIS_TO_CONFIRM
+qdiet,vitamin_b7,2.5,µg,1 g,https://www.qdiet.it/products/compensa-250-g,added,false,PER_KG_ASSUMED_CONFIRM,Additivo dichiarato per kg PRESUNTO; stato BASIS_TO_CONFIRM
+qdiet,vitamin_k,,µg,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,arginine,,g,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,histidine,,g,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,isoleucine,,g,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,leucine,,g,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,lysine,,g,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,methionine,,g,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,methionine_cystine,,g,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,phenylalanine,,g,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,phenylalanine_tyrosine,,g,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,threonine,,g,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,tryptophan,,g,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,valine,,g,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,taurine,50.0,mg,1 g,https://www.qdiet.it/products/compensa-250-g,added,false,PER_KG_ASSUMED_CONFIRM,Additivo dichiarato per kg PRESUNTO; stato BASIS_TO_CONFIRM
+qdiet,l_carnitine,,mg,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,protein_energy_pct,,%,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,fat_energy_pct,,%,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,carb_energy_pct,,%,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,omega6_omega3_ratio,,ratio,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+qdiet,metabolizable_energy,,kcal,1 g,https://www.qdiet.it/products/compensa-250-g,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,protein,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,fat,1,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,reported_or_estimated,false,PROXY_OIL_ONLY,1g olio per capsula stimato come grassi; non composizione analitica intera capsula
+omegor_vitality,carbohydrate_available,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,fiber,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,moisture,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,linoleic_acid,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,ala,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,epa,0.535,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,reported_or_estimated,true,MANUFACTURER_DECLARED,Parte degli omega-3 totali
+omegor_vitality,dha,0.268,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,reported_or_estimated,true,MANUFACTURER_DECLARED,Parte degli omega-3 totali
+omegor_vitality,epa_dha,0.803,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,reported_or_estimated,false,DERIVED,"Somma EPA+DHA, non aggiungere al totale omega-3"
+omegor_vitality,omega3_total,0.9,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,reported_or_estimated,true,MANUFACTURER_DECLARED,"Totale comprende EPA e DHA, non sommare a questi"
+omegor_vitality,omega6_total,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,arachidonic_acid,,mg,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,calcium,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,phosphorus,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,potassium,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,sodium,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,chloride,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,magnesium,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,copper,,mg,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,iodine,,mg,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,iron,,mg,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,manganese,,mg,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,selenium_wet,,µg,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,zinc,,mg,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,ca_p_ratio,,ratio,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,vitamin_a,,IU,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,vitamin_d,,IU,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,vitamin_e,,IU,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,vitamin_b1,,mg,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,vitamin_b2,,mg,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,vitamin_b3,,mg,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,vitamin_b5,,mg,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,vitamin_b6,,mg,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,vitamin_b9,,µg,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,vitamin_b12,,µg,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,choline,,mg,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,vitamin_c,,mg,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,vitamin_b7,,µg,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,vitamin_k,,µg,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,arginine,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,histidine,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,isoleucine,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,leucine,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,lysine,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,methionine,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,methionine_cystine,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,phenylalanine,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,phenylalanine_tyrosine,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,threonine,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,tryptophan,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,valine,,g,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,taurine,,mg,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,l_carnitine,,mg,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,protein_energy_pct,,%,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,fat_energy_pct,,%,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,carb_energy_pct,,%,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,omega6_omega3_ratio,,ratio,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+omegor_vitality,metabolizable_energy,,kcal,1 capsula,https://www.omegor.com/products/omegor-vitality-1000/,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,protein,0.006,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,reported_or_estimated,false,SCREENSHOT_UNVERIFIED,"Dati provenienti da un risultato AI di ricerca, non etichetta di prodotto identificato"
+bone_meal,fat,0.003,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,reported_or_estimated,false,SCREENSHOT_UNVERIFIED,"Dati provenienti da un risultato AI di ricerca, non etichetta di prodotto identificato"
+bone_meal,carbohydrate_available,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,fiber,0.003,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,reported_or_estimated,false,SCREENSHOT_UNVERIFIED,"Dati provenienti da un risultato AI di ricerca, non etichetta di prodotto identificato"
+bone_meal,moisture,0.209,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,reported_or_estimated,false,SCREENSHOT_UNVERIFIED,"Dati provenienti da un risultato AI di ricerca, non etichetta di prodotto identificato"
+bone_meal,linoleic_acid,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,ala,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,epa,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,dha,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,epa_dha,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,omega3_total,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,omega6_total,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,arachidonic_acid,,mg,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,calcium,0.226,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,reported_or_estimated,false,SCREENSHOT_UNVERIFIED,"Dati provenienti da un risultato AI di ricerca, non etichetta di prodotto identificato"
+bone_meal,phosphorus,0.177,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,reported_or_estimated,false,SCREENSHOT_UNVERIFIED,"Dati provenienti da un risultato AI di ricerca, non etichetta di prodotto identificato"
+bone_meal,potassium,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,sodium,0.0003,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,reported_or_estimated,false,SCREENSHOT_UNVERIFIED,"Dati provenienti da un risultato AI di ricerca, non etichetta di prodotto identificato"
+bone_meal,chloride,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,magnesium,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,copper,,mg,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,iodine,,mg,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,iron,,mg,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,manganese,,mg,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,selenium_wet,,µg,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,zinc,,mg,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,ca_p_ratio,,ratio,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,vitamin_a,,IU,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,vitamin_d,,IU,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,vitamin_e,,IU,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,vitamin_b1,,mg,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,vitamin_b2,,mg,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,vitamin_b3,,mg,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,vitamin_b5,,mg,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,vitamin_b6,,mg,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,vitamin_b9,,µg,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,vitamin_b12,,µg,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,choline,,mg,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,vitamin_c,,mg,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,vitamin_b7,,µg,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,vitamin_k,,µg,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,arginine,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,histidine,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,isoleucine,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,leucine,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,lysine,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,methionine,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,methionine_cystine,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,phenylalanine,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,phenylalanine_tyrosine,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,threonine,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,tryptophan,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,valine,,g,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,taurine,,mg,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,l_carnitine,,mg,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,protein_energy_pct,,%,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,fat_energy_pct,,%,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,carb_energy_pct,,%,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,omega6_omega3_ratio,,ratio,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero
+bone_meal,metabolizable_energy,,kcal,1 g,USER_UPLOADED_SCREENSHOT_AI_SEARCH_2026-10-16,unknown,false,UNKNOWN_NOT_DECLARED,Non dichiarato; NON assumere zero

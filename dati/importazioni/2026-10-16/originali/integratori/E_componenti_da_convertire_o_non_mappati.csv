@@ -1,0 +1,7 @@
+﻿product_id,component,declared_amount,declared_unit,declared_basis,amount_per_gram_provisional,unit_per_gram,mapped_nutrient_id,mapping_status,notes
+qdiet,Vitamina E tutto-rac-alfa-tocoferolo acetato,2000,mg,"per kg PROBABILE, da confermare",2,mg,vitamin_e,NEEDS_IU_FORM_CONVERSION,NON convertire mg in UI implicitamente; validare fattore per tutto-rac-alfa-tocoferil acetato
+qdiet,Calcio D-pantotenato,450,mg,"per kg PROBABILE, da confermare",0.45,mg,vitamin_b5,COMPOUND_NOT_EQUIVALENT,"0,45 mg di sale NON sono automaticamente 0,45 mg di acido pantotenico"
+omegor_vitality,Vitamina E d-alfa-tocoferolo,10,mg,per capsula,,,vitamin_e,NEEDS_IU_FORM_CONVERSION,10 mg di vitamina E naturale dichiarata; regola UI distinta dalla forma sintetica
+omegor_vitality,Olio di pesce concentrato,1000,mg,per capsula,,,fat,FAT_CONTRIBUTION_APPROX_OIL_ONLY,"1000 mg di olio di pesce per capsula; 1g grassi come approssimazione per olio, non analisi dell intera capsula"
+bone_meal,Ceneri grezze,72.8,%,per 100g,0.728,g,,SCREENSHOT_UNVERIFIED,"Schermata ricerca generata, fonte non identificata"
+qdiet,Ceneri grezze,73,%,per 100g,0.73,g,,ANALYTICAL_DECLARED,Non definito nel dizionario nutrienti corrente

@@ -17,7 +17,7 @@ if (!kind || !file) {
   console.error('Uso: npx tsx scripts/import-catalog.ts alimenti|integratori <file> [catalogo.json]');
   process.exit(1);
 }
-const catalog = await new LocalRepository(null).loadCatalog();
+const catalog = await new LocalRepository(null).loadCatalog({ withBundledImports: false });
 if (catalogFile) Object.assign(catalog, JSON.parse(readFileSync(catalogFile, 'utf8')));
 const plan = planImport(parseImport(readFileSync(file, 'utf8'), kind, catalog.nutrients), catalog, basename(file));
 for (const w of plan.warnings) console.error(`avviso${w.line ? ` riga ${w.line}` : ''}${w.productId ? ` [${w.productId}]` : ''}: ${w.message}`);

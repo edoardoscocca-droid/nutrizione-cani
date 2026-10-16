@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "date": "2026-10-17",
+  "note": "Voci aggiunte al dizionario A per conservare i dati delle fonti senza confonderli con i nutrienti FEDIAF. Nessun limite associato. cistina e tirosina servono per Met+Cys e Phe+Tyr secondo le formule dell'allegato F (methionine_g + cystine_g).",
+  "nutrients": [
+    { "id": "cystine", "label_it": "Cistina", "group": "essential_amino_acids", "unit": "g", "type": "descriptive", "formula": null, "notes": "Componente di Metionina + cistina (allegato F)." },
+    { "id": "tyrosine", "label_it": "Tirosina", "group": "essential_amino_acids", "unit": "g", "type": "descriptive", "formula": null, "notes": "Componente di Fenilalanina + tirosina." },
+    { "id": "energy_food_kcal", "label_it": "Energia alimentare (uomo, NON EM cane)", "group": "source_reference", "unit": "kcal", "type": "informational", "formula": null, "notes": "Valore della fonte destinato all'uomo: non è energia metabolizzabile del cane e non entra nel calcolo." },
+    { "id": "carbohydrate_by_difference", "label_it": "Carboidrati per differenza (fonte)", "group": "source_reference", "unit": "g", "type": "informational", "formula": null, "notes": "Comprende la fibra: non equivale ai carboidrati disponibili." },
+    { "id": "c18_2_undifferentiated", "label_it": "Acido grasso 18:2 non differenziato (fonte)", "group": "source_reference", "unit": "g", "type": "informational", "formula": null, "notes": "Non attribuito all'acido linoleico finché l'identità chimica non è validata." },
+    { "id": "c20_4_undifferentiated", "label_it": "Acido grasso 20:4 non differenziato (fonte)", "group": "source_reference", "unit": "g", "type": "informational", "formula": null, "notes": "Non attribuito all'acido arachidonico finché l'identità chimica non è validata." },
+    { "id": "vitamin_a_retinol_ug", "label_it": "Retinolo (fonte, µg)", "group": "source_reference", "unit": "µg", "type": "informational", "formula": null, "notes": "Non convertito in UI di vitamina A senza regola approvata." },
+    { "id": "vitamin_a_carotenoid_iu", "label_it": "Vitamina A da carotenoidi (UI per uso umano)", "group": "source_reference", "unit": "IU (carotenoids; human labeling)", "type": "informational", "formula": null, "notes": "Non equivale a vitamina A per il cane e non si somma." },
+    { "id": "beta_carotene_ug", "label_it": "Beta-carotene (fonte)", "group": "source_reference", "unit": "µg", "type": "informational", "formula": null, "notes": "Solo informativo." }
+  ]
+}

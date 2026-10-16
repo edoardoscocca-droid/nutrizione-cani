@@ -1,0 +1,1678 @@
+{
+ "foods": [
+  {
+   "id": "beef_03",
+   "name_it": "Macinato di manzo crudo 3% grassi",
+   "category": "animal",
+   "subcategory": "muscle",
+   "processing_state": "raw",
+   "preparation": null,
+   "edible_portion": "per 100 g parte edibile nelle condizioni dichiarate",
+   "source_identifier": "USDA SR Legacy FDC 173111",
+   "data_status": "estimated",
+   "notes": "USDA profile 97% lean, 3% fat; non analisi lotto specifico · Fonte: https://whatyoueat.io/foods/173111-ground-beef-97-lean",
+   "nutrients": {
+    "protein": {
+     "value": "21.98",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "fat": {
+     "value": "3",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "carbohydrate_available": {
+     "value": "0",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "fiber": {
+     "value": "0",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "moisture": {
+     "value": "74.75",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "ala": {
+     "value": "0.025",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "epa": {
+     "value": "0",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "dha": {
+     "value": "0",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "calcium": {
+     "value": "8",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "phosphorus": {
+     "value": "203",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "potassium": {
+     "value": "357",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "sodium": {
+     "value": "66",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "magnesium": {
+     "value": "22",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "copper": {
+     "value": "0.08",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "iron": {
+     "value": "2.44",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "manganese": {
+     "value": "0.01",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "selenium_wet": {
+     "value": "17.7",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "zinc": {
+     "value": "5.21",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "vitamin_d": {
+     "value": "0.1",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "vitamin_e": {
+     "value": "0.17",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "vitamin_b1": {
+     "value": "0.041",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "vitamin_b2": {
+     "value": "0.151",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "vitamin_b3": {
+     "value": "5.663",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "vitamin_b5": {
+     "value": "0.673",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "vitamin_b6": {
+     "value": "0.401",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "vitamin_b9": {
+     "value": "4",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "vitamin_b12": {
+     "value": "2.26",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "choline": {
+     "value": "72.8",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "vitamin_c": {
+     "value": "0",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "arginine": {
+     "value": "1.432",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "histidine": {
+     "value": "0.715",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "isoleucine": {
+     "value": "0.972",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "leucine": {
+     "value": "1.715",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "lysine": {
+     "value": "1.822",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "methionine": {
+     "value": "0.566",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "phenylalanine": {
+     "value": "0.858",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "threonine": {
+     "value": "0.851",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "tryptophan": {
+     "value": "0.112",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "valine": {
+     "value": "1.081",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "energy_food_kcal": {
+     "value": "121",
+     "unit": "kcal",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "carbohydrate_by_difference": {
+     "value": "0",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "c18_2_undifferentiated": {
+     "value": "0.154",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "c20_4_undifferentiated": {
+     "value": "0.035",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "cystine": {
+     "value": "0.226",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "tyrosine": {
+     "value": "0.677",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    },
+    "vitamin_a_retinol_ug": {
+     "value": "4",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173111"
+    }
+   }
+  },
+  {
+   "id": "beef_15",
+   "name_it": "Macinato di manzo crudo 15% grassi",
+   "category": "animal",
+   "subcategory": "muscle",
+   "processing_state": "raw",
+   "preparation": null,
+   "edible_portion": "per 100 g parte edibile nelle condizioni dichiarate",
+   "source_identifier": "USDA SR Legacy FDC 171796",
+   "data_status": "estimated",
+   "notes": "USDA profile 85% lean, 15% fat; non analisi lotto specifico · Fonte: https://whatyoueat.io/foods/171796-ground-beef-85-lean",
+   "nutrients": {
+    "protein": {
+     "value": "18.59",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "fat": {
+     "value": "15",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "carbohydrate_available": {
+     "value": "0",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "fiber": {
+     "value": "0",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "moisture": {
+     "value": "65.66",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "ala": {
+     "value": "0.042",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "epa": {
+     "value": "0.002",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "dha": {
+     "value": "0.001",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "calcium": {
+     "value": "15",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "phosphorus": {
+     "value": "171",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "potassium": {
+     "value": "295",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "sodium": {
+     "value": "66",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "magnesium": {
+     "value": "18",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "copper": {
+     "value": "0.067",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "iron": {
+     "value": "2.09",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "manganese": {
+     "value": "0.01",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "selenium_wet": {
+     "value": "15.8",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "zinc": {
+     "value": "4.48",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "vitamin_d": {
+     "value": "0.1",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "vitamin_e": {
+     "value": "0.17",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "vitamin_b1": {
+     "value": "0.042",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "vitamin_b2": {
+     "value": "0.151",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "vitamin_b3": {
+     "value": "4.649",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "vitamin_b5": {
+     "value": "0.549",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "vitamin_b6": {
+     "value": "0.346",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "vitamin_b9": {
+     "value": "6",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "vitamin_b12": {
+     "value": "2.17",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "choline": {
+     "value": "61.2",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "vitamin_c": {
+     "value": "0",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "arginine": {
+     "value": "1.21",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "histidine": {
+     "value": "0.604",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "isoleucine": {
+     "value": "0.822",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "leucine": {
+     "value": "1.45",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "lysine": {
+     "value": "1.54",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "methionine": {
+     "value": "0.478",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "phenylalanine": {
+     "value": "0.725",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "threonine": {
+     "value": "0.72",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "tryptophan": {
+     "value": "0.094",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "valine": {
+     "value": "0.914",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "energy_food_kcal": {
+     "value": "215",
+     "unit": "kcal",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "carbohydrate_by_difference": {
+     "value": "0",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "c18_2_undifferentiated": {
+     "value": "0.331",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "c20_4_undifferentiated": {
+     "value": "0.034",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "cystine": {
+     "value": "0.191",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "tyrosine": {
+     "value": "0.572",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    },
+    "vitamin_a_retinol_ug": {
+     "value": "4",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 171796"
+    }
+   }
+  },
+  {
+   "id": "beef_30",
+   "name_it": "Macinato di manzo crudo 30% grassi",
+   "category": "animal",
+   "subcategory": "muscle",
+   "processing_state": "raw",
+   "preparation": null,
+   "edible_portion": "per 100 g parte edibile nelle condizioni dichiarate",
+   "source_identifier": "USDA SR Legacy FDC 168652",
+   "data_status": "estimated",
+   "notes": "USDA profile 70% lean, 30% fat; non analisi lotto specifico · Fonte: https://whatyoueat.io/foods/168652-ground-beef-70-lean",
+   "nutrients": {
+    "protein": {
+     "value": "14.35",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "fat": {
+     "value": "30",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "carbohydrate_available": {
+     "value": "0",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "fiber": {
+     "value": "0",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "moisture": {
+     "value": "54.3",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "ala": {
+     "value": "0.065",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "epa": {
+     "value": "0",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "dha": {
+     "value": "0",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "calcium": {
+     "value": "24",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "phosphorus": {
+     "value": "132",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "potassium": {
+     "value": "218",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "sodium": {
+     "value": "66",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "magnesium": {
+     "value": "14",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "copper": {
+     "value": "0.05",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "iron": {
+     "value": "1.64",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "manganese": {
+     "value": "0.009",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "selenium_wet": {
+     "value": "13.5",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "zinc": {
+     "value": "3.57",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "vitamin_d": {
+     "value": "0.1",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "vitamin_e": {
+     "value": "0.17",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "vitamin_b1": {
+     "value": "0.044",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "vitamin_b2": {
+     "value": "0.151",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "vitamin_b3": {
+     "value": "3.382",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "vitamin_b5": {
+     "value": "0.395",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "vitamin_b6": {
+     "value": "0.278",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "vitamin_b9": {
+     "value": "9",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "vitamin_b12": {
+     "value": "2.07",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "choline": {
+     "value": "46.8",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "vitamin_c": {
+     "value": "0",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "arginine": {
+     "value": "0.933",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "histidine": {
+     "value": "0.466",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "isoleucine": {
+     "value": "0.634",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "leucine": {
+     "value": "1.118",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "lysine": {
+     "value": "1.188",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "methionine": {
+     "value": "0.369",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "phenylalanine": {
+     "value": "0.559",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "threonine": {
+     "value": "0.555",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "tryptophan": {
+     "value": "0.073",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "valine": {
+     "value": "0.705",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "energy_food_kcal": {
+     "value": "332",
+     "unit": "kcal",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "carbohydrate_by_difference": {
+     "value": "0",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "c18_2_undifferentiated": {
+     "value": "0.577",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "c20_4_undifferentiated": {
+     "value": "0.035",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "cystine": {
+     "value": "0.148",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "tyrosine": {
+     "value": "0.441",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    },
+    "vitamin_a_retinol_ug": {
+     "value": "4",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 168652"
+    }
+   }
+  },
+  {
+   "id": "oat_dry",
+   "name_it": "Avena in fiocchi secca non fortificata",
+   "category": "starch",
+   "subcategory": "cereal",
+   "processing_state": "raw",
+   "preparation": "Fiocchi secchi non cotti: pesare SECCHI prima dell’ammollo; acqua di ammollo non scolata.",
+   "edible_portion": "per 100 g parte edibile nelle condizioni dichiarate",
+   "source_identifier": "USDA SR Legacy FDC 173904",
+   "data_status": "estimated",
+   "notes": "Pesare secca; ammollo acqua senza scarico; valori USDA per prodotto secco · Fonte: https://whatyoueat.io/foods/173904-unfortified-oats",
+   "nutrients": {
+    "protein": {
+     "value": "13.15",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "fat": {
+     "value": "6.52",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "carbohydrate_available": {
+     "value": "57.6",
+     "unit": "g",
+     "status": "DERIVED_APPROXIMATION",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "fiber": {
+     "value": "10.1",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "moisture": {
+     "value": "10.84",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "epa": {
+     "value": "0",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "dha": {
+     "value": "0",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "calcium": {
+     "value": "52",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "phosphorus": {
+     "value": "410",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "potassium": {
+     "value": "362",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "sodium": {
+     "value": "6",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "magnesium": {
+     "value": "138",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "copper": {
+     "value": "0.391",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "iron": {
+     "value": "4.25",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "manganese": {
+     "value": "3.63",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "selenium_wet": {
+     "value": "28.9",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "zinc": {
+     "value": "3.64",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "vitamin_d": {
+     "value": "0",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "vitamin_e": {
+     "value": "0.42",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "vitamin_b1": {
+     "value": "0.46",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "vitamin_b2": {
+     "value": "0.155",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "vitamin_b3": {
+     "value": "1.125",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "vitamin_b5": {
+     "value": "1.12",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "vitamin_b6": {
+     "value": "0.1",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "vitamin_b9": {
+     "value": "32",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "vitamin_b12": {
+     "value": "0",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "choline": {
+     "value": "40.4",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "vitamin_c": {
+     "value": "0",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "arginine": {
+     "value": "0.85",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "histidine": {
+     "value": "0.275",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "isoleucine": {
+     "value": "0.503",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "leucine": {
+     "value": "0.98",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "lysine": {
+     "value": "0.637",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "methionine": {
+     "value": "0.207",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "phenylalanine": {
+     "value": "0.665",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "threonine": {
+     "value": "0.382",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "tryptophan": {
+     "value": "0.182",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "valine": {
+     "value": "0.688",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "energy_food_kcal": {
+     "value": "379",
+     "unit": "kcal",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "carbohydrate_by_difference": {
+     "value": "67.7",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "c18_2_undifferentiated": {
+     "value": "2.2",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "cystine": {
+     "value": "0.455",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    },
+    "tyrosine": {
+     "value": "0.395",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 173904"
+    }
+   }
+  },
+  {
+   "id": "carrot_cooked",
+   "name_it": "Carota cotta al vapore (proxy USDA bollita)",
+   "category": "vegetable",
+   "subcategory": "vegetable_generic",
+   "processing_state": "cooked_boiled",
+   "preparation": "In casa cotta al vapore; il profilo è quello USDA del prodotto bollito e scolato, usato come approssimazione.",
+   "edible_portion": "per 100 g parte edibile nelle condizioni dichiarate",
+   "source_identifier": "USDA SR Legacy FDC 170394; bollite, proxy vapore",
+   "data_status": "estimated",
+   "notes": "USDA bollita scolata senza sale usata come proxy; ritenzione micronutrienti non identica · Fonte: https://whatyoueat.io/foods/170394",
+   "nutrients": {
+    "protein": {
+     "value": "0.76",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "fat": {
+     "value": "0.18",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "carbohydrate_available": {
+     "value": "5.22",
+     "unit": "g",
+     "status": "DERIVED_APPROXIMATION",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "fiber": {
+     "value": "3",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "moisture": {
+     "value": "90.17",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "epa": {
+     "value": "0",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "dha": {
+     "value": "0",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "calcium": {
+     "value": "30",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "phosphorus": {
+     "value": "30",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "potassium": {
+     "value": "235",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "sodium": {
+     "value": "58",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "magnesium": {
+     "value": "10",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "copper": {
+     "value": "0.017",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "iron": {
+     "value": "0.34",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "manganese": {
+     "value": "0.155",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "selenium_wet": {
+     "value": "0.7",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "zinc": {
+     "value": "0.2",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "vitamin_d": {
+     "value": "0",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "vitamin_e": {
+     "value": "1.03",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "vitamin_b1": {
+     "value": "0.066",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "vitamin_b2": {
+     "value": "0.044",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "vitamin_b3": {
+     "value": "0.645",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "vitamin_b5": {
+     "value": "0.232",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "vitamin_b6": {
+     "value": "0.153",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "vitamin_b9": {
+     "value": "14",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "vitamin_b12": {
+     "value": "0",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "choline": {
+     "value": "8.8",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "vitamin_c": {
+     "value": "3.6",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "arginine": {
+     "value": "0.075",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "histidine": {
+     "value": "0.033",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "isoleucine": {
+     "value": "0.063",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "leucine": {
+     "value": "0.084",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "lysine": {
+     "value": "0.083",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "methionine": {
+     "value": "0.017",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "phenylalanine": {
+     "value": "0.05",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "threonine": {
+     "value": "0.157",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "tryptophan": {
+     "value": "0.01",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "valine": {
+     "value": "0.056",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "energy_food_kcal": {
+     "value": "35",
+     "unit": "kcal",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "carbohydrate_by_difference": {
+     "value": "8.22",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "c18_2_undifferentiated": {
+     "value": "0.087",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "cystine": {
+     "value": "0.068",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "tyrosine": {
+     "value": "0.035",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "vitamin_a_carotenoid_iu": {
+     "value": "17033",
+     "unit": "IU (carotenoids; human labeling)",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    },
+    "beta_carotene_ug": {
+     "value": "8332",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore"
+    }
+   }
+  },
+  {
+   "id": "pumpkin_cooked",
+   "name_it": "Zucca cotta al vapore (proxy USDA bollita)",
+   "category": "vegetable",
+   "subcategory": "vegetable_generic",
+   "processing_state": "cooked_boiled",
+   "preparation": "In casa cotta al vapore; il profilo è quello USDA del prodotto bollito e scolato, usato come approssimazione.",
+   "edible_portion": "per 100 g parte edibile nelle condizioni dichiarate",
+   "source_identifier": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",
+   "data_status": "estimated",
+   "notes": "Zucca cotta al vapore; dati USDA bollita senza sale usati come proxy; cultivar e ritenzione micronutrienti possono variare · Fonte: https://www.cooks.com/rec/nutrition?nwal=11423",
+   "nutrients": {
+    "protein": {
+     "value": "0.72",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "fat": {
+     "value": "0.07",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "carbohydrate_available": {
+     "value": "3.79",
+     "unit": "g",
+     "status": "DERIVED_APPROXIMATION",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "fiber": {
+     "value": "1.1",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "moisture": {
+     "value": "93.69",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "calcium": {
+     "value": "15",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "phosphorus": {
+     "value": "30",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "potassium": {
+     "value": "230",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "sodium": {
+     "value": "1",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "magnesium": {
+     "value": "9",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "copper": {
+     "value": "0.091",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "iron": {
+     "value": "0.57",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "manganese": {
+     "value": "0.089",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "selenium_wet": {
+     "value": "0.2",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "zinc": {
+     "value": "0.23",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "vitamin_e": {
+     "value": "1.06",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "vitamin_b1": {
+     "value": "0.031",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "vitamin_b2": {
+     "value": "0.078",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "vitamin_b3": {
+     "value": "0.413",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "vitamin_b5": {
+     "value": "0.201",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "vitamin_b6": {
+     "value": "0.044",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "vitamin_b9": {
+     "value": "8.5",
+     "unit": "µg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "vitamin_c": {
+     "value": "4.7",
+     "unit": "mg",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "arginine": {
+     "value": "0.039",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "histidine": {
+     "value": "0.011",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "isoleucine": {
+     "value": "0.023",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "leucine": {
+     "value": "0.034",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "lysine": {
+     "value": "0.039",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "methionine": {
+     "value": "0.008",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "phenylalanine": {
+     "value": "0.023",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "threonine": {
+     "value": "0.021",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "tryptophan": {
+     "value": "0.009",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "valine": {
+     "value": "0.025",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "energy_food_kcal": {
+     "value": "20",
+     "unit": "kcal",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "carbohydrate_by_difference": {
+     "value": "4.89",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "c18_2_undifferentiated": {
+     "value": "0.002",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "cystine": {
+     "value": "0.002",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "tyrosine": {
+     "value": "0.03",
+     "unit": "g",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    },
+    "vitamin_a_carotenoid_iu": {
+     "value": "1082",
+     "unit": "IU (carotenoids; human labeling)",
+     "status": "REPORTED_USDA_PROXY",
+     "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore"
+    }
+   }
+  }
+ ]
+}

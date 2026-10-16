@@ -40,3 +40,20 @@ export const FORMULATION_FIELDS = [
   'lifeStage',
   'macroPreferences',
 ] as const;
+
+/**
+ * Energia metabolizzabile stimata da proteine, grassi e carboidrati disponibili (kcal/100 g) con i fattori
+ * kcal/g approvati da un amministratore (es. Atwater modificati). Nessun fattore predefinito: senza
+ * approvazione restituisce null. Non usa l'energia «umana» delle tabelle alimentari.
+ */
+export function estimateMeFromMacros(
+  nutrients: Record<string, { value: number | null } | undefined>,
+  factors: { protein: number | null; fat: number | null; carbohydrate: number | null },
+): number | null {
+  if (factors.protein === null || factors.fat === null || factors.carbohydrate === null) return null;
+  const p = nutrients.protein?.value;
+  const f = nutrients.fat?.value;
+  const c = nutrients.carbohydrate_available?.value;
+  if (p === null || p === undefined || f === null || f === undefined || c === null || c === undefined) return null;
+  return Math.round((p * factors.protein + f * factors.fat + c * factors.carbohydrate) * 10) / 10;
+}

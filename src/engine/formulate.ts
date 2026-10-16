@@ -5,6 +5,7 @@
 // copertura dei nutrienti con dati parziali → obiettivo kcal → preferenze → praticità/costo.
 
 import { foodStatus, supplementStatus } from './catalogStatus';
+import { COMPOUNDS } from './totals';
 import { applicableLimits, auditRecipe, type AuditResult, type DietMoisture } from './audit';
 import { solve, type Model, type Row, type SolveResult, type Term, type VarDef, loadSolver } from './lp';
 import type {
@@ -101,10 +102,11 @@ interface ModelItem {
 function rawValue(nutrients: Record<string, { value: number | null } | undefined>, id: string): number | null {
   const v = nutrients[id]?.value;
   if (v !== null && v !== undefined) return v;
-  if (id === 'epa_dha') {
-    const e = nutrients.epa?.value;
-    const d = nutrients.dha?.value;
-    if (e !== null && e !== undefined && d !== null && d !== undefined) return e + d;
+  const pair = COMPOUNDS[id];
+  if (pair) {
+    const a = nutrients[pair[0]]?.value;
+    const b = nutrients[pair[1]]?.value;
+    if (a !== null && a !== undefined && b !== null && b !== undefined) return a + b;
   }
   return null;
 }

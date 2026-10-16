@@ -59,7 +59,16 @@ insert into public.nutrients (id, label_it, canonical_unit, nutrient_group, kind
   ('fat_energy_pct', 'Quota energia da grassi', '%', 'derived', 'derived', '100*fat_g*factor_fat_kcal_per_g / total_ME_kcal', 'Target configurabile non ufficiale; formula illustrativa, utilizzare fattori energetici coerenti con metodo ME'),
   ('carb_energy_pct', 'Quota energia da carboidrati disponibili', '%', 'derived', 'derived', '100*carb_g*factor_carb_kcal_per_g / total_ME_kcal', 'Target configurabile non ufficiale; formula illustrativa, utilizzare fattori energetici coerenti con metodo ME'),
   ('omega6_omega3_ratio', 'Rapporto omega-6/omega-3', 'ratio', 'derived', 'derived', 'omega6_total_g / omega3_total_g', 'Rapporto: non percentuale; unità reale ratio'),
-  ('metabolizable_energy', 'Energia metabolizzabile', 'kcal', 'energy', 'composition', null, 'Calcolata in kcal/100g ingrediente e kcal/die della ricetta; non è una soglia nutrizionale')
+  ('metabolizable_energy', 'Energia metabolizzabile', 'kcal', 'energy', 'composition', null, 'Calcolata in kcal/100g ingrediente e kcal/die della ricetta; non è una soglia nutrizionale'),
+  ('cystine', 'Cistina', 'g', 'essential_amino_acids', 'descriptive', null, 'Componente di Metionina + cistina (allegato F).'),
+  ('tyrosine', 'Tirosina', 'g', 'essential_amino_acids', 'descriptive', null, 'Componente di Fenilalanina + tirosina.'),
+  ('energy_food_kcal', 'Energia alimentare (uomo, NON EM cane)', 'kcal', 'source_reference', 'informational', null, 'Valore della fonte destinato all''uomo: non è energia metabolizzabile del cane e non entra nel calcolo.'),
+  ('carbohydrate_by_difference', 'Carboidrati per differenza (fonte)', 'g', 'source_reference', 'informational', null, 'Comprende la fibra: non equivale ai carboidrati disponibili.'),
+  ('c18_2_undifferentiated', 'Acido grasso 18:2 non differenziato (fonte)', 'g', 'source_reference', 'informational', null, 'Non attribuito all''acido linoleico finché l''identità chimica non è validata.'),
+  ('c20_4_undifferentiated', 'Acido grasso 20:4 non differenziato (fonte)', 'g', 'source_reference', 'informational', null, 'Non attribuito all''acido arachidonico finché l''identità chimica non è validata.'),
+  ('vitamin_a_retinol_ug', 'Retinolo (fonte, µg)', 'µg', 'source_reference', 'informational', null, 'Non convertito in UI di vitamina A senza regola approvata.'),
+  ('vitamin_a_carotenoid_iu', 'Vitamina A da carotenoidi (UI per uso umano)', 'IU (carotenoids; human labeling)', 'source_reference', 'informational', null, 'Non equivale a vitamina A per il cane e non si somma.'),
+  ('beta_carotene_ug', 'Beta-carotene (fonte)', 'µg', 'source_reference', 'informational', null, 'Solo informativo.')
 on conflict (id) do nothing;
 
 insert into public.reference_versions (id, source, version_label, source_url, status) values

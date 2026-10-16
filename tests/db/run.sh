@@ -25,7 +25,7 @@ ADMIN="set role authenticated; select set_config('request.jwt.claim.sub', '00000
 q() { "${PSQL[@]}" -d t -tA -c "$ADMIN" -c "$1" | tail -1; }
 ( cd "$ROOT" && npx tsx tests/db/make-import-files.ts "$DATA" )
 if ( cd "$ROOT" && npx tsx scripts/import-catalog.ts alimenti "$DATA/bad.csv" >/dev/null 2>"$DATA/bad.log" ); then echo "FALLITO: file errato accettato"; exit 1; fi
-grep -q "non convertibile" "$DATA/bad.log" && grep -q "non riconosciuto" "$DATA/bad.log" && grep -q "inesistente" "$DATA/bad.log" || { echo "FALLITO: errori non segnalati"; cat "$DATA/bad.log"; exit 1; }
+grep -q "da convertire" "$DATA/bad.log" && grep -q "non riconosciuto" "$DATA/bad.log" && grep -q "inesistente" "$DATA/bad.log" || { echo "FALLITO: errori non segnalati"; cat "$DATA/bad.log"; exit 1; }
 echo "ok: errori mostrati prima di importare (unità, nutriente, prodotto)"
 ( cd "$ROOT" && npx tsx scripts/import-catalog.ts alimenti "$DATA/full.json" 2>/dev/null ) > "$DATA/full.sql"
 "${PSQL[@]}" -d t -c "$ADMIN" -f "$DATA/full.sql" >/dev/null
@@ -52,4 +52,12 @@ TS_STATUS=$(cd "$ROOT" && npx tsx tests/db/status-of.ts "$CAT")
 DB_STATUS=$("${PSQL[@]}" -d t -tA -c "select id || ':' || status from catalog_status where kind = 'food' order by id collate \"C\"")
 [ "$TS_STATUS" = "$DB_STATUS" ] || { echo "FALLITO: stati diversi tra app e database"; diff <(echo "$TS_STATUS") <(echo "$DB_STATUS"); exit 1; }
 echo "ok: stessi stati nell'app e nel database per $(echo "$DB_STATUS" | wc -l) alimenti ($(echo "$DB_STATUS" | cut -d: -f2 | sort | uniq -c | tr -s ' ' | paste -sd, -))"
+# ── dati reali del 16/10/2026: import da SQL Editor (utente postgres) ──
+"${PSQL[@]}" -d t -f "$ROOT/supabase/data/2026-10-16_alimenti.sql" >/dev/null
+"${PSQL[@]}" -d t -f "$ROOT/supabase/data/2026-10-16_integratori.sql" >/dev/null
+R=$("${PSQL[@]}" -d t -tA -c "select string_agg(id || ':' || status, ' ' order by id) from catalog_status where id in ('beef_03','beef_15','beef_30','oat_dry','carrot_cooked','pumpkin_cooked','qdiet','omegor_vitality','bone_meal')")
+[ "$R" = "beef_03:to_complete beef_15:to_complete beef_30:to_complete bone_meal:partial carrot_cooked:to_complete oat_dry:to_complete omegor_vitality:partial pumpkin_cooked:to_complete qdiet:partial" ] || { echo "FALLITO: stati dati reali: $R"; exit 1; }
+[ "$("${PSQL[@]}" -d t -tA -c "select count(*) from food_nutrients where food_id in ('beef_03','beef_15','beef_30','oat_dry','carrot_cooked','pumpkin_cooked')")" = "256" ] || { echo "FALLITO: valori importati"; exit 1; }
+[ "$("${PSQL[@]}" -d t -tA -c "select count(*) from food_nutrients where nutrient_id in ('vitamin_d','vitamin_e') and amount_per_100g > 0 and food_id in ('beef_03','beef_15','beef_30','oat_dry','carrot_cooked','pumpkin_cooked')")" = "0" ] || { echo "FALLITO: vitamine D/E convertite senza fattore"; exit 1; }
+echo "ok: dati reali del 16/10/2026 importati (256 valori alimenti), alimenti «da completare» (manca EM cane), integratori «dati parziali», vitamine D/E non convertite"
 echo "Test database: tutti superati"
