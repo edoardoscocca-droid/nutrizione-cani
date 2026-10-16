@@ -1,7 +1,8 @@
 import '../lib/polyfills';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import * as Updates from 'expo-updates';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
 import { Fraunces_600SemiBold } from '@expo-google-fonts/fraunces';
@@ -51,7 +52,25 @@ function Root() {
   );
 }
 
+/** All'avvio cerca un aggiornamento e, se c'è, lo applica subito (senza dover riaprire l'app due volte). */
+function useApplyUpdatesOnLaunch() {
+  useEffect(() => {
+    if (__DEV__ || !Updates.isEnabled) return;
+    (async () => {
+      try {
+        const check = await Updates.checkForUpdateAsync();
+        if (!check.isAvailable) return;
+        await Updates.fetchUpdateAsync();
+        await Updates.reloadAsync();
+      } catch {
+        // senza rete o con un errore resta la versione già installata
+      }
+    })();
+  }, []);
+}
+
 export default function Layout() {
+  useApplyUpdatesOnLaunch();
   // caratteri dello stile: se non si caricano, l'app parte comunque con quelli di sistema
   const [loaded, error] = useFonts({ Fraunces_600SemiBold, NunitoSans_400Regular, NunitoSans_600SemiBold, NunitoSans_700Bold });
   if (!loaded && !error) return null;
