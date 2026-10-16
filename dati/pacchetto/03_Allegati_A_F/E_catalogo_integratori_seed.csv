@@ -1,0 +1,6 @@
+id,name_it,class,dose_unit,dose_mass_g,dose_volume_ml,source_label_url,version,nutrient_profile_status,max_daily_product_dose,max_daily_dose_source,usable_for_optimization,notes
+qdiet,Q-Diet,multinutrient,gram,,,,,MISSING,,,False,EXACT_VARIANT_AND_LABEL_REQUIRED
+omegor_vitality,Omegor Vitality,fish_oil,capsule,,,,,MISSING,,,False,EXACT_VARIANT_AND_BATCH_LABEL_REQUIRED
+bone_meal,Farina d’ossa,calcium_phosphorus,gram,,,,,MISSING,,,False,SPECIFIC_PRODUCT_ASSAY_REQUIRED
+calcium_carbonate,Carbonato di calcio,calcium,gram,,,,,MISSING,,,False,FORMULATION_ASSAY_REQUIRED
+multivitamin_other,Multivitaminico alternativo,multinutrient,gram,,,,,MISSING,,,False,PRODUCT_SPECIFICATION_REQUIRED

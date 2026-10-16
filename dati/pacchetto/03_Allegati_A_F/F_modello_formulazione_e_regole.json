@@ -1,0 +1,50 @@
+{
+  "version": "1.0",
+  "models": [
+    {
+      "id": "adult_energy_preference",
+      "life_stage": "adult_maintenance",
+      "status": "NO_UNIVERSAL_INITIAL_MACRO_PERCENT_PRESET",
+      "defaults": {
+        "protein_energy_pct": null,
+        "fat_energy_pct": null,
+        "carb_energy_pct": null
+      },
+      "validation": "Percentages are soft targets, not FEDIAF minima; if supplied sum approximately 100 within tolerance and denominator kcal ME; fiber separate."
+    }
+  ],
+  "engine": {
+    "goal": "Fit kcal, meet official minima and relevant maxima simultaneously, use selected foods and selected available supplements only.",
+    "step_one": "check that mandatory ingredient and supplement profiles are verified sufficiently; distinguish unknown from 0",
+    "step_two": "assess feasibility for selected ingredient set with/without supplements, show probable needs as provisional",
+    "step_three": "joint constrained optimization of all food quantities plus supplement doses (no repeated greedy calcium additions)",
+    "step_four": "independent audit using frozen recipe snapshot",
+    "variables": "grams >=0 for food; grams or integer capsule counts for supplements; configurable min/max batch and rounding",
+    "constraints": "energy tolerance configurable; per-1000-kcal nutrient density based on actual recipe energy; Ca:P total ratio with Ca/P absolute minimum; nutrient non-negativity; upper limits when valid; product dose max when verified",
+    "objective_priority": [
+      "hard safety and applicability",
+      "required nutrient coverage with verified data",
+      "energy target",
+      "individual locked clinician target",
+      "macronutrient preferences as soft penalties",
+      "practical doses, costs, ingredient balance"
+    ],
+    "infeasible": "name failed constraints and plausible ingredient classes; do not fabricate supplement composition",
+    "unknown": "UNVERIFIABLE not PASS"
+  },
+  "energy_calculation": {
+    "rer_formula": "70*(reference_weight_kg**0.75)",
+    "mer": "RER * user-selected/qualified activity_factor; persist kcal override",
+    "food_me": "Use verified metabolizable energy per 100g, not human calorie labels without adjustment",
+    "macro_kcal": "Use canine-appropriate verified energy factors and consistent source definition; avoid double counting fiber, ash or water",
+    "percentages": "protein_kcal/total_me, fat_kcal/total_me, available_carbs_kcal/total_me; document residual and tolerance"
+  },
+  "ratios": {
+    "calcium_phosphorus_ratio": "SUM_Ca_g/SUM_P_g; block division by 0 and require both quantitative minima",
+    "omega6_omega3_ratio": "SUM_total_omega6_g/SUM_total_omega3_g; only if both totals known and >0; if partial data unknown result UNVERIFIABLE",
+    "epa_dha": "EPA_g + DHA_g; do not add again to total omega3 if EPA/DHA already included",
+    "methionine_cystine": "methionine_g + cystine_g; avoid summing compound row with separate amino acids",
+    "unit_scaling": "grams in foods * value_per_100g /100; capsule * verified amount per capsule"
+  },
+  "update_policy": "Immutable versioned snapshots; weight-current changes no recalcs; target/standard/food profile change offers new version only after user confirmation; price-only update costs."
+}

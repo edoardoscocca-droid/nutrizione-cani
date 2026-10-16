@@ -1,0 +1,81 @@
+{
+  "version": "1.0",
+  "classification": {
+    "OFFICIAL_MIN": "hard after validation of applicability",
+    "OFFICIAL_NUTRITIONAL_MAX": "hard after validation of applicability",
+    "PERSONAL_PREFERENCE": "soft unless professional locked",
+    "NON_OFFICIAL_ATTENTION": "orange informative; not toxicity",
+    "INFORMATIONAL": "blue",
+    "UNKNOWN_DATA": "grey",
+    "BREED_NOTE": "purple"
+  },
+  "custom_thresholds": [
+    {
+      "id": "preferred_ca_p",
+      "metric": "calcium_phosphorus_ratio",
+      "min": 1.2,
+      "max": 1.4,
+      "status": "DRAFT_USER_FORMULATIVE_PREFERENCE_NOT_FEDIAF",
+      "severity": "orange",
+      "solver_priority": "soft",
+      "rationale": "Preferenza formulativa discussa: i limiti FEDIAF ufficiali restano indipendenti (1:1–2:1).",
+      "requires_review": true
+    }
+  ],
+  "proposed_but_not_numeric": [
+    {
+      "metric": "protein_energy_percent",
+      "status": "NOT_SET",
+      "reason": "Nessuna soglia scientificamente sostenibile universalmente applicabile; permettere target personale esplicito, non warning auto."
+    },
+    {
+      "metric": "fat_energy_percent",
+      "status": "NOT_SET",
+      "reason": "Nessuna soglia scientificamente sostenibile universalmente applicabile; permettere target personale esplicito, non warning auto."
+    },
+    {
+      "metric": "carb_energy_percent",
+      "status": "NOT_SET",
+      "reason": "Nessuna soglia scientificamente sostenibile universalmente applicabile; permettere target personale esplicito, non warning auto."
+    },
+    {
+      "metric": "fiber",
+      "status": "NOT_SET",
+      "reason": "Nessuna soglia scientificamente sostenibile universalmente applicabile; permettere target personale esplicito, non warning auto."
+    },
+    {
+      "metric": "total_omega3",
+      "status": "NOT_SET",
+      "reason": "Nessuna soglia scientificamente sostenibile universalmente applicabile; permettere target personale esplicito, non warning auto."
+    },
+    {
+      "metric": "epa_dha",
+      "status": "NOT_SET",
+      "reason": "Nessuna soglia scientificamente sostenibile universalmente applicabile; permettere target personale esplicito, non warning auto."
+    },
+    {
+      "metric": "omega6_omega3_ratio",
+      "status": "NOT_SET",
+      "reason": "Nessuna soglia scientificamente sostenibile universalmente applicabile; permettere target personale esplicito, non warning auto."
+    },
+    {
+      "metric": "taurine",
+      "status": "NOT_SET",
+      "reason": "Nessuna soglia scientificamente sostenibile universalmente applicabile; permettere target personale esplicito, non warning auto."
+    },
+    {
+      "metric": "l_carnitine",
+      "status": "NOT_SET",
+      "reason": "Nessuna soglia scientificamente sostenibile universalmente applicabile; permettere target personale esplicito, non warning auto."
+    },
+    {
+      "metric": "high_without_fediaf_max",
+      "status": "NOT_SET",
+      "reason": "Nessuna soglia scientificamente sostenibile universalmente applicabile; permettere target personale esplicito, non warning auto."
+    }
+  ],
+  "alerts": {
+    "very_high_without_official_max": "Non applicare moltiplicatori arbitrari del minimo. Se disponibile una soglia pubblicata e appropriata: aggiungerla con fonte, popolazione, base, natura prudenziale. Altrimenti etichettare fuori intervallo osservazionale se documentato, oppure valore elevato non qualificabile; chiedere valutazione professionale.",
+    "unknown": "Se dati essenziali mancanti, risultato INCOMPLETE_DATA e non PASS."
+  }
+}

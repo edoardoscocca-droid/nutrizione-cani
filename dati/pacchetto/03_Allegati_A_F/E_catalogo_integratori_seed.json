@@ -1,0 +1,81 @@
+{
+  "version": "1.0",
+  "supplements": [
+    {
+      "id": "qdiet",
+      "name_it": "Q-Diet",
+      "class": "multinutrient",
+      "dose_unit": "gram",
+      "dose_mass_g": null,
+      "dose_volume_ml": null,
+      "source_label_url": null,
+      "version": null,
+      "nutrient_profile_status": "MISSING",
+      "max_daily_product_dose": null,
+      "max_daily_dose_source": null,
+      "usable_for_optimization": false,
+      "notes": "EXACT_VARIANT_AND_LABEL_REQUIRED"
+    },
+    {
+      "id": "omegor_vitality",
+      "name_it": "Omegor Vitality",
+      "class": "fish_oil",
+      "dose_unit": "capsule",
+      "dose_mass_g": null,
+      "dose_volume_ml": null,
+      "source_label_url": null,
+      "version": null,
+      "nutrient_profile_status": "MISSING",
+      "max_daily_product_dose": null,
+      "max_daily_dose_source": null,
+      "usable_for_optimization": false,
+      "notes": "EXACT_VARIANT_AND_BATCH_LABEL_REQUIRED"
+    },
+    {
+      "id": "bone_meal",
+      "name_it": "Farina d’ossa",
+      "class": "calcium_phosphorus",
+      "dose_unit": "gram",
+      "dose_mass_g": null,
+      "dose_volume_ml": null,
+      "source_label_url": null,
+      "version": null,
+      "nutrient_profile_status": "MISSING",
+      "max_daily_product_dose": null,
+      "max_daily_dose_source": null,
+      "usable_for_optimization": false,
+      "notes": "SPECIFIC_PRODUCT_ASSAY_REQUIRED"
+    },
+    {
+      "id": "calcium_carbonate",
+      "name_it": "Carbonato di calcio",
+      "class": "calcium",
+      "dose_unit": "gram",
+      "dose_mass_g": null,
+      "dose_volume_ml": null,
+      "source_label_url": null,
+      "version": null,
+      "nutrient_profile_status": "MISSING",
+      "max_daily_product_dose": null,
+      "max_daily_dose_source": null,
+      "usable_for_optimization": false,
+      "notes": "FORMULATION_ASSAY_REQUIRED"
+    },
+    {
+      "id": "multivitamin_other",
+      "name_it": "Multivitaminico alternativo",
+      "class": "multinutrient",
+      "dose_unit": "gram",
+      "dose_mass_g": null,
+      "dose_volume_ml": null,
+      "source_label_url": null,
+      "version": null,
+      "nutrient_profile_status": "MISSING",
+      "max_daily_product_dose": null,
+      "max_daily_dose_source": null,
+      "usable_for_optimization": false,
+      "notes": "PRODUCT_SPECIFICATION_REQUIRED"
+    }
+  ],
+  "policy": "DISABLED UNTIL EXACT PRODUCT LABEL PROFILE VERIFIED; never infer formula from product name"
+}

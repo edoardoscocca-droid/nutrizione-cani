@@ -1,0 +1,19 @@
+id,title,scenario,expected
+T01,weight,"Set current 30kg ideal default 30kg; change ideal 35kg, later current 32kg",Calories and recipes unchanged after current only; >5kg warning on reference difference strictly greater than 5
+T02,food_missing,Missing vitamin D in one ingredient,UNKNOWN/NOT_VERIFIABLE not zero and never FULL_PASS
+T03,calcium_phosphorus,Ca 1g P 1g but daily required Ca>1g,ratio =1 but FAIL for absolute mineral minima
+T04,bone_meal,Bone meal raises both Ca and P,"Joint optimizer converges or returns infeasible, never greedy endless loop"
+T05,omega,omega6 4g omega3 1g known,ratio=4; if omega3 missing ratio UNVERIFIABLE
+T06,change_food,beef to lamb,all quantities and supplements recomputed; original immutable
+T07,supplement_unknown,Q-Diet selected without label nutrient values,Cannot optimize a validated supplementation; request product data
+T08,capsule,fish oil capsule must be integer dose,Optimization respects integer count and source-verified dose
+T09,price,"box 120g 24EUR, use 6g",cost=1.20EUR excluding others; no recipe nutritive recalculation
+T10,snapshot,update FEDIAF master,Old recipe values frozen; warn and offer preview+confirm
+T11,permissions,ordinary user tries editing public foods,"RLS denies write, user price edit allowed"
+T12,recipes,11th recipe per dog,Reject without deleting earlier
+T13,macros,protein pct 70 among energy macro fractions,Never interpret as 70% meat and never label BARF
+T14,dry_matter,nutrient legal limit expressed mg/kg dry matter,No comparison to mg/1000 kcal without verified conversion and context
+T15,reuse,diet of 3 foods 2 supplements,"All five quantities solved together, documented constraints"
+T16,data_provenance,FoodSource version updated,Recipe shows origin/version and status of stale dependencies
+T17,dog_attention,Irish Wolfhound taurine note no official minimum,Purple notice without fake target or automatic taurine supplement
+T18,cook_state,raw meat and cooked meat differ,Do not merge profiles or automatically derive cooked without retention yield source

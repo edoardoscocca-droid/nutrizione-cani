@@ -1,0 +1,597 @@
+{
+  "schema_version": "1.0",
+  "nutrients": [
+    {
+      "id": "protein",
+      "label_it": "Proteine",
+      "group": "macros",
+      "unit": "g",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "fat",
+      "label_it": "Grassi totali",
+      "group": "macros",
+      "unit": "g",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "carbohydrate_available",
+      "label_it": "Carboidrati disponibili",
+      "group": "macros",
+      "unit": "g",
+      "type": "descriptive",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "INFORMATIONAL_OR_DERIVED"
+    },
+    {
+      "id": "fiber",
+      "label_it": "Fibra alimentare",
+      "group": "macros",
+      "unit": "g",
+      "type": "descriptive",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "INFORMATIONAL_OR_DERIVED"
+    },
+    {
+      "id": "moisture",
+      "label_it": "Umidità",
+      "group": "composition",
+      "unit": "g",
+      "type": "descriptive",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "INFORMATIONAL_OR_DERIVED"
+    },
+    {
+      "id": "linoleic_acid",
+      "label_it": "Acido linoleico omega-6",
+      "group": "fatty_acids",
+      "unit": "g",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "ala",
+      "label_it": "Acido alfa-linolenico ALA",
+      "group": "fatty_acids",
+      "unit": "g",
+      "type": "descriptive",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "INFORMATIONAL_OR_DERIVED"
+    },
+    {
+      "id": "epa",
+      "label_it": "EPA",
+      "group": "fatty_acids",
+      "unit": "g",
+      "type": "descriptive",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "INFORMATIONAL_OR_DERIVED"
+    },
+    {
+      "id": "dha",
+      "label_it": "DHA",
+      "group": "fatty_acids",
+      "unit": "g",
+      "type": "descriptive",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "INFORMATIONAL_OR_DERIVED"
+    },
+    {
+      "id": "epa_dha",
+      "label_it": "EPA + DHA",
+      "group": "fatty_acids",
+      "unit": "g",
+      "type": "descriptive",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "INFORMATIONAL_OR_DERIVED"
+    },
+    {
+      "id": "omega3_total",
+      "label_it": "Omega-3 totali",
+      "group": "fatty_acids",
+      "unit": "g",
+      "type": "descriptive",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "INFORMATIONAL_OR_DERIVED"
+    },
+    {
+      "id": "omega6_total",
+      "label_it": "Omega-6 totali",
+      "group": "fatty_acids",
+      "unit": "g",
+      "type": "descriptive",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "INFORMATIONAL_OR_DERIVED"
+    },
+    {
+      "id": "arachidonic_acid",
+      "label_it": "Acido arachidonico",
+      "group": "fatty_acids",
+      "unit": "mg",
+      "type": "descriptive",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "INFORMATIONAL_OR_DERIVED"
+    },
+    {
+      "id": "calcium",
+      "label_it": "Calcio",
+      "group": "minerals",
+      "unit": "g",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "phosphorus",
+      "label_it": "Fosforo",
+      "group": "minerals",
+      "unit": "g",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "potassium",
+      "label_it": "Potassio",
+      "group": "minerals",
+      "unit": "g",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "sodium",
+      "label_it": "Sodio",
+      "group": "minerals",
+      "unit": "g",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "chloride",
+      "label_it": "Cloruro",
+      "group": "minerals",
+      "unit": "g",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "magnesium",
+      "label_it": "Magnesio",
+      "group": "minerals",
+      "unit": "g",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "copper",
+      "label_it": "Rame",
+      "group": "minerals",
+      "unit": "mg",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "iodine",
+      "label_it": "Iodio",
+      "group": "minerals",
+      "unit": "mg",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "iron",
+      "label_it": "Ferro",
+      "group": "minerals",
+      "unit": "mg",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "manganese",
+      "label_it": "Manganese",
+      "group": "minerals",
+      "unit": "mg",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "selenium_wet",
+      "label_it": "Selenio (diete umide)",
+      "group": "minerals",
+      "unit": "µg",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "zinc",
+      "label_it": "Zinco",
+      "group": "minerals",
+      "unit": "mg",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "ca_p_ratio",
+      "label_it": "Rapporto calcio/fosforo",
+      "group": "derived",
+      "unit": "ratio",
+      "type": "derived",
+      "formula": "calcium_g / phosphorus_g",
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "vitamin_a",
+      "label_it": "Vitamina A",
+      "group": "vitamins_and_choline",
+      "unit": "IU",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "vitamin_d",
+      "label_it": "Vitamina D",
+      "group": "vitamins_and_choline",
+      "unit": "IU",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "vitamin_e",
+      "label_it": "Vitamina E",
+      "group": "vitamins_and_choline",
+      "unit": "IU",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "vitamin_b1",
+      "label_it": "Vitamina B1 / tiamina",
+      "group": "vitamins_and_choline",
+      "unit": "mg",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "vitamin_b2",
+      "label_it": "Vitamina B2 / riboflavina",
+      "group": "vitamins_and_choline",
+      "unit": "mg",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "vitamin_b3",
+      "label_it": "Vitamina B3 / niacina",
+      "group": "vitamins_and_choline",
+      "unit": "mg",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "vitamin_b5",
+      "label_it": "Vitamina B5 / acido pantotenico",
+      "group": "vitamins_and_choline",
+      "unit": "mg",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "vitamin_b6",
+      "label_it": "Vitamina B6 / piridossina",
+      "group": "vitamins_and_choline",
+      "unit": "mg",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "vitamin_b9",
+      "label_it": "Vitamina B9 / folati",
+      "group": "vitamins_and_choline",
+      "unit": "µg",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "vitamin_b12",
+      "label_it": "Vitamina B12",
+      "group": "vitamins_and_choline",
+      "unit": "µg",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "choline",
+      "label_it": "Colina",
+      "group": "vitamins_and_choline",
+      "unit": "mg",
+      "type": "core",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "vitamin_c",
+      "label_it": "Vitamina C",
+      "group": "informational_vitamins",
+      "unit": "mg",
+      "type": "descriptive",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "INFORMATIONAL_OR_DERIVED"
+    },
+    {
+      "id": "vitamin_b7",
+      "label_it": "Biotina / vitamina B7",
+      "group": "informational_vitamins",
+      "unit": "µg",
+      "type": "descriptive",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "INFORMATIONAL_OR_DERIVED"
+    },
+    {
+      "id": "vitamin_k",
+      "label_it": "Vitamina K",
+      "group": "informational_vitamins",
+      "unit": "µg",
+      "type": "descriptive",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "INFORMATIONAL_OR_DERIVED"
+    },
+    {
+      "id": "arginine",
+      "label_it": "Arginina",
+      "group": "essential_amino_acids",
+      "unit": "g",
+      "type": "advanced",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "histidine",
+      "label_it": "Istidina",
+      "group": "essential_amino_acids",
+      "unit": "g",
+      "type": "advanced",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "isoleucine",
+      "label_it": "Isoleucina",
+      "group": "essential_amino_acids",
+      "unit": "g",
+      "type": "advanced",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "leucine",
+      "label_it": "Leucina",
+      "group": "essential_amino_acids",
+      "unit": "g",
+      "type": "advanced",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "lysine",
+      "label_it": "Lisina",
+      "group": "essential_amino_acids",
+      "unit": "g",
+      "type": "advanced",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "methionine",
+      "label_it": "Metionina",
+      "group": "essential_amino_acids",
+      "unit": "g",
+      "type": "advanced",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "methionine_cystine",
+      "label_it": "Metionina + cistina",
+      "group": "essential_amino_acids",
+      "unit": "g",
+      "type": "advanced",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "phenylalanine",
+      "label_it": "Fenilalanina",
+      "group": "essential_amino_acids",
+      "unit": "g",
+      "type": "advanced",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "phenylalanine_tyrosine",
+      "label_it": "Fenilalanina + tirosina",
+      "group": "essential_amino_acids",
+      "unit": "g",
+      "type": "advanced",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "threonine",
+      "label_it": "Treonina",
+      "group": "essential_amino_acids",
+      "unit": "g",
+      "type": "advanced",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "tryptophan",
+      "label_it": "Triptofano",
+      "group": "essential_amino_acids",
+      "unit": "g",
+      "type": "advanced",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "valine",
+      "label_it": "Valina",
+      "group": "essential_amino_acids",
+      "unit": "g",
+      "type": "advanced",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "FEDIAF_2025"
+    },
+    {
+      "id": "taurine",
+      "label_it": "Taurina",
+      "group": "individual_monitoring",
+      "unit": "mg",
+      "type": "informational",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "INFORMATIONAL_OR_DERIVED"
+    },
+    {
+      "id": "l_carnitine",
+      "label_it": "L-carnitina",
+      "group": "individual_monitoring",
+      "unit": "mg",
+      "type": "informational",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "INFORMATIONAL_OR_DERIVED"
+    },
+    {
+      "id": "protein_energy_pct",
+      "label_it": "Quota energia da proteine",
+      "group": "derived",
+      "unit": "%",
+      "type": "derived",
+      "formula": "100*protein_g*factor_protein_kcal_per_g / total_ME_kcal",
+      "nullable": true,
+      "source_standard": "INFORMATIONAL_OR_DERIVED"
+    },
+    {
+      "id": "fat_energy_pct",
+      "label_it": "Quota energia da grassi",
+      "group": "derived",
+      "unit": "%",
+      "type": "derived",
+      "formula": "100*fat_g*factor_fat_kcal_per_g / total_ME_kcal",
+      "nullable": true,
+      "source_standard": "INFORMATIONAL_OR_DERIVED"
+    },
+    {
+      "id": "carb_energy_pct",
+      "label_it": "Quota energia da carboidrati disponibili",
+      "group": "derived",
+      "unit": "%",
+      "type": "derived",
+      "formula": "100*carb_g*factor_carb_kcal_per_g / total_ME_kcal",
+      "nullable": true,
+      "source_standard": "INFORMATIONAL_OR_DERIVED"
+    },
+    {
+      "id": "omega6_omega3_ratio",
+      "label_it": "Rapporto omega-6/omega-3",
+      "group": "derived",
+      "unit": "ratio",
+      "type": "derived",
+      "formula": "omega6_total_g / omega3_total_g",
+      "nullable": true,
+      "source_standard": "INFORMATIONAL_OR_DERIVED"
+    },
+    {
+      "id": "metabolizable_energy",
+      "label_it": "Energia metabolizzabile",
+      "group": "energy",
+      "unit": "kcal",
+      "type": "composition",
+      "formula": null,
+      "nullable": true,
+      "source_standard": "INFORMATIONAL_OR_DERIVED"
+    }
+  ],
+  "master_reference_file": "FEDIAF_2025_cane_adulto_nutrienti.json",
+  "note": "Gli ID devono combaciare con il pacchetto FEDIAF; non duplicare valori normativi."
+}

@@ -1,0 +1,70 @@
+{
+  "created_at": "2026-10-16",
+  "version": "1.0",
+  "linked_documents": [
+    "Specifiche_App_Nutrizione_Cani_v1.md",
+    "Pacchetto_FEDIAF_Nutrizione_Cani_2025.zip"
+  ],
+  "items": [
+    {
+      "file": "A_dizionario_nutrienti.json",
+      "sha256": "3fe5013ce7475eed7f3dcd78ba46eab59dba6bc8e76843073447982daad5ae95"
+    },
+    {
+      "file": "B_standard_estensioni_e_limiti_legali.json",
+      "sha256": "0502723cec375afb7ea6ce2d094f2211f1b4016429ad1cbabf7bd363b7a564b0"
+    },
+    {
+      "file": "C_target_e_semaforo.json",
+      "sha256": "dceaf1ae64dc6b7bd90529e9a348d36bcb249e21e15d4a5cdb5cd24f064aa9f4"
+    },
+    {
+      "file": "D_catalogo_alimenti_seed.csv",
+      "sha256": "2e5c1d980e9474ade15fcfc6769c8d1daff82dcc1cd3b4c2ba363bf2f0330baf"
+    },
+    {
+      "file": "D_catalogo_alimenti_seed.json",
+      "sha256": "959ccb8539d0f1bb91e780a34aed4d53d6e330e7def93f14542833564e32637f"
+    },
+    {
+      "file": "D_template_composizione_alimenti.csv",
+      "sha256": "1024a6ea6eaf76664df2dc9c697e05b2016de5c7f6cefb5b9584857e5d264d48"
+    },
+    {
+      "file": "E_catalogo_integratori_seed.csv",
+      "sha256": "ad7da4f7a2767b9e1aa049063b94196582937340a804ceade2537097f633a096"
+    },
+    {
+      "file": "E_catalogo_integratori_seed.json",
+      "sha256": "a0d5447b504b194133cbeb58dcb3ecce19b564c8519af38ffdf30f49f0e8cf28"
+    },
+    {
+      "file": "E_template_composizione_integratori.csv",
+      "sha256": "6cb02b0543c38cec959dcd268838d672457e012fdad31d0d9229458372141a82"
+    },
+    {
+      "file": "FONTI_E_INTEGRAZIONE_DATI.md",
+      "sha256": "166c8853170c250cb859694a8d5433769337e63b6919f402d40b1ac09de71e40"
+    },
+    {
+      "file": "F_modello_formulazione_e_regole.json",
+      "sha256": "fa6165efb2c996cd0469b87dd7b7f0015dae8fb6e2a2eac4a699615d8607a55f"
+    },
+    {
+      "file": "INCARICO_OPERATIVO_PER_AI.md",
+      "sha256": "7258e1e3664a4b79b0626a90c0144d37018e1296236b2125b36e7b133a2c0807"
+    },
+    {
+      "file": "README_CONSEGNA_AI.md",
+      "sha256": "1213ab43ea2509c8b8815c41af8b1b0755fe4f77607cb0109437496689f7e46a"
+    },
+    {
+      "file": "TEST_accettazione.csv",
+      "sha256": "78f0b2b95af124420876d70b3838f45c5902e0dff6e67b78d4ab656fcfd2a4cf"
+    },
+    {
+      "file": "supabase_schema.sql",
+      "sha256": "d8327f02c1e751e78197e27b21650f0703dfd601c6db4de7256c81cfaca6fe1f"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+# ISTRUZIONE DI HANDOFF PER L'AI SVILUPPATRICE
+
+Leggi prima `Specifiche_App_Nutrizione_Cani_v1.md`, poi `Guida_Dataset_Nutrizionale_FEDIAF_2025.md` e relativo JSON, quindi `README_CONSEGNA_AI.md` e gli allegati A–F di questo ZIP. Considerali un'unica specifica. Dai precedenza ai requisiti funzionali della v1; per dati di riferimento usa dataset FEDIAF. Se ci sono incongruenze, segnalale e chiedi conferma anziché reinterpretare i numeri.
+
+**Obiettivo:** implementa un'app in italiano per cani, con Supabase e motore di formulazione automatico, senza imporre un framework. Per ogni cane: profilo e stima RER/MER da peso ideale configurabile, kcal modificabili, 10 ricette, ingredienti selezionati dall'utente, proposta automatica dei grammi e degli integratori disponibili, costi personali per prodotto/confezione, controlli nutrienti e rapporti e report di incertezza, storico e ricalcoli solo con conferma. Amministrazione cataloghi solo da Supabase per ruoli autorizzati.
+
+**Prima consegna attesa**: architettura proposta, SQL adattato e migrazioni, autenticazione/RLS, interfacce e motore che supera TEST_accettazione.csv con fixture rigorosamente di test. Se non sono disponibili composizioni verificate, **non** emettere ricette nutrizionalmente validate e chiedere dati prima di abilitare la formulazione reale. Non sostituire mai valori mancanti con 0, soglie non ufficiali con FEDIAF, o una soluzione infeasible con grammi arbitrari.
+
+**Attenzione:** report trasparente di energia e nutrienti per ogni ricetta; Ca/P non solo rapporto ma anche valori assoluti; omega6/omega3 ratio solo se dati completi; EPA+DHA senza doppio conteggio; frattaglie singolarmente classificabili; verifica indipendente finale su snapshot di versioni. Supportare possibili limiti per unità intere di integratori e tracciabilità dell'incertezza.

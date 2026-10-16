@@ -1,0 +1,18 @@
+{
+  "version": "1.0",
+  "normative_dataset": "FEDIAF_2025_cane_adulto_nutrienti.json",
+  "reference_scope": "adult healthy maintenance; 95 kcal/kg^0.75 per 1000 kcal ME",
+  "legal_maxima": [],
+  "legal_maxima_status": "NOT_POPULATED_NEEDS_PRIMARY_LEGAL_SOURCE_AND_APPLICABILITY_REVIEW",
+  "processing": "Se standard contiene null: non definito, non zero. Vincoli legali UE non vanno derivati da tabelle nutrizionali e devono essere validati prima dell’uso.",
+  "conditions": {
+    "selenium": "Il file FEDIAF precedente precarica riferimento umido; vedere nota per secco.",
+    "amino_acids": "Non dichiarare copertura proteica verificata se profili incompleti.",
+    "vitamin_iu": "Conversioni IU dipendono dalla forma chimica."
+  },
+  "status_levels": [
+    "verified",
+    "review_required",
+    "unavailable"
+  ]
+}
