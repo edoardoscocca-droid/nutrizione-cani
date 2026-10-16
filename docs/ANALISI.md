@@ -60,6 +60,7 @@ oppure è un parametro modificabile, chiaramente marcato. Elenco delle decisioni
 | D14 | **Arrotondamenti**: F li vuole configurabili, nessun valore. | 1 g per alimenti, 0,1 g o 0,1 ml per integratori, capsule intere. Il motore calcola già con questi passi, quindi la ricetta arrotondata è quella verificata. | Confermare. |
 | D15 | **Mese** per i costi. | 30 giorni (dichiarato in app). | Confermare. |
 | D16 | **Energia degli integratori**: le etichette spesso non riportano kcal (es. olio di pesce). | Se kcal per dose è vuoto, l'energia della ricetta diventa "parziale" e la ricetta non è verificata. L'amministratore può scrivere 0 solo se la fonte lo supporta. | Nessuna, segnalo l'effetto. |
+| D17 | **Equilibrio tra ingredienti**: F cita «ingredient balance» senza criterio. Senza criterio l'ottimizzatore può proporre soluzioni estreme (es. 800 g di carote). | Ultimo criterio, dopo tutti quelli nutrizionali: meno integratori e porzione più compatta (meno grammi totali), costo se i prezzi sono noti. L'utente può sempre fissare minimi/massimi per ingrediente. | Confermare o indicare un criterio (es. quote di energia per gruppo di alimenti). |
 
 **Dati indispensabili mancanti** (già noti nel pacchetto): nessun alimento ha composizione verificata (tutti `NOT_VERIFIED`);
 Q-Diet, Omegor Vitality, farina d'ossa, carbonato di calcio, multivitaminico senza etichetta (`MISSING`). Quindi oggi, con i dati reali,

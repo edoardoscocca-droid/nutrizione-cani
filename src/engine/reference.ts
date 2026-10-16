@@ -198,7 +198,7 @@ export function thresholdsAsLimits(thresholds: CustomThreshold[]): NutrientLimit
       limitClass: 'NON_OFFICIAL_ATTENTION',
       hardness: 'soft',
       severity: 'orange',
-      source: `Allegato C — ${t.status}`,
+      source: `Allegato C — preferenza formulativa NON FEDIAF${t.requiresReview ? ', bozza da rivedere' : ''}`,
       status: t.requiresReview ? 'draft' : 'verified',
       notes: t.rationale,
     }));

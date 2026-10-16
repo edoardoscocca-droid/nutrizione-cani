@@ -366,7 +366,10 @@ export function auditRecipe(input: AuditInput): AuditResult {
   const testData = items.some(
     (i) => (i.kind === 'food' ? foods[i.id]?.dataStatus : supplements[i.id]?.status) === 'test_fixture',
   );
-  const reviewRequiredLimits = limits.filter((l) => l.status !== 'verified').map((l) => `${l.metric}: ${l.source}`);
+  const labelOf = new Map(nutrients.map((n) => [n.id, n.label]));
+  const reviewRequiredLimits = limits
+    .filter((l) => l.status !== 'verified')
+    .map((l) => `${labelOf.get(l.metric) ?? l.metric} ${[l.lower, l.upper].filter((x) => x !== null).map((x) => fmt(x as number)).join('–')} — ${l.source}`);
 
   const allChecks = rows.flatMap((r) => r.checks);
   let status: RecipeStatus;

@@ -20,4 +20,8 @@ for f in "$ROOT"/supabase/migrations/*.sql; do "${PSQL[@]}" -d t -f "$f"; done
 "${PSQL[@]}" -d t -f "$ROOT/supabase/seed.sql"
 "${PSQL[@]}" -d t -f "$ROOT/supabase/seed_test_fixtures.sql"
 "${PSQL[@]}" -d t -f "$HERE/tests.sql"
+( cd "$ROOT" && printf 'product_id,nutrient_id,value_per_100g,unit,basis,source_id,status\nsardines,calcium,382,mg,raw,TEST,\nsardines,protein,,g,raw,,\n' > "$DATA/i.csv" && npx tsx scripts/import-csv.ts alimenti "$DATA/i.csv" 2>/dev/null ) | "${PSQL[@]}" -d t
+OK=$("${PSQL[@]}" -d t -tAc "select amount_per_100g = 0.382 and value_status = 'measured' and (select count(*) from food_nutrients where food_id = 'sardines') = 1 from food_nutrients where food_id = 'sardines' and nutrient_id = 'calcium'")
+[ "$OK" = "t" ] || { echo "FALLITO: import CSV"; exit 1; }
+echo "ok: import CSV (mg convertiti in g, valore vuoto non importato)"
 echo "Test database: tutti superati"
