@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { formulate, preliminaryAnalysis, type FormulationInput, type FormulationResult, type PreliminaryResult } from '../../engine/formulate';
-import type { Food, ItemConstraint, Supplement } from '../../engine/types';
+import { foodStatus, supplementStatus } from '../../engine/catalogStatus';
+import type { Food, ItemConstraint, Nutrient, Supplement } from '../../engine/types';
+import { StatusBadge } from './CatalogPage';
 import { MAX_RECIPES_PER_DOG, type Recipe } from '../../data/model';
 import { PROCESSING_LABEL } from '../../data/packageCatalog';
 import { assertCanAddRecipe, buildInput, costOf, selectionFromSnapshot, versionFromResult, type Selection } from '../../data/recipeService';
@@ -12,16 +14,23 @@ import { ResultView } from '../ResultView';
 
 type Step = 1 | 2 | 3;
 
-function statusBadge(f: Food) {
-  if (f.dataStatus === 'test_fixture') return <span className="tag orange">PROVA</span>;
-  if (!f.availableToFormulate) return <span className="tag grey">composizione da verificare</span>;
-  if (f.dataStatus === 'estimated') return <span className="tag orange">stima</span>;
-  return <span className="tag green">verificato</span>;
+function statusBadge(f: Food, nutrients: Nutrient[]) {
+  const st = foodStatus(f, nutrients);
+  return (
+    <>
+      <StatusBadge status={st.status} test={f.dataStatus === 'test_fixture'} />
+      {st.status !== 'to_complete' && !f.availableToFormulate && <span className="tag grey">non attivo</span>}
+    </>
+  );
 }
-function suppBadge(s: Supplement) {
-  if (s.status === 'test_fixture') return <span className="tag orange">PROVA</span>;
-  if (!s.usableForOptimization) return <span className="tag grey">etichetta mancante</span>;
-  return <span className="tag green">verificato</span>;
+function suppBadge(s: Supplement, nutrients: Nutrient[]) {
+  const st = supplementStatus(s, nutrients);
+  return (
+    <>
+      <StatusBadge status={st.status} test={s.status === 'test_fixture'} />
+      {st.status !== 'to_complete' && !s.usableForOptimization && <span className="tag grey">non attivo</span>}
+    </>
+  );
 }
 
 export function RecipeWizard() {
@@ -174,6 +183,7 @@ export function RecipeWizard() {
           <div className="card">
             <h3>Scegli gli alimenti disponibili</h3>
             <p className="small muted">Non serve indicare i grammi: li calcola l’app. Puoi aggiungere limiti facoltativi.</p>
+            <p className="small muted">«Da completare» = non utilizzabile nel calcolo; «Dati parziali» = utilizzabile, ma la ricetta non potrà essere dichiarata completa.</p>
             <input type="search" placeholder="Cerca…" value={query} onChange={(e) => setQuery(e.target.value)} />
             {groups.map((g) => (
               <div key={g.cat.id} className="pick-group">
@@ -184,7 +194,7 @@ export function RecipeWizard() {
                   <label key={f.id} className="pick">
                     <input type="checkbox" checked={sel.foods.some((x) => x.id === f.id)} onChange={() => toggleFood(f.id)} />
                     <span>
-                      {f.name} <span className="muted small">({PROCESSING_LABEL[f.processingState]})</span> {statusBadge(f)}
+                      {f.name} <span className="muted small">({PROCESSING_LABEL[f.processingState]})</span> {statusBadge(f, catalog.nutrients)}
                     </span>
                   </label>
                 ))}
@@ -253,7 +263,7 @@ export function RecipeWizard() {
               <label key={s.id} className="pick">
                 <input type="checkbox" checked={sel.supplements.some((x) => x.id === s.id)} onChange={() => toggleSupp(s.id)} />
                 <span>
-                  {s.name} {suppBadge(s)} <span className="muted small">dose in {s.doseUnit}{s.integerDose ? ', solo intere' : ''}{s.maxDailyUnits ? `, max ${s.maxDailyUnits}/die (produttore)` : ''}</span>
+                  {s.name} {suppBadge(s, catalog.nutrients)} <span className="muted small">dose in {s.doseUnit}{s.integerDose ? ', solo intere' : ''}{s.maxDailyUnits ? `, max ${s.maxDailyUnits}/die (produttore)` : ''}</span>
                 </span>
               </label>
             ))}

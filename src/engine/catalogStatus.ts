@@ -1,0 +1,94 @@
+// Stato di catalogo di alimenti e integratori: Verificato · Dati parziali · Da completare.
+// Lo stato si calcola da criteri di QUALITÀ e COMPLETEZZA (quali dati, con quale origine e fonte, convalidati da chi),
+// non dal semplice numero di campi compilati. Le stesse regole sono replicate nel database
+// (supabase/migrations/…_catalog_status_import.sql, funzioni food_status / supplement_status).
+
+import type { Food, Nutrient, NutrientValue, Supplement } from './types';
+
+export type CatalogStatus = 'verified' | 'partial' | 'to_complete';
+
+export const CATALOG_STATUS_LABEL: Record<CatalogStatus, string> = {
+  verified: 'Verificato',
+  partial: 'Dati parziali',
+  to_complete: 'Da completare',
+};
+
+export const CATALOG_STATUS_HELP: Record<CatalogStatus, string> = {
+  verified: 'Composizione documentata e convalidata per la formulazione rispetto ai riferimenti in uso.',
+  partial: 'Composizione disponibile solo in parte o non convalidata: consultabile, ma una ricetta che lo usa non può essere dichiarata completa.',
+  to_complete: 'Presente in catalogo ma senza i dati necessari: non utilizzabile nel calcolo.',
+};
+
+export interface StatusResult {
+  status: CatalogStatus;
+  /** motivi per cui non è "verificato" (vuoto se verificato). */
+  reasons: string[];
+  /** nutrienti richiesti senza valore. */
+  missing: string[];
+  /** criteri soddisfatti tranne la convalida: l'amministratore può convalidare. */
+  readyForValidation: boolean;
+}
+
+/** Valori di qualità sufficiente per la convalida: misurati, da etichetta, calcolati con metodo, zeri dichiarati. */
+const GOOD_QUALITY = new Set(['measured', 'label', 'calculated', 'analytical_zero']);
+
+/** Nutrienti richiesti: tutti quelli con un requisito ufficiale nel dizionario (core e aminoacidi essenziali). */
+export function requiredNutrients(nutrients: Nutrient[]): Nutrient[] {
+  return nutrients.filter((n) => n.kind === 'core' || n.kind === 'advanced');
+}
+
+const known = (v: NutrientValue | undefined) => v !== undefined && v.value !== null && v.value !== undefined;
+
+function valueChecks(values: Record<string, NutrientValue>, required: Nutrient[], reasons: string[]) {
+  const missing = required.filter((n) => !known(values[n.id])).map((n) => n.id);
+  if (missing.length) reasons.push(`${missing.length} nutrienti richiesti senza valore`);
+  const knownEntries = Object.entries(values).filter(([, v]) => known(v));
+  const estimated = knownEntries.filter(([, v]) => !GOOD_QUALITY.has(v.status ?? 'measured')).map(([k]) => k);
+  if (estimated.length) reasons.push(`${estimated.length} valori stimati o di qualità non dichiarata`);
+  const noSource = knownEntries.filter(([, v]) => !v.source).map(([k]) => k);
+  if (noSource.length) reasons.push(`${noSource.length} valori senza fonte`);
+  return missing;
+}
+
+export function foodStatus(f: Food, nutrients: Nutrient[]): StatusResult {
+  const required = requiredNutrients(nutrients);
+  const reasons: string[] = [];
+  // Da completare: senza energia o senza i macronutrienti di base non è utilizzabile.
+  const hardMissing: string[] = [];
+  if (f.kcalMePer100g === null) hardMissing.push('energia metabolizzabile');
+  if (!known(f.nutrients.protein)) hardMissing.push('proteine');
+  if (!known(f.nutrients.fat)) hardMissing.push('grassi');
+  const missing = valueChecks(f.nutrients, required, reasons);
+  if (hardMissing.length) {
+    return { status: 'to_complete', reasons: [`mancano: ${hardMissing.join(', ')}`, ...reasons], missing, readyForValidation: false };
+  }
+  if (!f.meMethod) reasons.push('metodo di calcolo dell’energia non indicato');
+  if (!f.source) reasons.push('fonte del profilo non indicata');
+  if (!f.sourceVersion) reasons.push('versione della fonte non indicata');
+  if (f.processingState === 'raw_or_unspecified') reasons.push('stato crudo/cotto non specificato');
+  if (!f.ediblePortion) reasons.push('parte edibile non indicata');
+  if (f.dataStatus === 'estimated') reasons.push('profilo dichiarato come stima');
+  const readyForValidation = reasons.length === 0;
+  if (!f.validatedAt && f.dataStatus !== 'test_fixture') reasons.push('non ancora convalidato da un amministratore');
+  return { status: reasons.length ? 'partial' : 'verified', reasons, missing, readyForValidation };
+}
+
+export function supplementStatus(s: Supplement, nutrients: Nutrient[]): StatusResult {
+  const required = requiredNutrients(nutrients);
+  const reasons: string[] = [];
+  const declared = Object.values(s.nutrients).filter(known).length;
+  const hardMissing: string[] = [];
+  if (!declared) hardMissing.push('composizione per dose');
+  if (s.doseUnit !== 'g' && s.doseUnit !== 'ml' && s.massPerUnitG === null) hardMissing.push('contenuto della singola dose');
+  if (!s.labelSource) hardMissing.push('etichetta o scheda tecnica');
+  const missing = valueChecks(s.nutrients, required, reasons);
+  if (hardMissing.length) {
+    return { status: 'to_complete', reasons: [`mancano: ${hardMissing.join(', ')}`, ...reasons], missing, readyForValidation: false };
+  }
+  if (s.kcalPerUnit === null) reasons.push('energia per dose non indicata');
+  if (!s.version) reasons.push('variante/lotto o versione del prodotto non indicati');
+  if (s.labelAddedOnly) reasons.push('l’etichetta dichiara solo le quantità aggiunte: non è un’analisi completa');
+  const readyForValidation = reasons.length === 0;
+  if (!s.validatedAt && s.status !== 'test_fixture') reasons.push('non ancora convalidato da un amministratore');
+  return { status: reasons.length ? 'partial' : 'verified', reasons, missing, readyForValidation };
+}

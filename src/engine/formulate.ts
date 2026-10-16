@@ -4,6 +4,7 @@
 // Ordine delle priorità: vincoli rigidi (limiti ufficiali, target professionali, bounds) →
 // copertura dei nutrienti con dati parziali → obiettivo kcal → preferenze → praticità/costo.
 
+import { foodStatus, supplementStatus } from './catalogStatus';
 import { applicableLimits, auditRecipe, type AuditResult, type DietMoisture } from './audit';
 import { solve, type Model, type Row, type SolveResult, type Term, type VarDef, loadSolver } from './lp';
 import type {
@@ -118,28 +119,30 @@ function supplementStep(s: Supplement, st: EngineSettings): number {
 export function checkUsability(input: FormulationInput) {
   const excluded: FormulationResult['excluded'] = [];
   const foods = input.foods.filter(({ food }) => {
-    if (!food.availableToFormulate) {
-      excluded.push({ kind: 'food', id: food.id, name: food.name, reason: 'composizione non verificata: inserire e verificare i dati in catalogo' });
+    const st = foodStatus(food, input.nutrients);
+    if (st.status === 'to_complete') {
+      excluded.push({ kind: 'food', id: food.id, name: food.name, reason: `da completare in catalogo (${st.reasons[0]})` });
       return false;
     }
-    if (food.kcalMePer100g === null) {
-      excluded.push({ kind: 'food', id: food.id, name: food.name, reason: 'energia metabolizzabile non disponibile' });
+    if (!food.availableToFormulate) {
+      excluded.push({ kind: 'food', id: food.id, name: food.name, reason: 'non ancora attivato per la formulazione da un amministratore' });
       return false;
     }
     return true;
   });
   const supplements = input.supplements.filter(({ supplement: s }) => {
-    if (!s.usableForOptimization || s.status === 'missing') {
+    const st = supplementStatus(s, input.nutrients);
+    if (st.status === 'to_complete' || s.status === 'missing') {
       excluded.push({
         kind: 'supplement',
         id: s.id,
         name: s.name,
-        reason: 'composizione dell’etichetta non disponibile o non verificata: servono i dati del prodotto (variante esatta)',
+        reason: `composizione dell’etichetta non disponibile: servono i dati del prodotto (variante esatta)${st.reasons[0] ? ` — ${st.reasons[0]}` : ''}`,
       });
       return false;
     }
-    if (s.doseUnit !== 'g' && s.doseUnit !== 'ml' && s.massPerUnitG === null) {
-      excluded.push({ kind: 'supplement', id: s.id, name: s.name, reason: 'contenuto della singola dose non verificato' });
+    if (!s.usableForOptimization) {
+      excluded.push({ kind: 'supplement', id: s.id, name: s.name, reason: 'non ancora attivato per la formulazione da un amministratore' });
       return false;
     }
     return true;

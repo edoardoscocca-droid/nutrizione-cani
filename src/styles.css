@@ -40,7 +40,7 @@
   }
 }
 * { box-sizing: border-box; }
-html, body { overflow-wrap: anywhere; margin: 0; background: var(--bg); color: var(--text); font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+html, body { overflow-wrap: break-word; margin: 0; background: var(--bg); color: var(--text); font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
 main { max-width: 860px; margin: 0 auto; padding: 12px 16px 64px; }
 h1 { font-size: 1.15rem; margin: 0; }
 h2 { font-size: 1.35rem; margin: 12px 0; }
@@ -137,4 +137,18 @@ dl.kv dd { margin: 0; }
   body { background: #fff; color: #000; }
   .card { border: 1px solid #ccc; break-inside: avoid; }
   details { display: block; }
+}
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .82rem; }
+.pre { white-space: pre-wrap; max-height: 240px; overflow: auto; background: var(--grey-bg); padding: 8px; border-radius: 8px; }
+fieldset.plain { border: 0; padding: 0; margin: 0; }
+.status-filter button { font-weight: 600; }
+.tag { white-space: nowrap; }
+.tabs { overflow-x: auto; }
+.tabs button { white-space: nowrap; flex: none; }
+@media (max-width: 640px) {
+  table.cat thead { display: none; }
+  table.cat, table.cat tbody, table.cat tr, table.cat td { display: block; width: auto; }
+  table.cat tr { padding: 10px 0; border-bottom: 1px solid var(--line); }
+  table.cat td { border: 0; padding: 2px 0; text-align: left; }
+  table.cat td.r { text-align: left; white-space: normal; }
 }

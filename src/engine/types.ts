@@ -100,6 +100,9 @@ export interface Food {
   profileVersion: number;
   uncertainty?: string | null;
   notes?: string | null;
+  /** convalida esplicita di un amministratore; decade a ogni modifica del profilo. */
+  validatedBy?: string | null;
+  validatedAt?: string | null;
   /** valori per 100 g, unità canonica del nutriente. */
   nutrients: Record<string, NutrientValue>;
 }
@@ -128,6 +131,8 @@ export interface Supplement {
   labelAddedOnly?: boolean;
   profileVersion: number;
   notes?: string | null;
+  validatedBy?: string | null;
+  validatedAt?: string | null;
   /** valori per 1 unità di dose (1 g, 1 ml, 1 capsula…). */
   nutrients: Record<string, NutrientValue>;
 }

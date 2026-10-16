@@ -10,9 +10,10 @@ Progetto separato da Vita: vive tutto in questa cartella.
 
 ## Documenti
 
-- `docs/ANALISI.md` — analisi del pacchetto, architettura, **decisioni richieste (D1–D17)**, piano.
+- `docs/ANALISI.md` — analisi del pacchetto, architettura, **decisioni richieste (D1–D18)**, piano.
 - `docs/FORMULE.md` — come il motore calcola e verifica (spiegabilità).
 - `docs/SUPABASE.md` — come mettere in funzione database, amministratori e hosting.
+- `docs/CATALOGO.md` — stati del catalogo (Verificato / Dati parziali / Da completare), convalida, importazioni CSV/JSON.
 - `dati/pacchetto/` — il pacchetto di specifiche ricevuto, intatto (fonte dei riferimenti).
 
 ## Struttura
@@ -22,8 +23,8 @@ src/engine/   motore: energia, somme con dati mancanti, rapporti, ottimizzatore 
 src/data/     modello dati, archivio Supabase, archivio locale di prova, catalogo dal pacchetto, dati di PROVA fittizi
 src/ui/       schermate (cani, ricette, risultato, prezzi, catalogo/amministrazione, impostazioni, accesso)
 supabase/     migrazioni (schema, RLS, trigger), seed generato dal pacchetto, seed di prova facoltativo
-scripts/      build-seed.ts (seed dal pacchetto), import-csv.ts (composizioni dai modelli CSV D/E)
-tests/        acceptance.test.ts (T01–T18 e altro), db/ (permessi e regole su Postgres), e2e/ (percorso nel browser)
+scripts/      build-seed.ts (seed dal pacchetto), import-catalog.ts (importazione CSV/JSON con le verifiche dell'app)
+tests/        acceptance.test.ts (T01–T18 e altro), catalog.test.ts (stati e importazioni), db/ (permessi e regole su Postgres), e2e/ (percorso nel browser)
 ```
 
 ## Comandi
@@ -36,7 +37,7 @@ npm run test:db      # test del database su un Postgres locale temporaneo (serve
 npm run typecheck
 npm run build        # versione da pubblicare in dist/
 npm run seed:sql     # rigenera supabase/seed*.sql dai file del pacchetto
-npx tsx scripts/import-csv.ts alimenti dati/mio_file.csv > import.sql   # composizioni dai modelli CSV
+npx tsx scripts/import-catalog.ts alimenti dati/mio_file.csv > import.sql   # importazione da riga di comando
 ```
 
 ## Modalità
@@ -50,4 +51,4 @@ npx tsx scripts/import-csv.ts alimenti dati/mio_file.csv > import.sql   # compos
 
 Il pacchetto non contiene ancora composizioni verificate: i 28 alimenti e i 5 integratori sono solo nomi
 (`NOT_VERIFIED` / `MISSING`). Con questi dati l'app **non formula ricette** e indica cosa manca. Per attivarli:
-inserire le composizioni (modulo in Catalogo o import CSV), l'energia metabolizzabile e lo stato del dato, poi attivare il prodotto.
+importare o inserire le composizioni (Catalogo → Importa), controllare i motivi dello stato, convalidare e attivare il prodotto.

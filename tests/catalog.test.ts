@@ -1,0 +1,250 @@
+// Stati del catalogo (Verificato / Dati parziali / Da completare) e importazione massiva.
+
+import { describe, expect, test } from 'vitest';
+import { auditRecipe } from '../src/engine/audit';
+import { foodStatus, supplementStatus } from '../src/engine/catalogStatus';
+import { formulate } from '../src/engine/formulate';
+import type { Food } from '../src/engine/types';
+import { DEFAULT_SETTINGS } from '../src/engine/types';
+import { parseImport, planImport } from '../src/data/catalogImport';
+import { LocalRepository } from '../src/data/localRepository';
+import { buildInput, staleFor, versionFromResult } from '../src/data/recipeService';
+import { newDog } from '../src/engine/dogProfile';
+import { packageFoods, packageSupplements } from '../src/data/packageCatalog';
+import { TEST_FOODS } from '../src/data/testFixtures';
+import { dog, food, input, refs, supplement } from './helpers';
+
+const N = refs.nutrients;
+
+/** profilo completo NON di prova (stesse cifre del manzo di prova, fonte e metodo dichiarati). */
+function realFood(over: Partial<Food> = {}): Food {
+  const f = structuredClone(food('test_beef'));
+  return { ...f, id: 'real_beef', name: 'Manzo reale', dataStatus: 'unverified', source: 'FDC 123', sourceVersion: '2026-04', ...over };
+}
+
+describe('Stato del catalogo', () => {
+  test('nomi del pacchetto senza dati: da completare', () => {
+    for (const f of packageFoods()) expect(foodStatus(f, N).status).toBe('to_complete');
+    for (const s of packageSupplements()) expect(supplementStatus(s, N).status).toBe('to_complete');
+  });
+  test('profilo completo e documentato: dati parziali finché un amministratore non convalida', () => {
+    const st = foodStatus(realFood(), N);
+    expect(st.status).toBe('partial');
+    expect(st.readyForValidation).toBe(true);
+    expect(st.reasons).toEqual(['non ancora convalidato da un amministratore']);
+    expect(foodStatus(realFood({ validatedAt: '2026-10-17', validatedBy: 'admin' }), N).status).toBe('verified');
+  });
+  test('qualità, non numero di campi: tutti i valori presenti ma uno stimato → parziale', () => {
+    const f = realFood({ validatedAt: '2026-10-17' });
+    f.nutrients.zinc = { ...f.nutrients.zinc, status: 'estimated' };
+    const st = foodStatus(f, N);
+    expect(st.status).toBe('partial');
+    expect(st.readyForValidation).toBe(false);
+    expect(st.reasons.join()).toMatch(/stimati/);
+  });
+  test('valore senza fonte, stato crudo/cotto non specificato, fonte assente → parziale con motivi', () => {
+    const f = realFood({ validatedAt: '2026-10-17', processingState: 'raw_or_unspecified', source: null });
+    f.nutrients.iron = { value: 2, status: 'measured', source: null };
+    const r = foodStatus(f, N).reasons.join(' | ');
+    expect(r).toMatch(/senza fonte/);
+    expect(r).toMatch(/crudo\/cotto/);
+    expect(r).toMatch(/fonte del profilo/);
+  });
+  test('un nutriente richiesto mancante → parziale; energia o proteine mancanti → da completare', () => {
+    const f = realFood({ validatedAt: '2026-10-17' });
+    f.nutrients.vitamin_d = { value: null };
+    expect(foodStatus(f, N).status).toBe('partial');
+    expect(foodStatus(realFood({ kcalMePer100g: null }), N).status).toBe('to_complete');
+    const g = realFood();
+    g.nutrients.protein = { value: null };
+    expect(foodStatus(g, N).status).toBe('to_complete');
+  });
+  test('integratore con etichetta solo «aggiunti» → parziale', () => {
+    const s = { ...structuredClone(supplement('test_multi')), status: 'review_required' as const, labelAddedOnly: true, validatedAt: null };
+    expect(supplementStatus(s, N).reasons.join()).toMatch(/solo le quantità aggiunte/);
+    expect(supplementStatus(s, N).status).toBe('partial');
+  });
+});
+
+describe('Stato e motore', () => {
+  test('alimento con dati parziali: entra nel calcolo ma la ricetta non è dichiarata completa', async () => {
+    const partial = realFood({ availableToFormulate: true });
+    const inp = input(['test_oats'], ['test_multi', 'test_bone_meal']);
+    inp.foods = [{ food: partial }, ...inp.foods];
+    const r = await formulate(inp);
+    expect(r.outcome).toBe('solved');
+    expect(r.items.find((i) => i.id === 'real_beef')!.qty).toBeGreaterThan(0);
+    expect(r.audit!.status).toBe('INSUFFICIENT_DATA');
+    expect(r.audit!.blockers.join()).toMatch(/Manzo reale: dati parziali/);
+    // convalidato → stesso calcolo, ricetta verificata
+    const inp2 = input(['test_oats'], ['test_multi', 'test_bone_meal']);
+    inp2.foods = [{ food: { ...partial, validatedAt: '2026-10-17', validatedBy: 'admin' } }, ...inp2.foods];
+    expect((await formulate(inp2)).audit!.status).toBe('VERIFIED_AVAILABLE_CHECKS');
+  });
+  test('alimento da completare: escluso anche se qualcuno lo avesse attivato', async () => {
+    const f = { ...packageFoods()[0], availableToFormulate: true };
+    const inp = input(['test_oats'], []);
+    inp.foods = [{ food: f }, ...inp.foods];
+    const r = await formulate(inp);
+    expect(r.excluded.find((e) => e.id === f.id)!.reason).toMatch(/da completare/);
+  });
+  test('la verifica della ricetta usa lo stato congelato nell’istantanea', () => {
+    const a = auditRecipe({
+      items: [{ kind: 'food', id: 'real_beef', qty: 500 }],
+      foods: { real_beef: realFood() },
+      supplements: {},
+      nutrients: N,
+      limits: refs.limits,
+      factors: refs.energyFactors,
+      dog: dog(),
+      dietMoisture: 'wet',
+      settings: DEFAULT_SETTINGS,
+    });
+    expect(a.blockers.join()).toMatch(/dati parziali/);
+  });
+});
+
+const catalogFor = async () => new LocalRepository(null).loadCatalog();
+
+describe('Importazione: lettura e associazione dei nutrienti', () => {
+  test('modello lungo D del pacchetto: ID, mg→g, celle vuote ignorate', async () => {
+    const cat = await catalogFor();
+    const csv = 'product_id,nutrient_id,value_per_100g,unit,basis,source_id,status\nanchovies,protein,20,g,as_purchased_edible_raw,FDC 1,UNVERIFIED\nanchovies,calcium,147,mg,as_purchased_edible_raw,FDC 1,UNVERIFIED\nanchovies,vitamin_d,,IU,as_purchased_edible_raw,,UNVERIFIED\n';
+    const plan = planImport(parseImport(csv, 'foods', N), cat, 'd.csv');
+    expect(plan.errors).toEqual([]);
+    expect(plan.format).toBe('csv-long');
+    const it = plan.items[0];
+    expect(it.action).toBe('update');
+    expect(it.valueChanges.map((v) => [v.nutrientId, v.after])).toEqual([['protein', 20], ['calcium', 0.147]]);
+    expect(it.next.nutrients.vitamin_d).toBeUndefined();
+    expect(it.next.profileVersion).toBe(2);
+  });
+  test('formato largo: anagrafica + nutrienti riconosciuti dal nome («Calcio (mg)», «Vit D [IU]», «zinc_mg»)', async () => {
+    const cat = await catalogFor();
+    const csv = 'id;nome;categoria;sottocategoria;stato;kcal;fonte;Proteine (g);Calcio (mg);Vit D [IU];zinc_mg\nnew_tuna;Tonno (nuovo);animal;fish;crudo;130;FDC 9;23,5;10;80;0,6\n';
+    const plan = planImport(parseImport(csv, 'foods', N), cat, 'w.csv');
+    expect(plan.errors).toEqual([]);
+    expect(plan.format).toBe('csv-wide');
+    const f = plan.items[0].next as Food;
+    expect(plan.items[0].action).toBe('create');
+    expect(f.processingState).toBe('raw');
+    expect(f.kcalMePer100g).toBe(130);
+    expect(f.nutrients.protein.value).toBe(23.5);
+    expect(f.nutrients.calcium.value).toBeCloseTo(0.01, 9);
+    expect(f.nutrients.vitamin_d.value).toBe(80);
+    expect(f.nutrients.zinc.value).toBe(0.6);
+    // senza grassi resta «da completare» anche con altri valori presenti
+    expect(plan.items[0].statusAfter.status).toBe('to_complete');
+    expect(plan.items[0].statusAfter.reasons[0]).toMatch(/grassi/);
+  });
+  test('JSON con nutrienti come oggetto; colonne di attivazione ignorate con avviso', async () => {
+    const cat = await catalogFor();
+    const json = JSON.stringify({ foods: [{ id: 'anchovies', kcal_me_per_100g: 131, available_to_formulate: true, nutrients: { Proteine: { value: 20.3, unit: 'g', source: 'FDC 2' }, fat: { value: 4.8, unit: 'g', source: 'FDC 2' } } }] });
+    const plan = planImport(parseImport(json, 'foods', N), cat, 'a.json');
+    expect(plan.errors).toEqual([]);
+    expect(plan.warnings.some((w) => /ignorato/.test(w.message))).toBe(true);
+    expect((plan.items[0].next as Food).availableToFormulate).toBe(false);
+    expect(plan.items[0].statusAfter.status).toBe('partial');
+  });
+  test('integratore: per_dose convertito per 1 dose, «added» rende l’etichetta non completa', async () => {
+    const cat = await catalogFor();
+    const csv = 'supplement_id,nutrient_id,declared_amount,unit,per_dose,source_id,declared_total_or_added\nqdiet,calcium,500,mg,5,Etichetta Q-Diet lotto 1,added\n';
+    const plan = planImport(parseImport(csv, 'supplements', N), cat, 'q.csv');
+    expect(plan.errors).toEqual([]);
+    const s = plan.items[0].next;
+    expect(s.nutrients.calcium.value).toBeCloseTo(0.1, 9);
+    expect(plan.items[0].fieldChanges.some((c) => c.field === 'labelAddedOnly')).toBe(true);
+  });
+});
+
+describe('Importazione: errori mostrati prima di confermare', () => {
+  const bad = async (csv: string, kind: 'foods' | 'supplements' = 'foods') => {
+    const plan = planImport(parseImport(csv, kind, N), await catalogFor(), 'x');
+    expect(plan.canApply).toBe(false);
+    return plan.errors.map((e) => e.message).join(' | ');
+  };
+  const H = 'product_id,nutrient_id,value_per_100g,unit,basis,source_id,status\n';
+  test('nutriente sconosciuto, unità non convertibile, unità mancante, valore non valido', async () => {
+    expect(await bad(H + 'anchovies,sconosciuto,1,g,,F,\n')).toMatch(/non riconosciuto/);
+    expect(await bad(H + 'anchovies,vitamin_a,1,mg,,F,\n')).toMatch(/non convertibile/);
+    expect(await bad(H + 'anchovies,protein,1,,,F,\n')).toMatch(/unità mancante/);
+    expect(await bad(H + 'anchovies,protein,-3,g,,F,\n')).toMatch(/non valido/);
+    expect(await bad(H + 'anchovies,protein,abc,g,,F,\n')).toMatch(/non valido/);
+  });
+  test('fonte mancante, zero stimato, valori impossibili, nutriente ripetuto', async () => {
+    expect(await bad(H + 'anchovies,protein,20,g,,,\n')).toMatch(/fonte mancante/);
+    expect(await bad(H + 'anchovies,iron,0,mg,,F,estimated\n')).toMatch(/zero/);
+    expect(await bad(H + 'anchovies,protein,120,g,,F,\n')).toMatch(/impossibile/);
+    expect(await bad(H + 'anchovies,protein,60,g,,F,\nanchovies,moisture,60,g,,F,\n')).toMatch(/incoerenti/);
+    expect(await bad(H + 'anchovies,protein,20,g,,F,\nanchovies,Proteine,21,g,,F,\n')).toMatch(/più volte/);
+  });
+  test('prodotto inesistente, ID non valido, nome duplicato con altro ID, categoria non valida, campi obbligatori', async () => {
+    expect(await bad(H + 'non_esiste,protein,20,g,,F,\n')).toMatch(/inesistente/);
+    expect(await bad('id,name_it,subcategory\nManzo Magro!,X,muscle\n')).toMatch(/non valido/);
+    expect(await bad('id,name_it,subcategory\nbeef_lean_2,Manzo magro,muscle\n')).toMatch(/già usato da «beef_lean»/);
+    expect(await bad('id,name_it,subcategory\nnuovo_x,Nuovo,pianeti\n')).toMatch(/Categoria/);
+    expect(await bad('id,name_it\nnuovo_y,Nuovo Y\n')).toMatch(/Sottocategoria obbligatoria/);
+    expect(await bad('id,name_it,subcategory\nnuovo_z,,muscle\n')).toMatch(/Nome obbligatorio/);
+    expect(await bad('id,name_it,dose_unit\nnuovo_s,Nuovo S,bustina\n', 'supplements')).toMatch(/Unità di dose/);
+    expect(await bad('id,name_it,colonna_strana\nanchovies,Acciughe,1\n')).toMatch(/non riconosciuta/);
+  });
+});
+
+describe('Importazione: applicazione, storico, ricalcoli', () => {
+  test('aggiornamento senza duplicati, versione precedente nello storico, convalida decaduta, ricette da ricalcolare', async () => {
+    const repo = new LocalRepository(null);
+    let cat = await repo.loadCatalog();
+    // ricetta salvata con il manzo di prova v1
+    const d = newDog({ name: 'Fido', weightCurrentKg: 30, kcalTarget: 1400 }, 'd1');
+    const inp = buildInput(d, { foods: [{ id: 'test_beef' }, { id: 'test_oats' }], supplements: [{ id: 'test_multi' }, { id: 'test_bone_meal' }], dietMoisture: 'wet' }, cat, DEFAULT_SETTINGS, []);
+    const v = versionFromResult({ id: 'v1', recipeId: 'r1', revision: 1, origin: 'engine', parentVersionId: null, author: 'u' }, await formulate(inp), inp);
+    expect(staleFor(v, d, cat)).toEqual([]);
+
+    const csv = 'product_id,nutrient_id,value_per_100g,unit,basis,source_id,status\ntest_beef,Calcio,15,mg,raw,TEST nuova analisi,\n';
+    const plan = planImport(parseImport(csv, 'foods', cat.nutrients), cat, 'agg.csv');
+    expect(plan.canApply).toBe(true);
+    await repo.applyCatalogImport(plan);
+    cat = await repo.loadCatalog();
+    expect(cat.foods.filter((f) => f.id === 'test_beef')).toHaveLength(1);
+    const beef = cat.foods.find((f) => f.id === 'test_beef')!;
+    expect(beef.profileVersion).toBe(2);
+    expect(beef.nutrients.calcium.value).toBeCloseTo(0.015, 9);
+    const hist = await repo.listProfileHistory('food', 'test_beef');
+    expect(hist[0].version).toBe(1);
+    expect((hist[0].profile as Food).nutrients.calcium.value).toBe(TEST_FOODS.find((f) => f.id === 'test_beef')!.nutrients.calcium.value);
+    expect((await repo.listImports())[0].products).toEqual(['test_beef']);
+    const stale = staleFor(v, d, cat);
+    expect(stale).toEqual([expect.objectContaining({ kind: 'food', id: 'test_beef', frozen: 'v1', current: 'v2' })]);
+    // la ricetta salvata resta com'era
+    expect(v.snapshot.foods.test_beef.nutrients.calcium.value).toBe(0.011);
+
+    // stesso file di nuovo: niente da applicare, nessuna versione nuova
+    const again = planImport(parseImport(csv, 'foods', cat.nutrients), cat, 'agg.csv');
+    expect(again.summary.unchanged).toBe(1);
+    expect(again.canApply).toBe(false);
+  });
+  test('un piano con errori non si applica', async () => {
+    const repo = new LocalRepository(null);
+    const cat = await repo.loadCatalog();
+    const plan = planImport(parseImport('product_id,nutrient_id,value_per_100g,unit,basis,source_id,status\nanchovies,xyz,1,g,,F,\n', 'foods', cat.nutrients), cat, 'x');
+    await expect(repo.applyCatalogImport(plan)).rejects.toThrow(/errori/);
+  });
+  test('convalida: rifiutata con criteri mancanti, accettata su profilo pronto; decade alla modifica', async () => {
+    const repo = new LocalRepository(null);
+    await expect(repo.validateCatalogItem('food', 'beef_lean')).rejects.toThrow(/Non convalidabile/);
+    await repo.saveFood(realFood({ id: 'real_beef' }));
+    await repo.validateCatalogItem('food', 'real_beef');
+    let cat = await repo.loadCatalog();
+    expect(foodStatus(cat.foods.find((f) => f.id === 'real_beef')!, cat.nutrients).status).toBe('verified');
+    const f = structuredClone(cat.foods.find((x) => x.id === 'real_beef')!);
+    f.nutrients.zinc = { value: 5, status: 'measured', source: 'FDC 123' };
+    await repo.saveFood(f);
+    cat = await repo.loadCatalog();
+    expect(foodStatus(cat.foods.find((x) => x.id === 'real_beef')!, cat.nutrients).status).toBe('partial');
+  });
+  test('un alimento da completare non si attiva', async () => {
+    const repo = new LocalRepository(null);
+    const cat = await repo.loadCatalog();
+    await expect(repo.saveFood({ ...cat.foods.find((f) => f.id === 'beef_lean')!, availableToFormulate: true })).rejects.toThrow(/da completare/);
+  });
+});

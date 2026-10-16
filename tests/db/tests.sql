@@ -6,6 +6,7 @@
 create or replace function pg_temp.expect_error(sql text, pattern text) returns void language plpgsql as $$
 begin
   begin
+    set constraints all immediate; -- anche i controlli "a fine transazione" scattano qui
     execute sql;
   exception when others then
     if sqlerrm !~* pattern then raise exception 'Errore inatteso per [%]: %', sql, sqlerrm; end if;
@@ -106,7 +107,7 @@ select pg_temp.expect_error($$insert into food_nutrients(food_id, nutrient_id, a
 select pg_temp.expect_error($$insert into food_nutrients(food_id, nutrient_id, amount_per_100g, unit, value_status) values ('anchovies','calcium',null,'g','measured')$$, 'check');
 select pg_temp.expect_error($$insert into food_nutrients(food_id, nutrient_id, amount_per_100g, unit, value_status) values ('anchovies','calcium',0,'g','estimated')$$, 'check');
 select pg_temp.expect_error($$insert into food_nutrients(food_id, nutrient_id, amount_per_100g, unit, value_status) values ('anchovies','ca_p_ratio',1,'ratio','measured')$$, 'derivato');
-select pg_temp.expect_error($$update foods set available_to_formulate = true where id = 'anchovies'$$, 'check');
+select pg_temp.expect_error($$update foods set available_to_formulate = true where id = 'anchovies'$$, 'da completare');
 -- inserimento in una transazione: una sola nuova versione
 begin;
 insert into food_nutrients(food_id, nutrient_id, amount_per_100g, unit, value_status, source_id) values
@@ -120,6 +121,22 @@ select pg_temp.check((select available_to_formulate from foods where id = 'ancho
 select pg_temp.check((select count(*) from audit_log where entity_name = 'food_nutrients' and entity_id like 'anchovies:%') = 2, 'registro modifiche amministrative');
 select pg_temp.check((select required_known from food_completeness where food_id = 'anchovies') = 2, 'vista di completezza');
 select pg_temp.check((select 'calcium' = any(required_missing) from food_completeness where food_id = 'anchovies'), 'completezza: calcio mancante');
+-- stati del catalogo calcolati nel database
+select pg_temp.check((select status from catalog_status where id = 'beef_lean') = 'to_complete', 'stato: alimento senza dati = da completare');
+select pg_temp.check((select status from catalog_status where id = 'anchovies') = 'partial', 'stato: acciughe con energia e macro = dati parziali');
+select pg_temp.check((select status from catalog_status where id = 'test_beef') = 'verified', 'stato: profilo completo di prova = verificato');
+select pg_temp.check((select status from catalog_status where id = 'qdiet') = 'to_complete', 'stato: integratore senza etichetta = da completare');
+select pg_temp.check((select reasons::text like '%stima%' from catalog_status where id = 'anchovies'), 'motivi dello stato elencati');
+select pg_temp.expect_error($$select validate_catalog_item('food', 'anchovies')$$, 'Non convalidabile');
+select pg_temp.expect_error($$update foods set validated_at = now(), validated_by = 'io' where id = 'anchovies'$$, 'validate_catalog_item');
+reset role;
+set role authenticated;
+select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-000000000001', false);
+select pg_temp.expect_error($$select admin_import_catalog('{"kind":"foods","products":[]}'::jsonb)$$, 'Solo gli amministratori');
+select pg_temp.expect_error($$select validate_catalog_item('food', 'test_beef')$$, 'Solo gli amministratori');
+reset role;
+set role authenticated;
+select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-00000000000a', false);
 -- soglie non ufficiali mai rosse
 select pg_temp.expect_error($$insert into nutrient_limits(id, reference_version_id, metric, unit, basis, limit_class, hardness, severity, source, lower_value) values ('x','PACCHETTO_C_v1.0','calcium','g','per_1000_kcal_me','NON_OFFICIAL_ATTENTION','hard','red','x',1)$$, 'check');
 reset role;

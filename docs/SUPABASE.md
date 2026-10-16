@@ -9,8 +9,9 @@ Nessuna chiave va mai scritta in chat o nel codice.
 2. **SQL Editor** → esegui, in ordine, il contenuto di:
    1. `supabase/migrations/20261016000001_schema.sql`
    2. `supabase/migrations/20261016000002_rules_and_security.sql`
-   3. `supabase/seed.sql` (dizionario, FEDIAF 2025, soglie C, categorie, nomi di alimenti e integratori, nota Irish Wolfhound)
-   4. facoltativo, solo per provare: `supabase/seed_test_fixtures.sql` (dati **[TEST] fittizi**; si tolgono con le due righe in cima al file)
+   3. `supabase/migrations/20261017000003_catalog_status_import.sql` (stati del catalogo, convalida, importazioni)
+   4. `supabase/seed.sql` (dizionario, FEDIAF 2025, soglie C, categorie, nomi di alimenti e integratori, nota Irish Wolfhound)
+   5. facoltativo, solo per provare: `supabase/seed_test_fixtures.sql` (dati **[TEST] fittizi**; si tolgono con le due righe in cima al file)
 
    In alternativa, con la Supabase CLI: `supabase link` e `supabase db push`, poi il seed.
 
@@ -34,7 +35,9 @@ oppure direttamente dalle tabelle di Supabase. Ogni modifica a una composizione 
 (`food_profile_history`, `supplement_profile_history`) e una riga in `audit_log`; le ricette collegate vengono segnalate
 «da ricalcolare» ma non cambiano finché l'utente non conferma.
 
-Completezza dei dati: viste `food_completeness` e `supplement_completeness`.
+Stato di ogni prodotto (Verificato / Dati parziali / Da completare) con i motivi: vista `catalog_status`.
+Completezza nutriente per nutriente: viste `food_completeness` e `supplement_completeness`.
+Importazioni massive e convalida: vedi `docs/CATALOGO.md`.
 
 ## 4. Pubblicazione dell'app (es. Render, sito statico)
 

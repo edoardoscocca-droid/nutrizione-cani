@@ -2,6 +2,7 @@
 // Ricalcola da zero ogni nutriente come somma di tutti gli alimenti e integratori della ricetta,
 // sui dati congelati nell'istantanea, e confronta con i limiti applicabili. Non usa il modello dell'ottimizzatore.
 
+import { CATALOG_STATUS_LABEL, foodStatus, supplementStatus } from './catalogStatus';
 import { fediafReferenceKcal } from './energy';
 import { computeTotals, foodData, supplementData, type DerivedValue, type ItemData, type RecipeTotals, type Total } from './totals';
 import type {
@@ -359,6 +360,15 @@ export function auditRecipe(input: AuditInput): AuditResult {
   }
   for (const n of dog.attentionNotes) warnings.push(`Nota di attenzione: ${n.text} (${n.source})`);
 
+  // Stato di catalogo dei componenti usati: con dati parziali la ricetta non può essere dichiarata completa.
+  for (const it of items) {
+    if (!(it.qty > 0)) continue;
+    const st = it.kind === 'food' ? foodStatus(foods[it.id], nutrients) : supplementStatus(supplements[it.id], nutrients);
+    if (st.status !== 'verified') {
+      const name = it.kind === 'food' ? foods[it.id].name : supplements[it.id].name;
+      blockers.push(`${name}: ${CATALOG_STATUS_LABEL[st.status].toLowerCase()} (${st.reasons.join('; ')}) — la ricetta non può essere dichiarata completa.`);
+    }
+  }
   const estimated = items
     .filter((i) => i.qty > 0 && i.kind === 'food' && foods[i.id]?.dataStatus === 'estimated')
     .map((i) => foods[i.id].name);

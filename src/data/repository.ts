@@ -1,6 +1,7 @@
 // Interfaccia unica per i dati: Supabase (uso reale) o archivio locale del browser (modalità prova).
 
 import type { Food, Supplement, EnergyFactors, CustomThreshold } from '../engine/types';
+import type { ImportPlan } from './catalogImport';
 import type { Category } from './packageCatalog';
 import type { AppSettings, Dog, Recipe, RecipeVersion, UserPrice, WeightEntry } from './model';
 import type { CatalogState } from './recipeService';
@@ -42,6 +43,29 @@ export interface Repository {
   saveSupplement(s: Supplement): Promise<void>;
   saveThreshold(t: CustomThreshold): Promise<void>;
   saveEnergyFactors(f: EnergyFactors & { approvedBy: string }): Promise<void>;
+  /** applica un piano d'importazione già verificato, tutto o niente. */
+  applyCatalogImport(plan: ImportPlan): Promise<void>;
+  /** convalida esplicita: riesce solo se i criteri di qualità sono soddisfatti. */
+  validateCatalogItem(kind: 'food' | 'supplement', id: string): Promise<void>;
+  listProfileHistory(kind: 'food' | 'supplement', id: string): Promise<ProfileHistoryEntry[]>;
+  listImports(): Promise<ImportLogEntry[]>;
+}
+
+export interface ProfileHistoryEntry {
+  version: number;
+  changedAt: string;
+  changedBy: string | null;
+  /** profilo com'era PRIMA della modifica che ha creato la versione successiva. */
+  profile: unknown;
+}
+
+export interface ImportLogEntry {
+  id: string;
+  kind: 'foods' | 'supplements';
+  fileName: string | null;
+  summary: ImportPlan['summary'];
+  products: string[];
+  createdAt: string;
 }
 
 export function uid(): string {

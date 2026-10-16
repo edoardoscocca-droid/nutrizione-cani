@@ -139,5 +139,5 @@ export const TEST_SUPPLEMENTS: Supplement[] = [
   }),
   supp('test_calcium_carbonate', 'Carbonato di calcio (fittizio, per 1 g)', { supplementClass: 'calcium' }, { calcium: 0.4 }),
   // T07: integratore selezionabile ma senza etichetta
-  supp('test_no_label', 'Integratore senza etichetta', { status: 'missing', usableForOptimization: false }, {}),
+  { ...supp('test_no_label', 'Integratore senza etichetta', { status: 'missing', usableForOptimization: false, labelSource: null }, {}), nutrients: {} },
 ];

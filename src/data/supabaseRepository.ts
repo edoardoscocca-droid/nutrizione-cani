@@ -6,7 +6,8 @@ import { DEFAULT_SETTINGS } from '../engine/types';
 import type { AppSettings, Dog, Recipe, RecipeVersion, UserPrice, WeightEntry } from './model';
 import type { Category } from './packageCatalog';
 import { RecipeLimitError } from './recipeService';
-import type { FullCatalog, Repository } from './repository';
+import type { FullCatalog, ImportLogEntry, ProfileHistoryEntry, Repository } from './repository';
+import { toPayload, type ImportPlan } from './catalogImport';
 
 type Row = Record<string, unknown>;
 
@@ -146,6 +147,8 @@ export class SupabaseRepository implements Repository {
           profileVersion: f.profile_version as number,
           uncertainty: (f.uncertainty as string) ?? null,
           notes: (f.notes as string) ?? null,
+          validatedBy: (f.validated_by as string) ?? null,
+          validatedAt: (f.validated_at as string) ?? null,
           nutrients: foodNut.get(f.id as string) ?? {},
         }),
       ),
@@ -169,6 +172,8 @@ export class SupabaseRepository implements Repository {
           usableForOptimization: s.usable_for_optimization as boolean,
           profileVersion: s.profile_version as number,
           notes: (s.notes as string) ?? null,
+          validatedBy: (s.validated_by as string) ?? null,
+          validatedAt: (s.validated_at as string) ?? null,
           nutrients: suppNut.get(s.id as string) ?? {},
         }),
       ),
@@ -346,6 +351,22 @@ export class SupabaseRepository implements Repository {
         version: f.version, protein: f.protein, fat: f.fat, carbohydrate: f.carbohydrate, source: f.source ?? '', approved_by: f.approvedBy, active: true,
       }),
     );
+  }
+  async applyCatalogImport(plan: ImportPlan) {
+    check(await this.client.rpc('admin_import_catalog', { payload: toPayload(plan) }));
+  }
+  async validateCatalogItem(kind: 'food' | 'supplement', id: string) {
+    check(await this.client.rpc('validate_catalog_item', { item_kind: kind, item_id: id }));
+  }
+  async listProfileHistory(kind: 'food' | 'supplement', id: string): Promise<ProfileHistoryEntry[]> {
+    const table = kind === 'food' ? 'food_profile_history' : 'supplement_profile_history';
+    const col = kind === 'food' ? 'food_id' : 'supplement_id';
+    const rows = check(await this.client.from(table).select('*').eq(col, id).order('profile_version', { ascending: false })) as Row[];
+    return rows.map((r) => ({ version: r.profile_version as number, changedAt: r.changed_at as string, changedBy: (r.changed_by as string) ?? null, profile: r.profile }));
+  }
+  async listImports(): Promise<ImportLogEntry[]> {
+    const rows = check(await this.client.from('catalog_imports').select('*').order('created_at', { ascending: false }).limit(30)) as Row[];
+    return rows.map((r) => ({ id: r.id as string, kind: r.kind as ImportLogEntry['kind'], fileName: (r.file_name as string) ?? null, summary: r.summary as ImportLogEntry['summary'], products: r.products as string[], createdAt: r.created_at as string }));
   }
   private unitCache: Map<string, string> | null = null;
   private async units() {

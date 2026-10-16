@@ -6,7 +6,9 @@ import { DEFAULT_SETTINGS } from '../engine/types';
 import { MAX_RECIPES_PER_DOG, type AppSettings, type Dog, type Recipe, type RecipeVersion, type UserPrice, type WeightEntry } from './model';
 import { BREED_NOTES, CATEGORIES, packageFoods, packageReferences, packageSupplements } from './packageCatalog';
 import { RecipeLimitError } from './recipeService';
-import type { FullCatalog, Repository } from './repository';
+import type { FullCatalog, ImportLogEntry, ProfileHistoryEntry, Repository } from './repository';
+import { foodStatus, supplementStatus } from '../engine/catalogStatus';
+import { toPayload, type ImportPlan } from './catalogImport';
 import { TEST_FOODS, TEST_SUPPLEMENTS } from './testFixtures';
 
 interface Store {
@@ -20,12 +22,14 @@ interface Store {
   supplements: Supplement[];
   thresholds: CustomThreshold[] | null;
   factors: EnergyFactors | null;
+  history: { kind: 'food' | 'supplement'; id: string; entry: ProfileHistoryEntry }[];
+  imports: ImportLogEntry[];
 }
 
 const KEY = 'nutrizione-cani:prova:v1';
 
 function empty(): Store {
-  return { dogs: [], weights: [], recipes: [], versions: [], prices: [], settings: null, foods: [], supplements: [], thresholds: null, factors: null };
+  return { dogs: [], weights: [], recipes: [], versions: [], prices: [], settings: null, foods: [], supplements: [], thresholds: null, factors: null, history: [], imports: [] };
 }
 
 export class LocalRepository implements Repository {
@@ -154,27 +158,75 @@ export class LocalRepository implements Repository {
     this.save();
   }
 
+  private remember(kind: 'food' | 'supplement', prev: Food | Supplement) {
+    this.store.history.push({ kind, id: prev.id, entry: { version: prev.profileVersion, changedAt: new Date().toISOString(), changedBy: 'prova locale', profile: structuredClone(prev) } });
+  }
+  private profileKey(x: Food | Supplement) {
+    return JSON.stringify({ ...x, profileVersion: 0, validatedAt: null, validatedBy: null, availableToFormulate: null, usableForOptimization: null });
+  }
   async saveFood(f: Food) {
     const cat = await this.loadCatalog();
     const prev = cat.foods.find((x) => x.id === f.id);
-    const changed = prev && JSON.stringify({ ...prev, profileVersion: 0 }) !== JSON.stringify({ ...f, profileVersion: 0 });
-    const next = { ...f, profileVersion: prev ? (changed ? prev.profileVersion + 1 : prev.profileVersion) : 1 };
-    if (next.availableToFormulate && (next.kcalMePer100g === null || !['verified', 'estimated', 'test_fixture'].includes(next.dataStatus))) {
-      throw new Error('Per attivare un alimento servono energia metabolizzabile e dati verificati o stimati dichiarati.');
+    const changed = !prev || this.profileKey(prev) !== this.profileKey(f);
+    const next: Food = { ...f, profileVersion: prev ? (changed ? prev.profileVersion + 1 : prev.profileVersion) : 1 };
+    if (changed) Object.assign(next, { validatedAt: null, validatedBy: null });
+    if (next.availableToFormulate && foodStatus(next, cat.nutrients).status === 'to_complete') {
+      throw new Error('Un alimento «da completare» non si può attivare: servono almeno energia, proteine e grassi.');
     }
+    if (prev && changed) this.remember('food', prev);
     this.store.foods = [...this.store.foods.filter((x) => x.id !== f.id), next];
     this.save();
   }
   async saveSupplement(s: Supplement) {
     const cat = await this.loadCatalog();
     const prev = cat.supplements.find((x) => x.id === s.id);
-    const changed = prev && JSON.stringify({ ...prev, profileVersion: 0 }) !== JSON.stringify({ ...s, profileVersion: 0 });
-    const next = { ...s, profileVersion: prev ? (changed ? prev.profileVersion + 1 : prev.profileVersion) : 1 };
-    if (next.usableForOptimization && !['verified', 'test_fixture'].includes(next.status)) {
-      throw new Error('Un integratore si attiva solo con etichetta verificata.');
+    const changed = !prev || this.profileKey(prev) !== this.profileKey(s);
+    const next: Supplement = { ...s, profileVersion: prev ? (changed ? prev.profileVersion + 1 : prev.profileVersion) : 1 };
+    if (changed) Object.assign(next, { validatedAt: null, validatedBy: null });
+    if (next.usableForOptimization && (next.status === 'missing' || supplementStatus(next, cat.nutrients).status === 'to_complete')) {
+      throw new Error('Un integratore «da completare» non si può attivare: servono etichetta e composizione per dose.');
     }
+    if (prev && changed) this.remember('supplement', prev);
     this.store.supplements = [...this.store.supplements.filter((x) => x.id !== s.id), next];
     this.save();
+  }
+  async applyCatalogImport(plan: ImportPlan) {
+    toPayload(plan); // rifiuta piani con errori
+    const cat = await this.loadCatalog();
+    for (const it of plan.items) {
+      if (it.action === 'unchanged') continue;
+      const list = plan.kind === 'foods' ? cat.foods : cat.supplements;
+      const prev = list.find((x) => x.id === it.id);
+      if (prev) this.remember(plan.kind === 'foods' ? 'food' : 'supplement', prev);
+      const next = { ...structuredClone(it.next), profileVersion: (prev?.profileVersion ?? 0) + 1, validatedAt: null, validatedBy: null };
+      if (plan.kind === 'foods') this.store.foods = [...this.store.foods.filter((x) => x.id !== it.id), next as Food];
+      else this.store.supplements = [...this.store.supplements.filter((x) => x.id !== it.id), next as Supplement];
+    }
+    this.store.imports.unshift({ id: crypto.randomUUID(), kind: plan.kind, fileName: plan.fileName, summary: plan.summary, products: plan.items.filter((i) => i.action !== 'unchanged').map((i) => i.id), createdAt: new Date().toISOString() });
+    this.save();
+  }
+  async validateCatalogItem(kind: 'food' | 'supplement', id: string) {
+    const cat = await this.loadCatalog();
+    if (kind === 'food') {
+      const f = cat.foods.find((x) => x.id === id);
+      if (!f) throw new Error('Prodotto inesistente');
+      const st = foodStatus(f, cat.nutrients);
+      if (!st.readyForValidation) throw new Error(`Non convalidabile: ${st.reasons.filter((r) => !r.startsWith('non ancora convalidato')).join('; ')}`);
+      this.store.foods = [...this.store.foods.filter((x) => x.id !== id), { ...f, validatedAt: new Date().toISOString(), validatedBy: 'prova locale' }];
+    } else {
+      const s = cat.supplements.find((x) => x.id === id);
+      if (!s) throw new Error('Prodotto inesistente');
+      const st = supplementStatus(s, cat.nutrients);
+      if (!st.readyForValidation) throw new Error(`Non convalidabile: ${st.reasons.filter((r) => !r.startsWith('non ancora convalidato')).join('; ')}`);
+      this.store.supplements = [...this.store.supplements.filter((x) => x.id !== id), { ...s, validatedAt: new Date().toISOString(), validatedBy: 'prova locale' }];
+    }
+    this.save();
+  }
+  async listProfileHistory(kind: 'food' | 'supplement', id: string) {
+    return this.store.history.filter((h) => h.kind === kind && h.id === id).map((h) => h.entry).sort((a, b) => b.version - a.version);
+  }
+  async listImports() {
+    return [...this.store.imports];
   }
   async saveThreshold(t: CustomThreshold) {
     const cat = await this.loadCatalog();

@@ -57,6 +57,7 @@ writeFileSync(new URL('../supabase/seed.sql', import.meta.url), sql);
 
 let t = '-- DATI DI PROVA FITTIZI [TEST] — solo per collaudo. Non caricarli in un archivio usato per cani reali.\n';
 t += '-- Generato da scripts/build-seed.ts. Si rimuovono con: delete from foods where data_status = \'test_fixture\'; delete from supplements where status = \'test_fixture\';\n\n';
+t += 'begin;\n\n';
 t += insert('foods', foodCols, foodRows(TEST_FOODS), '(id) do nothing');
 const fn: unknown[][] = [];
 for (const f of TEST_FOODS) for (const [nid, v] of Object.entries(f.nutrients)) {
@@ -70,5 +71,6 @@ for (const s of TEST_SUPPLEMENTS) for (const [nid, v] of Object.entries(s.nutrie
   sn.push([s.id, nid, v.value, units.get(nid), v.value === null ? 'unknown' : v.value === 0 ? 'analytical_zero' : 'label', 'TEST fittizio']);
 }
 t += insert('supplement_nutrients', ['supplement_id', 'nutrient_id', 'amount_per_unit', 'unit', 'value_status', 'source_id'], sn, '(supplement_id, nutrient_id) do nothing');
+t += 'commit;\n';
 writeFileSync(new URL('../supabase/seed_test_fixtures.sql', import.meta.url), t);
 console.log('Scritti supabase/seed.sql e supabase/seed_test_fixtures.sql');

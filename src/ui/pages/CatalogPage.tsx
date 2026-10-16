@@ -1,31 +1,67 @@
 import { useState } from 'react';
+import { CATALOG_STATUS_HELP, CATALOG_STATUS_LABEL, foodStatus, supplementStatus, type CatalogStatus, type StatusResult } from '../../engine/catalogStatus';
 import type { DataStatus, Food, NutrientValue, ProcessingState, Supplement } from '../../engine/types';
 import { PROCESSING_LABEL } from '../../data/packageCatalog';
 import { uid } from '../../data/repository';
-import { useApp } from '../AppContext';
+import { useApp, useData } from '../AppContext';
 import { ErrorBox, Modal, NumberInput } from '../components';
 import { num } from '../format';
+import { ImportTab } from './ImportTab';
 
 function completeness(nutrients: Record<string, NutrientValue>, required: string[]) {
   const known = required.filter((id) => nutrients[id]?.value !== null && nutrients[id]?.value !== undefined);
   return { known: known.length, total: required.length, missing: required.filter((id) => !known.includes(id)) };
 }
 
+const BADGE_CLASS: Record<CatalogStatus, string> = { verified: 'green', partial: 'orange', to_complete: 'grey' };
+
+export function StatusBadge({ status, test }: { status: CatalogStatus; test?: boolean }) {
+  return (
+    <span className={`tag ${BADGE_CLASS[status]}`} title={CATALOG_STATUS_HELP[status]}>
+      {test ? 'PROVA · ' : ''}
+      {CATALOG_STATUS_LABEL[status]}
+    </span>
+  );
+}
+
+export function StatusPanel({ st, validatedBy, validatedAt }: { st: StatusResult; validatedBy?: string | null; validatedAt?: string | null }) {
+  return (
+    <div className={`box ${st.status === 'verified' ? 'box-green' : st.status === 'partial' ? 'box-orange' : 'box-grey'}`}>
+      <strong>{CATALOG_STATUS_LABEL[st.status]}</strong> — <span className="small">{CATALOG_STATUS_HELP[st.status]}</span>
+      {st.reasons.length > 0 && (
+        <ul className="small">
+          {st.reasons.map((r) => (
+            <li key={r}>{r}</li>
+          ))}
+        </ul>
+      )}
+      {validatedAt && <div className="small">Convalidato da {validatedBy} il {new Date(validatedAt).toLocaleString('it-IT')}</div>}
+    </div>
+  );
+}
+
+type Tab = 'foods' | 'supplements' | 'refs' | 'import';
+
 export function CatalogPage() {
   const { catalog, isAdmin, repo } = useApp();
-  const [tab, setTab] = useState<'foods' | 'supplements' | 'refs'>('foods');
+  const [tab, setTab] = useState<Tab>('foods');
+  const [filter, setFilter] = useState<CatalogStatus | 'all'>('all');
   const [editFood, setEditFood] = useState<Food | null>(null);
   const [editSupp, setEditSupp] = useState<Supplement | null>(null);
   if (!catalog || !repo) return <p>Caricamento…</p>;
   const required = catalog.nutrients.filter((n) => n.kind === 'core' || n.kind === 'advanced').map((n) => n.id);
   const label = new Map(catalog.nutrients.map((n) => [n.id, n.label]));
+  const fStatus = new Map(catalog.foods.map((f) => [f.id, foodStatus(f, catalog.nutrients)]));
+  const sStatus = new Map(catalog.supplements.map((s) => [s.id, supplementStatus(s, catalog.nutrients)]));
+  const count = (m: Map<string, StatusResult>, st: CatalogStatus) => [...m.values()].filter((x) => x.status === st).length;
+  const counts = tab === 'supplements' ? sStatus : fStatus;
   return (
     <div>
       <h2>Catalogo</h2>
       <p className="small muted">
         {repo.mode === 'supabase'
           ? isAdmin
-            ? 'Sei amministratore: puoi modificare alimenti, integratori e riferimenti. Ogni modifica crea una nuova versione del profilo e resta nel registro.'
+            ? 'Sei amministratore: puoi modificare, importare e convalidare. Ogni modifica crea una nuova versione del profilo e resta nel registro.'
             : 'Consultazione: alimenti, integratori e riferimenti sono modificabili solo dagli amministratori.'
           : 'Modalità prova: il catalogo di prova si modifica solo su questo dispositivo. In Supabase solo gli amministratori possono farlo.'}
       </p>
@@ -33,7 +69,17 @@ export function CatalogPage() {
         <button className={tab === 'foods' ? 'on' : ''} onClick={() => setTab('foods')}>Alimenti</button>
         <button className={tab === 'supplements' ? 'on' : ''} onClick={() => setTab('supplements')}>Integratori</button>
         <button className={tab === 'refs' ? 'on' : ''} onClick={() => setTab('refs')}>Riferimenti</button>
+        {isAdmin && <button className={tab === 'import' ? 'on' : ''} onClick={() => setTab('import')}>Importa</button>}
       </div>
+      {(tab === 'foods' || tab === 'supplements') && (
+        <div className="row wrap status-filter">
+          {(['all', 'verified', 'partial', 'to_complete'] as const).map((st) => (
+            <button key={st} className={`small ${filter === st ? '' : 'secondary'}`} onClick={() => setFilter(st)}>
+              {st === 'all' ? `Tutti (${counts.size})` : `${CATALOG_STATUS_LABEL[st]} (${count(counts, st)})`}
+            </button>
+          ))}
+        </div>
+      )}
       {tab === 'foods' && (
         <>
           {isAdmin && (
@@ -42,26 +88,31 @@ export function CatalogPage() {
             </button>
           )}
           {catalog.categories.filter((c) => c.parentId).map((c) => {
-            const foods = catalog.foods.filter((f) => f.subcategoryId === c.id);
+            const foods = catalog.foods.filter((f) => f.subcategoryId === c.id && (filter === 'all' || fStatus.get(f.id)!.status === filter));
             if (!foods.length) return null;
             return (
               <div key={c.id} className="card">
                 <h4>{catalog.categories.find((p) => p.id === c.parentId)?.label} · {c.label}</h4>
-                <table className="nut">
+                <table className="nut cat">
                   <tbody>
                     {foods.map((f) => {
                       const cm = completeness(f.nutrients, required);
+                      const st = fStatus.get(f.id)!;
                       return (
                         <tr key={f.id}>
                           <td>
                             {f.name} <span className="small muted">({PROCESSING_LABEL[f.processingState]}, v{f.profileVersion})</span>
                             <div className="small muted">{f.source ?? 'fonte non indicata'}{f.sourceVersion ? ` · ${f.sourceVersion}` : ''}</div>
+                            {st.status !== 'verified' && <div className="small muted">{st.reasons.slice(0, 2).join(' · ')}</div>}
                           </td>
-                          <td className="small">{f.availableToFormulate ? <span className="tag green">attivo</span> : <span className="tag grey">non attivo</span>} {f.dataStatus}</td>
+                          <td className="small">
+                            <StatusBadge status={st.status} test={f.dataStatus === 'test_fixture'} />
+                            {f.availableToFormulate ? <span className="tag green">attivo</span> : <span className="tag grey">non attivo</span>}
+                          </td>
                           <td className="small r" title={cm.missing.map((m) => label.get(m)).join(', ')}>
                             {cm.known}/{cm.total} essenziali{f.kcalMePer100g === null ? ' · kcal mancanti' : ` · ${num(f.kcalMePer100g, 0)} kcal`}
                           </td>
-                          {isAdmin && <td><button className="small secondary" onClick={() => setEditFood(structuredClone(f))}>Modifica</button></td>}
+                          <td><button className="small secondary" onClick={() => setEditFood(structuredClone(f))}>{isAdmin ? 'Modifica' : 'Dettagli'}</button></td>
                         </tr>
                       );
                     })}
@@ -79,29 +130,84 @@ export function CatalogPage() {
               + Nuovo integratore
             </button>
           )}
-          <table className="nut">
+          <table className="nut cat">
             <tbody>
-              {catalog.supplements.map((s) => {
-                const declared = Object.values(s.nutrients).filter((v) => v.value !== null).length;
-                return (
-                  <tr key={s.id}>
-                    <td>
-                      {s.name} <span className="small muted">{s.brand} {s.variant} · per {s.doseUnit} · v{s.profileVersion}</span>
-                      <div className="small muted">{s.labelSource ?? 'etichetta non caricata'}{s.notes ? ` · ${s.notes}` : ''}</div>
-                    </td>
-                    <td className="small">{s.usableForOptimization ? <span className="tag green">attivo</span> : <span className="tag grey">non attivo</span>} {s.status}</td>
-                    <td className="small r">{declared} nutrienti dichiarati{s.labelAddedOnly ? ' (solo aggiunti)' : ''}</td>
-                    {isAdmin && <td><button className="small secondary" onClick={() => setEditSupp(structuredClone(s))}>Modifica</button></td>}
-                  </tr>
-                );
-              })}
+              {catalog.supplements
+                .filter((s) => filter === 'all' || sStatus.get(s.id)!.status === filter)
+                .map((s) => {
+                  const declared = Object.values(s.nutrients).filter((v) => v.value !== null).length;
+                  const st = sStatus.get(s.id)!;
+                  return (
+                    <tr key={s.id}>
+                      <td>
+                        {s.name} <span className="small muted">{s.brand} {s.variant} · per {s.doseUnit} · v{s.profileVersion}</span>
+                        <div className="small muted">{s.labelSource ?? 'etichetta non caricata'}{s.notes ? ` · ${s.notes}` : ''}</div>
+                        {st.status !== 'verified' && <div className="small muted">{st.reasons.slice(0, 2).join(' · ')}</div>}
+                      </td>
+                      <td className="small">
+                        <StatusBadge status={st.status} test={s.status === 'test_fixture'} />
+                        {s.usableForOptimization ? <span className="tag green">attivo</span> : <span className="tag grey">non attivo</span>}
+                      </td>
+                      <td className="small r">{declared} nutrienti dichiarati{s.labelAddedOnly ? ' (solo aggiunti)' : ''}</td>
+                      <td><button className="small secondary" onClick={() => setEditSupp(structuredClone(s))}>{isAdmin ? 'Modifica' : 'Dettagli'}</button></td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         </div>
       )}
       {tab === 'refs' && <RefsTab />}
+      {tab === 'import' && isAdmin && <ImportTab />}
       {editFood && <FoodEditor food={editFood} onClose={() => setEditFood(null)} />}
       {editSupp && <SuppEditor supp={editSupp} onClose={() => setEditSupp(null)} />}
+    </div>
+  );
+}
+
+function HistoryList({ kind, id }: { kind: 'food' | 'supplement'; id: string }) {
+  const { data } = useData((r) => r.listProfileHistory(kind, id), [kind, id]);
+  if (!data?.length) return <p className="small muted">Nessuna versione precedente.</p>;
+  return (
+    <ul className="small">
+      {data.map((h) => (
+        <li key={h.version}>
+          v{h.version} — sostituita il {new Date(h.changedAt).toLocaleString('it-IT')}
+          {h.changedBy ? ` (${h.changedBy})` : ''}
+          <details>
+            <summary>profilo</summary>
+            <pre className="small pre">{JSON.stringify(h.profile, null, 1)}</pre>
+          </details>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function ValidateButton({ kind, id, st }: { kind: 'food' | 'supplement'; id: string; st: StatusResult }) {
+  const { repo, refresh, isAdmin } = useApp();
+  const [error, setError] = useState<string | null>(null);
+  if (!isAdmin || !repo || st.status === 'verified') return null;
+  return (
+    <div>
+      <ErrorBox error={error} />
+      <button
+        className="small"
+        disabled={!st.readyForValidation}
+        title={st.readyForValidation ? '' : 'Prima vanno soddisfatti tutti i criteri elencati'}
+        onClick={async () => {
+          setError(null);
+          try {
+            await repo.validateCatalogItem(kind, id);
+            await refresh();
+          } catch (e) {
+            setError(e instanceof Error ? e.message : String(e));
+          }
+        }}
+      >
+        Convalida (dati controllati)
+      </button>
+      {!st.readyForValidation && <span className="small muted"> Disponibile quando restano solo da convalidare i dati salvati.</span>}
     </div>
   );
 }
@@ -183,7 +289,8 @@ function RefsTab() {
   );
 }
 
-const STATUS_OPTS: DataStatus[] = ['unverified', 'review_required', 'estimated', 'verified', 'test_fixture'];
+// qualità dichiarata del profilo; lo stato «Verificato» si ottiene solo con la convalida
+const STATUS_OPTS: DataStatus[] = ['unverified', 'review_required', 'estimated'];
 
 function NutrientGrid({ values, onChange, perLabel }: { values: Record<string, NutrientValue>; onChange: (v: Record<string, NutrientValue>) => void; perLabel: string }) {
   const { catalog } = useApp();
@@ -219,7 +326,7 @@ function NutrientGrid({ values, onChange, perLabel }: { values: Record<string, N
 }
 
 function FoodEditor({ food, onClose }: { food: Food; onClose: () => void }) {
-  const { repo, catalog, refresh } = useApp();
+  const { repo, catalog, refresh, isAdmin } = useApp();
   const [f, setF] = useState(food);
   const [error, setError] = useState<string | null>(null);
   if (!repo || !catalog) return null;
@@ -236,8 +343,10 @@ function FoodEditor({ food, onClose }: { food: Food; onClose: () => void }) {
   };
   return (
     <Modal title={food.name || 'Nuovo alimento'} onClose={onClose}>
+      <StatusPanel st={foodStatus(f, catalog.nutrients)} validatedBy={food.validatedBy} validatedAt={food.validatedAt} />
+      {catalog.foods.some((x) => x.id === food.id) && <ValidateButton kind="food" id={food.id} st={foodStatus(food, catalog.nutrients)} />}
       <ErrorBox error={error} />
-      <div className="form">
+      <fieldset className="form plain" disabled={!isAdmin}>
         <label>Nome<input value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} /></label>
         <label>
           Sottocategoria
@@ -265,27 +374,29 @@ function FoodEditor({ food, onClose }: { food: Food; onClose: () => void }) {
           <label>
             Stato dei dati
             <select value={f.dataStatus} onChange={(e) => setF({ ...f, dataStatus: e.target.value as DataStatus })}>
-              {STATUS_OPTS.map((s) => (
+              {[...STATUS_OPTS, ...(f.dataStatus === 'verified' || f.dataStatus === 'test_fixture' ? [f.dataStatus] : [])].map((s) => (
                 <option key={s} value={s}>{s}</option>
               ))}
             </select>
           </label>
         </div>
         <label>Incertezza / note<input value={f.uncertainty ?? ''} onChange={(e) => setF({ ...f, uncertainty: e.target.value || null })} /></label>
-        <label className="check"><input type="checkbox" checked={f.availableToFormulate} onChange={(e) => setF({ ...f, availableToFormulate: e.target.checked })} /> Attivo per la formulazione</label>
+        <label className="check"><input type="checkbox" checked={f.availableToFormulate} onChange={(e) => setF({ ...f, availableToFormulate: e.target.checked })} /> Attivo per la formulazione (non possibile se «da completare»)</label>
         <p className="small muted">Valori per 100 g di parte edibile nello stato indicato. Lascia vuoto ciò che la fonte non riporta: non verrà mai considerato zero. Crudo e cotto sono alimenti distinti.</p>
         <NutrientGrid values={f.nutrients} onChange={(n) => setF({ ...f, nutrients: n })} perLabel="/100 g" />
-        <button onClick={save}>Salva (nuova versione del profilo)</button>
-      </div>
+        {isAdmin && <button onClick={save}>Salva (nuova versione del profilo; la convalida decade)</button>}
+      </fieldset>
+      <h4>Versioni precedenti</h4>
+      <HistoryList kind="food" id={food.id} />
     </Modal>
   );
 }
 
 function SuppEditor({ supp, onClose }: { supp: Supplement; onClose: () => void }) {
-  const { repo, refresh } = useApp();
+  const { repo, refresh, isAdmin, catalog } = useApp();
   const [s, setS] = useState(supp);
   const [error, setError] = useState<string | null>(null);
-  if (!repo) return null;
+  if (!repo || !catalog) return null;
   const save = async () => {
     setError(null);
     if (s.maxDailyUnits !== null && !s.maxDailySource) return setError('Una dose massima richiede la fonte (etichetta o scheda del produttore).');
@@ -299,8 +410,10 @@ function SuppEditor({ supp, onClose }: { supp: Supplement; onClose: () => void }
   };
   return (
     <Modal title={supp.name || 'Nuovo integratore'} onClose={onClose}>
+      <StatusPanel st={supplementStatus(s, catalog.nutrients)} validatedBy={supp.validatedBy} validatedAt={supp.validatedAt} />
+      {catalog.supplements.some((x) => x.id === supp.id) && <ValidateButton kind="supplement" id={supp.id} st={supplementStatus(supp, catalog.nutrients)} />}
       <ErrorBox error={error} />
-      <div className="form">
+      <fieldset className="form plain" disabled={!isAdmin}>
         <div className="grid2">
           <label>Nome<input value={s.name} onChange={(e) => setS({ ...s, name: e.target.value })} /></label>
           <label>Marca<input value={s.brand ?? ''} onChange={(e) => setS({ ...s, brand: e.target.value || null })} /></label>
@@ -322,7 +435,7 @@ function SuppEditor({ supp, onClose }: { supp: Supplement; onClose: () => void }
           <label>
             Stato
             <select value={s.status} onChange={(e) => setS({ ...s, status: e.target.value as Supplement['status'] })}>
-              {['missing', 'review_required', 'verified', 'test_fixture'].map((x) => (
+              {['missing', 'review_required', ...(s.status === 'verified' || s.status === 'test_fixture' ? [s.status] : [])].map((x) => (
                 <option key={x} value={x}>{x}</option>
               ))}
             </select>
@@ -332,8 +445,10 @@ function SuppEditor({ supp, onClose }: { supp: Supplement; onClose: () => void }
         <label className="check"><input type="checkbox" checked={!!s.labelAddedOnly} onChange={(e) => setS({ ...s, labelAddedOnly: e.target.checked })} /> L’etichetta dichiara solo le quantità aggiunte (non è un’analisi completa)</label>
         <label className="check"><input type="checkbox" checked={s.usableForOptimization} onChange={(e) => setS({ ...s, usableForOptimization: e.target.checked })} /> Attivo per la formulazione</label>
         <NutrientGrid values={s.nutrients} onChange={(n) => setS({ ...s, nutrients: n })} perLabel={`per ${s.doseUnit}`} />
-        <button onClick={save}>Salva (nuova versione del profilo)</button>
-      </div>
+        {isAdmin && <button onClick={save}>Salva (nuova versione del profilo; la convalida decade)</button>}
+      </fieldset>
+      <h4>Versioni precedenti</h4>
+      <HistoryList kind="supplement" id={supp.id} />
     </Modal>
   );
 }

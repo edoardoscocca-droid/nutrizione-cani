@@ -1,6 +1,8 @@
 -- DATI DI PROVA FITTIZI [TEST] — solo per collaudo. Non caricarli in un archivio usato per cani reali.
 -- Generato da scripts/build-seed.ts. Si rimuovono con: delete from foods where data_status = 'test_fixture'; delete from supplements where status = 'test_fixture';
 
+begin;
+
 insert into public.foods (id, name_it, category_id, subcategory_id, processing_state, edible_portion, kcal_me_per_100g, me_method, source_identifier, source_version, data_status, available_to_formulate, notes) values
   ('test_beef', '[TEST] Manzo (fittizio)', 'animal', 'muscle', 'raw', 'parte edibile (fittizio)', 195, 'TEST fittizio', 'Dati di prova fittizi', 'test-1', 'test_fixture', true, null),
   ('test_lamb', '[TEST] Agnello (fittizio)', 'animal', 'muscle', 'raw', 'parte edibile (fittizio)', 235, 'TEST fittizio', 'Dati di prova fittizi', 'test-1', 'test_fixture', true, null),
@@ -701,7 +703,7 @@ insert into public.supplements (id, name_it, brand, product_variant, class, dose
   ('test_fish_oil_caps', '[TEST] Olio di pesce (fittizio, per capsula)', 'TEST', 'fittizia', 'fish_oil', 'capsule', 1, 9, true, 4, 'Etichetta fittizia di prova', 'Etichetta fittizia di prova', 'test-1', 'test_fixture', true, null),
   ('test_bone_meal', '[TEST] Farina d’ossa (fittizio, per 1 g)', 'TEST', 'fittizia', 'calcium_phosphorus', 'g', 1, 0, false, null, null, 'Etichetta fittizia di prova', 'test-1', 'test_fixture', true, null),
   ('test_calcium_carbonate', '[TEST] Carbonato di calcio (fittizio, per 1 g)', 'TEST', 'fittizia', 'calcium', 'g', 1, 0, false, null, null, 'Etichetta fittizia di prova', 'test-1', 'test_fixture', true, null),
-  ('test_no_label', '[TEST] Integratore senza etichetta', 'TEST', 'fittizia', 'multinutrient', 'g', 1, 0, false, null, null, 'Etichetta fittizia di prova', 'test-1', 'missing', false, null)
+  ('test_no_label', '[TEST] Integratore senza etichetta', 'TEST', 'fittizia', 'multinutrient', 'g', 1, 0, false, null, null, null, 'test-1', 'missing', false, null)
 on conflict (id) do nothing;
 
 insert into public.supplement_nutrients (supplement_id, nutrient_id, amount_per_unit, unit, value_status, source_id) values
@@ -915,3 +917,4 @@ insert into public.supplement_nutrients (supplement_id, nutrient_id, amount_per_
   ('test_calcium_carbonate', 'l_carnitine', 0, 'mg', 'analytical_zero', 'TEST fittizio')
 on conflict (supplement_id, nutrient_id) do nothing;
 
+commit;
