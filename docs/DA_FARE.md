@@ -17,10 +17,22 @@ Aggiornato al 18/10/2026, dopo l'importazione dei 6 alimenti e dei 3 integratori
 - Per tutti gli alimenti: cloruro, iodio, vitamina A (come retinolo per il cane), taurina mancano nella fonte USDA: dire se
   esistono fonti migliori o se si accetta che restino non verificabili.
 
-## 3. Mettere online (una volta sola)
+## 3. App iPhone (senza pubblicarla)
+L'app è pronta (`mobile/`), il server di calcolo è online (https://nutrizione-cani-motore.onrender.com) e il progetto è
+registrato su Expo (https://expo.dev/accounts/edoardodroid/projects/nutrizione-cani). Per installarla serve l'account
+Apple Developer (titolare: la tua ragazza):
+1. **Chiave App Store Connect API**: App Store Connect → Utenti e accessi → Integrazioni → App Store Connect API → nuova chiave
+   con ruolo «App Manager» (o Admin); scaricare il file .p8 (si scarica una sola volta) e annotare Key ID e Issuer ID.
+   La stessa chiave serve anche per Vita.
+2. **Caricarla su Expo** (non in chat): expo.dev → account edoardodroid → Credentials → iOS → App Store Connect API Keys.
+3. **Creare l'app su App Store Connect** (non viene pubblicata): App → «+» → Nuova app → nome «Nutrizione cani»,
+   bundle ID `com.edoardoscocca.nutrizionecani` (se non compare nell'elenco, lo registro io col primo build).
+4. Dirmelo: avvio io il build e l'invio a **TestFlight**. Voi installate l'app «TestFlight» e accettate l'invito.
+
+## 4. Mettere online il database (una volta sola)
 Seguire `docs/SUPABASE.md`: nuovo progetto Supabase, eseguire i file SQL nell'ordine indicato (compresi i dati del 16/10),
 diventare amministratore, pubblicare su Render con le due variabili. Le chiavi si inseriscono nei pannelli, mai in chat.
 
-## 4. Dopo le decisioni
+## 5. Dopo le decisioni
 Calcolare l'energia, controllare i motivi dello stato di ogni prodotto, convalidare, attivare, creare la prima ricetta e
 confrontarla con la formulazione della veterinaria.

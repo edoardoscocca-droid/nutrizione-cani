@@ -1,0 +1,31 @@
+{
+  "cli": {
+    "version": ">= 16.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "interna": {
+      "distribution": "internal",
+      "channel": "interna",
+      "ios": {
+        "resourceClass": "default"
+      },
+      "env": {
+        "EXPO_PUBLIC_ENGINE_URL": "https://nutrizione-cani-motore.onrender.com"
+      }
+    },
+    "testflight": {
+      "distribution": "store",
+      "channel": "interna",
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_ENGINE_URL": "https://nutrizione-cani-motore.onrender.com"
+      }
+    }
+  },
+  "submit": {
+    "testflight": {
+      "ios": {}
+    }
+  }
+}

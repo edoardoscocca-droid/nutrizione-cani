@@ -23,7 +23,9 @@ Progetto separato da Vita: vive tutto in questa cartella.
 ```
 src/engine/   motore: energia, somme con dati mancanti, rapporti, ottimizzatore (HiGHS), verifica indipendente, costi, versioni
 src/data/     modello dati, archivio Supabase, archivio locale di prova, catalogo dal pacchetto, dati di PROVA fittizi
-src/ui/       schermate (cani, ricette, risultato, prezzi, catalogo/amministrazione, impostazioni, accesso)
+src/ui/       schermate web (cani, ricette, risultato, prezzi, catalogo/amministrazione, impostazioni, accesso)
+mobile/       app iPhone (Expo) con lo stesso motore e gli stessi dati; vedi mobile/README.md
+server/       server di calcolo per l'app iPhone (Render: nutrizione-cani-motore)
 supabase/     migrazioni (schema, RLS, trigger), seed generato dal pacchetto, seed di prova facoltativo
 scripts/      build-seed.ts (seed dal pacchetto), import-catalog.ts (importazione CSV/JSON con le verifiche dell'app)
 tests/        acceptance.test.ts (T01–T18 e altro), catalog.test.ts (stati e importazioni), db/ (permessi e regole su Postgres), e2e/ (percorso nel browser)

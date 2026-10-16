@@ -84,7 +84,7 @@ function amountText(r: CheckRow) {
 export function NutrientTable({ audit, onlyIssues = false }: { audit: AuditResult; onlyIssues?: boolean }) {
   const [open, setOpen] = useState<CheckRow | null>(null);
   const [filter, setFilter] = useState(onlyIssues);
-  const rows = audit.rows.filter((r) => !filter || r.color === 'red' || r.color === 'grey' || r.color === 'orange' || r.purple.length);
+  const rows = audit.rows.filter((r) => !filter || r.color === 'red' || r.color === 'orange' || r.purple.length > 0 || (r.color === 'grey' && r.checks.length > 0));
   const groups = [...new Set(rows.map((r) => r.group))];
   return (
     <div>

@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "Nutrizione cani",
+    "slug": "nutrizione-cani",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "nutrizionecani",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "bundleIdentifier": "com.edoardoscocca.nutrizionecani",
+      "supportsTablet": false,
+      "config": {
+        "usesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.edoardoscocca.nutrizionecani",
+      "adaptiveIcon": {
+        "backgroundColor": "#2f6b4f",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-sharing"
+    ],
+    "experiments": {
+      "typedRoutes": false
+    },
+    "owner": "edoardodroid",
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "f5239aa3-0eaf-43f7-af87-b190b97a5440"
+      }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/f5239aa3-0eaf-43f7-af87-b190b97a5440"
+    }
+  }
+}

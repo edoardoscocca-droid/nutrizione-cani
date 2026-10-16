@@ -27,7 +27,8 @@ interface Store {
   imports: ImportLogEntry[];
 }
 
-const KEY = 'nutrizione-cani:prova:v1';
+export const LOCAL_STORE_KEY = 'nutrizione-cani:prova:v1';
+const KEY = LOCAL_STORE_KEY;
 
 function empty(): Store {
   return { dogs: [], weights: [], recipes: [], versions: [], prices: [], settings: null, foods: [], supplements: [], thresholds: null, factors: null, history: [], imports: [] };
