@@ -234,7 +234,7 @@ describe('T10 / T16 istantanee e provenienza', () => {
     const stale = staleFor(v, d, cat2);
     expect(stale.some((s) => s.kind === 'reference')).toBe(true);
     expect(stale.some((s) => s.kind === 'food' && s.id === 'test_beef' && s.frozen === 'v1' && s.current === 'v2')).toBe(true);
-    const prev = await previewRecalculation(v, d, cat2, DEFAULT_SETTINGS, []);
+    const prev = await previewRecalculation(v, d, cat2, DEFAULT_SETTINGS, [], formulate);
     expect(prev.diff.length).toBe(4);
     expect(JSON.stringify(v.audit)).toBe(before);
     expect(v.snapshot.foods.test_beef.sourceVersion).toBe('test-1');

@@ -6,7 +6,7 @@ import { DEFAULT_SETTINGS } from '../engine/types';
 import { MAX_RECIPES_PER_DOG, type AppSettings, type Dog, type Recipe, type RecipeVersion, type UserPrice, type WeightEntry } from './model';
 import { BREED_NOTES, CATEGORIES, packageFoods, packageReferences, packageSupplements } from './packageCatalog';
 import { RecipeLimitError } from './recipeService';
-import type { FullCatalog, ImportLogEntry, ProfileHistoryEntry, Repository } from './repository';
+import { uid, type FullCatalog, type ImportLogEntry, type ProfileHistoryEntry, type Repository } from './repository';
 import { foodStatus, supplementStatus } from '../engine/catalogStatus';
 import { parseImport, planImport, toPayload, type ImportPlan } from './catalogImport';
 import { BUNDLED_IMPORTS } from './bundledImports';
@@ -215,7 +215,7 @@ export class LocalRepository implements Repository {
       if (plan.kind === 'foods') this.store.foods = [...this.store.foods.filter((x) => x.id !== it.id), next as Food];
       else this.store.supplements = [...this.store.supplements.filter((x) => x.id !== it.id), next as Supplement];
     }
-    this.store.imports.unshift({ id: crypto.randomUUID(), kind: plan.kind, fileName: plan.fileName, summary: plan.summary, products: plan.items.filter((i) => i.action !== 'unchanged').map((i) => i.id), createdAt: new Date().toISOString() });
+    this.store.imports.unshift({ id: uid(), kind: plan.kind, fileName: plan.fileName, summary: plan.summary, products: plan.items.filter((i) => i.action !== 'unchanged').map((i) => i.id), createdAt: new Date().toISOString() });
     this.save();
   }
   async validateCatalogItem(kind: 'food' | 'supplement', id: string) {

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { STATUS_LABEL } from '../../engine/audit';
+import { formulate } from '../../engine/formulate';
 import type { RecipeItem } from '../../engine/types';
 import type { RecipeVersion } from '../../data/model';
 import { auditOnSnapshot, costOf, editedVersion, previewRecalculation, staleFor, versionFromResult, type RecalcPreview } from '../../data/recipeService';
@@ -73,7 +74,7 @@ export function RecipePage() {
       setViewId(null);
       bump();
     });
-  const openPreview = () => run(async () => setPreview(await previewRecalculation(shown, dog, catalog, settings, prices)));
+  const openPreview = () => run(async () => setPreview(await previewRecalculation(shown, dog, catalog, settings, prices, formulate)));
   const confirmRecalc = () =>
     run(async () => {
       if (!preview) return;

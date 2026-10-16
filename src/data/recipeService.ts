@@ -3,7 +3,10 @@
 import { auditRecipe, type DietMoisture } from '../engine/audit';
 import { recipeCost, unitPrice, type CostSummary } from '../engine/cost';
 import { toFormulationProfile, type BreedNote } from '../engine/dogProfile';
-import { formulate, type FormulationInput, type FormulationResult } from '../engine/formulate';
+import type { FormulationInput, FormulationResult } from '../engine/formulate';
+
+/** Chi esegue il calcolo: il motore locale (web, test) o il server di calcolo (app iPhone). */
+export type Formulator = (input: FormulationInput) => Promise<FormulationResult>;
 import { thresholdsAsLimits } from '../engine/reference';
 import { diffItems, staleDependencies, type Dependency, type QuantityDiff, type RecipeSnapshot } from '../engine/snapshot';
 import type { Catalog, EngineSettings, ItemConstraint, RecipeItem } from '../engine/types';
@@ -185,11 +188,12 @@ export async function previewRecalculation(
   cat: CatalogState,
   settings: EngineSettings,
   prices: UserPrice[],
+  run: Formulator,
   selection?: Selection,
 ): Promise<RecalcPreview> {
   const sel = selection ?? selectionFromSnapshot(version.snapshot);
   const input = buildInput(dog, sel, cat, settings, prices);
-  const result = await formulate(input);
+  const result = await run(input);
   const names: Record<string, string> = {};
   for (const f of [...Object.values(version.snapshot.foods), ...input.foods.map((x) => x.food)]) names[f.id] = f.name;
   for (const s of [...Object.values(version.snapshot.supplements), ...input.supplements.map((x) => x.supplement)]) names[s.id] = s.name;
