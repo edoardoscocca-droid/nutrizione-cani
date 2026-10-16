@@ -62,7 +62,16 @@ const foods = foodsCatalog.map((f) => {
 const suppCatalog = read('integratori/E_catalogo_integratori_IMPORT.csv');
 const suppComp = read('integratori/E_composizione_integratori_IMPORT.csv');
 const extra = read('integratori/E_componenti_da_convertire_o_non_mappati.csv');
-const VARIANT: Record<string, string> = { qdiet: 'Compensa standard (non Crescita, non Ultra)', omegor_vitality: 'Vitality 1000', bone_meal: 'marca/prodotto non confermato' };
+// Conferma della nutrizionista (17/10/2026): gli additivi di Q.Diet Compensa STANDARD (polvere, 250 g) sono dichiarati
+// per 1 kg di prodotto → valore per 1 g = valore per kg ÷ 1000. Non vale per Compensa Crescita né Ultra.
+const BASIS_CONFIRMED: Record<string, { note: string; sources: string }> = {
+  qdiet: {
+    note: 'Additivo dichiarato per kg di prodotto, base confermata dalla nutrizionista il 17/10/2026; valore per 1 g = valore per kg ÷ 1000',
+    sources: 'Catalogo Q.Diet 2024, Compensa polvere cod. Q40543 (250 g), «Additivi per kg»: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf · Scheda prodotto: https://www.pacopetshop.it/it/qdiet/4805-qdiet-compensa-per-cani-e-gatti.htm',
+  },
+};
+const confirmBasis = (id: string, status: string) => (status === 'PER_KG_ASSUMED_CONFIRM' && BASIS_CONFIRMED[id] ? 'MANUFACTURER_DECLARED' : status);
+const VARIANT: Record<string, string> = { qdiet: 'Compensa standard in polvere (non Crescita, non Ultra)', omegor_vitality: 'Vitality 1000', bone_meal: 'marca/prodotto non confermato' };
 const skippedDerived: string[] = [];
 const convertedExtra: string[] = [];
 const supplements = suppCatalog.map((s) => {
@@ -73,11 +82,13 @@ const supplements = suppCatalog.map((s) => {
       skippedDerived.push(`${s.id} · ${r.nutrient_id} = ${r.amount_per_dose} ${r.unit} (${r.notes}) — calcolato dall’app da EPA + DHA`);
       continue;
     }
+    const confirmed = r.value_status === 'PER_KG_ASSUMED_CONFIRM' && BASIS_CONFIRMED[s.id];
     nutrients[r.nutrient_id] = {
       value: r.amount_per_dose,
       unit: r.unit,
-      status: r.value_status,
-      source: r.source_id,
+      status: confirmBasis(s.id, r.value_status),
+      source: confirmed ? BASIS_CONFIRMED[s.id].sources : r.source_id,
+      ...(confirmed ? { method: BASIS_CONFIRMED[s.id].note } : {}),
       per_dose: r.per_dose,
       declared_total_or_added: r.declared_total_or_added,
     };
@@ -87,16 +98,16 @@ const supplements = suppCatalog.map((s) => {
     const form = /tutto-rac|all-rac/i.test(e.component) ? 'all_rac_alpha_tocopheryl_acetate' : /d-alfa-tocoferolo/i.test(e.component) && !/acetat/i.test(e.component) ? 'd_alpha_tocopherol' : null;
     if (!form) continue;
     const perKg = /per kg/i.test(e.declared_basis);
-    convertedExtra.push(`${s.id} · ${e.component} ${e.declared_amount} ${e.declared_unit} (${e.declared_basis})`);
+    convertedExtra.push(`${s.id} · ${e.component} ${e.declared_amount} ${e.declared_unit} (${perKg && BASIS_CONFIRMED[s.id] ? 'per kg, base confermata' : e.declared_basis})`);
     nutrients.vitamin_e = {
       value: perKg ? Number(e.declared_amount) / 1000 : Number(e.declared_amount), // per kg di prodotto → per 1 g
       unit: e.declared_unit,
       form,
-      status: perKg ? 'PER_KG_ASSUMED_CONFIRM' : 'MANUFACTURER_DECLARED',
-      source: s.source_label_url,
+      status: perKg ? confirmBasis(s.id, 'PER_KG_ASSUMED_CONFIRM') : 'MANUFACTURER_DECLARED',
+      source: perKg && BASIS_CONFIRMED[s.id] ? BASIS_CONFIRMED[s.id].sources : s.source_label_url,
       per_dose: '1',
       ...(suppComp.some((x) => x.supplement_id === s.id && x.declared_total_or_added === 'added') ? { declared_total_or_added: 'added' } : {}),
-      method: `${e.component}: ${e.declared_amount} ${e.declared_unit} ${e.declared_basis}`,
+      method: `${e.component}: ${e.declared_amount} ${e.declared_unit} per kg${perKg && BASIS_CONFIRMED[s.id] ? ` — ${BASIS_CONFIRMED[s.id].note}` : ` (${e.declared_basis})`}`,
     };
   }
   return {
@@ -151,10 +162,15 @@ report.push('## Non caricati di proposito', '');
 report.push('- Energia: i file contengono solo l’energia alimentare **umana** USDA (`energy_food_kcal`, conservata come dato informativo, mai usata). L’energia metabolizzabile per il cane si calcola nell’app con il metodo energetico della tipologia (decisione D4: FEDIAF 2025, 4/9/4 su proteine, grassi e carboidrati disponibili; vedi `dati/riferimenti/metodi_energetici.json`).');
 for (const d of skippedDerived) report.push(`- Riga derivata non importata: ${d}.`);
 for (const c of convertedExtra) report.push(`- Vitamina E convertita con la forma chimica dichiarata (D19): ${c}.`);
-for (const e of extra.filter((x) => !convertedExtra.some((c) => c.startsWith(`${x.product_id} · ${x.component} `)))) report.push(`- Componente da convertire, non importato: ${e.product_id} · ${e.component} ${e.declared_amount} ${e.declared_unit} (${e.declared_basis}) — ${e.mapping_status}. ${e.notes}`);
+for (const e of extra.filter((x) => !convertedExtra.some((c) => c.startsWith(`${x.product_id} · ${x.component} `)))) {
+  const basis = /per kg/i.test(e.declared_basis) && BASIS_CONFIRMED[e.product_id] ? 'per kg, base confermata' : e.declared_basis;
+  report.push(`- Componente da convertire, non importato: ${e.product_id} · ${e.component} ${e.declared_amount} ${e.declared_unit} (${basis}) — ${e.mapping_status}. ${e.notes}`);
+}
 report.push('- Voci di fonte conservate solo come informazione (nessun limite, nessun calcolo): ' + ['energy_food_kcal', 'carbohydrate_by_difference', 'c18_2_undifferentiated', 'c20_4_undifferentiated', 'vitamin_a_retinol_ug', 'vitamin_a_carotenoid_iu', 'beta_carotene_ug'].map((id) => L.get(id) ?? id).join(', ') + '.');
 report.push('- Cistina e tirosina: importate e usate per Metionina + cistina e Fenilalanina + tirosina (formula dell’allegato F).');
-report.push('- Attivazione: i 6 alimenti sono **utilizzabili nella formulazione** come chiede il file (decisione della nutrizionista: dati parziali o stimati non impediscono l’uso; fonte, approssimazioni e nutrienti mancanti sono indicati). Gli integratori restano da attivare dall’amministratore: nel file Q-Diet e Omegor sono «condizionali», la farina d’ossa «no»; per Q-Diet va prima confermata la base «per kg».');
+report.push('- Attivazione: i 6 alimenti sono **utilizzabili nella formulazione** come chiede il file (decisione della nutrizionista: dati parziali o stimati non impediscono l’uso; fonte, approssimazioni e nutrienti mancanti sono indicati). Gli integratori restano da attivare dall’amministratore: nel file Q-Diet e Omegor sono «condizionali», la farina d’ossa «no».');
+report.push('- **Q.Diet Compensa standard — base degli additivi confermata (17/10/2026)**: tutti gli additivi sono dichiarati per 1 kg di prodotto (catalogo Q.Diet 2024, Compensa polvere cod. Q40543 250 g, «Additivi per kg»; scheda prodotto pacopetshop). Valore per 1 g = valore per kg ÷ 1000; i valori diventano «da etichetta». Non vale per Compensa Crescita né Ultra. I nutrienti non dichiarati restano sconosciuti.');
+report.push('- **Nel catalogo Q.Diet 2024 (Compensa polvere) ci sono dati non presenti nei file ricevuti, NON importati in attesa di conferma**: energia metabolizzabile 96 kcal/100 g; potassio 7,5 % (nei file «non dichiarato»); colina cloruro 90.000 mg/kg (sale di colina: serve un fattore approvato per la colina; non compare nella scheda prodotto); dosi d’uso per peso (es. 30 kg: 4,5–9 g/die; misurino raso = 3 g).');
 report.push('', '## Scelte di conversione (nessun valore modificato)', '');
 report.push('- ID: quelli dei file. Gli alimenti sono nuovi prodotti (le voci generiche del pacchetto iniziale, es. «Avena», «Carote», «Macinato di manzo», restano «Da completare»). Gli integratori aggiornano `qdiet`, `omegor_vitality`, `bone_meal`.');
 report.push('- Categorie: cereal/oats → Cereali; vegetable/root e vegetable/pumpkin → Verdure.');

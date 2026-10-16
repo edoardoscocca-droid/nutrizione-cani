@@ -3,7 +3,7 @@
   {
    "id": "qdiet",
    "name_it": "Q.Diet Compensa (standard, NON Crescita/Ultra)",
-   "variant": "Compensa standard (non Crescita, non Ultra)",
+   "variant": "Compensa standard in polvere (non Crescita, non Ultra)",
    "class": "multinutrient",
    "dose_unit": "gram",
    "mass_per_unit_g": "1",
@@ -77,136 +77,153 @@
     "copper": {
      "value": "0.25",
      "unit": "mg",
-     "status": "PER_KG_ASSUMED_CONFIRM",
-     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "status": "MANUFACTURER_DECLARED",
+     "source": "Catalogo Q.Diet 2024, Compensa polvere cod. Q40543 (250 g), «Additivi per kg»: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf · Scheda prodotto: https://www.pacopetshop.it/it/qdiet/4805-qdiet-compensa-per-cani-e-gatti.htm",
+     "method": "Additivo dichiarato per kg di prodotto, base confermata dalla nutrizionista il 17/10/2026; valore per 1 g = valore per kg ÷ 1000",
      "per_dose": "1 g",
      "declared_total_or_added": "added"
     },
     "iodine": {
      "value": "0.045",
      "unit": "mg",
-     "status": "PER_KG_ASSUMED_CONFIRM",
-     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "status": "MANUFACTURER_DECLARED",
+     "source": "Catalogo Q.Diet 2024, Compensa polvere cod. Q40543 (250 g), «Additivi per kg»: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf · Scheda prodotto: https://www.pacopetshop.it/it/qdiet/4805-qdiet-compensa-per-cani-e-gatti.htm",
+     "method": "Additivo dichiarato per kg di prodotto, base confermata dalla nutrizionista il 17/10/2026; valore per 1 g = valore per kg ÷ 1000",
      "per_dose": "1 g",
      "declared_total_or_added": "added"
     },
     "iron": {
      "value": "1.25",
      "unit": "mg",
-     "status": "PER_KG_ASSUMED_CONFIRM",
-     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "status": "MANUFACTURER_DECLARED",
+     "source": "Catalogo Q.Diet 2024, Compensa polvere cod. Q40543 (250 g), «Additivi per kg»: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf · Scheda prodotto: https://www.pacopetshop.it/it/qdiet/4805-qdiet-compensa-per-cani-e-gatti.htm",
+     "method": "Additivo dichiarato per kg di prodotto, base confermata dalla nutrizionista il 17/10/2026; valore per 1 g = valore per kg ÷ 1000",
      "per_dose": "1 g",
      "declared_total_or_added": "added"
     },
     "manganese": {
      "value": "0.3",
      "unit": "mg",
-     "status": "PER_KG_ASSUMED_CONFIRM",
-     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "status": "MANUFACTURER_DECLARED",
+     "source": "Catalogo Q.Diet 2024, Compensa polvere cod. Q40543 (250 g), «Additivi per kg»: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf · Scheda prodotto: https://www.pacopetshop.it/it/qdiet/4805-qdiet-compensa-per-cani-e-gatti.htm",
+     "method": "Additivo dichiarato per kg di prodotto, base confermata dalla nutrizionista il 17/10/2026; valore per 1 g = valore per kg ÷ 1000",
      "per_dose": "1 g",
      "declared_total_or_added": "added"
     },
     "selenium_wet": {
      "value": "4.0",
      "unit": "µg",
-     "status": "PER_KG_ASSUMED_CONFIRM",
-     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "status": "MANUFACTURER_DECLARED",
+     "source": "Catalogo Q.Diet 2024, Compensa polvere cod. Q40543 (250 g), «Additivi per kg»: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf · Scheda prodotto: https://www.pacopetshop.it/it/qdiet/4805-qdiet-compensa-per-cani-e-gatti.htm",
+     "method": "Additivo dichiarato per kg di prodotto, base confermata dalla nutrizionista il 17/10/2026; valore per 1 g = valore per kg ÷ 1000",
      "per_dose": "1 g",
      "declared_total_or_added": "added"
     },
     "zinc": {
      "value": "2.0",
      "unit": "mg",
-     "status": "PER_KG_ASSUMED_CONFIRM",
-     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "status": "MANUFACTURER_DECLARED",
+     "source": "Catalogo Q.Diet 2024, Compensa polvere cod. Q40543 (250 g), «Additivi per kg»: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf · Scheda prodotto: https://www.pacopetshop.it/it/qdiet/4805-qdiet-compensa-per-cani-e-gatti.htm",
+     "method": "Additivo dichiarato per kg di prodotto, base confermata dalla nutrizionista il 17/10/2026; valore per 1 g = valore per kg ÷ 1000",
      "per_dose": "1 g",
      "declared_total_or_added": "added"
     },
     "vitamin_a": {
      "value": "250.0",
      "unit": "IU",
-     "status": "PER_KG_ASSUMED_CONFIRM",
-     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "status": "MANUFACTURER_DECLARED",
+     "source": "Catalogo Q.Diet 2024, Compensa polvere cod. Q40543 (250 g), «Additivi per kg»: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf · Scheda prodotto: https://www.pacopetshop.it/it/qdiet/4805-qdiet-compensa-per-cani-e-gatti.htm",
+     "method": "Additivo dichiarato per kg di prodotto, base confermata dalla nutrizionista il 17/10/2026; valore per 1 g = valore per kg ÷ 1000",
      "per_dose": "1 g",
      "declared_total_or_added": "added"
     },
     "vitamin_d": {
      "value": "25.0",
      "unit": "IU",
-     "status": "PER_KG_ASSUMED_CONFIRM",
-     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "status": "MANUFACTURER_DECLARED",
+     "source": "Catalogo Q.Diet 2024, Compensa polvere cod. Q40543 (250 g), «Additivi per kg»: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf · Scheda prodotto: https://www.pacopetshop.it/it/qdiet/4805-qdiet-compensa-per-cani-e-gatti.htm",
+     "method": "Additivo dichiarato per kg di prodotto, base confermata dalla nutrizionista il 17/10/2026; valore per 1 g = valore per kg ÷ 1000",
      "per_dose": "1 g",
      "declared_total_or_added": "added"
     },
     "vitamin_b1": {
      "value": "0.075",
      "unit": "mg",
-     "status": "PER_KG_ASSUMED_CONFIRM",
-     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "status": "MANUFACTURER_DECLARED",
+     "source": "Catalogo Q.Diet 2024, Compensa polvere cod. Q40543 (250 g), «Additivi per kg»: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf · Scheda prodotto: https://www.pacopetshop.it/it/qdiet/4805-qdiet-compensa-per-cani-e-gatti.htm",
+     "method": "Additivo dichiarato per kg di prodotto, base confermata dalla nutrizionista il 17/10/2026; valore per 1 g = valore per kg ÷ 1000",
      "per_dose": "1 g",
      "declared_total_or_added": "added"
     },
     "vitamin_b2": {
      "value": "0.25",
      "unit": "mg",
-     "status": "PER_KG_ASSUMED_CONFIRM",
-     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "status": "MANUFACTURER_DECLARED",
+     "source": "Catalogo Q.Diet 2024, Compensa polvere cod. Q40543 (250 g), «Additivi per kg»: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf · Scheda prodotto: https://www.pacopetshop.it/it/qdiet/4805-qdiet-compensa-per-cani-e-gatti.htm",
+     "method": "Additivo dichiarato per kg di prodotto, base confermata dalla nutrizionista il 17/10/2026; valore per 1 g = valore per kg ÷ 1000",
      "per_dose": "1 g",
      "declared_total_or_added": "added"
     },
     "vitamin_b3": {
      "value": "0.05",
      "unit": "mg",
-     "status": "PER_KG_ASSUMED_CONFIRM",
-     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "status": "MANUFACTURER_DECLARED",
+     "source": "Catalogo Q.Diet 2024, Compensa polvere cod. Q40543 (250 g), «Additivi per kg»: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf · Scheda prodotto: https://www.pacopetshop.it/it/qdiet/4805-qdiet-compensa-per-cani-e-gatti.htm",
+     "method": "Additivo dichiarato per kg di prodotto, base confermata dalla nutrizionista il 17/10/2026; valore per 1 g = valore per kg ÷ 1000",
      "per_dose": "1 g",
      "declared_total_or_added": "added"
     },
     "vitamin_b6": {
      "value": "0.05",
      "unit": "mg",
-     "status": "PER_KG_ASSUMED_CONFIRM",
-     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "status": "MANUFACTURER_DECLARED",
+     "source": "Catalogo Q.Diet 2024, Compensa polvere cod. Q40543 (250 g), «Additivi per kg»: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf · Scheda prodotto: https://www.pacopetshop.it/it/qdiet/4805-qdiet-compensa-per-cani-e-gatti.htm",
+     "method": "Additivo dichiarato per kg di prodotto, base confermata dalla nutrizionista il 17/10/2026; valore per 1 g = valore per kg ÷ 1000",
      "per_dose": "1 g",
      "declared_total_or_added": "added"
     },
     "vitamin_b9": {
      "value": "10.0",
      "unit": "µg",
-     "status": "PER_KG_ASSUMED_CONFIRM",
-     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "status": "MANUFACTURER_DECLARED",
+     "source": "Catalogo Q.Diet 2024, Compensa polvere cod. Q40543 (250 g), «Additivi per kg»: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf · Scheda prodotto: https://www.pacopetshop.it/it/qdiet/4805-qdiet-compensa-per-cani-e-gatti.htm",
+     "method": "Additivo dichiarato per kg di prodotto, base confermata dalla nutrizionista il 17/10/2026; valore per 1 g = valore per kg ÷ 1000",
      "per_dose": "1 g",
      "declared_total_or_added": "added"
     },
     "vitamin_b12": {
      "value": "1.0",
      "unit": "µg",
-     "status": "PER_KG_ASSUMED_CONFIRM",
-     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "status": "MANUFACTURER_DECLARED",
+     "source": "Catalogo Q.Diet 2024, Compensa polvere cod. Q40543 (250 g), «Additivi per kg»: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf · Scheda prodotto: https://www.pacopetshop.it/it/qdiet/4805-qdiet-compensa-per-cani-e-gatti.htm",
+     "method": "Additivo dichiarato per kg di prodotto, base confermata dalla nutrizionista il 17/10/2026; valore per 1 g = valore per kg ÷ 1000",
      "per_dose": "1 g",
      "declared_total_or_added": "added"
     },
     "vitamin_c": {
      "value": "1.25",
      "unit": "mg",
-     "status": "PER_KG_ASSUMED_CONFIRM",
-     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "status": "MANUFACTURER_DECLARED",
+     "source": "Catalogo Q.Diet 2024, Compensa polvere cod. Q40543 (250 g), «Additivi per kg»: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf · Scheda prodotto: https://www.pacopetshop.it/it/qdiet/4805-qdiet-compensa-per-cani-e-gatti.htm",
+     "method": "Additivo dichiarato per kg di prodotto, base confermata dalla nutrizionista il 17/10/2026; valore per 1 g = valore per kg ÷ 1000",
      "per_dose": "1 g",
      "declared_total_or_added": "added"
     },
     "vitamin_b7": {
      "value": "2.5",
      "unit": "µg",
-     "status": "PER_KG_ASSUMED_CONFIRM",
-     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "status": "MANUFACTURER_DECLARED",
+     "source": "Catalogo Q.Diet 2024, Compensa polvere cod. Q40543 (250 g), «Additivi per kg»: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf · Scheda prodotto: https://www.pacopetshop.it/it/qdiet/4805-qdiet-compensa-per-cani-e-gatti.htm",
+     "method": "Additivo dichiarato per kg di prodotto, base confermata dalla nutrizionista il 17/10/2026; valore per 1 g = valore per kg ÷ 1000",
      "per_dose": "1 g",
      "declared_total_or_added": "added"
     },
     "taurine": {
      "value": "50.0",
      "unit": "mg",
-     "status": "PER_KG_ASSUMED_CONFIRM",
-     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "status": "MANUFACTURER_DECLARED",
+     "source": "Catalogo Q.Diet 2024, Compensa polvere cod. Q40543 (250 g), «Additivi per kg»: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf · Scheda prodotto: https://www.pacopetshop.it/it/qdiet/4805-qdiet-compensa-per-cani-e-gatti.htm",
+     "method": "Additivo dichiarato per kg di prodotto, base confermata dalla nutrizionista il 17/10/2026; valore per 1 g = valore per kg ÷ 1000",
      "per_dose": "1 g",
      "declared_total_or_added": "added"
     },
@@ -214,11 +231,11 @@
      "value": 2,
      "unit": "mg",
      "form": "all_rac_alpha_tocopheryl_acetate",
-     "status": "PER_KG_ASSUMED_CONFIRM",
-     "source": "https://www.qdiet.it/products/compensa-250-g",
+     "status": "MANUFACTURER_DECLARED",
+     "source": "Catalogo Q.Diet 2024, Compensa polvere cod. Q40543 (250 g), «Additivi per kg»: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf · Scheda prodotto: https://www.pacopetshop.it/it/qdiet/4805-qdiet-compensa-per-cani-e-gatti.htm",
      "per_dose": "1",
      "declared_total_or_added": "added",
-     "method": "Vitamina E tutto-rac-alfa-tocoferolo acetato: 2000 mg per kg PROBABILE, da confermare"
+     "method": "Vitamina E tutto-rac-alfa-tocoferolo acetato: 2000 mg per kg — Additivo dichiarato per kg di prodotto, base confermata dalla nutrizionista il 17/10/2026; valore per 1 g = valore per kg ÷ 1000"
     }
    }
   },
@@ -271,7 +288,7 @@
      "status": "MANUFACTURER_DECLARED",
      "source": "https://www.omegor.com/products/omegor-vitality-1000/",
      "per_dose": "1",
-     "method": "Vitamina E d-alfa-tocoferolo: 10 mg per capsula"
+     "method": "Vitamina E d-alfa-tocoferolo: 10 mg per kg (per capsula)"
     }
    }
   },
