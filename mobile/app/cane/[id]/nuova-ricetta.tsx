@@ -188,15 +188,10 @@ export default function NewRecipe() {
           </Card>
           {sel.foods.length > 0 && (
             <Card>
-              <H level={3}>Limiti facoltativi (g/die)</H>
+              <H level={3}>Quantità: limiti facoltativi (g/die)</H>
+              <T small muted>Selezionare un alimento lo rende disponibile, non obbligatorio: il calcolo può anche non usarlo. Per evitare quantità simboliche indica una porzione minima.</T>
               {sel.foods.map((s) => (
-                <View key={s.id} style={{ gap: 4 }}>
-                  <T small bold>{catalog.foods.find((f) => f.id === s.id)?.name}</T>
-                  <Row>
-                    <NumField placeholder="almeno" value={s.constraint?.minQty ?? null} onChange={(v) => setConstraint('foods', s.id, { minQty: v })} />
-                    <NumField placeholder="non oltre" value={s.constraint?.maxQty ?? null} onChange={(v) => setConstraint('foods', s.id, { maxQty: v })} />
-                  </Row>
-                </View>
+                <ItemLimits key={s.id} name={catalog.foods.find((f) => f.id === s.id)?.name ?? s.id} unit="g" c={s.constraint} onChange={(c) => setConstraint('foods', s.id, c)} />
               ))}
             </Card>
           )}
@@ -249,16 +244,11 @@ export default function NewRecipe() {
           </Card>
           {sel.supplements.length > 0 && (
             <Card>
-              <H level={3}>Limiti facoltativi</H>
-              {sel.supplements.map((s) => (
-                <View key={s.id} style={{ gap: 4 }}>
-                  <T small bold>{catalog.supplements.find((x) => x.id === s.id)?.name}</T>
-                  <Row>
-                    <NumField placeholder="almeno" value={s.constraint?.minQty ?? null} onChange={(v) => setConstraint('supplements', s.id, { minQty: v })} />
-                    <NumField placeholder="non oltre" value={s.constraint?.maxQty ?? null} onChange={(v) => setConstraint('supplements', s.id, { maxQty: v })} />
-                  </Row>
-                </View>
-              ))}
+              <H level={3}>Quantità: limiti facoltativi</H>
+              {sel.supplements.map((s) => {
+                const sp = catalog.supplements.find((x) => x.id === s.id);
+                return <ItemLimits key={s.id} name={sp?.name ?? s.id} unit={sp?.doseUnit ?? ''} c={s.constraint} onChange={(c) => setConstraint('supplements', s.id, c)} />;
+              })}
             </Card>
           )}
           <Button title="Calcola le quantità →" busy={!!busy} onPress={calculate} />
@@ -296,5 +286,22 @@ export default function NewRecipe() {
         </>
       )}
     </Screen>
+  );
+}
+
+/** Limiti di quantità di un ingrediente: includi sempre, porzione minima (se usato o sempre), massimo. */
+function ItemLimits({ name, unit, c, onChange }: { name: string; unit: string; c?: ItemConstraint; onChange: (c: ItemConstraint) => void }) {
+  // vecchie selezioni: «almeno X» = sempre incluso con porzione minima X
+  const required = !!c?.required || (c?.minQty ?? 0) > 0;
+  const min = c?.minIfUsed ?? c?.minQty ?? null;
+  return (
+    <View style={{ gap: 4, paddingVertical: 4 }}>
+      <T small bold>{name}</T>
+      <Check label="Includi sempre" value={required} onChange={(v) => onChange({ required: v, minIfUsed: min, minQty: null })} />
+      <Row>
+        <NumField label={required ? `Porzione minima (${unit})` : `Porzione minima se usato (${unit})`} placeholder="nessuna" value={min} onChange={(v) => onChange({ required, minIfUsed: v, minQty: null })} />
+        <NumField label={`Non oltre (${unit})`} placeholder="nessun limite" value={c?.maxQty ?? null} onChange={(v) => onChange({ maxQty: v })} />
+      </Row>
+    </View>
   );
 }

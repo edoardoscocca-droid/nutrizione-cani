@@ -3,8 +3,9 @@
 // sui dati congelati nell'istantanea, e confronta con i limiti applicabili. Non usa il modello dell'ottimizzatore.
 
 import { CATALOG_STATUS_LABEL, foodStatus, supplementStatus } from './catalogStatus';
-import { fediafReferenceKcal } from './energy';
+import { estimateMeFromMacros, fediafReferenceKcal } from './energy';
 import { doseRangeFor, weightSpan, type DoseRange } from './doseGuide';
+import { recommendedAsLimits } from './recommended';
 import { computeTotals, foodData, supplementData, type DerivedValue, type ItemData, type RecipeTotals, type Total } from './totals';
 import type {
   Color,
@@ -28,6 +29,8 @@ export interface LimitCheck {
   message: string;
   /** rispettato sulla composizione dichiarata, con integratori che non dichiarano il valore o l'energia. */
   uncertain?: string;
+  /** intervallo richiesto, risultato e scostamento (nella base del limite). */
+  gap?: { requested: string; result: number; deviation: number; unit: string };
 }
 
 export interface CheckRow {
@@ -53,6 +56,7 @@ export interface CheckRow {
 export type RecipeStatus =
   | 'VERIFIED_AVAILABLE_CHECKS'
   | 'PREFERENCES_VIOLATED'
+  | 'TARGETS_NOT_MET'
   | 'INSUFFICIENT_DATA'
   | 'FAILS_OFFICIAL_LIMITS'
   | 'NO_VALID_SOLUTION';
@@ -60,6 +64,7 @@ export type RecipeStatus =
 export const STATUS_LABEL: Record<RecipeStatus, string> = {
   VERIFIED_AVAILABLE_CHECKS: 'Verificata rispetto ai controlli disponibili',
   PREFERENCES_VIOLATED: 'Rispetta i limiti ufficiali, ma non tutte le preferenze',
+  TARGETS_NOT_MET: 'Rispetta i limiti ufficiali, ma non tutti gli obiettivi aggiuntivi',
   INSUFFICIENT_DATA: 'Dati insufficienti: non verificabile',
   FAILS_OFFICIAL_LIMITS: 'Non rispetta limiti ufficiali',
   NO_VALID_SOLUTION: 'Nessuna soluzione valida',
@@ -96,6 +101,14 @@ export interface AuditResult {
   declaredCompositionOnly?: boolean;
   /** fabbisogni (limiti ufficiali e target rigidi): dimostrabilmente soddisfatti, non soddisfatti, non verificabili per dati mancanti. */
   summary?: { satisfied: string[]; notMet: string[]; unverifiable: string[] };
+  /** obiettivi aggiuntivi (es. apporto raccomandato NRC), tenuti distinti dai requisiti FEDIAF. */
+  additional?: { id: string; label: string; metric: string; color: Color; message: string; gap?: LimitCheck['gap']; amount?: number | null; required?: number | null; unit?: string }[];
+  /** origine dell'energia di ogni componente e confronto con i macronutrienti (metodo energetico). */
+  energySources?: EnergySource[];
+  /** somma delle quote energetiche di proteine, grassi e carboidrati disponibili (% dell'energia della ricetta). */
+  macroEnergySumPct?: number | null;
+  /** solo per la proposta del motore: perché una preferenza o un obiettivo aggiuntivo non è stato rispettato. */
+  softGaps?: SoftGap[];
   /** dosi degli integratori rispetto alla tabella d'impiego del produttore (arancione fuori intervallo). */
   doseChecks?: DoseCheck[];
   /** componenti con dati stimati o non convalidati; integratori con energia sconosciuta. */
@@ -109,6 +122,35 @@ export interface AuditResult {
   warnings: string[];
   dataFlags: { testData: boolean; estimated: string[]; reviewRequiredLimits: string[] };
   totals: RecipeTotals;
+}
+
+/**
+ * Analisi del motore su una preferenza o un obiettivo aggiuntivo non rispettato.
+ * blockedBy: vincoli rigidi che andrebbero violati per rispettarlo (individuati dal modello, non ipotizzati);
+ * unreachable: con gli ingredienti selezionati non si raggiunge in nessuna quantità.
+ */
+export interface SoftGap {
+  label: string;
+  metric?: string;
+  kind: string;
+  blockedBy: string[];
+  unreachable: boolean;
+}
+
+export interface EnergySource {
+  name: string;
+  kind: 'food' | 'supplement';
+  /** declared = inserita (misurata o da fonte); calculated = calcolata con il metodo energetico; null = sconosciuta. */
+  origin: 'declared' | 'calculated' | null;
+  /** kcal per 100 g (alimenti) o per dose (integratori). */
+  kcal: number | null;
+  basis: string;
+  /** stessa energia calcolata dai macronutrienti con il metodo del componente (null se non calcolabile). */
+  fromMacros: number | null;
+  methodLabel: string | null;
+  /** (inserita − calcolata) / calcolata × 100. */
+  diffPct: number | null;
+  source: string | null;
 }
 
 const EPS = 1e-9;
@@ -152,11 +194,21 @@ export function applicableLimits(limits: NutrientLimit[], dog: DogFormulationPro
       notes: t.notes ?? null,
     });
   }
+  out.push(...recommendedAsLimits(dog));
   return out;
 }
 
 function fmt(n: number): string {
   return n.toLocaleString('it-IT', { maximumFractionDigits: 3 });
+}
+
+/** arrotondamento per i messaggi: 1 decimale per percentuali e valori ≥ 10, altrimenti 3. */
+function nice(v: number, unit: string) {
+  return fmt(unit.includes('%') || Math.abs(v) >= 10 ? Math.round(v * 10) / 10 : Math.round(v * 1000) / 1000);
+}
+
+function unitText(unit: string, l: NutrientLimit) {
+  return `${unit === 'ratio' ? '' : unit}${l.basis === 'per_1000_kcal_me' ? '/1000 kcal' : l.basis === 'per_day' ? '/die' : l.basis === 'energy_pct' ? ' kcal' : ''}`.trim();
 }
 
 function failColor(l: NutrientLimit): Color {
@@ -176,7 +228,9 @@ function classLabel(l: NutrientLimit): string {
     case 'NON_OFFICIAL_ATTENTION':
       return 'soglia di attenzione NON ufficiale';
     case 'PERSONAL_TARGET':
-      return l.hardness === 'hard' ? 'target professionale' : 'target personale';
+      return l.hardness === 'hard' ? 'target professionale' : l.source.includes('preferenza') ? 'preferenza' : 'target personale';
+    case 'RECOMMENDED_ALLOWANCE':
+      return l.displayLabel ?? 'apporto raccomandato';
     default:
       return 'riferimento informativo';
   }
@@ -246,7 +300,7 @@ function evaluate(l: NutrientLimit, m: Measured, kcal: number | null, unit: stri
   const ref = [l.lower !== null ? `min ${fmt(l.lower)}` : null, l.upper !== null ? `max ${fmt(l.upper)}` : null]
     .filter(Boolean)
     .join(' · ');
-  const what = `${classLabel(l)} (${ref} ${unit === 'ratio' ? '' : unit}${l.basis === 'per_1000_kcal_me' ? '/1000 kcal' : l.basis === 'per_day' ? '/die' : l.basis === 'energy_pct' ? '% kcal' : ''})`;
+  const what = `${classLabel(l)} (${ref} ${unitText(unit, l)})`.replace(' )', ')');
   const fail = failColor(l);
   const undeclaredNote = m.undeclared.length ? `${names(m.undeclared)} non dichiara questo valore (sconosciuto, non zero)` : '';
   const energyNote = m.energyUncertain.length ? `l’energia di ${names(m.energyUncertain)} non è dichiarata` : '';
@@ -257,7 +311,11 @@ function evaluate(l: NutrientLimit, m: Measured, kcal: number | null, unit: stri
   }
   // Massimo: se già i soli contributi certi lo superano la violazione è certa, anche con dati parziali.
   if (l.upper !== null && m.low !== null && m.low > l.upper * (1 + 1e-6) + EPS) {
-    return { limit: l, color: fail, dailyReference, message: `${what}: superato` };
+    const g = fail === 'orange' && m.value !== null ? { requested: `non oltre ${fmt(l.upper)} ${unitText(unit, l)}`, result: m.value, deviation: m.value - l.upper, unit: unitText(unit, l) } : undefined;
+    return {
+      limit: l, color: fail, dailyReference, gap: g,
+      message: `${what}: superato${g ? ` — richiesto ${l.lower !== null ? `${fmt(l.lower)}–${fmt(l.upper)} ${g.unit}` : g.requested}, risultato ${nice(g.result, g.unit)} ${g.unit}, scostamento +${nice(g.deviation, g.unit)} ${g.unit}` : ''}`,
+    };
   }
   if (!m.complete || m.value === null) {
     let extra = '';
@@ -269,12 +327,20 @@ function evaluate(l: NutrientLimit, m: Measured, kcal: number | null, unit: stri
   const below = (v: number) => l.lower !== null && v < l.lower * (1 - 1e-6) - EPS;
   const above = (v: number) => l.upper !== null && v > l.upper * (1 + 1e-6) + EPS;
   const ratioLike = l.basis === 'ratio' || l.basis === 'energy_pct';
+  const u = unitText(unit, l);
+  const requested = l.lower !== null && l.upper !== null ? `${fmt(l.lower)}–${fmt(l.upper)}` : l.lower !== null ? `almeno ${fmt(l.lower)}` : `non oltre ${fmt(l.upper as number)}`;
+  const gapOf = (v: number) => ({ requested: `${requested} ${u}`, result: v, deviation: below(v) ? v - (l.lower as number) : above(v) ? v - (l.upper as number) : 0, unit: u });
+  const gapText = (v: number) => {
+    const g = gapOf(v);
+    return ` — richiesto ${g.requested}, risultato ${nice(v, u)} ${u}, scostamento ${g.deviation > 0 ? '+' : ''}${nice(g.deviation, u)} ${u}`;
+  };
+  const soft = fail === 'orange';
   if (below(m.value)) {
     // con la composizione dichiarata il minimo non c'è: è un difetto certo solo se nessun integratore tace sul nutriente
     if (m.undeclared.length || (ratioLike && m.energyUncertain.length)) {
       return { limit: l, color: 'grey', dailyReference, message: `${what}: non dimostrato — non raggiunto con i valori dichiarati; ${undeclaredNote || energyNote}` };
     }
-    return { limit: l, color: fail, dailyReference, message: `${what}: non raggiunto` };
+    return { limit: l, color: fail, dailyReference, message: `${what}: non raggiunto${soft ? gapText(m.value) : ''}`, gap: soft ? gapOf(m.value) : undefined };
   }
   if (m.low !== null && below(m.low)) {
     return { limit: l, color: 'grey', dailyReference, message: `${what}: non dimostrato — raggiunto con l’energia dichiarata, ma ${energyNote}: inserire le kcal per dose` };
@@ -286,7 +352,7 @@ function evaluate(l: NutrientLimit, m: Measured, kcal: number | null, unit: stri
     if (!ratioLike && m.energyUncertain.length) {
       return { limit: l, color: 'grey', dailyReference, message: `${what}: non dimostrato — superato con l’energia dichiarata, ma ${energyNote}` };
     }
-    return { limit: l, color: fail, dailyReference, message: `${what}: superato` };
+    return { limit: l, color: fail, dailyReference, message: `${what}: superato${soft ? gapText(m.value) : ''}`, gap: soft ? gapOf(m.value) : undefined };
   }
   const noMax = l.limitClass === 'OFFICIAL_MIN' ? ' Massimo non definito: valori elevati non sono automaticamente sicuri.' : '';
   // rispettato; con integratori che tacciono sul nutriente il massimo (o il rapporto) vale solo sulla composizione dichiarata
@@ -296,7 +362,8 @@ function evaluate(l: NutrientLimit, m: Measured, kcal: number | null, unit: stri
     (l.upper !== null || ratioLike) && (m.undeclared.length || energyMatters)
       ? `Calcolato sulla composizione dichiarata: ${[undeclaredNote, energyMatters ? energyNote : ''].filter(Boolean).join('; ')}.`
       : undefined;
-  return { limit: l, color: 'green', dailyReference, message: `${what}: rispettato.${noMax}${uncertain ? ` ${uncertain}` : ''}`, uncertain };
+  const okResult = soft ? ` Risultato ${nice(m.value, u)} ${u}.` : '';
+  return { limit: l, color: 'green', dailyReference, message: `${what}: rispettato.${okResult}${noMax}${uncertain ? ` ${uncertain}` : ''}`, uncertain };
 }
 
 /** limite che definisce un fabbisogno: ufficiale (minimo, massimo, legale) o target fissato da un professionista. */
@@ -515,12 +582,68 @@ export function auditRecipe(input: AuditInput): AuditResult {
       `Verifica sulla composizione dichiarata degli integratori (${who}): ${uncertainRows.map((r) => r.label).join(', ')} rispettati sui soli valori dichiarati. I valori non dichiarati sono sconosciuti, non zero.`,
     );
   }
+  // Obiettivi aggiuntivi (es. apporto raccomandato NRC): sezione propria, distinta dai requisiti FEDIAF
+  const additional = rows.flatMap((r) =>
+    r.checks
+      .filter((c) => c.limit.limitClass === 'RECOMMENDED_ALLOWANCE')
+      .map((c) => ({ id: c.limit.id, label: `${r.label} — ${c.limit.displayLabel ?? 'apporto raccomandato'}`, metric: r.metric, color: c.color, message: c.message, gap: c.gap, amount: r.complete ? r.amount : null, required: c.limit.lower, unit: r.unit })),
+  );
+  for (const a of additional) {
+    if (a.color === 'orange' && a.gap) {
+      warnings.push(`Obiettivo aggiuntivo non raggiunto: ${a.label} — richiesto ${a.gap.requested}, risultato ${nice(a.gap.result, a.gap.unit)} ${a.gap.unit} (mancano ${nice(-a.gap.deviation, a.gap.unit)} ${a.gap.unit}).`);
+    } else if (a.color === 'grey') warnings.push(`Obiettivo aggiuntivo non verificabile: ${a.label} — ${a.message}.`);
+  }
+
+  // Origine dell'energia: inserita (con fonte) o calcolata, e confronto con i macronutrienti (nessuna rinormalizzazione)
+  const energySources: EnergySource[] = [];
+  for (const it of items) {
+    if (!(it.qty > 0)) continue;
+    if (it.kind === 'food') {
+      const f = foods[it.id];
+      const m = f.energyMethod ?? null;
+      const calc = m ? estimateMeFromMacros(f.nutrients, m) : null;
+      energySources.push({
+        name: f.name, kind: 'food', origin: f.kcalMePer100g === null ? null : (f.kcalMeOrigin ?? 'declared'), kcal: f.kcalMePer100g, basis: 'kcal/100 g',
+        fromMacros: calc, methodLabel: m ? m.label : null,
+        diffPct: f.kcalMePer100g !== null && calc ? (100 * (f.kcalMePer100g - calc)) / calc : null,
+        source: f.kcalMeOrigin === 'calculated' ? null : (f.meMethod ?? f.source ?? null),
+      });
+    } else {
+      const sp = supplements[it.id];
+      const m = sp.energyMethod ?? null;
+      const calc = m ? estimateMeFromMacros(sp.nutrients, m) : null;
+      energySources.push({
+        name: sp.name, kind: 'supplement', origin: sp.kcalPerUnit === null ? null : (sp.kcalOrigin ?? 'declared'), kcal: sp.kcalPerUnit, basis: `kcal/${sp.doseUnit}`,
+        fromMacros: calc, methodLabel: m ? m.label : null,
+        diffPct: sp.kcalPerUnit !== null && calc ? (100 * (sp.kcalPerUnit - calc)) / calc : null,
+        source: sp.kcalOrigin === 'calculated' ? null : (sp.labelSource ?? null),
+      });
+    }
+  }
+  const pcts = ['protein_energy_pct', 'fat_energy_pct', 'carb_energy_pct'].map((k) => totals.derived[k]);
+  const macroEnergySumPct = pcts.every((d) => d?.complete && d.value !== null) ? pcts.reduce((a, d) => a + (d!.value as number), 0) : null;
+  if (macroEnergySumPct !== null && Math.abs(macroEnergySumPct - 100) > 0.5) {
+    const differing = energySources.filter((e) => e.origin === 'declared' && e.diffPct !== null && Math.abs(e.diffPct) >= 0.5);
+    const unknown = energySources.filter((e) => e.origin === null);
+    warnings.push(
+      `Le quote energetiche di proteine, grassi e carboidrati disponibili, calcolate con il metodo energetico di ogni componente, sommano al ${fmt(Math.round(macroEnergySumPct * 10) / 10)}% dell’energia della ricetta, non al 100%. ` +
+        (differing.length
+          ? `L’energia usata è quella inserita, che differisce da quella calcolata dai macronutrienti per: ${differing.map((e) => `${e.name} (${fmt(e.kcal as number)} contro ${fmt(e.fromMacros as number)} ${e.basis}, ${(e.diffPct as number) > 0 ? '+' : ''}${fmt(Math.round((e.diffPct as number) * 10) / 10)}%)`).join(', ')}. `
+          : '') +
+        (unknown.length ? `Energia sconosciuta per: ${unknown.map((e) => e.name).join(', ')}. ` : '') +
+        'Non è un arrotondamento: le quote non vengono riportate artificialmente al 100%.',
+    );
+  }
+
   const allChecks = rows.flatMap((r) => r.checks);
+  const prefChecks = allChecks.filter((c) => c.limit.limitClass !== 'RECOMMENDED_ALLOWANCE');
   let status: RecipeStatus;
   if (allChecks.some((c) => c.color === 'red')) status = 'FAILS_OFFICIAL_LIMITS';
   else if (blockers.length) status = 'INSUFFICIENT_DATA';
-  else if (allChecks.some((c) => c.color === 'orange') || energyColor === 'orange' || doseChecks.some((d) => d.color === 'orange')) status = 'PREFERENCES_VIOLATED';
+  else if (additional.some((a) => a.color === 'orange')) status = 'TARGETS_NOT_MET';
+  else if (prefChecks.some((c) => c.color === 'orange') || energyColor === 'orange' || doseChecks.some((d) => d.color === 'orange')) status = 'PREFERENCES_VIOLATED';
   else status = 'VERIFIED_AVAILABLE_CHECKS';
+  const prefsToo = status === 'TARGETS_NOT_MET' && (prefChecks.some((c) => c.color === 'orange') || energyColor === 'orange' || doseChecks.some((d) => d.color === 'orange'));
 
   // Sintesi richiesta: fabbisogni dimostrabilmente soddisfatti, non soddisfatti, non verificabili (limiti ufficiali e target rigidi)
   const essentialRows = rows.filter((r) => r.checks.some((c) => isEssential(c.limit)));
@@ -536,10 +659,12 @@ export function auditRecipe(input: AuditInput): AuditResult {
   return {
     status,
     statusLabel:
-      qualifiers.length && (status === 'VERIFIED_AVAILABLE_CHECKS' || status === 'PREFERENCES_VIOLATED')
-        ? `${STATUS_LABEL[status]} — ${qualifiers.join('; ')}`
-        : STATUS_LABEL[status],
+      (prefsToo ? `${STATUS_LABEL[status]} né tutte le preferenze` : STATUS_LABEL[status]) +
+      (qualifiers.length && (status === 'VERIFIED_AVAILABLE_CHECKS' || status === 'PREFERENCES_VIOLATED' || status === 'TARGETS_NOT_MET') ? ` — ${qualifiers.join('; ')}` : ''),
     summary,
+    additional,
+    energySources,
+    macroEnergySumPct,
     doseChecks,
     dataQuality: { lowQuality, unknownEnergy: energyUncertainFrom },
     declaredCompositionOnly: uncertainRows.length > 0,

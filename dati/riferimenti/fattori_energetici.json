@@ -1,0 +1,12 @@
+{
+  "_nota": "Intervalli orientativi del fattore energetico per l'adulto in mantenimento (nutrizionista, 19/10/2026). L'utente sceglie la categoria e il numero; l'app non deduce l'attività.",
+  "text": "Il fattore energetico serve a stimare le calorie giornaliere partendo dal fabbisogno a riposo. Questi intervalli sono orientativi: il valore va adattato osservando nel tempo peso e condizione corporea.",
+  "categories": [
+    { "id": "adult_neutered", "label": "Adulto sterilizzato", "min": 1.4, "max": 1.6 },
+    { "id": "adult_intact", "label": "Adulto non sterilizzato", "min": 1.6, "max": 1.8 },
+    { "id": "inactive", "label": "Inattivo o predisposto ad accumulare peso", "min": 1.0, "max": 1.2 },
+    { "id": "work_light", "label": "Lavoro leggero", "min": 1.6, "max": 2.0 },
+    { "id": "work_moderate", "label": "Lavoro moderato", "min": 2.0, "max": 5.0 },
+    { "id": "work_heavy", "label": "Lavoro intenso", "min": 5.0, "max": 11.0 }
+  ]
+}

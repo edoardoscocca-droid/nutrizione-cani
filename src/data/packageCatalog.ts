@@ -10,6 +10,7 @@ import foodsD from '../../dati/pacchetto/03_Allegati_A_F/D_catalogo_alimenti_see
 import suppE from '../../dati/pacchetto/03_Allegati_A_F/E_catalogo_integratori_seed.json';
 import energyJson from '../../dati/riferimenti/metodi_energetici.json';
 import conversionsJson from '../../dati/riferimenti/conversioni_unita.json';
+import recommendedJson from '../../dati/riferimenti/obiettivi_aggiuntivi.json';
 import {
   buildCustomThresholds,
   buildNutrients,
@@ -20,7 +21,7 @@ import {
   type FediafDataset,
   type ThresholdsC,
 } from '../engine/reference';
-import type { Catalog, DoseUnit, EnergyAssignment, EnergyMethod, Food, Nutrient, ProcessingState, Supplement, UnitConversion } from '../engine/types';
+import type { Catalog, DoseUnit, RecommendedTarget, EnergyAssignment, EnergyMethod, Food, Nutrient, ProcessingState, Supplement, UnitConversion } from '../engine/types';
 
 export interface Category {
   id: string;
@@ -64,7 +65,7 @@ export const PROCESSING_LABEL: Record<ProcessingState, string> = {
 
 export const fediaf = fediafJson as unknown as FediafDataset;
 
-export function packageReferences(): Pick<Catalog, 'nutrients' | 'limits' | 'referenceVersions' | 'customThresholds' | 'energyMethods' | 'energyAssignments' | 'unitConversions'> {
+export function packageReferences(): Pick<Catalog, 'nutrients' | 'limits' | 'referenceVersions' | 'customThresholds' | 'energyMethods' | 'energyAssignments' | 'unitConversions' | 'recommendedTargets'> {
   const c = thresholdsC as unknown as ThresholdsC;
   const customThresholds = buildCustomThresholds(c);
   return {
@@ -82,7 +83,13 @@ export function packageReferences(): Pick<Catalog, 'nutrients' | 'limits' | 'ref
     energyMethods: (energyJson as { methods: EnergyMethod[] }).methods,
     energyAssignments: (energyJson as { assignments: EnergyAssignment[] }).assignments,
     unitConversions: (conversionsJson as { conversions: UnitConversion[] }).conversions,
+    recommendedTargets: packageRecommendedTargets(),
   };
+}
+
+/** Obiettivi aggiuntivi approvati (oggi solo dal pacchetto, anche con Supabase). */
+export function packageRecommendedTargets(): RecommendedTarget[] {
+  return (recommendedJson as unknown as { targets: RecommendedTarget[] }).targets;
 }
 
 function mapSub(category: string, sub: string): string {

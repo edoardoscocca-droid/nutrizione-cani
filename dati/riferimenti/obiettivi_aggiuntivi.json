@@ -1,0 +1,20 @@
+{
+  "_nota": "Obiettivi aggiuntivi approvati dalla nutrizionista (19/10/2026). Distinti dai minimi FEDIAF e dalle dosi terapeutiche: nel calcolo sono obiettivi da raggiungere (flessibili, prima delle preferenze), nella verifica hanno una sezione propria. Valgono solo per le fasi di vita indicate.",
+  "targets": [
+    {
+      "id": "nrc2006_epa_dha_adult",
+      "metric": "epa_dha",
+      "lifeStages": ["adult_maintenance"],
+      "label": "Apporto raccomandato NRC",
+      "coefficient": 30,
+      "exponent": 0.75,
+      "unit": "mg",
+      "weightBasis": "current",
+      "source": "NRC 2006, apporto raccomandato di EPA+DHA per il cane adulto (30 mg × kg^0,75 al giorno)",
+      "url": "https://doi.org/10.1093/jas/skaf300.142",
+      "approvedBy": "nutrizionista",
+      "approvedAt": "2026-10-19",
+      "notes": "Solo cane adulto sano in mantenimento, sul peso attuale registrato. Non è un minimo FEDIAF né una dose terapeutica; non si estende a crescita, riproduzione o condizioni cliniche."
+    }
+  ]
+}

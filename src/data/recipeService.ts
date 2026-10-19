@@ -62,7 +62,7 @@ export function buildInput(dog: Dog, sel: Selection, cat: CatalogState, settings
     return { supplement, constraint: s.constraint };
   });
   return {
-    dog: toFormulationProfile(dog, cat.breedNotes),
+    dog: toFormulationProfile(dog, cat.breedNotes, cat.recommendedTargets, cat.nutrients),
     foods,
     supplements,
     nutrients: cat.nutrients,
@@ -174,7 +174,7 @@ export function staleFor(version: RecipeVersion, dog: Dog, cat: CatalogState): D
     foods: cat.foods,
     supplements: cat.supplements,
     limits: activeLimits(cat),
-    dog: toFormulationProfile(dog, cat.breedNotes),
+    dog: toFormulationProfile(dog, cat.breedNotes, cat.recommendedTargets, cat.nutrients),
   });
 }
 

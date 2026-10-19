@@ -1,14 +1,17 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Alert, Pressable, View } from 'react-native';
-import { applyDogChange, breedNotesFor, newDog, planDogChange } from '../../src/engine/dogProfile';
+import { applyDogChange, breedNotesFor, fiberPerDay, newDog, planDogChange, syncAutoFiber } from '../../src/engine/dogProfile';
+import { recommendedFor } from '../../src/engine/recommended';
+import { applyPreset, isUntouchedPreset, presetFor } from '../../src/data/formulationPresets';
 import { fediafReferenceKcal, mer, rer, WEIGHT_GAP_MESSAGE, weightGapNeedsWarning } from '../../src/engine/energy';
 import type { LifeStage, PersonalTarget } from '../../src/engine/types';
 import { KCAL_SOURCE_LABEL, type Dog, type KcalSource, type MacroPreference } from '../../src/data/model';
 import { uid } from '../../src/data/repository';
 import { num } from '../../src/ui/format';
 import { useApp, useData } from './AppContext';
-import { Box, Button, Card, Check, Choice, ErrorBox, Field, H, Loading, NumField, Row, Screen, Sheet, T, Toggle } from './ui';
+import { BcsHelp, categoryLabel, EnergyFactorHelp, f1 } from './DogHelp';
+import { Box, Button, Card, Check, Choice, ErrorBox, Field, H, HelpLabel, Loading, NumField, Row, Screen, Sheet, T, Toggle } from './ui';
 
 const LIFE_STAGE: { value: LifeStage; label: string }[] = [
   { value: 'adult_maintenance', label: 'Adulto' },
@@ -35,10 +38,16 @@ export default function DogForm({ id }: { id?: string }) {
   const [dog, setDog] = useState<Dog | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [help, setHelp] = useState<'bcs' | 'factor' | null>(null);
 
   useEffect(() => {
     if (id && before) setDog(before);
-    if (!id && !dog) setDog(newDog({ name: '', weightCurrentKg: 0 }, uid()));
+    if (!id && !dog) {
+      // nuovo profilo: preferenze iniziali solo per l'adulto sano in mantenimento
+      const d = newDog({ name: '', weightCurrentKg: 0 }, uid());
+      const p = presetFor(d.lifeStage);
+      setDog(p ? applyPreset(d, p) : d);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, before]);
 
@@ -50,7 +59,25 @@ export default function DogForm({ id }: { id?: string }) {
   const notes = catalog ? breedNotesFor(dog.breed, catalog.breedNotes) : [];
   const factorsOk = !catalog || (catalog.energyMethods.some((m) => m.active) && catalog.energyAssignments.length > 0);
 
-  const persist = async (next: Dog) => {
+  const preset = presetFor(dog.lifeStage);
+  const recommended = catalog ? recommendedFor(dog, catalog.recommendedTargets, catalog.nutrients) : [];
+  const fiber = fiberPerDay(dog);
+  const factorCat = categoryLabel(dog.activity);
+
+  const setLifeStage = (lifeStage: LifeStage) => {
+    let next: Dog = { ...dog, lifeStage };
+    if (!before) {
+      // creazione: le preferenze iniziali dell'adulto non valgono per crescita, gravidanza, allattamento o condizioni cliniche
+      const old = presetFor(dog.lifeStage);
+      if (old && isUntouchedPreset(dog, old)) next = { ...next, macroPreferences: [], fiberTarget: null };
+      const p = presetFor(lifeStage);
+      if (p && !next.macroPreferences.length && !next.fiberTarget) next = applyPreset(next, p);
+    }
+    setDog(next);
+  };
+
+  const persist = async (raw: Dog) => {
+    const next = syncAutoFiber(raw);
     await repo.saveDog(next);
     if (!before || before.weightCurrentKg !== next.weightCurrentKg) {
       await repo.addWeight({ id: uid(), dogId: next.id, date: new Date().toISOString(), weightKg: next.weightCurrentKg });
@@ -135,7 +162,7 @@ export default function DogForm({ id }: { id?: string }) {
         </Row>
         <Toggle label="Sterilizzato" value={!!dog.sterilized} onChange={(v) => set('sterilized', v)} />
         <T small muted>Fase di vita</T>
-        <Choice options={LIFE_STAGE} value={dog.lifeStage} onChange={(v) => set('lifeStage', v)} />
+        <Choice options={LIFE_STAGE} value={dog.lifeStage} onChange={setLifeStage} />
         {dog.lifeStage !== 'adult_maintenance' && (
           <Box color="orange">
             <T small>I riferimenti disponibili valgono solo per l’adulto in mantenimento: per questa fase le ricette risulteranno non verificabili. Serve un veterinario nutrizionista.</T>
@@ -154,10 +181,19 @@ export default function DogForm({ id }: { id?: string }) {
             <T small bold>{WEIGHT_GAP_MESSAGE}.</T>
           </Box>
         )}
-        <Row>
-          <NumField label="Condizione corporea (BCS)" value={dog.bcs} onChange={(v) => set('bcs', v)} />
-          <NumField label="Fattore energetico" value={dog.activityFactor} onChange={(v) => set('activityFactor', v)} placeholder="da indicare" />
-        </Row>
+        <HelpLabel label="Condizione corporea — BCS" onHelp={() => setHelp('bcs')} />
+        <Choice
+          options={[...[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => ({ value: String(n), label: String(n) })), { value: '' as string, label: '—' }]}
+          value={dog.bcs === null ? '' : String(dog.bcs)}
+          onChange={(v) => set('bcs', v ? Number(v) : null)}
+        />
+        <HelpLabel label="Fattore energetico" onHelp={() => setHelp('factor')} />
+        <NumField a11y="Fattore energetico" value={dog.activityFactor} onChange={(v) => setDog({ ...dog, activityFactor: v, activity: factorCat && v !== null && v >= factorCat.min && v <= factorCat.max ? dog.activity : null })} placeholder="da indicare" />
+        {factorCat && dog.activityFactor !== null && (
+          <T small muted>
+            {factorCat.label} (intervallo orientativo {f1(factorCat.min)}–{f1(factorCat.max)})
+          </T>
+        )}
         <T small muted>La stima usa il peso ideale (convenzione dell’app): non sempre è appropriata in sovrappeso, sottopeso o patologie.</T>
         {validWeights && (
           <View style={{ gap: 2 }}>
@@ -166,6 +202,11 @@ export default function DogForm({ id }: { id?: string }) {
             <T small muted>Riferimento FEDIAF 95 kcal/kg^0,75 (confronto): {num(fediafReferenceKcal(dog.weightIdealKg), 0)} kcal/die</T>
           </View>
         )}
+        {recommended.map((r) => (
+          <T key={r.id} small muted>
+            EPA + DHA — {r.label}: {r.formula}
+          </T>
+        ))}
         <NumField label="Obiettivo kcal/die" value={dog.kcalTarget} onChange={(v) => setDog({ ...dog, kcalTarget: v, kcalSource: dog.kcalSource === 'estimated' ? 'user' : dog.kcalSource })} />
         <T small muted>Provenienza</T>
         <Choice options={(Object.keys(KCAL_SOURCE_LABEL) as KcalSource[]).map((k) => ({ value: k, label: KCAL_SOURCE_LABEL[k] }))} value={dog.kcalSource} onChange={(v) => set('kcalSource', v)} />
@@ -174,7 +215,12 @@ export default function DogForm({ id }: { id?: string }) {
 
       <Card>
         <H level={3}>Preferenze di formulazione</H>
-        <T small muted>Percentuali delle kcal, non del peso degli ingredienti. Preferenze flessibili: i limiti nutrizionali vengono prima. Nessun intervallo «ufficiale» precaricato.</T>
+        {preset ? (
+          <T small>{preset.text}</T>
+        ) : (
+          <T small muted>Per questa fase di vita non ci sono intervalli iniziali: indica tu le preferenze, anche secondo il veterinario nutrizionista.</T>
+        )}
+        <T small muted>Percentuali delle kcal, non del peso degli ingredienti. Sono preferenze, non limiti ufficiali né soglie di sicurezza: i controlli nutrizionali vengono prima. Il minimo dei carboidrati non è un fabbisogno essenziale.</T>
         {!factorsOk && (
           <Box color="grey">
             <T small>Nessun metodo energetico approvato: le preferenze si salvano ma non entrano nel calcolo.</T>
@@ -182,22 +228,34 @@ export default function DogForm({ id }: { id?: string }) {
         )}
         {MACROS.map((m) => {
           const cur = dog.macroPreferences.find((x) => x.metric === m.metric);
+          const on = cur?.enabled !== false;
           return (
-            <View key={m.metric} style={{ gap: 4 }}>
+            <View key={m.metric} style={{ gap: 4, opacity: on ? 1 : 0.55 }}>
               <T small bold>{m.label} (% kcal)</T>
               <Row>
                 <NumField placeholder="min" value={cur?.lower ?? null} onChange={(v) => setMacro(m.metric, { lower: v })} />
                 <NumField placeholder="max" value={cur?.upper ?? null} onChange={(v) => setMacro(m.metric, { upper: v })} />
               </Row>
-              <Check label="fissato da un professionista (rigido)" value={!!cur?.locked} onChange={(v) => setMacro(m.metric, { locked: v })} />
+              <Check label="usa questa preferenza" value={on} onChange={(v) => setMacro(m.metric, { enabled: v })} />
+              {on && <Check label="fissato da un professionista (rigido)" value={!!cur?.locked} onChange={(v) => setMacro(m.metric, { locked: v })} />}
             </View>
           );
         })}
-        <T small bold>Fibra (g/die), parametro separato</T>
-        <Row>
-          <NumField placeholder="min" value={dog.fiberTarget?.lower ?? null} onChange={(v) => set('fiberTarget', { lower: v, upper: dog.fiberTarget?.upper ?? null, basis: 'per_day' })} />
-          <NumField placeholder="max" value={dog.fiberTarget?.upper ?? null} onChange={(v) => set('fiberTarget', { lower: dog.fiberTarget?.lower ?? null, upper: v, basis: 'per_day' })} />
-        </Row>
+        <View style={{ gap: 4, opacity: dog.fiberTarget?.enabled === false ? 0.55 : 1 }}>
+          <T small bold>Fibra alimentare totale (g/die)</T>
+          <Row>
+            <NumField placeholder="min" value={fiber?.lower ?? null} onChange={(v) => set('fiberTarget', { lower: v, upper: fiber?.upper ?? null, basis: 'per_day', enabled: dog.fiberTarget?.enabled, auto: null })} />
+            <NumField placeholder="max" value={fiber?.upper ?? null} onChange={(v) => set('fiberTarget', { lower: fiber?.lower ?? null, upper: v, basis: 'per_day', enabled: dog.fiberTarget?.enabled, auto: null })} />
+          </Row>
+          <T small muted>
+            {dog.fiberTarget?.auto
+              ? `Calcolata dall’obiettivo energetico: ${num(dog.fiberTarget.auto.lowerPer1000, 1)}–${num(dog.fiberTarget.auto.upperPer1000, 1)} g per 1.000 kcal${dog.kcalTarget ? '' : ' (serve l’obiettivo kcal)'}; si aggiorna se cambiano le calorie.`
+              : 'Valori personalizzati: restano invariati se cambiano le calorie.'}{' '}
+            Fibra alimentare totale, non fibra grezza.
+          </T>
+          <Check label="usa questa preferenza" value={dog.fiberTarget?.enabled !== false} onChange={(v) => set('fiberTarget', { lower: fiber?.lower ?? null, upper: fiber?.upper ?? null, basis: 'per_day', auto: dog.fiberTarget?.auto ?? null, enabled: v })} />
+        </View>
+        {preset && <Button title="Ripristina i valori iniziali" kind="secondary" small onPress={() => setDog(applyPreset(dog, preset))} />}
         <Field label="Preferenze sugli ingredienti" value={dog.ingredientPreferences ?? ''} onChange={(v) => set('ingredientPreferences', v || null)} multiline />
       </Card>
 
@@ -214,6 +272,13 @@ export default function DogForm({ id }: { id?: string }) {
         />
       </Card>
       <Button title="Salva" busy={busy} onPress={submit} />
+      <BcsHelp visible={help === 'bcs'} onClose={() => setHelp(null)} />
+      <EnergyFactorHelp
+        visible={help === 'factor'}
+        category={dog.activity}
+        onClose={() => setHelp(null)}
+        onChoose={(factor, category) => setDog({ ...dog, activityFactor: factor, activity: category })}
+      />
     </Screen>
   );
 }

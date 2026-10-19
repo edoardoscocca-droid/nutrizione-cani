@@ -67,3 +67,26 @@ minima e indica i vincoli in conflitto e cosa c'è in catalogo con dati verifica
 Dopo il calcolo, `audit.ts` ricalcola tutto da zero sulle quantità arrotondate e sull'istantanea congelata
 (alimenti con il loro metodo energetico, integratori, limiti, profilo del cane, impostazioni), senza usare il modello di ottimizzazione.
 La stessa verifica si ripete a ogni modifica manuale delle quantità.
+
+## Richieste della nutrizionista del 19/10/2026
+
+- **Obiettivi aggiuntivi** (`dati/riferimenti/obiettivi_aggiuntivi.json`, `src/engine/recommended.ts`): EPA+DHA
+  «Apporto raccomandato NRC» = 30 × peso attuale^0,75 mg/die, solo adulto in mantenimento. Classe
+  `RECOMMENDED_ALLOWANCE`: non è un minimo FEDIAF; nel calcolo è un obiettivo flessibile risolto subito dopo la copertura
+  dei limiti ufficiali e prima delle preferenze (fase «Obiettivi aggiuntivi»); nella verifica ha una sezione propria e,
+  se non raggiunto, lo stato «Rispetta i limiti ufficiali, ma non tutti gli obiettivi aggiuntivi». Conta tutti gli
+  alimenti e integratori: l'olio di pesce non è imposto. Cambia con il peso attuale → la ricetta viene segnalata da aggiornare.
+- **EPA+DHA**: riga combinata dichiarata se presente; altrimenti EPA + DHA calcolati se entrambi noti (mostrati come
+  «calcolato»); una parte mancante non vale zero; gli omega-3 totali non si sommano.
+- **Preferenze iniziali** (`dati/riferimenti/preferenze_iniziali.json`): solo nuovi profili adulto in mantenimento;
+  proteine 25–40, grassi 25–45, carboidrati disponibili 20–50 % kcal; fibra alimentare totale 5–15 g/1000 kcal mostrata in
+  g/die (automatica finché non viene modificata). Ogni preferenza si può disattivare; «Ripristina i valori iniziali».
+- **Preferenze non rispettate**: la verifica mostra intervallo richiesto, risultato e scostamento. Il motore rende rigida
+  quella sola preferenza e cerca la violazione minima degli altri vincoli rigidi (energia all'obiettivo): i vincoli
+  violati sono quelli che la impediscono; se il modello è comunque impossibile, gli ingredienti non la consentono in
+  nessuna quantità; altrimenti nessuna spiegazione.
+- **Porzioni**: selezionato = disponibile (quantità ≥ 0). «Porzione minima se usato» = 0 oppure ≥ porzione (variabile
+  binaria); «Includi sempre» = almeno la porzione minima (o un passo). Nessun minimo nascosto.
+- **Energia**: resta la precedenza dell'energia inserita; per ogni componente si mostrano origine, energia dai
+  macronutrienti con il suo metodo e differenza %. Le quote di proteine, grassi e carboidrati non vengono rinormalizzate:
+  se la somma non è 100% lo si dice, con la causa.

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { applyDogChange, breedNotesFor, newDog, planDogChange } from '../../engine/dogProfile';
+import { applyDogChange, breedNotesFor, fiberPerDay, newDog, planDogChange, syncAutoFiber } from '../../engine/dogProfile';
+import { applyPreset, presetFor } from '../../data/formulationPresets';
 import { fediafReferenceKcal, mer, rer, WEIGHT_GAP_MESSAGE, weightGapNeedsWarning } from '../../engine/energy';
 import type { LifeStage, PersonalTarget } from '../../engine/types';
 import { KCAL_SOURCE_LABEL, type Dog, type KcalSource, type MacroPreference } from '../../data/model';
@@ -35,7 +36,11 @@ export function DogFormPage() {
 
   useEffect(() => {
     if (id && data) setDog(data);
-    if (!id && !dog) setDog(newDog({ name: '', weightCurrentKg: 0 as number }, uid()));
+    if (!id && !dog) {
+      const d = newDog({ name: '', weightCurrentKg: 0 as number }, uid());
+      const p = presetFor(d.lifeStage);
+      setDog(p ? applyPreset(d, p) : d);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, data]);
 
@@ -47,7 +52,10 @@ export function DogFormPage() {
   const estimate = validWeights ? mer(dog.weightIdealKg, dog.activityFactor) : null;
   const breedNotes = catalog ? breedNotesFor(dog.breed, catalog.breedNotes) : [];
 
-  const save = async (next: Dog) => {
+  const preset = presetFor(dog.lifeStage);
+  const fiber = fiberPerDay(dog);
+  const save = async (raw: Dog) => {
+    const next = syncAutoFiber(raw);
     try {
       await repo.saveDog(next);
       if (before && before.weightCurrentKg !== next.weightCurrentKg) {
@@ -192,8 +200,9 @@ export function DogFormPage() {
 
       <div className="card form">
         <h3>Preferenze di formulazione</h3>
+        {preset && <p className="small">{preset.text}</p>}
         <p className="small muted">
-          Percentuali delle <strong>kcal</strong> (non del peso degli ingredienti). Sono preferenze flessibili: i limiti nutrizionali vengono prima. Nessun intervallo «ufficiale» è precaricato.
+          Percentuali delle <strong>kcal</strong> (non del peso degli ingredienti). Sono preferenze, non limiti ufficiali né soglie di sicurezza: i controlli nutrizionali vengono prima. Il minimo dei carboidrati non è un fabbisogno essenziale.
         </p>
         {!factorsOk && <div className="box box-grey small">Nessun metodo energetico approvato: le preferenze vengono salvate ma non usate nel calcolo.</div>}
         {MACROS.map((m) => {
@@ -206,14 +215,26 @@ export function DogFormPage() {
               <label className="check small">
                 <input type="checkbox" checked={!!cur?.locked} onChange={(e) => setMacro(m.metric, { locked: e.target.checked })} /> fissato da professionista (rigido)
               </label>
+              <label className="check small">
+                <input type="checkbox" checked={cur?.enabled !== false} onChange={(e) => setMacro(m.metric, { enabled: e.target.checked })} /> usa questa preferenza
+              </label>
             </div>
           );
         })}
         <div className="grid3">
-          <span>Fibra (parametro separato), g/die</span>
-          <NumberInput placeholder="min" value={dog.fiberTarget?.lower ?? null} onChange={(v) => set('fiberTarget', { lower: v, upper: dog.fiberTarget?.upper ?? null, basis: 'per_day' })} />
-          <NumberInput placeholder="max" value={dog.fiberTarget?.upper ?? null} onChange={(v) => set('fiberTarget', { lower: dog.fiberTarget?.lower ?? null, upper: v, basis: 'per_day' })} />
+          <span>Fibra alimentare totale (non grezza), g/die</span>
+          <NumberInput placeholder="min" value={fiber?.lower ?? null} onChange={(v) => set('fiberTarget', { lower: v, upper: fiber?.upper ?? null, basis: 'per_day', enabled: dog.fiberTarget?.enabled, auto: null })} />
+          <NumberInput placeholder="max" value={fiber?.upper ?? null} onChange={(v) => set('fiberTarget', { lower: fiber?.lower ?? null, upper: v, basis: 'per_day', enabled: dog.fiberTarget?.enabled, auto: null })} />
+          <label className="check small">
+            <input type="checkbox" checked={dog.fiberTarget?.enabled !== false} onChange={(e) => set('fiberTarget', { lower: fiber?.lower ?? null, upper: fiber?.upper ?? null, basis: 'per_day', auto: dog.fiberTarget?.auto ?? null, enabled: e.target.checked })} /> usa questa preferenza
+          </label>
         </div>
+        <p className="small muted">
+          {dog.fiberTarget?.auto
+            ? `Fibra calcolata dall’obiettivo energetico (${num(dog.fiberTarget.auto.lowerPer1000, 1)}–${num(dog.fiberTarget.auto.upperPer1000, 1)} g per 1.000 kcal): si aggiorna se cambiano le calorie.`
+            : 'Fibra con valori personalizzati: restano invariati se cambiano le calorie.'}
+        </p>
+        {preset && <button type="button" className="secondary" onClick={() => setDog(applyPreset(dog, preset))}>Ripristina i valori iniziali</button>}
         <label>Preferenze sugli ingredienti<textarea value={dog.ingredientPreferences ?? ''} onChange={(e) => set('ingredientPreferences', e.target.value || null)} /></label>
       </div>
 

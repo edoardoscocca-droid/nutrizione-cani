@@ -3,6 +3,7 @@ import { CATALOG_STATUS_HELP, CATALOG_STATUS_LABEL, foodStatus, statusHelp, supp
 import type { DataStatus, EnergyAssignment, EnergyMethod, Food, NutrientValue, ProcessingGroup, ProcessingState, Supplement } from '../../engine/types';
 import { PROCESSING_LABEL } from '../../data/packageCatalog';
 import { SUPPLEMENT_ENERGY_CATEGORY } from '../../engine/energy';
+import { compoundValue } from '../../engine/totals';
 import { uid } from '../../data/repository';
 import { useApp, useData } from '../AppContext';
 import { ErrorBox, Modal, NumberInput } from '../components';
@@ -426,10 +427,11 @@ function NutrientGrid({ values, onChange, perLabel }: { values: Record<string, N
         {list.map((n) => {
           const v = values[n.id] ?? { value: null };
           const upd = (p: Partial<NutrientValue>) => onChange({ ...values, [n.id]: { ...v, ...p } });
+          const calc = v.value === null ? compoundValue(values, n.id) : null;
           return (
             <tr key={n.id}>
               <td>{n.label} <span className="muted small">{n.unit}</span></td>
-              <td className="r"><NumberInput ariaLabel={n.label} min={0} value={v.value} placeholder="non disponibile" onChange={(x) => upd({ value: x, status: x === null ? 'unknown' : v.status && v.status !== 'unknown' ? v.status : 'measured' })} /></td>
+              <td className="r"><NumberInput ariaLabel={n.label} min={0} value={v.value} placeholder={calc ? `calcolato ${num(calc.value, 3)} (somma)` : 'non disponibile'} onChange={(x) => upd({ value: x, status: x === null ? 'unknown' : v.status && v.status !== 'unknown' ? v.status : 'measured' })} /></td>
               <td>
                 <select value={v.status ?? 'unknown'} onChange={(e) => upd({ status: e.target.value as NutrientValue['status'] })}>
                   {['measured', 'label', 'calculated', 'estimated', 'analytical_zero', 'unknown'].map((s) => (

@@ -2,7 +2,8 @@
 
 import type { Dog } from '../data/model';
 import { mer, weightGapNeedsWarning } from './energy';
-import type { DogFormulationProfile, PersonalTarget } from './types';
+import { recommendedFor } from './recommended';
+import type { DogFormulationProfile, Nutrient, PersonalTarget, RecommendedTarget } from './types';
 
 export interface DogChangePlan {
   /** true se cambia qualcosa che incide sulla formulazione → ricette da ricalcolare (con conferma). */
@@ -13,6 +14,25 @@ export interface DogChangePlan {
   /** proporre di aggiornare le kcal obiettivo alla nuova stima (mai in automatico). */
   proposeKcalUpdate: boolean;
   changedFields: string[];
+}
+
+/** Fibra in g/die: in modalità automatica si ricava dall'obiettivo energetico (g per 1.000 kcal). */
+export function fiberPerDay(dog: Pick<Dog, 'fiberTarget' | 'kcalTarget'>): { lower: number | null; upper: number | null } | null {
+  const f = dog.fiberTarget;
+  if (!f) return null;
+  if (f.auto) {
+    if (!dog.kcalTarget || !(dog.kcalTarget > 0)) return { lower: null, upper: null };
+    const r = (x: number) => Math.round(((x * dog.kcalTarget!) / 1000) * 10) / 10;
+    return { lower: r(f.auto.lowerPer1000), upper: r(f.auto.upperPer1000) };
+  }
+  return { lower: f.lower, upper: f.upper };
+}
+
+/** Aggiorna i g/die della fibra se è ancora in modalità automatica (i valori personalizzati restano). */
+export function syncAutoFiber(dog: Dog): Dog {
+  if (!dog.fiberTarget?.auto) return dog;
+  const v = fiberPerDay(dog)!;
+  return { ...dog, fiberTarget: { ...dog.fiberTarget, lower: v.lower, upper: v.upper, basis: 'per_day' } };
 }
 
 const FORMULATION_KEYS: (keyof Dog)[] = [
@@ -103,10 +123,10 @@ export function breedNotesFor(breed: string | null, notes: BreedNote[]) {
 }
 
 /** Profilo usato dal motore: target personali + preferenze macro/fibra come target etichettati, note di razza in viola. */
-export function toFormulationProfile(dog: Dog, breedNotes: BreedNote[]): DogFormulationProfile {
+export function toFormulationProfile(dog: Dog, breedNotes: BreedNote[], recommendedTargets: RecommendedTarget[] = [], nutrients: Nutrient[] = []): DogFormulationProfile {
   const targets: PersonalTarget[] = [...dog.targets];
   for (const m of dog.macroPreferences) {
-    if (m.lower === null && m.upper === null) continue;
+    if (m.enabled === false || (m.lower === null && m.upper === null)) continue;
     targets.push({
       id: `macro_${m.metric}`,
       metric: m.metric,
@@ -119,14 +139,15 @@ export function toFormulationProfile(dog: Dog, breedNotes: BreedNote[]): DogForm
       setAt: dog.updatedAt.slice(0, 10),
     });
   }
-  if (dog.fiberTarget && (dog.fiberTarget.lower !== null || dog.fiberTarget.upper !== null)) {
+  const fiber = fiberPerDay(dog);
+  if (dog.fiberTarget && dog.fiberTarget.enabled !== false && fiber && (fiber.lower !== null || fiber.upper !== null)) {
     targets.push({
       id: 'fiber',
       metric: 'fiber',
-      lower: dog.fiberTarget.lower,
-      upper: dog.fiberTarget.upper,
+      lower: fiber.lower,
+      upper: fiber.upper,
       unit: 'g',
-      basis: dog.fiberTarget.basis,
+      basis: dog.fiberTarget.auto ? 'per_day' : dog.fiberTarget.basis,
       locked: false,
       setBy: 'preferenza utente',
       setAt: dog.updatedAt.slice(0, 10),
@@ -142,6 +163,7 @@ export function toFormulationProfile(dog: Dog, breedNotes: BreedNote[]): DogForm
     kcalTarget: dog.kcalTarget,
     targets,
     attentionNotes: [...breedNotesFor(dog.breed, breedNotes).map((n) => ({ text: n.text, source: n.source, metrics: n.metrics })), ...dog.notes],
+    recommended: recommendedFor(dog, recommendedTargets, nutrients),
     formulationRevision: dog.formulationRevision,
   };
 }

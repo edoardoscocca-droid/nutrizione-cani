@@ -1,6 +1,7 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { foodStatus, statusHelp, supplementStatus } from '../../../../src/engine/catalogStatus';
+import { compoundValue } from '../../../../src/engine/totals';
 import type { Food, Supplement } from '../../../../src/engine/types';
 import { PROCESSING_LABEL } from '../../../../src/data/packageCatalog';
 import { GROUP_LABEL, num, smart } from '../../../../src/ui/format';
@@ -97,10 +98,15 @@ export default function ProductScreen() {
               .filter((n) => n.group === g && n.kind !== 'derived')
               .map((n) => {
                 const v = p.nutrients[n.id];
+                const c = v?.value == null ? compoundValue(p.nutrients, n.id) : null;
                 return (
                   <Row key={n.id} style={{ justifyContent: 'space-between' }}>
                     <T small style={{ flex: 1 }}>{n.label}</T>
-                    <T small muted={v?.value == null}>{v?.value == null ? 'non disponibile' : `${smart(v.value)} ${n.unit}${v.status === 'estimated' ? ' (stima)' : ''}`}</T>
+                    {c ? (
+                      <T small>{`${smart(c.value)} ${n.unit} (calcolato: ${c.parts!.map((x) => catalog.nutrients.find((y) => y.id === x)?.label ?? x).join(' + ')})`}</T>
+                    ) : (
+                      <T small muted={v?.value == null}>{v?.value == null ? 'non disponibile' : `${smart(v.value)} ${n.unit}${v.status === 'estimated' ? ' (stima)' : ''}`}</T>
+                    )}
                   </Row>
                 );
               })}

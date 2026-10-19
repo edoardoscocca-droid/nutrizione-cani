@@ -7,7 +7,7 @@
 import { foodStatus, supplementStatus } from './catalogStatus';
 import { COMPOUNDS } from './totals';
 import { doseRangeFor, weightSpan } from './doseGuide';
-import { applicableLimits, auditRecipe, type AuditResult, type DietMoisture } from './audit';
+import { applicableLimits, auditRecipe, type AuditResult, type DietMoisture, type SoftGap } from './audit';
 import { solve, type Model, type Row, type SolveResult, type Term, type VarDef, loadSolver } from './lp';
 import type {
   DogFormulationProfile,
@@ -48,7 +48,8 @@ export type ConstraintKind =
   | 'personal_soft'
   | 'non_official'
   | 'coverage_partial'
-  | 'product_range';
+  | 'product_range'
+  | 'recommended';
 
 export interface ConstraintInfo {
   name: string;
@@ -95,6 +96,9 @@ interface ModelItem {
   value: (n: string) => number | null; // per passo
   lb: number; // in passi
   ub: number | null;
+  /** porzione minima se usato (in passi): 0 oppure almeno questa quantità. */
+  semiMin: number | null;
+  required: boolean;
   minQty: number | null;
   maxQty: number | null;
   productMax: number | null;
@@ -114,6 +118,23 @@ function rawValue(nutrients: Record<string, { value: number | null } | undefined
     if (a !== null && a !== undefined && b !== null && b !== undefined) return a + b;
   }
   return null;
+}
+
+/**
+ * Quantità minime scelte dall'utente. Selezionare un ingrediente lo rende solo disponibile (quantità ≥ 0):
+ * - «includi sempre» (o un minimo obbligatorio) → almeno la porzione minima, o un passo se non è indicata;
+ * - «porzione minima se usato» → 0 oppure almeno quella porzione (nessun minimo nascosto).
+ */
+function portionBounds(c: ItemConstraint | undefined, step: number): Pick<ModelItem, 'lb' | 'semiMin' | 'required' | 'minQty'> {
+  const minIfUsed = c?.minIfUsed && c.minIfUsed > 0 ? c.minIfUsed : null;
+  const required = !!c?.required || (c?.minQty ?? 0) > 0;
+  const minQty = required ? Math.max(c?.minQty ?? 0, minIfUsed ?? 0) || null : null;
+  return {
+    lb: required ? Math.max(1, Math.ceil((minQty ?? step) / step - 1e-9)) : 0,
+    semiMin: !required && minIfUsed ? Math.max(1, Math.ceil(minIfUsed / step - 1e-9)) : null,
+    required,
+    minQty,
+  };
 }
 
 function supplementStep(s: Supplement, st: EngineSettings): number {
@@ -175,9 +196,8 @@ function buildItems(input: FormulationInput, foods: FormulationInput['foods'], s
         const x = rawValue(food.nutrients, n);
         return x === null ? null : (x / 100) * step;
       },
-      lb: constraint?.minQty ? Math.ceil(constraint.minQty / step - 1e-9) : 0,
+      ...portionBounds(constraint, step),
       ub: constraint?.maxQty !== null && constraint?.maxQty !== undefined ? Math.floor(constraint.maxQty / step + 1e-9) : null,
-      minQty: constraint?.minQty ?? null,
       maxQty: constraint?.maxQty ?? null,
       productMax: null,
       guideMin: null,
@@ -204,9 +224,8 @@ function buildItems(input: FormulationInput, foods: FormulationInput['foods'], s
         const x = rawValue(s.nutrients, n);
         return x === null ? null : x * step;
       },
-      lb: constraint?.minQty ? Math.ceil(constraint.minQty / step - 1e-9) : 0,
+      ...portionBounds(constraint, step),
       ub: constraint?.maxQty !== null && constraint?.maxQty !== undefined ? Math.floor(constraint.maxQty / step + 1e-9) : null,
-      minQty: constraint?.minQty ?? null,
       maxQty: constraint?.maxQty ?? null,
       productMax: productMax !== null ? Math.floor(productMax / step + 1e-9) : null,
       guideMin: range ? range.min : null,
@@ -216,12 +235,14 @@ function buildItems(input: FormulationInput, foods: FormulationInput['foods'], s
   return items;
 }
 
+type DevGroup = 'coverage' | 'target' | 'preference';
+
 interface BuiltRow extends Row {
   info: ConstraintInfo;
   /** scala per normalizzare scarti/violazioni. */
   scale: number;
-  /** per righe morbide: nome della variabile di scarto e gruppo di priorità. */
-  dev?: { v: string; group: 'coverage' | 'preference' };
+  /** per righe morbide: nome della variabile di scarto e gruppo di priorità (coverage → target → preference). */
+  dev?: { v: string; group: DevGroup };
 }
 
 function fmt(n: number) {
@@ -264,6 +285,7 @@ function buildRows(
     if (l.limitClass === 'OFFICIAL_NUTRITIONAL_MAX') return l.basis === 'ratio' ? 'official_ratio' : 'official_max';
     if (l.limitClass === 'LEGAL_MAX') return 'legal_max';
     if (l.limitClass === 'PERSONAL_TARGET') return l.hardness === 'hard' ? 'personal_locked' : 'personal_soft';
+    if (l.limitClass === 'RECOMMENDED_ALLOWANCE') return 'recommended';
     void isUpper;
     return 'non_official';
   };
@@ -322,12 +344,14 @@ function buildRows(
       }
       const op: '>=' | '<=' = side === 'lower' ? '>=' : '<=';
       const kind = kindOf(l, side === 'upper');
-      const desc = `${label.get(l.metric) ?? l.metric}: ${side === 'lower' ? 'minimo' : 'massimo'} ${fmt(bound)} ${unitLabel} (${l.source})`.replace('  ', ' ');
+      const what = l.limitClass === 'RECOMMENDED_ALLOWANCE' ? (l.displayLabel ?? 'apporto raccomandato') : side === 'lower' ? 'minimo' : 'massimo';
+      const desc = `${label.get(l.metric) ?? l.metric}: ${what} ${fmt(bound)} ${unitLabel} (${l.source})`.replace('  ', ' ');
       // Regole sui dati parziali:
       //  - massimo: i soli contributi noti sono un limite inferiore del vero totale → vincolo rigido corretto;
       //  - minimo o rapporto con dati parziali: non dimostrabile → solo copertura morbida, la verifica resta grigia.
       let hard = l.hardness === 'hard';
-      let group: 'coverage' | 'preference' = 'preference';
+      // obiettivi aggiuntivi (es. EPA+DHA NRC): da raggiungere prima delle preferenze, dopo i limiti ufficiali
+      let group: DevGroup = l.limitClass === 'RECOMMENDED_ALLOWANCE' ? 'target' : 'preference';
       if (hard && !dataComplete && !(side === 'upper' && l.basis !== 'ratio')) {
         hard = false;
         group = 'coverage';
@@ -391,6 +415,22 @@ function buildModel(input: FormulationInput, items: ModelItem[], limits: Nutrien
     }
     return { name: it.v, lb: it.lb, ub, integer: it.integerUnits };
   });
+  // porzione minima se usato: x = 0 oppure x ≥ porzione (variabile binaria y: x ≤ U·y, x ≥ m·y)
+  const semiRows: Row[] = [];
+  for (const it of items) {
+    if (it.semiMin === null) continue;
+    const v = vars.find((x) => x.name === it.v)!;
+    const U = v.ub as number;
+    if (it.semiMin > U) {
+      v.ub = 0;
+      notes.push(`${it.name}: la porzione minima scelta supera la quantità massima consentita, quindi non viene usato.`);
+      continue;
+    }
+    const y = `y_${it.v}`;
+    vars.push({ name: y, lb: 0, ub: 1, integer: true });
+    semiRows.push({ name: `semi_hi_${it.v}`, terms: [{ v: it.v, c: 1 }, { v: y, c: -U }], op: '<=', rhs: 0 });
+    semiRows.push({ name: `semi_lo_${it.v}`, terms: [{ v: it.v, c: 1 }, { v: y, c: -it.semiMin }], op: '>=', rhs: 0 });
+  }
   const energyRow: BuiltRow = {
     name: 'energy',
     terms: [...items.map((it) => ({ v: it.v, c: it.kcal })), { v: 'ep', c: -1 }, { v: 'en', c: 1 }],
@@ -400,10 +440,10 @@ function buildModel(input: FormulationInput, items: ModelItem[], limits: Nutrien
     info: { name: 'energy', label: `Energia: ${fmt(K)} kcal ±${input.settings.energyTolerancePct}%`, kind: 'energy', hardness: 'hard' },
   };
   vars.push({ name: 'ep', lb: 0, ub: tol * K, integer: false }, { name: 'en', lb: 0, ub: tol * K, integer: false }, ...extraVars);
-  return { model: { vars, rows: [energyRow, ...rows], objective: [] }, rows: [energyRow, ...rows], items, energyDev: ['ep', 'en'], K };
+  return { model: { vars, rows: [energyRow, ...rows, ...semiRows], objective: [] }, rows: [energyRow, ...rows], items, energyDev: ['ep', 'en'], K };
 }
 
-function devObjective(rows: BuiltRow[], group: 'coverage' | 'preference'): Term[] {
+function devObjective(rows: BuiltRow[], group: DevGroup): Term[] {
   return rows.filter((r) => r.dev?.group === group).map((r) => ({ v: r.dev!.v, c: 1 / r.scale }));
 }
 
@@ -421,7 +461,11 @@ function diagnose(built: Built, highsSolve: (m: Model) => SolveResult): Conflict
   return fixed ?? diagnoseWith(built, highsSolve, true) ?? [];
 }
 
-function diagnoseWith(built: Built, highsSolve: (m: Model) => SolveResult, relaxEnergy: boolean): Conflict[] | null {
+/**
+ * @param forced riga morbida da rendere rigida (senza scarto): serve a capire quali vincoli rigidi impediscono
+ *        di rispettare una preferenza o un obiettivo aggiuntivo.
+ */
+function diagnoseWith(built: Built, highsSolve: (m: Model) => SolveResult, relaxEnergy: boolean, forced?: BuiltRow): Conflict[] | null {
   const rows: Row[] = [];
   const vars: VarDef[] = built.model.vars.map((v) => {
     if (relaxEnergy && (v.name === 'ep' || v.name === 'en')) return { ...v, ub: null };
@@ -449,7 +493,9 @@ function diagnoseWith(built: Built, highsSolve: (m: Model) => SolveResult, relax
       rows.push({ name: 'enmax', terms: [{ v: 'en', c: 1 }, { v: sn, c: -1 }], op: '<=', rhs: tol });
       continue;
     }
-    if (!r.dev) {
+    if (forced && r.name === forced.name) {
+      rows.push({ name: r.name, terms: r.terms.filter((t) => t.v !== r.dev?.v), op: r.op, rhs: r.rhs });
+    } else if (!r.dev) {
       const s = addSlack(r.info, r.scale, r.op === '>=' ? 'deficit' : 'excess');
       rows.push({ name: r.name, terms: [...r.terms, { v: s, c: r.op === '>=' ? 1 : -1 }], op: r.op, rhs: r.rhs });
     } else {
@@ -459,7 +505,7 @@ function diagnoseWith(built: Built, highsSolve: (m: Model) => SolveResult, relax
   for (const it of built.items) {
     const ub = [it.ub, it.productMax].filter((x): x is number => x !== null);
     if (it.lb > 0) {
-      const s = addSlack({ name: `lb_${it.v}`, label: `Limite scelto: ${it.name} almeno ${fmt(it.minQty ?? it.lb * it.step)}`, kind: 'user_bound', hardness: 'hard' }, it.lb, 'excess');
+      const s = addSlack({ name: `lb_${it.v}`, label: `Limite scelto: ${it.name} sempre incluso, almeno ${fmt(it.minQty ?? it.lb * it.step)}`, kind: 'user_bound', hardness: 'hard' }, it.lb, 'excess');
       rows.push({ name: `lb_${it.v}`, terms: [{ v: it.v, c: 1 }, { v: s, c: 1 }], op: '>=', rhs: it.lb });
     }
     if (ub.length) {
@@ -586,7 +632,8 @@ export async function formulate(input: FormulationInput): Promise<FormulationRes
   const built = buildModel(input, items, limits, notes);
   const constraints = built.rows.map((r) => r.info);
   for (const it of items) {
-    if (it.minQty) constraints.push({ name: `lb_${it.v}`, label: `${it.name}: almeno ${fmt(it.minQty)}`, kind: 'user_bound', hardness: 'hard' });
+    if (it.required) constraints.push({ name: `lb_${it.v}`, label: `${it.name}: sempre incluso${it.minQty ? `, almeno ${fmt(it.minQty)}` : ''}`, kind: 'user_bound', hardness: 'hard' });
+    if (it.semiMin !== null) constraints.push({ name: `semi_${it.v}`, label: `${it.name}: se usato, almeno ${fmt(it.semiMin * it.step)} (altrimenti 0)`, kind: 'user_bound', hardness: 'hard' });
     if (it.maxQty !== null) constraints.push({ name: `ub_${it.v}`, label: `${it.name}: non oltre ${fmt(it.maxQty)}`, kind: 'user_bound', hardness: 'hard' });
     if (it.productMax !== null)
       constraints.push({ name: `pm_${it.v}`, label: `${it.name}: dose massima del produttore ${fmt(it.productMax * it.step)} — non superata in automatico: oltre serve una valutazione veterinaria`, kind: 'product_max', hardness: 'hard' });
@@ -615,6 +662,14 @@ export async function formulate(input: FormulationInput): Promise<FormulationRes
     return { ...base, constraints, outcome: p1.status === 'timeout' ? 'timeout' : 'error', message: `Il calcolo non è terminato (${p1.rawStatus}). Nessuna quantità proposta.` };
   }
   model = fixObjective(model, cover, p1.objective, 'fix_cover');
+
+  // Fase 1b: obiettivi aggiuntivi (es. apporto raccomandato NRC di EPA+DHA), prima delle preferenze
+  const target = devObjective(built.rows, 'target');
+  if (target.length) {
+    const pt = runSolve({ ...model, objective: target });
+    phases.push({ name: 'Obiettivi aggiuntivi', status: pt.rawStatus, objective: pt.status === 'optimal' ? pt.objective : null });
+    if (pt.status === 'optimal') model = fixObjective(model, target, pt.objective, 'fix_target');
+  }
 
   // Fase 2: avvicinarsi all'obiettivo kcal
   const energyObj: Term[] = [{ v: 'ep', c: 1 / built.K }, { v: 'en', c: 1 / built.K }];
@@ -663,7 +718,7 @@ export async function formulate(input: FormulationInput): Promise<FormulationRes
   for (const it of proposal) {
     if (it.qty === 0) {
       const name = items.find((x) => x.id === it.id)?.name;
-      notes.push(`${name}: quantità 0 — non necessario per rispettare i vincoli. Aggiungi un minimo se vuoi includerlo.`);
+      notes.push(`${name}: quantità 0 — non necessario per rispettare i vincoli. Attiva «includi sempre» se vuoi usarlo.`);
     }
   }
 
@@ -680,6 +735,8 @@ export async function formulate(input: FormulationInput): Promise<FormulationRes
     settings: input.settings,
     excluded: excluded.map((e) => ({ name: e.name, reason: e.reason })),
   });
+  const softGaps = softGapAnalysis(built, last.values, runSolve);
+  if (softGaps.length) audit.softGaps = softGaps;
   return {
     ...base,
     constraints,
@@ -688,6 +745,29 @@ export async function formulate(input: FormulationInput): Promise<FormulationRes
     audit,
     message: audit.statusLabel,
   };
+}
+
+/**
+ * Per ogni preferenza od obiettivo aggiuntivo non rispettato nella proposta: quali vincoli rigidi lo impediscono.
+ * Si rende rigida quella sola riga e si cerca la violazione minima degli altri vincoli rigidi (modello elastico).
+ * Se nemmeno rilassando tutti gli altri vincoli (energia all'obiettivo) è raggiungibile, la composizione degli ingredienti selezionati non lo consente.
+ * Se il modello non individua vincoli, non si inventano spiegazioni.
+ */
+function softGapAnalysis(built: Built, values: Record<string, number>, runSolve: (m: Model) => SolveResult): SoftGap[] {
+  const out: SoftGap[] = [];
+  const missed = built.rows.filter((r) => r.dev && r.dev.group !== 'coverage' && (values[r.dev.v] ?? 0) / r.scale > 1e-4).slice(0, 8);
+  for (const r of missed) {
+    // energia fissata all'obiettivo: senza quantità limitate, l'infattibilità dipende solo dalla composizione degli ingredienti
+    const conflicts = diagnoseWith(built, runSolve, false, r);
+    out.push({
+      label: r.info.label,
+      metric: r.info.metric,
+      kind: r.info.kind,
+      blockedBy: conflicts ? [...new Set(conflicts.map((c) => c.label))] : [],
+      unreachable: conflicts === null,
+    });
+  }
+  return out;
 }
 
 export interface PreliminaryResult {

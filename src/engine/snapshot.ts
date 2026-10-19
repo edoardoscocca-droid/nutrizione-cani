@@ -78,6 +78,12 @@ export function staleDependencies(snap: RecipeSnapshot, cur: CurrentState): Depe
   if (snap.factors && !Object.values(snap.foods).some((f) => f.energyMethod)) {
     out.push({ kind: 'energy_method', id: 'factors', name: 'Metodo energetico', frozen: snap.factors.version, current: 'metodi per tipologia di alimento' });
   }
+  // obiettivi aggiuntivi (es. EPA+DHA NRC sul peso attuale): cambiano con il peso o con i riferimenti approvati
+  const rec = (d: DogFormulationProfile) => (d.recommended ?? []).map((r) => `${r.id}:${Math.round(r.amountPerDay * 1e4) / 1e4}`).sort().join(', ');
+  if (rec(snap.dog) !== rec(cur.dog)) {
+    const label = (d: DogFormulationProfile) => (d.recommended ?? []).map((r) => r.formula).join('; ') || 'nessuno';
+    out.push({ kind: 'dog', id: `${snap.dog.id}:recommended`, name: 'Obiettivi aggiuntivi (apporto raccomandato)', frozen: label(snap.dog), current: label(cur.dog) });
+  }
   if (snap.dog.formulationRevision !== cur.dog.formulationRevision) {
     out.push({ kind: 'dog', id: snap.dog.id, name: `Profilo di ${snap.dog.name}`, frozen: `rev. ${snap.dog.formulationRevision}`, current: `rev. ${cur.dog.formulationRevision}` });
   }

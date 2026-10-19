@@ -102,6 +102,21 @@ export const COMPOUNDS: Record<string, [string, string]> = {
   phenylalanine_tyrosine: ['phenylalanine', 'tyrosine'],
 };
 
+/**
+ * Valore da mostrare in catalogo: riga dichiarata se presente; altrimenti, per i valori composti (EPA+DHA…),
+ * la somma calcolata delle due parti se entrambe note. Una parte mancante non vale zero: il valore resta sconosciuto.
+ */
+export function compoundValue(nutrients: Record<string, { value: number | null } | undefined>, id: string): { value: number; calculated: boolean; parts?: [string, string] } | null {
+  const v = nutrients[id]?.value;
+  if (v !== null && v !== undefined) return { value: v, calculated: false };
+  const pair = COMPOUNDS[id];
+  if (!pair) return null;
+  const a = nutrients[pair[0]]?.value;
+  const b = nutrients[pair[1]]?.value;
+  if (a === null || a === undefined || b === null || b === undefined) return null;
+  return { value: a + b, calculated: true, parts: pair };
+}
+
 export function itemValue(d: ItemData, nutrientId: string): number | null {
   const direct = d.valuePerQty(nutrientId);
   if (direct !== null) return direct;

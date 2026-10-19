@@ -20,6 +20,18 @@ export interface MacroPreference {
   upper: number | null;
   /** rigido solo se fissato da un professionista. */
   locked: boolean;
+  /** false = preferenza disattivata (resta salvata ma non entra nel calcolo). */
+  enabled?: boolean;
+}
+
+/** Fibra alimentare totale (non fibra grezza), mostrata in g/die. */
+export interface FiberTarget {
+  lower: number | null;
+  upper: number | null;
+  basis: 'per_day' | 'per_1000_kcal_me';
+  enabled?: boolean;
+  /** modalità automatica: g/die ricavati dall'obiettivo energetico (g per 1.000 kcal); si toglie quando l'utente modifica i valori. */
+  auto?: { lowerPer1000: number; upperPer1000: number } | null;
 }
 
 export interface Dog {
@@ -39,7 +51,7 @@ export interface Dog {
   kcalTarget: number | null;
   kcalSource: KcalSource;
   macroPreferences: MacroPreference[];
-  fiberTarget: { lower: number | null; upper: number | null; basis: 'per_day' | 'per_1000_kcal_me' } | null;
+  fiberTarget: FiberTarget | null;
   ingredientPreferences: string | null;
   targets: PersonalTarget[];
   clinicalNotes: string | null;

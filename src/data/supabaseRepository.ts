@@ -6,6 +6,7 @@ import { applyEnergyMethods } from '../engine/energy';
 import { DEFAULT_SETTINGS } from '../engine/types';
 import type { AppSettings, Dog, Recipe, RecipeVersion, UserPrice, WeightEntry } from './model';
 import type { Category } from './packageCatalog';
+import { packageRecommendedTargets } from './packageCatalog';
 import { RecipeLimitError } from './recipeService';
 import type { FullCatalog, ImportLogEntry, ProfileHistoryEntry, Repository } from './repository';
 import { toPayload, type ImportPlan } from './catalogImport';
@@ -142,6 +143,8 @@ export class SupabaseRepository implements Repository {
         id: c.id as string, nutrientId: c.nutrient_id as string, fromUnit: c.from_unit as string, toUnit: c.to_unit as string,
         form: (c.form as string) ?? null, formLabel: c.form_label as string, factor: Number(c.factor), source: c.source as string,
       })),
+      // obiettivi aggiuntivi approvati: dal pacchetto (nessuna tabella dedicata per ora)
+      recommendedTargets: packageRecommendedTargets(),
       categories: cats.map((c): Category => ({ id: c.id as string, parentId: (c.parent_id as string) ?? null, label: c.label_it as string, secretingOffal: c.secreting_offal as boolean })),
       foods: foods.map(
         (f): Food => ({

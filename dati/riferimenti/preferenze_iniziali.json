@@ -1,0 +1,17 @@
+{
+  "_nota": "Preferenze iniziali del progetto per i nuovi profili «cane adulto sano in mantenimento» (nutrizionista, 19/10/2026). Ampie e modificabili: NON sono limiti ufficiali FEDIAF/NRC, soglie di sicurezza o garanzia di bilanciamento. Il minimo dei carboidrati non è un fabbisogno essenziale. Non si applicano a crescita, gravidanza, allattamento, dimagrimento o condizioni cliniche.",
+  "presets": [
+    {
+      "id": "adulto_sano_mantenimento_2026",
+      "lifeStage": "adult_maintenance",
+      "macros": {
+        "protein_energy_pct": [25, 40],
+        "fat_energy_pct": [25, 45],
+        "carb_energy_pct": [20, 50]
+      },
+      "fiberPer1000Kcal": [5, 15],
+      "fiberNote": "Fibra alimentare totale (non fibra grezza), in g per 1.000 kcal; nel profilo si mostra in g/die calcolati dall'obiettivo energetico.",
+      "text": "Intervalli iniziali per la formulazione di un adulto sano. Puoi modificarli, anche secondo le indicazioni del veterinario nutrizionista. Il bilanciamento viene controllato separatamente."
+    }
+  ]
+}

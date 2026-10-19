@@ -14,6 +14,7 @@ import { methodsSummary } from '../../src/engine/energy';
 const STATUS_COLOR: Record<RecipeStatus, Color> = {
   VERIFIED_AVAILABLE_CHECKS: 'green',
   PREFERENCES_VIOLATED: 'orange',
+  TARGETS_NOT_MET: 'orange',
   INSUFFICIENT_DATA: 'grey',
   FAILS_OFFICIAL_LIMITS: 'red',
   NO_VALID_SOLUTION: 'red',
@@ -41,6 +42,23 @@ export function StatusBox({ audit }: { audit: AuditResult }) {
           </View>
         </Row>
       ) : null}
+      {(audit.additional ?? []).length > 0 && (
+        <View style={{ gap: 4 }}>
+          <T small bold>Obiettivi aggiuntivi (distinti dai requisiti FEDIAF)</T>
+          {audit.additional!.map((a) => (
+            <Row key={a.id} style={{ alignItems: 'flex-start' }}>
+              <View style={{ marginTop: 5 }}>
+                <Dot color={a.color} />
+              </View>
+              <T small style={{ flex: 1 }}>
+                <T small bold>{a.label}: </T>
+                {a.color === 'green' ? 'raggiunto' : a.color === 'orange' ? 'non raggiunto' : 'non verificabile'}
+                {a.amount != null && a.required != null ? ` — ${smart(a.amount)} su ${smart(a.required)} ${a.unit}/die` : ''}
+              </T>
+            </Row>
+          ))}
+        </View>
+      )}
       <Row style={{ gap: 8, alignItems: 'flex-start' }}>
         <View style={{ marginTop: 5 }}>
           <Dot color={STATUS_COLOR[audit.status]} />
@@ -60,6 +78,71 @@ export function Warnings({ audit }: { audit: AuditResult }) {
     <Box color="purple">
       <Bullets small items={items} />
     </Box>
+  );
+}
+
+/** Preferenze e obiettivi non rispettati: intervallo richiesto, risultato, scostamento e (se individuati) i vincoli che lo impediscono. */
+export function GapsCard({ audit }: { audit: AuditResult }) {
+  const missed = audit.rows.flatMap((r) => r.checks.filter((c) => c.gap && c.color === 'orange').map((c) => ({ r, c })));
+  if (!missed.length) return null;
+  const analysis = audit.softGaps ?? [];
+  return (
+    <Card>
+      <H level={3}>Preferenze e obiettivi non rispettati</H>
+      {missed.map(({ r, c }) => {
+        const side = c.gap!.deviation < 0 ? 'lower' : 'upper';
+        const a = analysis.find((x) => x.metric === r.metric && (side === 'lower' ? /minimo|raccomandato/i.test(x.label) : /massimo/i.test(x.label)));
+        return (
+          <View key={c.limit.id} style={{ gap: 2, paddingVertical: 4 }}>
+            <T bold>{r.label} — {c.limit.limitClass === 'RECOMMENDED_ALLOWANCE' ? (c.limit.displayLabel ?? 'obiettivo aggiuntivo') : 'preferenza'}</T>
+            <T small>
+              Richiesto {c.gap!.requested} · risultato {smart(c.gap!.result)} {c.gap!.unit} · scostamento {c.gap!.deviation > 0 ? '+' : ''}
+              {smart(c.gap!.deviation)} {c.gap!.unit}
+            </T>
+            {a?.unreachable && <T small muted>Con gli ingredienti selezionati non si raggiunge in nessuna quantità.</T>}
+            {a && !a.unreachable && a.blockedBy.length > 0 && (
+              <>
+                <T small muted>Per rispettarla andrebbero violati questi vincoli, che hanno la precedenza:</T>
+                <Bullets small items={a.blockedBy} />
+              </>
+            )}
+          </View>
+        );
+      })}
+    </Card>
+  );
+}
+
+/** Origine dell'energia di ogni componente e confronto con i macronutrienti (metodo energetico del componente). */
+export function EnergySourcesCard({ audit }: { audit: AuditResult }) {
+  const [open, setOpen] = useState(false);
+  const src = audit.energySources ?? [];
+  if (!src.length) return null;
+  const sum = audit.macroEnergySumPct;
+  return (
+    <Card onPress={() => setOpen(!open)}>
+      <T bold>Da dove viene l’energia {open ? '▾' : '▸'}</T>
+      {sum !== null && sum !== undefined && (
+        <T small muted>Le quote di proteine, grassi e carboidrati disponibili sommano al {num(sum, 1)}% delle kcal{Math.abs(sum - 100) > 0.5 ? ': la differenza viene dall’energia inserita, non da un arrotondamento' : ''}.</T>
+      )}
+      {open &&
+        src.map((e) => (
+          <View key={e.name} style={{ paddingVertical: 4 }}>
+            <T small bold>{e.name}</T>
+            <T small>
+              {e.origin === null
+                ? 'Energia sconosciuta (non dichiarata e non calcolabile)'
+                : `${num(e.kcal as number, 1)} ${e.basis} — ${e.origin === 'declared' ? `inserita${e.source ? ` (${e.source})` : ''}` : `calcolata dai macronutrienti (${e.methodLabel})`}`}
+            </T>
+            {e.origin === 'declared' && e.fromMacros !== null && (
+              <T small muted>
+                Dai macronutrienti ({e.methodLabel}): {num(e.fromMacros, 1)} {e.basis}
+                {e.diffPct !== null ? ` · differenza ${e.diffPct > 0 ? '+' : ''}${num(e.diffPct, 1)}%` : ''}
+              </T>
+            )}
+          </View>
+        ))}
+    </Card>
   );
 }
 
@@ -201,6 +284,8 @@ function NutrientDetail({ row, kcal, onClose }: { row: CheckRow; kcal: number | 
               ? 'ufficiale'
               : c.limit.limitClass === 'PERSONAL_TARGET'
                 ? 'personalizzata'
+                : c.limit.limitClass === 'RECOMMENDED_ALLOWANCE'
+                  ? 'obiettivo aggiuntivo (non è un minimo FEDIAF)'
                 : c.limit.limitClass === 'NON_OFFICIAL_ATTENTION'
                   ? 'NON ufficiale (attenzione, non tossicità)'
                   : 'informativa'}
@@ -319,6 +404,7 @@ export function ResultBlock({
   return (
     <View style={{ gap: 12 }}>
       <StatusBox audit={audit} />
+      <GapsCard audit={audit} />
       <Warnings audit={audit} />
       <Card>
         <H level={3}>Dosi giornaliere</H>
@@ -329,6 +415,7 @@ export function ResultBlock({
         </T>
         {notes && notes.length > 0 && <Bullets small items={notes} />}
       </Card>
+      <EnergySourcesCard audit={audit} />
       <CostCard cost={cost} />
       <Card>
         <H level={3}>Nutrienti e rapporti</H>

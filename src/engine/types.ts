@@ -20,6 +20,7 @@ export type LimitClass =
   | 'LEGAL_MAX'
   | 'NON_OFFICIAL_ATTENTION'
   | 'PERSONAL_TARGET'
+  | 'RECOMMENDED_ALLOWANCE'
   | 'INFORMATIONAL_REFERENCE';
 
 /** Base di espressione del limite. */
@@ -50,6 +51,8 @@ export interface NutrientLimit {
   source: string;
   status: 'verified' | 'draft' | 'review_required';
   notes?: string | null;
+  /** nome mostrato del riferimento (es. «Apporto raccomandato NRC»). */
+  displayLabel?: string | null;
 }
 
 export interface ReferenceVersion {
@@ -229,6 +232,39 @@ export interface AppliedEnergyMethod {
   caution: string | null;
 }
 
+/**
+ * Obiettivo aggiuntivo approvato (es. apporto raccomandato NRC di EPA+DHA): quantità al giorno =
+ * coefficiente × peso^esponente, nell'unità indicata. Distinto dai minimi FEDIAF e dalle dosi terapeutiche.
+ */
+export interface RecommendedTarget {
+  id: string;
+  metric: string;
+  lifeStages: LifeStage[];
+  label: string;
+  coefficient: number;
+  exponent: number;
+  unit: string;
+  weightBasis: 'current';
+  source: string;
+  url?: string | null;
+  approvedBy?: string | null;
+  approvedAt?: string | null;
+  notes?: string | null;
+}
+
+/** Obiettivo aggiuntivo calcolato per un cane (congelato nell'istantanea). */
+export interface AppliedRecommendedTarget {
+  id: string;
+  metric: string;
+  label: string;
+  /** quantità al giorno nell'unità canonica del nutriente. */
+  amountPerDay: number;
+  unit: string;
+  /** es. «30 × 33 kg^0,75 = 413 mg/die». */
+  formula: string;
+  source: string;
+}
+
 export interface CustomThreshold {
   id: string;
   metric: string;
@@ -276,6 +312,8 @@ export interface DogFormulationProfile {
   targets: PersonalTarget[];
   /** Note di attenzione (razza o individuali) — viola, nessun numero. */
   attentionNotes: AttentionNote[];
+  /** obiettivi aggiuntivi (es. apporto raccomandato NRC), solo per le fasi di vita previste. */
+  recommended?: AppliedRecommendedTarget[];
   formulationRevision: number;
 }
 
@@ -286,6 +324,8 @@ export interface Catalog {
   energyMethods: EnergyMethod[];
   energyAssignments: EnergyAssignment[];
   unitConversions: UnitConversion[];
+  /** obiettivi aggiuntivi approvati (dati/riferimenti/obiettivi_aggiuntivi.json). */
+  recommendedTargets?: RecommendedTarget[];
   customThresholds: CustomThreshold[];
   foods: Food[];
   supplements: Supplement[];
@@ -311,8 +351,13 @@ export const DEFAULT_SETTINGS: EngineSettings = {
 };
 
 export interface ItemConstraint {
+  /** quantità minima obbligatoria (l'ingrediente è sempre incluso almeno in questa quantità). */
   minQty?: number | null;
   maxQty?: number | null;
+  /** porzione minima SE l'ingrediente viene usato: 0 oppure almeno questa quantità. */
+  minIfUsed?: number | null;
+  /** l'ingrediente va sempre incluso (quantità positiva). */
+  required?: boolean;
 }
 
 export interface RecipeItem {

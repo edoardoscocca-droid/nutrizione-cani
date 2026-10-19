@@ -184,13 +184,13 @@ export function Button({
   );
 }
 
-export function Field({ label, value, onChange, placeholder, multiline, keyboard, autoCapitalize }: { label?: string; value: string; onChange: (v: string) => void; placeholder?: string; multiline?: boolean; keyboard?: 'default' | 'decimal-pad' | 'email-address' | 'number-pad'; autoCapitalize?: 'none' | 'sentences' }) {
+export function Field({ label, value, onChange, placeholder, multiline, keyboard, autoCapitalize, a11y }: { label?: string; value: string; onChange: (v: string) => void; placeholder?: string; multiline?: boolean; keyboard?: 'default' | 'decimal-pad' | 'email-address' | 'number-pad'; autoCapitalize?: 'none' | 'sentences'; a11y?: string }) {
   const t = useTheme();
   return (
     <View style={{ gap: 4, flex: 1 }}>
       {label ? <T small muted>{label}</T> : null}
       <TextInput
-        accessibilityLabel={label ?? placeholder}
+        accessibilityLabel={a11y ?? label ?? placeholder}
         value={value}
         onChangeText={onChange}
         placeholder={placeholder}
@@ -205,7 +205,7 @@ export function Field({ label, value, onChange, placeholder, multiline, keyboard
 }
 
 /** Campo numerico: accetta la virgola; vuoto = nessun valore (mai zero). */
-export function NumField({ label, value, onChange, placeholder }: { label?: string; value: number | null; onChange: (v: number | null) => void; placeholder?: string }) {
+export function NumField({ label, value, onChange, placeholder, a11y }: { label?: string; value: number | null; onChange: (v: number | null) => void; placeholder?: string; a11y?: string }) {
   const [text, setText] = useState(value === null || value === undefined ? '' : String(value).replace('.', ','));
   const [last, setLast] = useState(value);
   if (value !== last) {
@@ -216,6 +216,7 @@ export function NumField({ label, value, onChange, placeholder }: { label?: stri
   return (
     <Field
       label={label}
+      a11y={a11y}
       value={text}
       placeholder={placeholder}
       keyboard="decimal-pad"
@@ -333,6 +334,25 @@ export function Sheet({ visible, title, onClose, children }: { visible: boolean;
         <Screen>{children}</Screen>
       </SafeAreaView>
     </RNModal>
+  );
+}
+
+/** Etichetta di un campo con una piccola icona «?» che apre un aiuto sopra la schermata (i dati inseriti restano). */
+export function HelpLabel({ label, onHelp }: { label: string; onHelp: () => void }) {
+  const t = useTheme();
+  return (
+    <Row style={{ gap: 6 }}>
+      <T small muted>{label}</T>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={`Aiuto: ${label}`}
+        hitSlop={12}
+        onPress={onHelp}
+        style={{ width: 22, height: 22, borderRadius: 11, backgroundColor: t.peachBg, alignItems: 'center', justifyContent: 'center' }}
+      >
+        <Text style={{ fontFamily: FONTS.bodyBold, fontSize: 13, color: t.accent }}>?</Text>
+      </Pressable>
+    </Row>
   );
 }
 

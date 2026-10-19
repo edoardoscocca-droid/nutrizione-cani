@@ -37,6 +37,7 @@ export function ErrorBox({ error }: { error: string | null | undefined }) {
 const STATUS_CLASS: Record<RecipeStatus, string> = {
   VERIFIED_AVAILABLE_CHECKS: 'box-green',
   PREFERENCES_VIOLATED: 'box-orange',
+  TARGETS_NOT_MET: 'box-orange',
   INSUFFICIENT_DATA: 'box-grey',
   FAILS_OFFICIAL_LIMITS: 'box-red',
   NO_VALID_SOLUTION: 'box-red',
@@ -53,6 +54,25 @@ export function StatusBox({ audit }: { audit: AuditResult }) {
           <div><strong>Fabbisogni dimostrabilmente soddisfatti ({audit.summary.satisfied.length}):</strong> {audit.summary.satisfied.join(', ') || '—'}</div>
           <div><strong>Non soddisfatti ({audit.summary.notMet.length}):</strong> {audit.summary.notMet.join(', ') || '—'}</div>
           <div><strong>Non verificabili per dati mancanti ({audit.summary.unverifiable.length}):</strong> {audit.summary.unverifiable.join(', ') || '—'}</div>
+        </div>
+      )}
+      {(audit.additional ?? []).length > 0 && (
+        <div className="small">
+          <strong>Obiettivi aggiuntivi (distinti dai requisiti FEDIAF):</strong>
+          {audit.additional!.map((a) => (
+            <div key={a.id}>{a.label}: {a.message}</div>
+          ))}
+        </div>
+      )}
+      {(audit.softGaps ?? []).length > 0 && (
+        <div className="small">
+          <strong>Preferenze e obiettivi non rispettati:</strong>
+          {audit.softGaps!.map((g) => (
+            <div key={g.label}>
+              {g.label}
+              {g.unreachable ? ' — con gli ingredienti selezionati non si raggiunge in nessuna quantità.' : g.blockedBy.length ? ` — lo impediscono: ${g.blockedBy.join('; ')}` : ''}
+            </div>
+          ))}
         </div>
       )}
       {audit.blockers.length > 0 && (
