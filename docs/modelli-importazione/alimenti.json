@@ -1,0 +1,91 @@
+{
+  "foods": [
+    {
+      "id": "esempio_manzo_magro_crudo",
+      "name_it": "ESEMPIO Manzo magro crudo",
+      "category": "animal",
+      "subcategory": "muscle",
+      "processing_state": "raw",
+      "species_cut": "bovino, girello",
+      "preparation": "pesato crudo, senza grasso visibile",
+      "edible_portion": "100% parte edibile, senza ossa",
+      "kcal_me_per_100g": 150,
+      "me_method": "Calcolata dal fornitore dei dati con 4/9/4 su proteine, grassi e ENA",
+      "source": "ESEMPIO banca dati, codice 0000 — https://esempio.org/scheda/0000",
+      "source_version": "2025-01",
+      "data_status": "unverified",
+      "available_to_formulate": false,
+      "notes": "VALORI DI ESEMPIO: servono solo a mostrare il formato, non sono dati reali.",
+      "nutrients": {
+        "protein": {
+          "value": 21.5,
+          "unit": "g",
+          "status": "measured",
+          "source": "ESEMPIO banca dati, codice 0000"
+        },
+        "fat": {
+          "value": 4.0,
+          "unit": "g",
+          "status": "measured"
+        },
+        "carbohydrate_available": {
+          "value": 0,
+          "unit": "g",
+          "status": "analytical_zero",
+          "method": "zero dichiarato dalla fonte"
+        },
+        "fiber": {
+          "value": 0,
+          "unit": "g",
+          "status": "analytical_zero"
+        },
+        "moisture": {
+          "value": 73.0,
+          "unit": "g",
+          "status": "measured"
+        },
+        "calcium": {
+          "value": 6,
+          "unit": "mg",
+          "status": "measured"
+        },
+        "phosphorus": {
+          "value": 200,
+          "unit": "mg",
+          "status": "measured"
+        },
+        "iron": {
+          "value": 2.1,
+          "unit": "mg",
+          "status": "measured"
+        },
+        "vitamin_d": {
+          "value": 0.1,
+          "unit": "µg",
+          "status": "estimated",
+          "method": "valore tipico della specie, non misurato"
+        },
+        "vitamin_e": {
+          "value": 0.4,
+          "unit": "mg",
+          "status": "measured",
+          "form": "d_alpha_tocopherol"
+        },
+        "iodine": {
+          "value": "NA",
+          "unit": "mg"
+        },
+        "epa": {
+          "value": 0.005,
+          "unit": "g",
+          "status": "measured"
+        },
+        "dha": {
+          "value": 0.001,
+          "unit": "g",
+          "status": "measured"
+        }
+      }
+    }
+  ]
+}

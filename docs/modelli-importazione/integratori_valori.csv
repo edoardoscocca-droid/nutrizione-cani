@@ -1,0 +1,3 @@
+product_id;nutrient_id;value;unit;status;source_id;method;form;per_dose;declared_total_or_added
+esempio_capsula_zinco;zinc;10;mg;label;;;zinco gluconato;1;added
+esempio_capsula_zinco;copper;0;mg;analytical_zero;;;;1;total
