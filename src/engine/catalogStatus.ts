@@ -94,6 +94,7 @@ export function foodStatus(f: Food, nutrients: Nutrient[]): StatusResult {
   if (f.processingState === 'raw_or_unspecified') reasons.push('stato crudo/cotto non specificato');
   if (!f.ediblePortion) reasons.push('parte edibile non indicata');
   if (f.dataStatus === 'estimated') reasons.push('profilo dichiarato come stima');
+  if (f.dataStatus === 'review_required') reasons.push('profilo segnalato da rivedere');
   const readyForValidation = reasons.length === 0;
   if (!f.validatedAt && f.dataStatus !== 'test_fixture') reasons.push('non ancora convalidato da un amministratore');
   return { status: reasons.length ? 'partial' : 'verified', reasons, missing, info, readyForValidation };
@@ -114,7 +115,10 @@ export function supplementStatus(s: Supplement, nutrients: Nutrient[]): StatusRe
     return { status: 'to_complete', reasons: [`mancano: ${hardMissing.join(', ')}`, ...reasons], missing, info, readyForValidation: false };
   }
   // i nutrienti sono dichiarati per unità: il peso della capsula serve per costi e sostanza secca, non per il calcolo
-  if (s.doseUnit !== 'g' && s.doseUnit !== 'ml' && s.massPerUnitG === null) reasons.push('peso della singola unità non indicato');
+  if (s.doseUnit !== 'g' && s.doseUnit !== 'ml' && s.massPerUnitG === null) reasons.push('massa del contenuto della singola unità non indicata');
+  // qualità e provenienza dei dati del profilo (distinta da utilizzabilità, completezza e convalida)
+  if (s.dataStatus === 'estimated') reasons.push('profilo dichiarato come stima');
+  if (s.dataStatus === 'review_required') reasons.push('profilo segnalato da rivedere');
   // Si verificano i dati DICHIARATI: energia non dichiarata e etichetta con soli additivi aggiunti non impediscono la
   // verifica (decisione della nutrizionista), ma si dichiarano: la composizione completa resta non nota.
   if (s.kcalPerUnit === null) info.push('Energia per dose non dichiarata e non stimabile dai macronutrienti dichiarati: sconosciuta.');

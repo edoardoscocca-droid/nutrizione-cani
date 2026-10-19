@@ -76,6 +76,12 @@ export interface NutrientValue {
   sourceUnit?: string | null;
   /** forma chimica dichiarata nella fonte (es. d_alpha_tocopherol). */
   form?: string | null;
+  /** base quantitativa della fonte (es. «per_kg», «per_100g del contenuto»), prima della conversione alla base del catalogo. */
+  basis?: string | null;
+  /** conversione applicata (unità, forma chimica, base quantitativa), per tracciabilità. */
+  conversion?: string | null;
+  /** integratori: total = composizione analitica totale; added = quantità aggiunta (additivo); null = non indicato. */
+  declared?: 'total' | 'added' | null;
 }
 
 export type ProcessingState =
@@ -109,6 +115,8 @@ export interface Food {
   /** metodo energetico applicato (risolto al caricamento del catalogo; congelato nelle istantanee). */
   energyMethod?: AppliedEnergyMethod | null;
   source?: string | null;
+  /** indirizzo della fonte (campo dedicato). */
+  sourceUrl?: string | null;
   sourceVersion?: string | null;
   dataStatus: DataStatus;
   availableToFormulate: boolean;
@@ -131,8 +139,10 @@ export interface Supplement {
   variant?: string | null;
   supplementClass?: string | null;
   doseUnit: DoseUnit;
-  /** contenuto della singola unità (g per capsula/misurino), se noto. */
+  /** massa del CONTENUTO di una unità (es. olio in una capsula, polvere in un misurino), in g; null se non documentata. */
   massPerUnitG: number | null;
+  /** massa complessiva di una unità con involucro (capsula intera, compressa), in g; null se non documentata. */
+  grossMassPerUnitG?: number | null;
   kcalPerUnit: number | null;
   /** declared = energia per dose dall'etichetta; calculated = stimata dai macronutrienti dichiarati con un metodo approvato. */
   kcalOrigin?: 'declared' | 'calculated' | null;
@@ -145,7 +155,11 @@ export interface Supplement {
   maxDailyUnits: number | null;
   maxDailySource?: string | null;
   labelSource?: string | null;
+  /** indirizzo della fonte (campo dedicato). */
+  sourceUrl?: string | null;
   version?: string | null;
+  /** qualità e provenienza dei dati del profilo, distinta da utilizzabilità, completezza e convalida. */
+  dataStatus?: Exclude<DataStatus, 'verified' | 'test_fixture'> | null;
   status: 'verified' | 'review_required' | 'missing' | 'test_fixture';
   usableForOptimization: boolean;
   /** true se l'etichetta dichiara solo le quantità aggiunte: non è un'analisi completa. */

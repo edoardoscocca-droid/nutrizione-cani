@@ -10,18 +10,18 @@
       "preparation": "pesato crudo, senza grasso visibile",
       "edible_portion": "100% parte edibile, senza ossa",
       "kcal_me_per_100g": 150,
-      "me_method": "Calcolata dal fornitore dei dati con 4/9/4 su proteine, grassi e ENA",
-      "source": "ESEMPIO banca dati, codice 0000 — https://esempio.org/scheda/0000",
+      "me_method": "Inserita dalla fonte: 4/9/4 su proteine, grassi e carboidrati disponibili",
+      "source": "ESEMPIO Banca dati alimenti, scheda 0000",
+      "source_url": "https://esempio.org/scheda/0000",
       "source_version": "2025-01",
       "data_status": "unverified",
       "available_to_formulate": false,
-      "notes": "VALORI DI ESEMPIO: servono solo a mostrare il formato, non sono dati reali.",
+      "notes": "VALORI DI ESEMPIO: mostrano solo il formato, non sono dati reali.",
       "nutrients": {
         "protein": {
           "value": 21.5,
           "unit": "g",
-          "status": "measured",
-          "source": "ESEMPIO banca dati, codice 0000"
+          "status": "measured"
         },
         "fat": {
           "value": 4.0,
@@ -57,7 +57,15 @@
         "iron": {
           "value": 2.1,
           "unit": "mg",
-          "status": "measured"
+          "status": "measured",
+          "source": "ESEMPIO altra banca dati, scheda 1111"
+        },
+        "zinc": {
+          "value": 45,
+          "unit": "mg",
+          "status": "measured",
+          "basis": "per_kg",
+          "method": "fonte espressa per kg"
         },
         "vitamin_d": {
           "value": 0.1,
@@ -71,10 +79,6 @@
           "status": "measured",
           "form": "d_alpha_tocopherol"
         },
-        "iodine": {
-          "value": "NA",
-          "unit": "mg"
-        },
         "epa": {
           "value": 0.005,
           "unit": "g",
@@ -84,6 +88,10 @@
           "value": 0.001,
           "unit": "g",
           "status": "measured"
+        },
+        "iodine": {
+          "value": "NA",
+          "unit": "mg"
         }
       }
     }

@@ -72,6 +72,9 @@ export class SupabaseRepository implements Repository {
       sourceValue: n(r.source_value),
       sourceUnit: (r.source_unit as string) ?? null,
       form: (r.chemical_form as string) ?? null,
+      basis: (r.source_basis as string) ?? null,
+      conversion: (r.conversion_rule as string) ?? null,
+      declared: (r.declared_total_or_added as NutrientValue['declared']) ?? null,
     });
     const foodNut = new Map<string, Record<string, NutrientValue>>();
     for (const r of fn) {
@@ -162,6 +165,7 @@ export class SupabaseRepository implements Repository {
           energyMethodId: (f.energy_method_id as string) ?? null,
           meMethod: (f.me_method as string) ?? null,
           source: (f.source_identifier as string) ?? null,
+          sourceUrl: (f.source_url as string) ?? null,
           sourceVersion: (f.source_version as string) ?? null,
           dataStatus: f.data_status as Food['dataStatus'],
           availableToFormulate: f.available_to_formulate as boolean,
@@ -182,6 +186,9 @@ export class SupabaseRepository implements Repository {
           supplementClass: (s.class as string) ?? null,
           doseUnit: s.dose_unit as Supplement['doseUnit'],
           massPerUnitG: n(s.mass_per_unit_g),
+          grossMassPerUnitG: n(s.gross_mass_per_unit_g),
+          sourceUrl: (s.source_url as string) ?? null,
+          dataStatus: (s.data_status as Supplement['dataStatus']) ?? null,
           kcalPerUnit: n(s.kcal_per_unit),
           kcalOrigin: s.kcal_per_unit === null ? null : 'declared',
           doseGuide: (s.dose_guide as Supplement['doseGuide']) ?? null,
@@ -337,7 +344,7 @@ export class SupabaseRepository implements Repository {
         // l'EM calcolata non si salva: il database la ricalcola dal metodo energetico
         kcal_me_per_100g: f.kcalMeOrigin === 'calculated' ? null : f.kcalMePer100g,
         me_method: f.kcalMeOrigin === 'calculated' ? null : (f.meMethod ?? null),
-        energy_method_id: f.energyMethodId ?? null, source_identifier: f.source ?? null, source_version: f.sourceVersion ?? null,
+        energy_method_id: f.energyMethodId ?? null, source_identifier: f.source ?? null, source_url: f.sourceUrl ?? null, source_version: f.sourceVersion ?? null,
         data_status: f.dataStatus, uncertainty: f.uncertainty ?? null, notes: f.notes ?? null,
       }),
     );
@@ -354,8 +361,8 @@ export class SupabaseRepository implements Repository {
     check(
       await this.client.from('supplements').upsert({
         id: s.id, name_it: s.name, brand: s.brand ?? null, product_variant: s.variant ?? null, class: s.supplementClass ?? null, dose_unit: s.doseUnit,
-        mass_per_unit_g: s.massPerUnitG, kcal_per_unit: s.kcalOrigin === 'calculated' ? null : s.kcalPerUnit, integer_dose: s.integerDose, max_daily_units: s.maxDailyUnits,
-        max_daily_source: s.maxDailySource ?? null, label_source: s.labelSource ?? null, label_added_only: !!s.labelAddedOnly,
+        mass_per_unit_g: s.massPerUnitG, gross_mass_per_unit_g: s.grossMassPerUnitG ?? null, kcal_per_unit: s.kcalOrigin === 'calculated' ? null : s.kcalPerUnit, integer_dose: s.integerDose, max_daily_units: s.maxDailyUnits,
+        max_daily_source: s.maxDailySource ?? null, label_source: s.labelSource ?? null, source_url: s.sourceUrl ?? null, data_status: s.dataStatus ?? null, label_added_only: !!s.labelAddedOnly,
         product_version: s.version ?? null, status: s.status, notes: s.notes ?? null, dose_guide: s.doseGuide ?? null,
       }),
     );

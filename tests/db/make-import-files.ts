@@ -21,5 +21,6 @@ writeFileSync(
     ],
   }),
 );
-writeFileSync(`${dir}/change.csv`, 'product_id,nutrient_id,value_per_100g,unit,basis,source_id,status\nimported_lamb,Calcio,25,mg,raw,TEST import 2,\nimported_lamb,vitamin_d,,IU,raw,,\n');
-writeFileSync(`${dir}/bad.csv`, 'product_id,nutrient_id,value_per_100g,unit,basis,source_id,status\ntest_lamb,calcium,5,IU,raw,x,\ntest_lamb,sconosciuto,1,g,raw,x,\nnon_esiste,protein,1,g,raw,x,\n');
+writeFileSync(`${dir}/change.csv`, 'product_id,nutrient_id,value_per_100g,unit,source_id,status\nimported_lamb,Calcio,25,mg,TEST import 2,measured\nimported_lamb,vitamin_d,,IU,,\n');
+// errori dello schema definitivo: unità non convertibile, nutriente sconosciuto, prodotto inesistente, stato mancante, prodotto TEST
+writeFileSync(`${dir}/bad.csv`, 'product_id,nutrient_id,value_per_100g,unit,source_id,status\nlamb_meat,calcium,5,IU,x,measured\nlamb_meat,sconosciuto,1,g,x,measured\nnon_esiste,protein,1,g,x,measured\nlamb_meat,protein,20,g,x,\ntest_lamb,protein,20,g,x,measured\n');

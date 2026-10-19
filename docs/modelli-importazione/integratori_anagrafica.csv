@@ -1,2 +1,0 @@
-id;name_it;brand;product_variant;class;dose_unit;mass_per_unit_g;kcal_per_unit;integer_dose;max_daily_units;max_daily_source;label_source;product_version;label_added_only;usable_for_optimization;notes
-esempio_capsula_zinco;ESEMPIO Zinco in capsule;Marca di esempio;Capsule 10 mg;mineral;capsule;0,5;;sì;2;Etichetta di esempio;https://esempio.org/zinco.pdf;Lotto 0000;no;no;VALORI DI ESEMPIO, non dati reali

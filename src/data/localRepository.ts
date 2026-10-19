@@ -87,7 +87,7 @@ export class LocalRepository implements Repository {
     };
     if (opts.withBundledImports !== false) {
       for (const b of BUNDLED_IMPORTS) {
-        const plan = planImport(parseImport(JSON.stringify(b.data), b.kind, cat.nutrients), cat, b.label);
+        const plan = planImport(parseImport(JSON.stringify(b.data), b.kind, cat.nutrients, { mode: 'legacy' }), cat, b.label);
         if (plan.errors.length) continue;
         const next = plan.items.filter((i) => i.action !== 'unchanged').map((i) => i.next);
         if (b.kind === 'foods') cat.foods = override(cat.foods, next as Food[]);

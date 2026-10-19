@@ -67,10 +67,11 @@ export default function ProductScreen() {
             <T small>Energia EM: {(p as Food).kcalMePer100g === null ? 'non disponibile' : `${num((p as Food).kcalMePer100g, 1)} kcal/100 g`}{(p as Food).meMethod ? ` (${(p as Food).meMethod})` : ''}</T>
             {(p as Food).kcalMeOrigin === 'calculated' && (p as Food).energyMethod?.caution ? <T small muted>{(p as Food).energyMethod!.caution}</T> : null}
             <T small>Fonte: {(p as Food).source ?? '—'} {(p as Food).sourceVersion ?? ''}</T>
+            {(p as Food).sourceUrl ? <T small muted>{(p as Food).sourceUrl}</T> : null}
           </>
         ) : (
           <>
-            <T small>Dose: {(p as Supplement).doseUnit}{(p as Supplement).massPerUnitG ? ` · ${(p as Supplement).massPerUnitG} g per unità` : ''}{(p as Supplement).maxDailyUnits ? ` · max ${(p as Supplement).maxDailyUnits}/die (${(p as Supplement).maxDailySource})` : ''}</T>
+            <T small>Dose: {(p as Supplement).doseUnit}{(p as Supplement).massPerUnitG ? ` · contenuto ${(p as Supplement).massPerUnitG} g per unità` : ''}{(p as Supplement).grossMassPerUnitG ? ` · unità intera ${(p as Supplement).grossMassPerUnitG} g` : ''}{(p as Supplement).maxDailyUnits ? ` · max ${(p as Supplement).maxDailyUnits}/die (${(p as Supplement).maxDailySource})` : ''}</T>
             {(p as Supplement).kcalPerUnit !== null ? <T small>Energia: {num((p as Supplement).kcalPerUnit, 2)} kcal per {(p as Supplement).doseUnit}{(p as Supplement).kcalOrigin === 'calculated' ? ' (stimata dai macronutrienti dichiarati)' : ''}</T> : <T small>Energia: sconosciuta</T>}
             {(p as Supplement).doseGuide ? (
               <>
@@ -84,6 +85,8 @@ export default function ProductScreen() {
             ) : null}
             <T small>Energia per dose: {(p as Supplement).kcalPerUnit ?? 'non indicata'}</T>
             <T small>Etichetta: {(p as Supplement).labelSource ?? '—'}</T>
+            {(p as Supplement).sourceUrl ? <T small muted>{(p as Supplement).sourceUrl}</T> : null}
+            {(p as Supplement).dataStatus ? <T small>Qualità dei dati: {{ unverified: 'non verificati', estimated: 'stima', review_required: 'da rivedere' }[(p as Supplement).dataStatus!]}</T> : null}
           </>
         )}
         {p.notes ? <T small muted>{p.notes}</T> : null}
@@ -105,7 +108,7 @@ export default function ProductScreen() {
                     {c ? (
                       <T small>{`${smart(c.value)} ${n.unit} (calcolato: ${c.parts!.map((x) => catalog.nutrients.find((y) => y.id === x)?.label ?? x).join(' + ')})`}</T>
                     ) : (
-                      <T small muted={v?.value == null}>{v?.value == null ? 'non disponibile' : `${smart(v.value)} ${n.unit}${v.status === 'estimated' ? ' (stima)' : ''}`}</T>
+                      <T small muted={v?.value == null}>{v?.value == null ? 'non disponibile' : `${smart(v.value)} ${n.unit}${v.status === 'estimated' ? ' (stima)' : ''}${v.declared === 'added' ? ' (aggiunto)' : ''}`}</T>
                     )}
                   </Row>
                 );

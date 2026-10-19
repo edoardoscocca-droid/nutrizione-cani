@@ -198,7 +198,7 @@ describe('T08 capsule', () => {
     const r = await formulate(inp);
     expect(r.outcome).toBe('solved');
     expect(Number.isInteger(r.items.find((i) => i.id === 'test_fish_oil_caps')!.qty)).toBe(true);
-    expect(r.audit!.warnings.join()).toMatch(/peso della singola unità/);
+    expect(r.audit!.warnings.join()).toMatch(/massa del contenuto della singola unità/);
   });
 });
 

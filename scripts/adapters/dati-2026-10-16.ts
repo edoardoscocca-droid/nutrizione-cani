@@ -152,8 +152,8 @@ writeFileSync(new URL('import_integratori.json', DIR), JSON.stringify({ suppleme
 // ── verifica con lo stesso importatore dell'app e rapporto ──
 const cat = await new LocalRepository(null).loadCatalog({ withBundledImports: false });
 const plans: [string, ImportPlan][] = [
-  ['Alimenti', planImport(parseImport(JSON.stringify({ foods }), 'foods', cat.nutrients), cat, 'import_alimenti.json')],
-  ['Integratori', planImport(parseImport(JSON.stringify({ supplements }), 'supplements', cat.nutrients), cat, 'import_integratori.json')],
+  ['Alimenti', planImport(parseImport(JSON.stringify({ foods }), 'foods', cat.nutrients, { mode: 'legacy' }), cat, 'import_alimenti.json')],
+  ['Integratori', planImport(parseImport(JSON.stringify({ supplements }), 'supplements', cat.nutrients, { mode: 'legacy' }), cat, 'import_integratori.json')],
 ];
 const L = new Map(cat.nutrients.map((n) => [n.id, n.label]));
 report.push('# Importazione dati del 16/10/2026 — rapporto', '', 'Generato da `scripts/adapters/dati-2026-10-16.ts`. File originali in `originali/`.', '');

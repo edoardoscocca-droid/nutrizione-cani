@@ -4,15 +4,15 @@
       "id": "esempio_integratore_polvere",
       "name_it": "ESEMPIO Integratore minerale-vitaminico in polvere",
       "brand": "Marca di esempio",
-      "product_variant": "Standard, barattolo 250 g",
+      "product_variant": "Standard (non Crescita), barattolo 250 g",
       "class": "multinutrient",
       "dose_unit": "g",
-      "mass_per_unit_g": 1,
       "kcal_per_unit": 0.96,
       "integer_dose": false,
-      "label_source": "https://esempio.org/etichetta.pdf",
+      "label_source": "Etichetta di esempio, sezioni «Componenti analitici» e «Additivi per kg»",
+      "source_url": "https://esempio.org/etichetta-polvere.pdf",
       "product_version": "Lotto 0000",
-      "label_added_only": true,
+      "data_status": "unverified",
       "usable_for_optimization": false,
       "dose_guide": {
         "points": [
@@ -27,66 +27,149 @@
             "max": 9
           }
         ],
-        "source": "Etichetta di esempio, tabella d'impiego",
+        "source": "Etichetta di esempio, modalità d’impiego",
         "note": "un misurino raso = 3 g"
       },
-      "notes": "VALORI DI ESEMPIO: servono solo a mostrare il formato, non sono dati reali. Additivi dichiarati per kg di prodotto, qui già divisi per 1000 (valori per 1 g).",
+      "notes": "VALORI DI ESEMPIO: mostrano solo il formato, non sono dati reali.",
       "nutrients": {
         "protein": {
-          "value": 0.05,
+          "value": 4.25,
           "unit": "g",
+          "basis": "per_100g",
           "status": "label",
           "declared_total_or_added": "total"
         },
         "fat": {
-          "value": 0.01,
+          "value": 0.07,
           "unit": "g",
+          "basis": "per_100g",
+          "status": "label",
+          "declared_total_or_added": "total"
+        },
+        "moisture": {
+          "value": 3,
+          "unit": "g",
+          "basis": "per_100g",
           "status": "label",
           "declared_total_or_added": "total"
         },
         "calcium": {
-          "value": 150,
-          "unit": "mg",
+          "value": 18,
+          "unit": "g",
+          "basis": "per_100g",
           "status": "label",
           "declared_total_or_added": "total"
         },
         "potassium": {
-          "value": 75,
-          "unit": "mg",
+          "value": 7.5,
+          "unit": "g",
+          "basis": "per_100g",
           "status": "label",
           "declared_total_or_added": "total"
         },
         "zinc": {
-          "value": 2,
+          "value": 2000,
           "unit": "mg",
+          "basis": "per_kg",
           "status": "label",
           "declared_total_or_added": "added",
-          "method": "etichetta: 2000 mg/kg, diviso per 1000"
+          "form": "ossido di zinco"
         },
         "vitamin_d": {
-          "value": 25,
+          "value": 25000,
           "unit": "IU",
+          "basis": "per_kg",
           "status": "label",
           "declared_total_or_added": "added"
         },
         "vitamin_e": {
-          "value": 0.5,
+          "value": 2000,
           "unit": "mg",
+          "basis": "per_kg",
           "status": "label",
-          "form": "all_rac_alpha_tocopheryl_acetate",
-          "declared_total_or_added": "added"
+          "declared_total_or_added": "added",
+          "form": "all_rac_alpha_tocopheryl_acetate"
         },
         "choline": {
-          "value": 90,
+          "value": 90000,
           "unit": "mg",
+          "basis": "per_kg",
           "status": "label",
-          "form": "choline_chloride",
           "declared_total_or_added": "added",
-          "method": "etichetta: cloruro di colina 90.000 mg/kg"
+          "form": "choline_chloride",
+          "method": "etichetta: cloruro di colina"
         },
         "iodine": {
           "value": "NA",
           "unit": "mg"
+        }
+      }
+    },
+    {
+      "id": "esempio_olio_pesce_capsule",
+      "name_it": "ESEMPIO Olio di pesce in capsule",
+      "brand": "Marca di esempio",
+      "product_variant": "Capsule da 1000 mg di olio",
+      "class": "fish_oil",
+      "dose_unit": "capsule",
+      "content_mass_per_unit_g": 1.0,
+      "kcal_per_unit": 9,
+      "integer_dose": true,
+      "max_daily_units": 4,
+      "max_daily_source": "Etichetta di esempio, dose massima giornaliera",
+      "label_source": "Etichetta di esempio, valori per capsula",
+      "source_url": "https://esempio.org/etichetta-olio.pdf",
+      "product_version": "Lotto 0000",
+      "data_status": "unverified",
+      "usable_for_optimization": false,
+      "notes": "VALORI DI ESEMPIO. Massa della capsula intera con involucro non documentata: gross_mass_per_unit_g omesso.",
+      "nutrients": {
+        "fat": {
+          "value": 1,
+          "unit": "g",
+          "status": "label",
+          "declared_total_or_added": "total"
+        },
+        "protein": {
+          "value": 0,
+          "unit": "g",
+          "status": "label",
+          "declared_total_or_added": "total",
+          "method": "0 g dichiarati in etichetta"
+        },
+        "carbohydrate_available": {
+          "value": 0,
+          "unit": "g",
+          "status": "label",
+          "declared_total_or_added": "total"
+        },
+        "epa": {
+          "value": 180,
+          "unit": "mg",
+          "status": "label",
+          "declared_total_or_added": "total"
+        },
+        "dha": {
+          "value": 120,
+          "unit": "mg",
+          "status": "label",
+          "declared_total_or_added": "total"
+        },
+        "omega3_total": {
+          "value": 33,
+          "unit": "g",
+          "basis": "per_100g",
+          "basis_mass": "content",
+          "status": "label",
+          "declared_total_or_added": "total",
+          "method": "etichetta: 33 g per 100 g di olio"
+        },
+        "vitamin_e": {
+          "value": 1,
+          "unit": "mg",
+          "status": "label",
+          "declared_total_or_added": "added",
+          "form": "d_alpha_tocopherol"
         }
       }
     }

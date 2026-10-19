@@ -13,6 +13,12 @@ import type { Category } from './packageCatalog';
 
 export type ImportKind = 'foods' | 'supplements';
 export type ImportFormat = 'csv-long' | 'csv-wide' | 'json';
+/**
+ * strict = schema definitivo per i file degli amministratori (stato di ogni valore obbligatorio, conversioni obbligatorie,
+ * prodotti TEST protetti, base quantitativa esplicita); legacy = solo per rileggere i file già convertiti dei pacchetti
+ * precedenti (dati/importazioni), con le regole con cui sono stati caricati.
+ */
+export type ImportMode = 'strict' | 'legacy';
 
 export interface ImportIssue {
   line?: number;
@@ -34,6 +40,8 @@ interface RawValue {
   declared?: string;
   /** forma chimica (necessaria per convertire la vitamina E da mg a UI). */
   form?: string;
+  /** integratori in capsule/compresse/misurini con base per massa: a quale massa si riferisce (content | gross). */
+  basisMass?: string;
 }
 
 interface RawProduct {
@@ -45,6 +53,7 @@ interface RawProduct {
 export interface ParsedImport {
   kind: ImportKind;
   format: ImportFormat;
+  mode: ImportMode;
   products: RawProduct[];
   values: RawValue[];
   errors: ImportIssue[];
@@ -61,6 +70,8 @@ export interface ValueChange {
   sourceValue: number | null;
   sourceUnit: string | null;
   rule: string | null;
+  /** conversione completa applicata (unità, forma chimica, base quantitativa). */
+  conversion?: string | null;
   status: ValueStatus;
   source: string | null;
   basis: string | null;
@@ -273,7 +284,12 @@ const SUPP_FIELDS: Record<string, string[]> = {
   variant: ['product variant', 'variant', 'variante'],
   supplementClass: ['class', 'classe'],
   doseUnit: ['dose unit', 'unita dose'],
-  massPerUnitG: ['mass per unit g', 'dose mass g', 'grammi per unita'],
+  massPerUnitG: ['content mass per unit g', 'massa contenuto g'],
+  grossMassPerUnitG: ['gross mass per unit g', 'massa lorda g'],
+  /** nome ambiguo (contenuto o unità intera?): accettato solo per i file dei pacchetti precedenti. */
+  legacyMass: ['mass per unit g', 'dose mass g', 'grammi per unita'],
+  sourceUrl: ['source url', 'url fonte'],
+  dataStatus: ['data status', 'qualita dati'],
   kcalPerUnit: ['kcal per unit', 'kcal per dose', 'kcal'],
   integerDose: ['integer dose', 'dosi intere'],
   maxDailyUnits: ['max daily units', 'max daily product dose', 'dose massima'],
@@ -297,6 +313,7 @@ const LONG_COLS = {
   perDose: ['per dose'],
   declared: ['declared total or added'],
   form: ['form', 'chemical form', 'forma', 'forma chimica'],
+  basisMass: ['basis mass', 'massa della base'],
 };
 
 function fieldOf(map: Record<string, string[]>, header: string): string | null {
@@ -310,8 +327,8 @@ function colOf(headers: string[], keys: string[]): string | null {
 
 // ───────────────────────── lettura ─────────────────────────
 
-export function parseImport(text: string, kind: ImportKind, nutrients: Nutrient[]): ParsedImport {
-  const out: ParsedImport = { kind, format: 'csv-wide', products: [], values: [], errors: [], warnings: [] };
+export function parseImport(text: string, kind: ImportKind, nutrients: Nutrient[], opts: { mode?: ImportMode } = {}): ParsedImport {
+  const out: ParsedImport = { kind, format: 'csv-wide', mode: opts.mode ?? 'strict', products: [], values: [], errors: [], warnings: [] };
   const trimmed = text.trim();
   if (!trimmed) {
     out.errors.push({ message: 'File vuoto.' });
@@ -349,6 +366,7 @@ export function parseImport(text: string, kind: ImportKind, nutrients: Nutrient[
         perDose: get(cells, LONG_COLS.perDose),
         declared: get(cells, LONG_COLS.declared),
         form: get(cells, LONG_COLS.form),
+        basisMass: get(cells, LONG_COLS.basisMass),
       });
     }
     return out;
@@ -389,6 +407,9 @@ export function parseImport(text: string, kind: ImportKind, nutrients: Nutrient[
   }
   return out;
 }
+
+/** proprietà ammesse per ogni valore nutrizionale nel JSON. */
+const VALUE_KEYS = new Set(['nutrient_id', 'nutrient', 'value', 'amount', 'value_per_100g', 'declared_amount', 'unit', 'status', 'source', 'source_id', 'method', 'basis', 'basis_mass', 'per_dose', 'declared_total_or_added', 'form', 'chemical_form']);
 
 function parseJson(text: string, kind: ImportKind, out: ParsedImport): ParsedImport {
   out.format = 'json';
@@ -432,7 +453,16 @@ function parseJson(text: string, kind: ImportKind, out: ParsedImport): ParsedImp
         : [];
     for (const [key, v] of entries) {
       const o = (v && typeof v === 'object' ? v : { value: v }) as Record<string, unknown>;
+      if (out.mode === 'strict') {
+        const unknownKeys = Object.keys(o).filter((k) => !VALUE_KEYS.has(k));
+        if (unknownKeys.length) out.errors.push({ line, productId: id, message: `${key}: proprietà non riconosciute ${unknownKeys.map((k) => `«${k}»`).join(', ')}.` });
+      }
       const raw = o.value ?? o.amount ?? o.value_per_100g ?? o.declared_amount;
+      const explicitNull = ['value', 'amount', 'value_per_100g', 'declared_amount'].some((k) => k in o && o[k] === null) && (raw === null || raw === undefined);
+      if (explicitNull && out.mode === 'strict') {
+        out.errors.push({ line, productId: id, message: `${key}: valore null non ammesso — scrivere "NA" per «non disponibile», oppure omettere il nutriente per non modificarlo.` });
+        continue;
+      }
       out.values.push({
         line,
         productId: id,
@@ -446,6 +476,7 @@ function parseJson(text: string, kind: ImportKind, out: ParsedImport): ParsedImp
         perDose: o.per_dose !== undefined ? String(o.per_dose) : '',
         declared: o.declared_total_or_added !== undefined ? String(o.declared_total_or_added) : '',
         form: o.form !== undefined ? String(o.form) : o.chemical_form !== undefined ? String(o.chemical_form) : '',
+        basisMass: o.basis_mass !== undefined ? String(o.basis_mass) : '',
       });
     }
   });
@@ -484,6 +515,15 @@ function mapValueStatus(raw: string | undefined, value: number): ValueStatus | n
   return null;
 }
 
+/** Schema definitivo: stato esplicito, solo questi codici (nessuna deduzione da valore o codici di fonte). */
+const STRICT_STATUS: Record<string, ValueStatus> = { measured: 'measured', label: 'label', calculated: 'calculated', estimated: 'estimated', analytical_zero: 'analytical_zero' };
+function strictStatus(raw: string | undefined): ValueStatus | null {
+  return STRICT_STATUS[(raw ?? '').trim().toLowerCase()] ?? null;
+}
+
+/** Base quantitativa dichiarata nel file → fattore verso «per 1 g» (null = base della dose, nessuna conversione). */
+const MASS_BASIS: Record<string, number> = { per_kg: 1 / 1000, per_100g: 1 / 100, per_g: 1 };
+
 /** "1 g", "1 capsula", "5" → numero di dosi; null se non leggibile. */
 function parseDoseCount(raw: string): number | null {
   const m = raw.trim().replace(',', '.').match(/^(\d+(?:\.\d+)?)/);
@@ -517,6 +557,65 @@ function same(a: unknown, b: unknown) {
   return JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
 }
 
+/**
+ * Relazioni totale → componenti (stessa unità di massa dopo la conversione in g). Un totale dichiarato contiene le sue
+ * componenti: non si sommano di nuovo. Se il totale manca, conta la somma delle componenti note (limite inferiore).
+ */
+export const COMPONENTS: Record<string, string[]> = {
+  fat: ['omega3_total', 'omega6_total'],
+  omega3_total: ['ala', 'epa_dha'],
+  epa_dha: ['epa', 'dha'],
+  omega6_total: ['linoleic_acid', 'arachidonic_acid'],
+  protein: ['arginine', 'histidine', 'isoleucine', 'leucine', 'lysine', 'methionine_cystine', 'phenylalanine_tyrosine', 'threonine', 'tryptophan', 'valine'],
+  methionine_cystine: ['methionine', 'cystine'],
+  phenylalanine_tyrosine: ['phenylalanine', 'tyrosine'],
+};
+const IS_COMPONENT = new Set(Object.values(COMPONENTS).flat());
+/** voci che non sono masse della dose (solo dati di fonte o derivate). */
+const NOT_MASS = new Set(['energy_food_kcal', 'carbohydrate_by_difference', 'c18_2_undifferentiated', 'c20_4_undifferentiated', 'vitamin_a_retinol_ug', 'beta_carotene_ug']);
+
+function gramsOf(values: Record<string, NutrientValue>, nutrients: Nutrient[], id: string): number | null {
+  const v = values[id]?.value;
+  const unit = nutrients.find((n) => n.id === id)?.unit;
+  if (v === null || v === undefined || !unit || !isMassUnit(unit)) return null;
+  return toCanonical(v, unit, 'g').value;
+}
+
+/** massa del nodo: il totale dichiarato, altrimenti la somma delle componenti note. */
+function effectiveG(values: Record<string, NutrientValue>, nutrients: Nutrient[], id: string): number | null {
+  const own = gramsOf(values, nutrients, id);
+  if (own !== null) return own;
+  const parts = (COMPONENTS[id] ?? []).map((c) => effectiveG(values, nutrients, c)).filter((x): x is number => x !== null);
+  return parts.length ? parts.reduce((a, b) => a + b, 0) : null;
+}
+
+/** componenti che superano il proprio totale dichiarato (tolleranza 5%). */
+export function componentMismatches(values: Record<string, NutrientValue>, nutrients: Nutrient[]): string[] {
+  const out: string[] = [];
+  const label = (id: string) => nutrients.find((n) => n.id === id)?.label ?? id;
+  for (const [total, parts] of Object.entries(COMPONENTS)) {
+    const t = gramsOf(values, nutrients, total);
+    if (t === null) continue;
+    const known = parts.map((c) => [c, effectiveG(values, nutrients, c)] as const).filter((x): x is readonly [string, number] => x[1] !== null);
+    const sum = known.reduce((a, [, g]) => a + g, 0);
+    if (known.length && sum > t * 1.05 + 1e-6) {
+      out.push(`${known.map(([c]) => label(c)).join(' + ')} = ${+sum.toFixed(4)} g, più del totale dichiarato di ${label(total)} (${+t.toFixed(4)} g): le componenti sono parte del totale.`);
+    }
+  }
+  return out;
+}
+
+/** massa complessiva dei nutrienti dichiarati, contando ogni totale una sola volta (componenti escluse). */
+export function topLevelMassG(values: Record<string, NutrientValue>, nutrients: Nutrient[]): number {
+  let g = 0;
+  for (const id of Object.keys(values)) {
+    if (IS_COMPONENT.has(id) || NOT_MASS.has(id) || COMPONENTS[id]) continue;
+    g += gramsOf(values, nutrients, id) ?? 0;
+  }
+  for (const root of Object.keys(COMPONENTS).filter((k) => !IS_COMPONENT.has(k))) g += effectiveG(values, nutrients, root) ?? 0;
+  return g;
+}
+
 export function planImport(parsed: ParsedImport, catalog: CatalogForImport, fileName = 'import'): ImportPlan {
   const kind = parsed.kind;
   const errors: ImportIssue[] = [...parsed.errors];
@@ -530,6 +629,10 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
     if (items.has(id)) return items.get(id)!;
     if (!ID_RE.test(id)) {
       errors.push({ line, productId: id, message: `Identificativo «${id}» non valido: usare minuscole, numeri e _ (es. beef_lean).` });
+      return null;
+    }
+    if (parsed.mode === 'strict' && /^test_/i.test(id)) {
+      errors.push({ line, productId: id, message: `L’ID «${id}» è riservato ai prodotti di prova (test_…): non si crea né si modifica con l’importazione.` });
       return null;
     }
     if (otherKind.has(id)) {
@@ -596,8 +699,7 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
         if (!ps) err(`Stato di preparazione «${f.processingState}» non valido (${PROCESSING.join(', ')}).`);
         else set('processingState', ps);
       }
-      for (const k of ['speciesCut', 'preparation', 'ediblePortion', 'meMethod', 'source', 'sourceVersion', 'uncertainty', 'notes'] as const) if (f[k] !== undefined) set(k, f[k]);
-      if (f.sourceUrl !== undefined) set('notes', [n.notes, `URL fonte: ${f.sourceUrl}`].filter(Boolean).join(' · '));
+      for (const k of ['speciesCut', 'preparation', 'ediblePortion', 'meMethod', 'source', 'sourceUrl', 'sourceVersion', 'uncertainty', 'notes'] as const) if (f[k] !== undefined) set(k, f[k]);
       if (f.kcalMePer100g !== undefined) {
         const v = parseNumber(f.kcalMePer100g);
         if (v === null || Number.isNaN(v) || v < 0 || v > 900) err(`Energia «${f.kcalMePer100g}» non valida (kcal EM per 100 g, tra 0 e 900).`);
@@ -611,12 +713,23 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
       if (f.dataStatus !== undefined) {
         const s = norm(f.dataStatus);
         const map: Record<string, DataStatus> = { estimated: 'estimated', stima: 'estimated', review_required: 'review_required', 'review required': 'review_required', unverified: 'unverified', not_verified: 'unverified', 'not verified': 'unverified' };
-        if (s === 'verified' || s === 'verificato') it.warnings.push({ line: p.line, productId: p.id, message: 'Lo stato «verificato» non si importa: si ottiene con la convalida dell’amministratore.' });
+        if ((s === 'verified' || s === 'verificato') && parsed.mode === 'strict') err('Lo stato «verified» non si importa: si ottiene con la convalida dell’amministratore.');
+        else if (s === 'verified' || s === 'verificato') it.warnings.push({ line: p.line, productId: p.id, message: 'Lo stato «verificato» non si importa: si ottiene con la convalida dell’amministratore.' });
         else if (map[s]) set('dataStatus', map[s]);
         else err(`Stato dei dati «${f.dataStatus}» non valido.`);
       }
     } else {
-      for (const k of ['brand', 'variant', 'supplementClass', 'maxDailySource', 'labelSource', 'version', 'notes'] as const) if (f[k] !== undefined) set(k, f[k]);
+      for (const k of ['brand', 'variant', 'supplementClass', 'maxDailySource', 'labelSource', 'sourceUrl', 'version', 'notes'] as const) if (f[k] !== undefined) set(k, f[k]);
+      if (f.legacyMass !== undefined) {
+        if (parsed.mode === 'strict') err('«mass_per_unit_g» è ambiguo: usare content_mass_per_unit_g (contenuto, es. olio nella capsula) e/o gross_mass_per_unit_g (unità intera con involucro).');
+        else if (f.massPerUnitG === undefined) f.massPerUnitG = f.legacyMass;
+      }
+      if (f.dataStatus !== undefined) {
+        const ds = norm(f.dataStatus).replace(/ /g, '_');
+        if (ds === 'verified' || ds === 'verificato') err('Lo stato «verified» non si importa: si ottiene con la convalida dell’amministratore.');
+        else if (ds === 'unverified' || ds === 'estimated' || ds === 'review_required') set('dataStatus', ds);
+        else err(`Qualità dei dati «${f.dataStatus}» non valida (unverified, estimated, review_required).`);
+      }
       if (f.doseUnit !== undefined) {
         const u = DOSE_UNITS[norm(f.doseUnit)];
         if (!u) err(`Unità di dose «${f.doseUnit}» non valida (g, ml, capsule, tablet, scoop).`);
@@ -625,7 +738,7 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
           if (f.integerDose === undefined) set('integerDose', ['capsule', 'tablet', 'scoop'].includes(u));
         }
       }
-      for (const k of ['massPerUnitG', 'kcalPerUnit', 'maxDailyUnits'] as const) {
+      for (const k of ['massPerUnitG', 'grossMassPerUnitG', 'kcalPerUnit', 'maxDailyUnits'] as const) {
         if (f[k] === undefined) continue;
         const v = parseNumber(f[k]);
         if (v === null || Number.isNaN(v) || v < 0 || (k !== 'kcalPerUnit' && v === 0)) err(`Valore «${f[k]}» non valido per ${k}.`);
@@ -658,6 +771,7 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
   }
 
   // valori nutrizionali
+  const strict = parsed.mode === 'strict';
   const seenValues = new Set<string>();
   for (const v of parsed.values) {
     if (!v.productId) {
@@ -687,6 +801,7 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
     const cur = it.next.nutrients[nut.id];
     const before = cur?.value ?? null;
     if (CLEAR_TOKENS.has(norm(v.raw))) {
+      // NA: il dato diventa «non disponibile» (sconosciuto, mai zero)
       if (before !== null) {
         it.valueChanges.push({ nutrientId: nut.id, label: nut.label, unit: nut.unit, before, after: null, sourceValue: null, sourceUnit: null, rule: null, status: 'unknown', source: v.source || null, basis: null, method: null, declared: null });
         it.next.nutrients[nut.id] = { value: null, status: 'unknown', source: v.source || null };
@@ -698,10 +813,24 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
       err(`${nut.label}: valore «${v.raw}» non valido (numero ≥ 0, oppure NA per «non disponibile»).`);
       continue;
     }
+    const raw0 = value;
     if (!v.unit) {
       err(`${nut.label}: unità mancante (attesa ${nut.unit} o un’unità di massa convertibile).`);
       continue;
     }
+    // stato del valore: obbligatorio ed esplicito nello schema definitivo
+    let status: ValueStatus | null;
+    if (strict) {
+      status = strictStatus(v.status);
+      if (!status) {
+        err(`${nut.label}: stato del valore ${v.status ? `«${v.status}» non valido` : 'mancante'} — obbligatorio: measured, label, calculated, estimated o analytical_zero.`);
+        continue;
+      }
+      if (status === 'analytical_zero' && value !== 0) {
+        err(`${nut.label}: stato analytical_zero con valore ${v.raw}: lo zero documentato vale solo per 0.`);
+        continue;
+      }
+    } else status = null; // modalità precedente: dedotto più avanti
     let conv: { value: number; rule: string } | undefined;
     let converted: UnitConversion | null = null;
     // composto dichiarato (es. cloruro di colina): si converte nel nutriente con il fattore approvato per quella forma
@@ -732,16 +861,74 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
         const why = candidates.length
           ? v.form
             ? `forma «${v.form}» non tra quelle approvate (${forms})`
-            : `indicare la forma chimica (${forms}): nessun fattore unico per tutte le forme`
+            : `indicare la forma chimica in «form» (${forms}): nessun fattore unico per tutte le forme`
           : `nessun fattore approvato per ${from} → ${nut.unit}`;
-        it.warnings.push({ line: v.line, productId: v.productId, message: `${nut.label}: ${v.raw} ${v.unit} non importato, da convertire in ${nut.unit} — ${why}; resta «non disponibile».` });
-        it.pendingConversions.push({ nutrientId: nut.id, label: nut.label, value: parseNumber(v.raw) ?? NaN, unit: v.unit, targetUnit: nut.unit });
+        if (strict) err(`${nut.label}: ${v.raw} ${v.unit} non convertibile in ${nut.unit} — ${why}. Importazione bloccata: il valore non viene omesso.`);
+        else {
+          it.warnings.push({ line: v.line, productId: v.productId, message: `${nut.label}: ${v.raw} ${v.unit} non importato, da convertire in ${nut.unit} — ${why}; resta «non disponibile».` });
+          it.pendingConversions.push({ nutrientId: nut.id, label: nut.label, value: parseNumber(v.raw) ?? NaN, unit: v.unit, targetUnit: nut.unit });
+        }
       } else {
         err(`${nut.label}: unità «${v.unit}» non riconosciuta o non convertibile in ${nut.unit}.`);
       }
       if (!conv) continue;
     }
     value = conv.value;
+    const steps: string[] = [conv.rule];
+    let basisNote: string | null = v.basis || null;
+    // base quantitativa: esplicita nel file, mai dedotta da nome, note o confezione
+    const basis = strict ? norm(v.basis ?? '').replace(/ /g, '_') : '';
+    if (strict && basis) {
+      if (kind === 'foods') {
+        if (!(basis in MASS_BASIS)) {
+          err(`${nut.label}: base «${v.basis}» non valida per un alimento (per_100g, per_kg, per_g).`);
+          continue;
+        }
+        if (basis !== 'per_100g') {
+          const k = MASS_BASIS[basis] * 100;
+          value = Math.round(value * k * 1e9) / 1e9;
+          steps.push(`base ${basis} → per 100 g (× ${String(k).replace('.', ',')})`);
+        }
+        basisNote = basis;
+      } else {
+        const s = it.next as Supplement;
+        if (basis === 'per_dose') basisNote = 'per_dose';
+        else if (basis in MASS_BASIS) {
+          if (v.perDose) {
+            err(`${nut.label}: per_dose si usa solo con la base per_dose.`);
+            continue;
+          }
+          let refMass: number | null = null;
+          let refLabel = '';
+          if (s.doseUnit === 'g') {
+            refMass = 1;
+            refLabel = '1 g di prodotto';
+          } else if (s.doseUnit === 'ml') {
+            err(`${nut.label}: base ${basis} con dose in ml: serve la densità, non supportata. Riportare il valore per 1 ml (base per_dose).`);
+            continue;
+          } else {
+            const bm = norm(v.basisMass ?? '');
+            if (bm !== 'content' && bm !== 'gross') {
+              err(`${nut.label}: base ${basis} per un prodotto in ${s.doseUnit}: indicare basis_mass = content (massa del contenuto) o gross (unità intera con involucro).`);
+              continue;
+            }
+            refMass = bm === 'content' ? s.massPerUnitG : (s.grossMassPerUnitG ?? null);
+            refLabel = bm === 'content' ? `contenuto di 1 ${s.doseUnit}` : `1 ${s.doseUnit} intera con involucro`;
+            if (!(refMass && refMass > 0)) {
+              err(`${nut.label}: base ${basis} riferita a ${bm === 'content' ? 'content_mass_per_unit_g' : 'gross_mass_per_unit_g'}, che non è documentata: la massa non si inventa.`);
+              continue;
+            }
+          }
+          const k = MASS_BASIS[basis] * refMass;
+          value = Math.round(value * k * 1e9) / 1e9;
+          steps.push(`base ${basis} → per dose (${refLabel} = ${String(refMass).replace('.', ',')} g, × ${String(Math.round(k * 1e9) / 1e9).replace('.', ',')})`);
+          basisNote = `${basis} (${refLabel})`;
+        } else {
+          err(`${nut.label}: base «${v.basis}» non valida per un integratore (per_dose, per_kg, per_100g, per_g).`);
+          continue;
+        }
+      }
+    }
     if (kind === 'supplements' && v.perDose) {
       const pd = parseDoseCount(v.perDose);
       if (pd === null || pd <= 0) {
@@ -750,16 +937,17 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
       }
       if (pd !== 1) {
         value = value / pd;
+        steps.push(`riferito a ${pd} dosi → per 1 dose (÷ ${pd})`);
         it.warnings.push({ line: v.line, productId: v.productId, message: `${nut.label}: valore riferito a ${pd} dosi, convertito per 1 dose.` });
       }
     }
-    const status = mapValueStatus(v.status, value);
+    if (!strict) status = mapValueStatus(v.status, value);
     if (!status) {
       err(`${nut.label}: stato del valore «${v.status}» non valido (measured, label, calculated, estimated, analytical_zero).`);
       continue;
     }
     if (value === 0 && status === 'estimated') {
-      err(`${nut.label}: uno zero deve essere un dato analitico o di etichetta, non una stima.`);
+      err(`${nut.label}: uno zero deve essere un dato documentato (analytical_zero, label, measured o calculated), non una stima.`);
       continue;
     }
     const productSource = kind === 'foods' ? (it.next as Food).source : (it.next as Supplement).labelSource;
@@ -768,41 +956,59 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
       err(`${nut.label}: fonte mancante (colonna source_id o fonte del prodotto).`);
       continue;
     }
-    if (kind === 'foods' && v.basis && /cook|cott/i.test(v.basis) !== /cook/.test((it.next as Food).processingState)) {
+    if (!strict && kind === 'foods' && v.basis && /cook|cott/i.test(v.basis) !== /cook/.test((it.next as Food).processingState)) {
       it.warnings.push({ line: v.line, productId: v.productId, message: `${nut.label}: base «${v.basis}» non coerente con lo stato del prodotto (${(it.next as Food).processingState}). Crudo e cotto sono prodotti distinti.` });
     }
     const dn = norm(v.declared ?? '');
     const declared = dn === 'added' ? 'added' : dn === 'total' ? 'total' : null;
-    if (v.declared && !declared && !['reported or estimated', 'unknown', ''].includes(dn)) err(`${nut.label}: declared_total_or_added deve essere total o added.`);
+    if (strict) {
+      if (kind === 'supplements' && !declared) {
+        err(`${nut.label}: declared_total_or_added obbligatorio per gli integratori (total = composizione analitica totale, added = quantità aggiunta).`);
+        continue;
+      }
+      if (kind === 'foods' && v.declared && declared !== 'total') {
+        err(`${nut.label}: negli alimenti declared_total_or_added può essere solo total.`);
+        continue;
+      }
+    } else if (v.declared && !declared && !['reported or estimated', 'unknown', ''].includes(dn)) err(`${nut.label}: declared_total_or_added deve essere total o added.`);
     if (declared === 'added' && kind === 'supplements' && !(it.next as Supplement).labelAddedOnly) {
       (it.next as Supplement).labelAddedOnly = true;
       it.fieldChanges.push({ field: 'labelAddedOnly', before: false, after: true });
     }
-    const sourceCode = v.status && !['measured', 'label', 'calculated', 'estimated', 'analytical_zero', ''].includes(norm(v.status).replace(' ', '_')) ? v.status : null;
+    const sourceCode = !strict && v.status && !['measured', 'label', 'calculated', 'estimated', 'analytical_zero', ''].includes(norm(v.status).replace(' ', '_')) ? v.status : null;
     const convNote = converted ? `convertito da ${v.raw} ${normalizeUnit(v.unit)} (${converted.formLabel}, × ${String(converted.factor).replace('.', ',')})` : null;
+    const conversion = steps.filter((x) => x !== 'identity').join(' · ') || null;
     const nv: NutrientValue = {
       value,
       status,
       source,
-      method: [v.method || sourceCode, convNote].filter(Boolean).join(' · ') || null,
-      // valore, unità e forma chimica originali restano registrati
-      sourceValue: parseNumber(v.raw),
+      // modalità precedente: la conversione resta anche nel metodo, come nei dati già caricati
+      method: (strict ? v.method || null : [v.method || sourceCode, convNote].filter(Boolean).join(' · ')) || null,
+      // valore, unità, forma chimica e base originali restano registrati, con la conversione applicata
+      sourceValue: raw0,
       sourceUnit: normalizeUnit(v.unit),
       form: normalizeForm(v.form) ?? (v.form?.trim() || null),
+      basis: basisNote,
+      conversion,
+      declared,
     };
-    if (!same(cur?.value, nv.value) || !same(cur?.status ?? null, nv.status) || !same(cur?.source ?? null, nv.source) || !same(cur?.method ?? null, nv.method)) {
+    const sameValue =
+      same(cur?.value, nv.value) && same(cur?.status ?? null, nv.status) && same(cur?.source ?? null, nv.source) && same(cur?.method ?? null, nv.method) &&
+      (!strict || (same(cur?.form ?? null, nv.form) && same(cur?.basis ?? null, nv.basis) && same(cur?.declared ?? null, nv.declared) && same(cur?.sourceValue ?? null, nv.sourceValue) && same(cur?.sourceUnit ?? null, nv.sourceUnit)));
+    if (!sameValue) {
       it.valueChanges.push({
         nutrientId: nut.id,
         label: nut.label,
         unit: nut.unit,
         before,
         after: value,
-        sourceValue: parseNumber(v.raw),
+        sourceValue: raw0,
         sourceUnit: normalizeUnit(v.unit),
         rule: conv.rule,
+        conversion,
         status,
         source,
-        basis: v.basis || null,
+        basis: basisNote,
         method: nv.method ?? null,
         form: nv.form ?? null,
         declared,
@@ -825,34 +1031,28 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
       if (dup && dup !== it.id) err(`Nome uguale a «${dup}» nello stesso file.`);
       newNames.set(norm(p.name), it.id);
     }
+    if (parsed.mode === 'strict' && /^\s*\[test\]/i.test(p.name)) err('I nomi che iniziano con «[TEST]» sono riservati ai prodotti di prova.');
+    // coerenza tra totali e componenti (EPA e DHA sono parte dei grassi, gli aminoacidi parte delle proteine…)
+    for (const m of componentMismatches(p.nutrients, catalog.nutrients)) err(m);
     if (kind === 'foods') {
       const f = p as Food;
       if (!f.subcategoryId) err('Sottocategoria obbligatoria.');
-      let massG = 0;
       for (const [nid, v] of Object.entries(f.nutrients)) {
         const unit = catalog.nutrients.find((n) => n.id === nid)?.unit ?? 'g';
-        if (v.value !== null && isMassUnit(unit)) {
-          const g = toCanonical(v.value, unit, 'g').value;
-          if (g > 100) err(`${nid}: ${v.value} ${unit} per 100 g è impossibile.`);
-          if (['protein', 'fat', 'carbohydrate_available', 'fiber', 'moisture'].includes(nid)) massG += g;
-        }
+        if (v.value !== null && isMassUnit(unit) && toCanonical(v.value, unit, 'g').value > 100) err(`${nid}: ${v.value} ${unit} per 100 g è impossibile.`);
       }
-      if (massG > 105) err(`Proteine + grassi + carboidrati + fibra + umidità = ${massG.toFixed(1)} g su 100 g: dati incoerenti.`);
-      const fat = f.nutrients.fat?.value;
-      for (const sub of ['linoleic_acid', 'omega3_total', 'omega6_total'])
-        if (fat !== null && fat !== undefined && (f.nutrients[sub]?.value ?? 0) > fat + 0.01) err(`${sub} supera i grassi totali.`);
+      const massG = topLevelMassG(f.nutrients, catalog.nutrients);
+      if (massG > 105) err(`I nutrienti dichiarati pesano ${massG.toFixed(1)} g su 100 g (totali senza contare due volte le componenti): dati incoerenti.`);
     } else {
       const s = p as Supplement;
-      const unitMass = s.doseUnit === 'g' ? 1 : s.massPerUnitG;
-      if (unitMass) {
-        let massG = 0;
-        for (const [nid, v] of Object.entries(s.nutrients)) {
-          const unit = catalog.nutrients.find((n) => n.id === nid)?.unit ?? 'g';
-          if (v.value !== null && isMassUnit(unit) && nid !== 'moisture') massG += toCanonical(v.value, unit, 'g').value;
-        }
-        if (massG > unitMass * 1.05 + 1e-9) err(`I nutrienti dichiarati pesano ${massG.toFixed(3)} g per dose, più della dose stessa (${unitMass} g).`);
-      }
-      if (s.kcalPerUnit !== null && unitMass && s.kcalPerUnit > unitMass * 9.5) err('Energia per dose incoerente con il peso della dose.');
+      // massa del contenuto della dose: 1 g per le dosi in grammi; per capsule, compresse e misurini solo se documentata
+      const content = s.doseUnit === 'g' ? 1 : s.massPerUnitG;
+      const gross = s.doseUnit === 'g' || s.doseUnit === 'ml' ? null : (s.grossMassPerUnitG ?? null);
+      if (content && gross && content > gross * 1.0001) err(`Il contenuto (${content} g) pesa più dell’unità intera con involucro (${gross} g).`);
+      const massG = topLevelMassG(s.nutrients, catalog.nutrients);
+      if (content && massG > content * 1.05 + 1e-9) err(`I nutrienti dichiarati pesano ${massG.toFixed(3)} g per dose, più del contenuto della dose (${content} g).`);
+      else if (!content && gross && massG > gross * 1.05 + 1e-9) err(`I nutrienti dichiarati pesano ${massG.toFixed(3)} g per dose, più dell’unità intera (${gross} g).`);
+      if (s.kcalPerUnit !== null && content && s.kcalPerUnit > content * 9.5) err('Energia per dose incoerente con la massa del contenuto della dose.');
       if (s.maxDailyUnits !== null && !s.maxDailySource) err('Dose massima senza fonte (etichetta o scheda del produttore).');
     }
     const changed = it.fieldChanges.length > 0 || it.valueChanges.length > 0;
@@ -920,7 +1120,7 @@ export function toPayload(plan: ImportPlan): ImportPayload {
       return {
         id: f.id, name_it: f.name, category_id: f.categoryId, subcategory_id: f.subcategoryId, species_cut: f.speciesCut ?? null,
         processing_state: f.processingState, preparation: f.preparation ?? null, edible_portion: f.ediblePortion ?? null,
-        kcal_me_per_100g: f.kcalMeOrigin === 'calculated' ? null : f.kcalMePer100g, me_method: f.kcalMeOrigin === 'calculated' ? null : (f.meMethod ?? null), source_identifier: f.source ?? null, source_version: f.sourceVersion ?? null,
+        kcal_me_per_100g: f.kcalMeOrigin === 'calculated' ? null : f.kcalMePer100g, me_method: f.kcalMeOrigin === 'calculated' ? null : (f.meMethod ?? null), source_identifier: f.source ?? null, source_url: f.sourceUrl ?? null, source_version: f.sourceVersion ?? null,
         data_status: f.dataStatus === 'verified' ? 'review_required' : f.dataStatus, uncertainty: f.uncertainty ?? null, notes: f.notes ?? null,
         available_to_formulate: f.availableToFormulate,
       };
@@ -928,7 +1128,7 @@ export function toPayload(plan: ImportPlan): ImportPayload {
     const s = i.next as Supplement;
     return {
       id: s.id, name_it: s.name, brand: s.brand ?? null, product_variant: s.variant ?? null, class: s.supplementClass ?? null, dose_unit: s.doseUnit,
-      mass_per_unit_g: s.massPerUnitG, kcal_per_unit: s.kcalOrigin === 'calculated' ? null : s.kcalPerUnit, integer_dose: s.integerDose, max_daily_units: s.maxDailyUnits,
+      mass_per_unit_g: s.massPerUnitG, gross_mass_per_unit_g: s.grossMassPerUnitG ?? null, source_url: s.sourceUrl ?? null, data_status: s.dataStatus ?? null, kcal_per_unit: s.kcalOrigin === 'calculated' ? null : s.kcalPerUnit, integer_dose: s.integerDose, max_daily_units: s.maxDailyUnits,
       max_daily_source: s.maxDailySource ?? null, label_source: s.labelSource ?? null, label_added_only: !!s.labelAddedOnly,
       product_version: s.version ?? null, status: s.status === 'verified' ? 'review_required' : s.status === 'missing' && i.statusAfter.status !== 'to_complete' ? 'review_required' : s.status,
       notes: s.notes ?? null, usable_for_optimization: s.usableForOptimization, dose_guide: s.doseGuide ?? null,
@@ -937,7 +1137,7 @@ export function toPayload(plan: ImportPlan): ImportPayload {
   const values = changed.flatMap((i) =>
     i.valueChanges.map((v) => ({
       product_id: i.id, nutrient_id: v.nutrientId, amount: v.after, unit: v.unit, value_status: v.after === null ? 'unknown' : v.status,
-      source_value: v.sourceValue, source_unit: v.sourceUnit, source_basis: v.basis, conversion_rule: v.rule, source_id: v.source, method: v.method,
+      source_value: v.sourceValue, source_unit: v.sourceUnit, source_basis: v.basis, conversion_rule: v.conversion ?? v.rule, source_id: v.source, method: v.method,
       chemical_form: v.form ?? null, declared_total_or_added: v.declared,
     })),
   );

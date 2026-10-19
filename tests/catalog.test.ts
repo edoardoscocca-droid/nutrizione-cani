@@ -1,5 +1,6 @@
 // Stati del catalogo (Verificato / Dati parziali / Da completare) e importazione massiva.
 
+const LEGACY = { mode: 'legacy' as const };
 import { describe, expect, test } from 'vitest';
 import { auditRecipe } from '../src/engine/audit';
 import { foodStatus, supplementStatus } from '../src/engine/catalogStatus';
@@ -116,7 +117,7 @@ describe('Importazione: lettura e associazione dei nutrienti', () => {
   test('modello lungo D del pacchetto: ID, mg→g, celle vuote ignorate', async () => {
     const cat = await catalogFor();
     const csv = 'product_id,nutrient_id,value_per_100g,unit,basis,source_id,status\nanchovies,protein,20,g,as_purchased_edible_raw,FDC 1,UNVERIFIED\nanchovies,calcium,147,mg,as_purchased_edible_raw,FDC 1,UNVERIFIED\nanchovies,vitamin_d,,IU,as_purchased_edible_raw,,UNVERIFIED\n';
-    const plan = planImport(parseImport(csv, 'foods', N), cat, 'd.csv');
+    const plan = planImport(parseImport(csv, 'foods', N, LEGACY), cat, 'd.csv');
     expect(plan.errors).toEqual([]);
     expect(plan.format).toBe('csv-long');
     const it = plan.items[0];
@@ -128,7 +129,7 @@ describe('Importazione: lettura e associazione dei nutrienti', () => {
   test('formato largo: anagrafica + nutrienti riconosciuti dal nome («Calcio (mg)», «Vit D [IU]», «zinc_mg»)', async () => {
     const cat = await catalogFor();
     const csv = 'id;nome;categoria;sottocategoria;stato;kcal;fonte;Proteine (g);Calcio (mg);Vit D [IU];zinc_mg\nnew_tuna;Tonno (nuovo);animal;fish;crudo;130;FDC 9;23,5;10;80;0,6\n';
-    const plan = planImport(parseImport(csv, 'foods', N), cat, 'w.csv');
+    const plan = planImport(parseImport(csv, 'foods', N, LEGACY), cat, 'w.csv');
     expect(plan.errors).toEqual([]);
     expect(plan.format).toBe('csv-wide');
     const f = plan.items[0].next as Food;
@@ -146,7 +147,7 @@ describe('Importazione: lettura e associazione dei nutrienti', () => {
   test('JSON con nutrienti come oggetto; l’attivazione indicata nel file si applica (non è una nuova versione)', async () => {
     const cat = await catalogFor();
     const json = JSON.stringify({ foods: [{ id: 'anchovies', kcal_me_per_100g: 131, available_to_formulate: true, nutrients: { Proteine: { value: 20.3, unit: 'g', source: 'FDC 2' }, fat: { value: 4.8, unit: 'g', source: 'FDC 2' } } }] });
-    const plan = planImport(parseImport(json, 'foods', N), cat, 'a.json');
+    const plan = planImport(parseImport(json, 'foods', N, LEGACY), cat, 'a.json');
     expect(plan.errors).toEqual([]);
     expect((plan.items[0].next as Food).availableToFormulate).toBe(true);
     expect(plan.items[0].statusAfter.status).toBe('partial');
@@ -154,7 +155,7 @@ describe('Importazione: lettura e associazione dei nutrienti', () => {
   test('integratore: per_dose convertito per 1 dose, «added» rende l’etichetta non completa', async () => {
     const cat = await catalogFor();
     const csv = 'supplement_id,nutrient_id,declared_amount,unit,per_dose,source_id,declared_total_or_added\nqdiet,calcium,500,mg,5,Etichetta Q-Diet lotto 1,added\n';
-    const plan = planImport(parseImport(csv, 'supplements', N), cat, 'q.csv');
+    const plan = planImport(parseImport(csv, 'supplements', N, LEGACY), cat, 'q.csv');
     expect(plan.errors).toEqual([]);
     const s = plan.items[0].next;
     expect(s.nutrients.calcium.value).toBeCloseTo(0.1, 9);
@@ -164,7 +165,7 @@ describe('Importazione: lettura e associazione dei nutrienti', () => {
 
 describe('Importazione: conversioni non approvate', () => {
   test('vitamina E mg → UI senza forma chimica: valore non importato, segnalato, resto importabile', async () => {
-    const plan = planImport(parseImport('product_id,nutrient_id,value_per_100g,unit,basis,source_id,status\nanchovies,vitamin_e,0.5,mg,,F,\nanchovies,protein,20,g,,F,REPORTED_USDA_PROXY\n', 'foods', N), await catalogFor(), 'x');
+    const plan = planImport(parseImport('product_id,nutrient_id,value_per_100g,unit,basis,source_id,status\nanchovies,vitamin_e,0.5,mg,,F,\nanchovies,protein,20,g,,F,REPORTED_USDA_PROXY\n', 'foods', N, LEGACY), await catalogFor(), 'x');
     expect(plan.errors).toEqual([]);
     expect(plan.items[0].pendingConversions).toEqual([expect.objectContaining({ nutrientId: 'vitamin_e', unit: 'mg', targetUnit: 'IU' })]);
     expect(plan.items[0].warnings.map((w) => w.message).join(' ')).toMatch(/indicare la forma chimica/);
@@ -179,7 +180,7 @@ describe('Importazione: conversioni non approvate', () => {
       'sardines,vitamin_e,10,mg,F,measured,dl-alfa-tocoferil acetato\n' +
       'beef_lean,vitamin_e,10,mg,F,measured,d-alpha-tocopheryl acetate\n' +
       'lamb_meat,vitamin_e,10,mg,F,measured,tocoferoli misti\n';
-    const plan = planImport(parseImport(csv, 'foods', N), await catalogFor(), 'x');
+    const plan = planImport(parseImport(csv, 'foods', N, LEGACY), await catalogFor(), 'x');
     const v = (id: string, n: string) => plan.items.find((i) => i.id === id)!.next.nutrients[n];
     expect(v('anchovies', 'vitamin_d')).toEqual(expect.objectContaining({ value: 20, status: 'measured' }));
     expect(v('anchovies', 'vitamin_e')?.value).toBeCloseTo(14.9, 9);
@@ -194,7 +195,7 @@ describe('Importazione: conversioni non approvate', () => {
 
 describe('Importazione: errori mostrati prima di confermare', () => {
   const bad = async (csv: string, kind: 'foods' | 'supplements' = 'foods') => {
-    const plan = planImport(parseImport(csv, kind, N), await catalogFor(), 'x');
+    const plan = planImport(parseImport(csv, kind, N, LEGACY), await catalogFor(), 'x');
     expect(plan.canApply).toBe(false);
     return plan.errors.map((e) => e.message).join(' | ');
   };
@@ -236,7 +237,7 @@ describe('Importazione: applicazione, storico, ricalcoli', () => {
     expect(staleFor(v, d, cat)).toEqual([]);
 
     const csv = 'product_id,nutrient_id,value_per_100g,unit,basis,source_id,status\ntest_beef,Calcio,15,mg,raw,TEST nuova analisi,\n';
-    const plan = planImport(parseImport(csv, 'foods', cat.nutrients), cat, 'agg.csv');
+    const plan = planImport(parseImport(csv, 'foods', cat.nutrients, LEGACY), cat, 'agg.csv');
     expect(plan.canApply).toBe(true);
     await repo.applyCatalogImport(plan);
     cat = await repo.loadCatalog();
@@ -254,14 +255,14 @@ describe('Importazione: applicazione, storico, ricalcoli', () => {
     expect(v.snapshot.foods.test_beef.nutrients.calcium.value).toBe(0.011);
 
     // stesso file di nuovo: niente da applicare, nessuna versione nuova
-    const again = planImport(parseImport(csv, 'foods', cat.nutrients), cat, 'agg.csv');
+    const again = planImport(parseImport(csv, 'foods', cat.nutrients, LEGACY), cat, 'agg.csv');
     expect(again.summary.unchanged).toBe(1);
     expect(again.canApply).toBe(false);
   });
   test('un piano con errori non si applica', async () => {
     const repo = new LocalRepository(null);
     const cat = await repo.loadCatalog();
-    const plan = planImport(parseImport('product_id,nutrient_id,value_per_100g,unit,basis,source_id,status\nanchovies,xyz,1,g,,F,\n', 'foods', cat.nutrients), cat, 'x');
+    const plan = planImport(parseImport('product_id,nutrient_id,value_per_100g,unit,basis,source_id,status\nanchovies,xyz,1,g,,F,\n', 'foods', cat.nutrients, LEGACY), cat, 'x');
     await expect(repo.applyCatalogImport(plan)).rejects.toThrow(/errori/);
   });
   test('convalida: rifiutata con criteri mancanti, accettata su profilo pronto; decade alla modifica', async () => {
