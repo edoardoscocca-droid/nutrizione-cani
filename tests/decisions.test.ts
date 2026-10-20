@@ -222,7 +222,7 @@ describe('Q.Diet Compensa standard — dati approvati il 17/10/2026', () => {
     expect(r.constraints.some((c) => /non superata in automatico/.test(c.label))).toBe(true);
   });
   test('catalogo: energia 0,96 kcal/g dichiarata, potassio 75 mg/g, colina da cloruro × 0,746 senza doppio conteggio', async () => {
-    const cat = await new LocalRepository(null).loadCatalog();
+    const cat = await new LocalRepository(null).loadCatalog({ bundledUpTo: '2026-10-16' });
     const q = cat.supplements.find((x) => x.id === 'qdiet')!;
     expect([q.kcalPerUnit, q.kcalOrigin]).toEqual([0.96, 'declared']);
     expect(q.nutrients.potassium?.value).toBe(0.075);

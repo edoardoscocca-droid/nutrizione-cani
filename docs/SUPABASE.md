@@ -16,8 +16,11 @@ Nessuna chiave va mai scritta in chat o nel codice.
    7. `supabase/migrations/20261021000007_dose_guide.sql` (tabella d'impiego del produttore)
    - `supabase/migrations/20261022000008_import_schema_definitivo.sql` (schema di importazione definitivo)
    - `supabase/migrations/20261023000009_bozze_diagnostiche.sql` (bozze diagnostiche delle ricette)
+   - `supabase/migrations/20261024000010_zeri_calcolati.sql` (zeri documentati: ammesso anche lo zero calcolato da valori documentati)
    8. `supabase/seed.sql` (dizionario, FEDIAF 2025, soglie C, categorie, nomi di alimenti e integratori, nota Irish Wolfhound)
-   9. i dati reali ricevuti: `supabase/data/2026-10-16_alimenti.sql` e `supabase/data/2026-10-16_integratori.sql`
+   9. i dati reali ricevuti: `supabase/data/2026-10-16_alimenti.sql` e `supabase/data/2026-10-16_integratori.sql`,
+      poi il pacchetto del 20/10 nell'ordine dei numeri: `supabase/data/2026-10-20/01_…` → `04_…`
+      (anteprima in `docs/IMPORTAZIONE_2026-10-20_ANTEPRIMA.md`; richiede la migrazione `…000010_zeri_calcolati.sql`)
    10. facoltativo, solo per provare: `supabase/seed_test_fixtures.sql` (dati **[TEST] fittizi**; si tolgono con le due righe in cima al file)
 
    In alternativa, con la Supabase CLI: `supabase link` e `supabase db push`, poi il seed.

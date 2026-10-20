@@ -148,6 +148,9 @@ export interface Supplement {
   kcalPerUnit: number | null;
   /** declared = energia per dose dall'etichetta; calculated = stimata dai macronutrienti dichiarati con un metodo approvato. */
   kcalOrigin?: 'declared' | 'calculated' | null;
+  /** energia stimata dai soli macronutrienti dichiarati quando l'EM completa resta sconosciuta (prodotti con fibra:
+   *  la fermentazione non è stimata). Solo informativa: non entra nel totale energetico e non lo rende attestato. */
+  kcalPartialPerUnit?: number | null;
   /** metodo energetico per le quote di energia dei macronutrienti dichiarati (risolto al caricamento). */
   energyMethod?: AppliedEnergyMethod | null;
   /** tabella d'impiego del produttore per peso del cane: intervalli consigliati, non limiti tossicologici. */

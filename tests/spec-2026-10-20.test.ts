@@ -16,7 +16,7 @@ import { compoundValue } from '../src/engine/totals';
 import { DEFAULT_SETTINGS, type DogFormulationProfile, type Food, type NutrientLimit, type RecipeItem, type Supplement } from '../src/engine/types';
 
 const refs = packageReferences();
-const real = await new LocalRepository(null).loadCatalog();
+const real = await new LocalRepository(null).loadCatalog({ bundledUpTo: '2026-10-16' });
 const omegor = { ...real.supplements.find((s) => s.id === 'omegor_vitality')!, usableForOptimization: true };
 const qdiet = { ...real.supplements.find((s) => s.id === 'qdiet')!, usableForOptimization: true };
 const grau = { ...real.supplements.find((s) => s.id === 'bone_meal')!, usableForOptimization: true };

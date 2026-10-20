@@ -817,6 +817,7 @@ export async function formulate(input: FormulationInput): Promise<FormulationRes
 
   // P1, prima ricerca: tutti gli intervalli richiesti
   const p1Rows = built.rows.filter((r) => r.dev?.group === 'p1');
+  let diagnostic = false;
   let p1Stage: 1 | 2 | null = null;
   if (p1Rows.length) {
     const zero = new Set(p1Rows.map((r) => r.dev!.v));
@@ -839,25 +840,14 @@ export async function formulate(input: FormulationInput): Promise<FormulationRes
         p1Stage = 2;
         notes.push('Preferenze raggiunte solo con la seconda ricerca (ampliamenti documentati): vedi gli scostamenti.');
       } else if (b.status === 'infeasible') {
-        // diagnostico: il candidato più vicino (H rispettati) si mostra, ma non è un menù riuscito
+        // diagnostico: il candidato più vicino (H rispettati) si mostra, ma non è un menù riuscito; le fasi successive
+        // (altre preferenze, P2 praticità, P3 costo) scelgono fra i candidati equivalenti, come per un menù riuscito
         const c = runSolve({ ...model, objective: p1Obj });
         phases.push({ name: 'P1: diagnosi', status: c.rawStatus, objective: c.status === 'optimal' ? c.objective : null });
         if (c.status !== 'optimal') return timeout(c);
-        const proposal = toItems(built, c.values);
-        const audit = finalAudit(input, proposal, excluded);
-        const softGaps = softGapAnalysis({ ...built, locks }, c.values, runSolve);
-        if (softGaps.length) audit.softGaps = softGaps;
-        // motivo: violazione minima necessaria con le preferenze AMPLIATE trattate come vincoli (insieme ai vincoli H)
-        const p1Conflicts = diagnoseWith({ ...built, locks, rows: [...built.rows, ...built.widened] }, runSolve, false) ?? [];
-        return done({
-          ...base,
-          constraints: [...constraints, ...built.widened.map((w) => w.info)],
-          conflicts: p1Conflicts,
-          outcome: 'preferences_unreachable',
-          items: proposal,
-          audit,
-          message: 'Preferenze non raggiungibili nemmeno con gli ampliamenti documentati. Le quantità mostrate sono solo diagnostiche (vincoli del modello sui contributi noti rispettati; verifica nutrizionale incompleta): non è un menù generato.',
-        });
+        model = fixObjective(model, p1Obj, c.objective, 'fix_p1');
+        last = c;
+        diagnostic = true;
       } else return timeout(b);
     } else return timeout(a);
   }
@@ -900,6 +890,22 @@ export async function formulate(input: FormulationInput): Promise<FormulationRes
   }
 
   const proposal = toItems(built, last.values);
+  if (diagnostic) {
+    const audit = finalAudit(input, proposal, excluded);
+    const softGaps = softGapAnalysis({ ...built, locks }, last.values, runSolve);
+    if (softGaps.length) audit.softGaps = softGaps;
+    // motivo: violazione minima necessaria con le preferenze AMPLIATE trattate come vincoli (insieme ai vincoli H)
+    const p1Conflicts = diagnoseWith({ ...built, locks, rows: [...built.rows, ...built.widened] }, runSolve, false) ?? [];
+    return done({
+      ...base,
+      constraints: [...constraints, ...built.widened.map((w) => w.info)],
+      conflicts: p1Conflicts,
+      outcome: 'preferences_unreachable',
+      items: proposal,
+      audit,
+      message: 'Preferenze non raggiungibili nemmeno con gli ampliamenti documentati. Le quantità mostrate sono solo diagnostiche (vincoli del modello sui contributi noti rispettati; verifica nutrizionale incompleta): non è un menù generato.',
+    });
+  }
   for (const it of proposal) {
     if (it.qty === 0) {
       const name = items.find((x) => x.id === it.id)?.name;

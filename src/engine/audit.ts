@@ -116,6 +116,8 @@ export interface AuditResult {
   kcal: number | null;
   kcalComplete: boolean;
   kcalTarget: number | null;
+  /** base calorica dei minimi per 1000 kcal: il maggiore fra obiettivo e calorie calcolate (specifica §4). */
+  minimaBasis?: { kcal: number; source: 'target' | 'calculated'; text: string } | null;
   energyRow: CheckRow;
   rows: CheckRow[];
   blockers: string[];
@@ -151,6 +153,8 @@ export interface EnergySource {
   /** (inserita − calcolata) / calcolata × 100. */
   diffPct: number | null;
   source: string | null;
+  /** EM completa sconosciuta: stima parziale dai soli macronutrienti dichiarati (per dose), esclusa dal totale. */
+  partial?: number | null;
 }
 
 const EPS = 1e-9;
@@ -399,6 +403,16 @@ export function auditRecipe(input: AuditInput): AuditResult {
   // incide solo sull'incertezza dell'energia e delle quote energetiche, non sui controlli di aminoacidi e vitamine
   const energyUncertainFrom = totals.energy.undeclaredFrom;
   const energyCtx = { kcal, kcalTarget: dog.kcalTarget, complete: kcalComplete };
+  const minimaBasis =
+    kcal === null
+      ? null
+      : (() => {
+          const target = dog.kcalTarget ?? 0;
+          const source: 'target' | 'calculated' = target >= kcal ? 'target' : 'calculated';
+          const used = Math.max(kcal, target);
+          const why = target > 0 ? `il maggiore fra obiettivo (${fmt(target)} kcal) e calorie calcolate (${fmt(Math.round(kcal * 10) / 10)} kcal)` : 'calorie calcolate (nessun obiettivo)';
+          return { kcal: used, source, text: `Minimi per 1000 kcal applicati su ${fmt(Math.round(used * 10) / 10)} kcal: ${why}.` };
+        })();
   const limits = applicableLimits(input.limits, dog, input.dietMoisture);
   const moisture = totals.nutrients.moisture;
   const totalMass = items.reduce((a, it) => {
@@ -489,6 +503,10 @@ export function auditRecipe(input: AuditInput): AuditResult {
       const knownMass = unknown.every((it) => mass(it) !== null) && Number.isFinite(totalMass) && totalMass > 0;
       const share = knownMass ? (100 * unknown.reduce((a, it) => a + (mass(it) as number), 0)) / totalMass : null;
       energyMsg += `. Energia sconosciuta per ${parts.join(', ')}${share !== null ? ` (${fmt(Math.round(share * 10) / 10)}% del peso della razione)` : ''}: totale parziale, la tolleranza energetica non è attestata.`;
+      // stime parziali dai soli macronutrienti (prodotti con fibra): mostrate a parte, mai sommate al totale
+      const partial = unknown.filter((it) => (supplements[it.id]?.kcalPartialPerUnit ?? null) !== null);
+      if (partial.length)
+        energyMsg += ` Contributo parziale dai macronutrienti dichiarati, escluso dal totale: ${partial.map((it) => `${supplements[it.id].name} ${fmt(Math.round(supplements[it.id].kcalPartialPerUnit! * it.qty * 1000) / 1000)} kcal`).join(', ')} (fermentazione della fibra non stimata).`;
       // energia sconosciuta non è zero (§7, §12): totale parziale, nessuna attestazione della tolleranza energetica
       energyColor = 'grey';
       blockers.push(`Energia non determinabile: energia sconosciuta per ${energyUncertainFrom.join(', ')} (totale parziale ${fmt(kcal)} kcal).`);
@@ -628,6 +646,7 @@ export function auditRecipe(input: AuditInput): AuditResult {
         fromMacros: calc, methodLabel: m ? m.label : null,
         diffPct: sp.kcalPerUnit !== null && calc ? (100 * (sp.kcalPerUnit - calc)) / calc : null,
         source: sp.kcalOrigin === 'calculated' ? null : (sp.labelSource ?? null),
+        partial: sp.kcalPerUnit === null ? (sp.kcalPartialPerUnit ?? null) : null,
       });
     }
   }
@@ -677,6 +696,7 @@ export function auditRecipe(input: AuditInput): AuditResult {
     kcal,
     kcalComplete,
     kcalTarget: dog.kcalTarget,
+    minimaBasis,
     energyRow,
     rows,
     blockers,

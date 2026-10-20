@@ -20,7 +20,7 @@ import { resolve } from 'node:path';
 // sorgente: catalogo della modalità prova (pacchetto + importazioni 16/10) oppure, con --json DIR, i JSON reali del 19/10
 // caricati in COPIA tramite il normale importatore (schema definitivo, modalità strict)
 const jsonDir = process.argv.includes('--json') ? process.argv[process.argv.indexOf('--json') + 1] : null;
-const base0 = await new LocalRepository(null).loadCatalog();
+const base0 = await new LocalRepository(null).loadCatalog({ bundledUpTo: '2026-10-16' });
 const SOURCE_FILES = jsonDir
   ? ([['alimenti_reali_2026-10-19.json', 'foods'], ['integratori_reali_2026-10-19.json', 'supplements']] as const).map(([f, kind]) => {
       const path = resolve(jsonDir, f);

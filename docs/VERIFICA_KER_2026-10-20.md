@@ -11,6 +11,7 @@ Generato con `npx tsx scripts/collaudo/ker-prescrizione.ts <pacchetto>`. Fonte d
 - `psillio_confronto.json` (sha256 b717e7f0e85edebb…): json/strict, 1 nuovi, 0 aggiornati, 5 valori, errori 0, conversioni in sospeso 0
 - `integratori_riferimento_19ott.json` (sha256 56a4357c6c869c47…): json/strict, 0 nuovi, 3 aggiornati, 41 valori, errori 0, conversioni in sospeso 0
 - `non_importare_automaticamente/qdiet_b5_condizionale.json`: **non importato** (stima condizionale, come indicato).
+- Psillio: profilo Erbavoglio Cuticola Bio (EAN 8021354007639) **assunto per il confronto**; la prescrizione non identifica la variante.
 
 Cane: femmina, 6 anni, 30.2 kg (riferimento 27.2 kg), BCS 6/9; richiesta energetica scritta **1340 kcal/die**.
 Limiti applicati: FEDIAF 2025 tab. III-3b, adulto **95 kcal/kg^0,75** (l’app non contiene la colonna 110: i confronti «110» del pacchetto non sono riproducibili nel motore). Minimi per 1000 kcal su max(1.340, energia calcolata).
@@ -26,7 +27,7 @@ Quantità bloccate: Macinato di manzo crudo 3% grassi 560 g; Avena in fiocchi se
 
 | Grandezza | Pacchetto | App | Differenza | Dati sconosciuti o parziali (app) |
 |---|---:|---:|---:|---|
-| Energia parziale del modello (kcal) | 1208,898 | 1209,6 | 0,702 | sconosciuta: Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%) |
+| Energia parziale del modello (kcal) | 1208,898 | 1208,898 | 0 | sconosciuta: Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639) |
 | Proteine (g) | 137,5555 | 137,5555 | 0 | non dichiarato da Omegor Vitality 1000 (capsula) |
 | Grassi totali (g) | 44,4221 | 44,4221 | 0 | — |
 | Carboidrati disponibili (g) | 62,4065 | 62,4065 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Q.Diet Compensa (standard, NON Crescita/Ultra), Omegor Vitality 1000 (capsula) |
@@ -139,7 +140,9 @@ Esiti coincidenti: 38 su 38.
 | Valina | 2,5205 | 2,5205 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
 
 Massimi non verificabili nell’app: Calcio, Fosforo, Rapporto calcio/fosforo, Vitamina A, Vitamina D. Massimi superati in modo dimostrato: nessuno.
-Energia rispetto a 1.340 kcal: 1209,6 kcal su obiettivo 1340 (tolleranza ±2%). Energia sconosciuta per Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%) 5 g (0,6% del peso della razione): totale parziale, la tolleranza energetica non è attestata. (controllo mostrato, non requisito per analizzare o conservare la prescrizione).
+Energia rispetto a 1.340 kcal: 1208,898 kcal su obiettivo 1340 (tolleranza ±2%). Energia sconosciuta per Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%) 5 g, Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639) 5 g (1,3% del peso della razione): totale parziale, la tolleranza energetica non è attestata. Contributo parziale dai macronutrienti dichiarati, escluso dal totale: Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639) 0,702 kcal (fermentazione della fibra non stimata). (controllo mostrato, non requisito per analizzare o conservare la prescrizione).
+Base calorica dei minimi: Minimi per 1000 kcal applicati su 1340 kcal: il maggiore fra obiettivo (1340 kcal) e calorie calcolate (1208,9 kcal).
+Energia di Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639): EM completa sconosciuta; dai soli macronutrienti dichiarati 0,1404 kcal/g (contributo parziale, escluso dal totale).
 Tabella d’impiego — Q.Diet Compensa (standard, NON Crescita/Ultra): 13 g; Q.Diet Compensa (standard, NON Crescita/Ultra): 13 g/die supera la dose massima consigliata (intervallo consigliato dal produttore 30,2 kg: 4,53–9,06 (interpolato tra 30 e 40 kg) g/die per il peso attuale di 30,2 kg). Serve una valutazione veterinaria. (avviso; dose prescritta non modificata).
 Preferenze e soglie non ufficiali non rispettate o non verificabili (non sono carenze): 
 - Fibra alimentare: preferenza (min 5 · max 15 g/1000 kcal): massimo non verificabile — con i dati noti 14,3 g/1000 kcal; dato sconosciuto in Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%
@@ -157,7 +160,7 @@ Quantità bloccate: Macinato di manzo crudo 3% grassi 560 g; Avena in fiocchi se
 
 | Grandezza | Pacchetto | App | Differenza | Dati sconosciuti o parziali (app) |
 |---|---:|---:|---:|---|
-| Energia parziale del modello (kcal) | 1202,751 | 1203,453 | 0,702 | sconosciuta: Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%) |
+| Energia parziale del modello (kcal) | 1202,751 | 1202,751 | 0 | sconosciuta: Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639) |
 | Proteine (g) | 137,5195 | 137,5195 | 0 | non dichiarato da Omegor Vitality 1000 (capsula) |
 | Grassi totali (g) | 44,3231 | 44,3231 | 0 | — |
 | Carboidrati disponibili (g) | 61,1285 | 61,1285 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Q.Diet Compensa (standard, NON Crescita/Ultra), Omegor Vitality 1000 (capsula) |
@@ -270,10 +273,12 @@ Esiti coincidenti: 38 su 38.
 | Valina | 2,5205 | 2,5205 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
 
 Massimi non verificabili nell’app: Calcio, Fosforo, Rapporto calcio/fosforo, Vitamina A, Vitamina D. Massimi superati in modo dimostrato: nessuno.
-Energia rispetto a 1.340 kcal: 1203,453 kcal su obiettivo 1340 (tolleranza ±2%). Energia sconosciuta per Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%) 5 g (0,6% del peso della razione): totale parziale, la tolleranza energetica non è attestata. (controllo mostrato, non requisito per analizzare o conservare la prescrizione).
+Energia rispetto a 1.340 kcal: 1202,751 kcal su obiettivo 1340 (tolleranza ±2%). Energia sconosciuta per Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%) 5 g, Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639) 5 g (1,3% del peso della razione): totale parziale, la tolleranza energetica non è attestata. Contributo parziale dai macronutrienti dichiarati, escluso dal totale: Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639) 0,702 kcal (fermentazione della fibra non stimata). (controllo mostrato, non requisito per analizzare o conservare la prescrizione).
+Base calorica dei minimi: Minimi per 1000 kcal applicati su 1340 kcal: il maggiore fra obiettivo (1340 kcal) e calorie calcolate (1202,8 kcal).
+Energia di Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639): EM completa sconosciuta; dai soli macronutrienti dichiarati 0,1404 kcal/g (contributo parziale, escluso dal totale).
 Tabella d’impiego — Q.Diet Compensa (standard, NON Crescita/Ultra): 13 g; Q.Diet Compensa (standard, NON Crescita/Ultra): 13 g/die supera la dose massima consigliata (intervallo consigliato dal produttore 30,2 kg: 4,53–9,06 (interpolato tra 30 e 40 kg) g/die per il peso attuale di 30,2 kg). Serve una valutazione veterinaria. (avviso; dose prescritta non modificata).
 Preferenze e soglie non ufficiali non rispettate o non verificabili (non sono carenze): 
-- Fibra alimentare: preferenza (min 5 · max 15 g/1000 kcal): massimo non verificabile — con i dati noti 12,9 g/1000 kcal; dato sconosciuto in Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%
+- Fibra alimentare: preferenza (min 5 · max 15 g/1000 kcal): massimo non verificabile — con i dati noti 13 g/1000 kcal; dato sconosciuto in Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%),
 - Rapporto calcio/fosforo: soglia di attenzione NON ufficiale (min 1,2 · max 1,4): non verificabile — calcio/fosforo non verificabile: Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psill
 - Quota energia da proteine: preferenza (min 25 · max 40 % energia macro (4/9/4)): superato in tutto l’intervallo possibile (43,7–46,1 % energia macro (4/9/4)) — richiesto 25–40 % energia macro (4/9/
 Lacune del catalogo segnalate per questi prodotti: 16.
@@ -288,7 +293,7 @@ Quantità bloccate: Macinato di manzo crudo 5% grassi — proxy USDA 560 g; Aven
 
 | Grandezza | Pacchetto | App | Differenza | Dati sconosciuti o parziali (app) |
 |---|---:|---:|---:|---|
-| Energia parziale del modello (kcal) | 1296,93 | 1297,632 | 0,702 | sconosciuta: Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%) |
+| Energia parziale del modello (kcal) | 1296,93 | 1296,93 | 0 | sconosciuta: Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639) |
 | Proteine (g) | 134,3635 | 134,3635 | 0 | non dichiarato da Omegor Vitality 1000 (capsula) |
 | Grassi totali (g) | 55,6221 | 55,6221 | -0 | — |
 | Carboidrati disponibili (g) | 62,4065 | 62,4065 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Q.Diet Compensa (standard, NON Crescita/Ultra), Omegor Vitality 1000 (capsula) |
@@ -401,7 +406,9 @@ Esiti coincidenti: 38 su 38.
 | Valina | 2,5205 | 2,5205 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
 
 Massimi non verificabili nell’app: Calcio, Fosforo, Rapporto calcio/fosforo, Vitamina A, Vitamina D. Massimi superati in modo dimostrato: nessuno.
-Energia rispetto a 1.340 kcal: 1297,632 kcal su obiettivo 1340 (tolleranza ±2%). Energia sconosciuta per Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%) 5 g (0,6% del peso della razione): totale parziale, la tolleranza energetica non è attestata. (controllo mostrato, non requisito per analizzare o conservare la prescrizione).
+Energia rispetto a 1.340 kcal: 1296,93 kcal su obiettivo 1340 (tolleranza ±2%). Energia sconosciuta per Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%) 5 g, Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639) 5 g (1,3% del peso della razione): totale parziale, la tolleranza energetica non è attestata. Contributo parziale dai macronutrienti dichiarati, escluso dal totale: Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639) 0,702 kcal (fermentazione della fibra non stimata). (controllo mostrato, non requisito per analizzare o conservare la prescrizione).
+Base calorica dei minimi: Minimi per 1000 kcal applicati su 1340 kcal: il maggiore fra obiettivo (1340 kcal) e calorie calcolate (1296,9 kcal).
+Energia di Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639): EM completa sconosciuta; dai soli macronutrienti dichiarati 0,1404 kcal/g (contributo parziale, escluso dal totale).
 Tabella d’impiego — Q.Diet Compensa (standard, NON Crescita/Ultra): 13 g; Q.Diet Compensa (standard, NON Crescita/Ultra): 13 g/die supera la dose massima consigliata (intervallo consigliato dal produttore 30,2 kg: 4,53–9,06 (interpolato tra 30 e 40 kg) g/die per il peso attuale di 30,2 kg). Serve una valutazione veterinaria. (avviso; dose prescritta non modificata).
 Preferenze e soglie non ufficiali non rispettate o non verificabili (non sono carenze): 
 - Fibra alimentare: preferenza (min 5 · max 15 g/1000 kcal): massimo non verificabile — con i dati noti 13,3 g/1000 kcal; dato sconosciuto in Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%
@@ -420,7 +427,7 @@ Quantità bloccate: Macinato di manzo crudo 5% grassi — proxy USDA 560 g; Aven
 
 | Grandezza | Pacchetto | App | Differenza | Dati sconosciuti o parziali (app) |
 |---|---:|---:|---:|---|
-| Energia parziale del modello (kcal) | 1290,783 | 1291,485 | 0,702 | sconosciuta: Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%) |
+| Energia parziale del modello (kcal) | 1290,783 | 1290,783 | 0 | sconosciuta: Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639) |
 | Proteine (g) | 134,3275 | 134,3275 | -0 | non dichiarato da Omegor Vitality 1000 (capsula) |
 | Grassi totali (g) | 55,5231 | 55,5231 | -0 | — |
 | Carboidrati disponibili (g) | 61,1285 | 61,1285 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Q.Diet Compensa (standard, NON Crescita/Ultra), Omegor Vitality 1000 (capsula) |
@@ -533,7 +540,9 @@ Esiti coincidenti: 38 su 38.
 | Valina | 2,5205 | 2,5205 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
 
 Massimi non verificabili nell’app: Calcio, Fosforo, Rapporto calcio/fosforo, Vitamina A, Vitamina D. Massimi superati in modo dimostrato: nessuno.
-Energia rispetto a 1.340 kcal: 1291,485 kcal su obiettivo 1340 (tolleranza ±2%). Energia sconosciuta per Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%) 5 g (0,6% del peso della razione): totale parziale, la tolleranza energetica non è attestata. (controllo mostrato, non requisito per analizzare o conservare la prescrizione).
+Energia rispetto a 1.340 kcal: 1290,783 kcal su obiettivo 1340 (tolleranza ±2%). Energia sconosciuta per Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%) 5 g, Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639) 5 g (1,3% del peso della razione): totale parziale, la tolleranza energetica non è attestata. Contributo parziale dai macronutrienti dichiarati, escluso dal totale: Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639) 0,702 kcal (fermentazione della fibra non stimata). (controllo mostrato, non requisito per analizzare o conservare la prescrizione).
+Base calorica dei minimi: Minimi per 1000 kcal applicati su 1340 kcal: il maggiore fra obiettivo (1340 kcal) e calorie calcolate (1290,8 kcal).
+Energia di Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639): EM completa sconosciuta; dai soli macronutrienti dichiarati 0,1404 kcal/g (contributo parziale, escluso dal totale).
 Tabella d’impiego — Q.Diet Compensa (standard, NON Crescita/Ultra): 13 g; Q.Diet Compensa (standard, NON Crescita/Ultra): 13 g/die supera la dose massima consigliata (intervallo consigliato dal produttore 30,2 kg: 4,53–9,06 (interpolato tra 30 e 40 kg) g/die per il peso attuale di 30,2 kg). Serve una valutazione veterinaria. (avviso; dose prescritta non modificata).
 Preferenze e soglie non ufficiali non rispettate o non verificabili (non sono carenze): 
 - Fibra alimentare: preferenza (min 5 · max 15 g/1000 kcal): massimo non verificabile — con i dati noti 12,1 g/1000 kcal; dato sconosciuto in Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%
@@ -552,7 +561,7 @@ Quantità bloccate: Macinato di manzo crudo 10% grassi — proxy USDA 560 g; Ave
 
 | Grandezza | Pacchetto | App | Differenza | Dati sconosciuti o parziali (app) |
 |---|---:|---:|---:|---|
-| Energia parziale del modello (kcal) | 1517,346 | 1518,048 | 0,702 | sconosciuta: Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%) |
+| Energia parziale del modello (kcal) | 1517,346 | 1517,346 | 0 | sconosciuta: Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639) |
 | Proteine (g) | 126,4675 | 126,4675 | 0 | non dichiarato da Omegor Vitality 1000 (capsula) |
 | Grassi totali (g) | 83,6221 | 83,6221 | 0 | — |
 | Carboidrati disponibili (g) | 62,4065 | 62,4065 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Q.Diet Compensa (standard, NON Crescita/Ultra), Omegor Vitality 1000 (capsula) |
@@ -625,47 +634,49 @@ Esiti coincidenti: 37 su 38.
 
 | Nutriente | Minimo pacchetto | Minimo app | Esito pacchetto | Esito app |
 |---|---:|---:|---|---|
-| Proteine | 69,814 | 79,0903 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Grassi totali | 18,425 | 20,8732 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Acido linoleico omega-6 | 5,1188 | 5,7989 | copertura non verificabile | copertura non verificabile — minimo ufficiale (min 3,82 g/1000 kcal): copertura non verificabile — con i dati noti 1,049 g/1000 kcal; dato sconosciuto (non zero) in Macinato di manzo crudo  |
-| Calcio | 1,943 | 2,2012 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Fosforo | 1,5544 | 1,7609 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Potassio | 1,943 | 2,2012 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Sodio | 0,3886 | 0,4402 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Cloruro | 0,5762 | 0,6528 | copertura non verificabile | copertura non verificabile — minimo ufficiale (min 0,43 g/1000 kcal): non verificabile — nessun dato disponibile |
-| Magnesio | 0,268 | 0,3036 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Rame | 2,7872 | 3,1575 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Iodio | 0,402 | 0,4554 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Ferro | 13,936 | 15,7877 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Manganese | 2,2378 | 2,5351 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Selenio (diete umide) | 90,45 | 102,4682 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Zinco | 27,872 | 31,5754 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Vitamina A | 2350,36 | 2662,6562 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Vitamina D | 213,06 | 241,3696 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Vitamina E | 13,936 | 15,7877 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Vitamina B1 / tiamina | 0,8308 | 0,9412 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Vitamina B2 / riboflavina | 2,3316 | 2,6414 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Vitamina B3 / niacina | 6,3516 | 7,1955 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Vitamina B5 / acido pantotenico | 5,5074 | 6,2392 | copertura non verificabile | copertura non verificabile — minimo ufficiale (min 4,11 mg/1000 kcal): copertura non verificabile — con i dati noti 3,092 mg/1000 kcal; dato sconosciuto (non zero) in Olio di lino alimentar |
-| Vitamina B6 / piridossina | 0,5628 | 0,6376 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Vitamina B9 / folati | 100,098 | 113,3982 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Vitamina B12 | 12,9712 | 14,6947 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Colina | 635,16 | 719,5548 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Arginina | 2,2257 | 2,5215 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Istidina | 0,9876 | 1,1188 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Isoleucina | 1,9604 | 2,2209 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Leucina | 3,4934 | 3,9576 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Lisina | 1,7983 | 2,0372 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Metionina | 1,7098 | 1,937 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Metionina + cistina | 3,2575 | 3,6904 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Fenilalanina | 2,2994 | 2,605 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Fenilalanina + tirosina | 3,8029 | 4,3082 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Treonina | 2,2257 | 2,5215 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| **Triptofano** | 0,7223 | 0,8182 | minimo coperto dal contributo noto | copertura non verificabile — minimo ufficiale (min 0,539 g/1000 kcal): copertura non verificabile — con i dati noti 0,502 g/1000 kcal; dato sconosciuto (non zero) in Olio di lino alimentare |
-| Valina | 2,5205 | 2,8554 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Proteine | 69,814 | 79,0537 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Grassi totali | 18,425 | 20,8635 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Acido linoleico omega-6 | 5,1188 | 5,7963 | copertura non verificabile | copertura non verificabile — minimo ufficiale (min 3,82 g/1000 kcal): copertura non verificabile — con i dati noti 1,049 g/1000 kcal; dato sconosciuto (non zero) in Macinato di manzo crudo  |
+| Calcio | 1,943 | 2,2002 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Fosforo | 1,5544 | 1,7601 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Potassio | 1,943 | 2,2002 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Sodio | 0,3886 | 0,44 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Cloruro | 0,5762 | 0,6525 | copertura non verificabile | copertura non verificabile — minimo ufficiale (min 0,43 g/1000 kcal): non verificabile — nessun dato disponibile |
+| Magnesio | 0,268 | 0,3035 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Rame | 2,7872 | 3,1561 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Iodio | 0,402 | 0,4552 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Ferro | 13,936 | 15,7804 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Manganese | 2,2378 | 2,534 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Selenio (diete umide) | 90,45 | 102,4209 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Zinco | 27,872 | 31,5608 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Vitamina A | 2350,36 | 2661,4249 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Vitamina D | 213,06 | 241,258 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Vitamina E | 13,936 | 15,7804 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Vitamina B1 / tiamina | 0,8308 | 0,9408 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Vitamina B2 / riboflavina | 2,3316 | 2,6402 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Vitamina B3 / niacina | 6,3516 | 7,1922 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Vitamina B5 / acido pantotenico | 5,5074 | 6,2363 | copertura non verificabile | copertura non verificabile — minimo ufficiale (min 4,11 mg/1000 kcal): copertura non verificabile — con i dati noti 3,094 mg/1000 kcal; dato sconosciuto (non zero) in Olio di lino alimentar |
+| Vitamina B6 / piridossina | 0,5628 | 0,6373 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Vitamina B9 / folati | 100,098 | 113,3457 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Vitamina B12 | 12,9712 | 14,6879 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Colina | 635,16 | 719,222 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Arginina | 2,2257 | 2,5203 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Istidina | 0,9876 | 1,1183 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Isoleucina | 1,9604 | 2,2199 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Leucina | 3,4934 | 3,9557 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Lisina | 1,7983 | 2,0363 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Metionina | 1,7098 | 1,9361 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Metionina + cistina | 3,2575 | 3,6887 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Fenilalanina | 2,2994 | 2,6038 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Fenilalanina + tirosina | 3,8029 | 4,3062 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Treonina | 2,2257 | 2,5203 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| **Triptofano** | 0,7223 | 0,8178 | minimo coperto dal contributo noto | copertura non verificabile — minimo ufficiale (min 0,539 g/1000 kcal): copertura non verificabile — con i dati noti 0,502 g/1000 kcal; dato sconosciuto (non zero) in Olio di lino alimentare |
+| Valina | 2,5205 | 2,8541 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
 
 Massimi non verificabili nell’app: Calcio, Fosforo, Rapporto calcio/fosforo, Vitamina A, Vitamina D. Massimi superati in modo dimostrato: nessuno.
-Energia rispetto a 1.340 kcal: 1518,048 kcal su obiettivo 1340 (tolleranza ±2%). Energia sconosciuta per Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%) 5 g (0,6% del peso della razione): totale parziale, la tolleranza energetica non è attestata. (controllo mostrato, non requisito per analizzare o conservare la prescrizione).
+Energia rispetto a 1.340 kcal: 1517,346 kcal su obiettivo 1340 (tolleranza ±2%). Energia sconosciuta per Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%) 5 g, Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639) 5 g (1,3% del peso della razione): totale parziale, la tolleranza energetica non è attestata. Contributo parziale dai macronutrienti dichiarati, escluso dal totale: Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639) 0,702 kcal (fermentazione della fibra non stimata). (controllo mostrato, non requisito per analizzare o conservare la prescrizione).
+Base calorica dei minimi: Minimi per 1000 kcal applicati su 1517,3 kcal: il maggiore fra obiettivo (1340 kcal) e calorie calcolate (1517,3 kcal).
+Energia di Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639): EM completa sconosciuta; dai soli macronutrienti dichiarati 0,1404 kcal/g (contributo parziale, escluso dal totale).
 Tabella d’impiego — Q.Diet Compensa (standard, NON Crescita/Ultra): 13 g; Q.Diet Compensa (standard, NON Crescita/Ultra): 13 g/die supera la dose massima consigliata (intervallo consigliato dal produttore 30,2 kg: 4,53–9,06 (interpolato tra 30 e 40 kg) g/die per il peso attuale di 30,2 kg). Serve una valutazione veterinaria. (avviso; dose prescritta non modificata).
 Preferenze e soglie non ufficiali non rispettate o non verificabili (non sono carenze): 
 - Fibra alimentare: preferenza (min 5 · max 15 g/1000 kcal): massimo non verificabile — con i dati noti 11,4 g/1000 kcal; dato sconosciuto in Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%
@@ -684,7 +695,7 @@ Quantità bloccate: Macinato di manzo crudo 10% grassi — proxy USDA 560 g; Ave
 
 | Grandezza | Pacchetto | App | Differenza | Dati sconosciuti o parziali (app) |
 |---|---:|---:|---:|---|
-| Energia parziale del modello (kcal) | 1511,199 | 1511,901 | 0,702 | sconosciuta: Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%) |
+| Energia parziale del modello (kcal) | 1511,199 | 1511,199 | 0 | sconosciuta: Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639) |
 | Proteine (g) | 126,4315 | 126,4315 | 0 | non dichiarato da Omegor Vitality 1000 (capsula) |
 | Grassi totali (g) | 83,5231 | 83,5231 | 0 | — |
 | Carboidrati disponibili (g) | 61,1285 | 61,1285 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Q.Diet Compensa (standard, NON Crescita/Ultra), Omegor Vitality 1000 (capsula) |
@@ -757,47 +768,49 @@ Esiti coincidenti: 37 su 38.
 
 | Nutriente | Minimo pacchetto | Minimo app | Esito pacchetto | Esito app |
 |---|---:|---:|---|---|
-| Proteine | 69,814 | 78,77 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Grassi totali | 18,425 | 20,7886 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Acido linoleico omega-6 | 5,1188 | 5,7755 | copertura non verificabile | copertura non verificabile — minimo ufficiale (min 3,82 g/1000 kcal): copertura non verificabile — con i dati noti 1,053 g/1000 kcal; dato sconosciuto (non zero) in Macinato di manzo crudo  |
-| Calcio | 1,943 | 2,1923 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Fosforo | 1,5544 | 1,7538 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Potassio | 1,943 | 2,1923 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Sodio | 0,3886 | 0,4385 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Cloruro | 0,5762 | 0,6501 | copertura non verificabile | copertura non verificabile — minimo ufficiale (min 0,43 g/1000 kcal): non verificabile — nessun dato disponibile |
-| Magnesio | 0,268 | 0,3024 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Rame | 2,7872 | 3,1448 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Iodio | 0,402 | 0,4536 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Ferro | 13,936 | 15,7238 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Manganese | 2,2378 | 2,5249 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Selenio (diete umide) | 90,45 | 102,0533 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Zinco | 27,872 | 31,4475 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Vitamina A | 2350,36 | 2651,8744 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Vitamina D | 213,06 | 240,3923 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Vitamina E | 13,936 | 15,7238 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Vitamina B1 / tiamina | 0,8308 | 0,9374 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Vitamina B2 / riboflavina | 2,3316 | 2,6307 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Vitamina B3 / niacina | 6,3516 | 7,1664 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Vitamina B5 / acido pantotenico | 5,5074 | 6,2139 | copertura non verificabile | copertura non verificabile — minimo ufficiale (min 4,11 mg/1000 kcal): copertura non verificabile — con i dati noti 3,087 mg/1000 kcal; dato sconosciuto (non zero) in Olio di lino alimentar |
-| Vitamina B6 / piridossina | 0,5628 | 0,635 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Vitamina B9 / folati | 100,098 | 112,939 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Vitamina B12 | 12,9712 | 14,6352 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Colina | 635,16 | 716,6411 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Arginina | 2,2257 | 2,5113 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Istidina | 0,9876 | 1,1143 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Isoleucina | 1,9604 | 2,2119 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Leucina | 3,4934 | 3,9415 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Lisina | 1,7983 | 2,029 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Metionina | 1,7098 | 1,9292 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Metionina + cistina | 3,2575 | 3,6754 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Fenilalanina | 2,2994 | 2,5944 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Fenilalanina + tirosina | 3,8029 | 4,2908 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| Treonina | 2,2257 | 2,5113 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
-| **Triptofano** | 0,7223 | 0,8149 | minimo coperto dal contributo noto | copertura non verificabile — minimo ufficiale (min 0,539 g/1000 kcal): copertura non verificabile — con i dati noti 0,504 g/1000 kcal; dato sconosciuto (non zero) in Olio di lino alimentare |
-| Valina | 2,5205 | 2,8439 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Proteine | 69,814 | 78,7335 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Grassi totali | 18,425 | 20,779 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Acido linoleico omega-6 | 5,1188 | 5,7728 | copertura non verificabile | copertura non verificabile — minimo ufficiale (min 3,82 g/1000 kcal): copertura non verificabile — con i dati noti 1,054 g/1000 kcal; dato sconosciuto (non zero) in Macinato di manzo crudo  |
+| Calcio | 1,943 | 2,1912 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Fosforo | 1,5544 | 1,753 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Potassio | 1,943 | 2,1912 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Sodio | 0,3886 | 0,4382 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Cloruro | 0,5762 | 0,6498 | copertura non verificabile | copertura non verificabile — minimo ufficiale (min 0,43 g/1000 kcal): non verificabile — nessun dato disponibile |
+| Magnesio | 0,268 | 0,3022 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Rame | 2,7872 | 3,1433 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Iodio | 0,402 | 0,4534 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Ferro | 13,936 | 15,7165 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Manganese | 2,2378 | 2,5237 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Selenio (diete umide) | 90,45 | 102,0059 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Zinco | 27,872 | 31,4329 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Vitamina A | 2350,36 | 2650,643 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Vitamina D | 213,06 | 240,2806 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Vitamina E | 13,936 | 15,7165 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Vitamina B1 / tiamina | 0,8308 | 0,9369 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Vitamina B2 / riboflavina | 2,3316 | 2,6295 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Vitamina B3 / niacina | 6,3516 | 7,1631 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Vitamina B5 / acido pantotenico | 5,5074 | 6,211 | copertura non verificabile | copertura non verificabile — minimo ufficiale (min 4,11 mg/1000 kcal): copertura non verificabile — con i dati noti 3,088 mg/1000 kcal; dato sconosciuto (non zero) in Olio di lino alimentar |
+| Vitamina B6 / piridossina | 0,5628 | 0,6347 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Vitamina B9 / folati | 100,098 | 112,8866 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Vitamina B12 | 12,9712 | 14,6284 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Colina | 635,16 | 716,3083 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Arginina | 2,2257 | 2,5101 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Istidina | 0,9876 | 1,1138 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Isoleucina | 1,9604 | 2,2109 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Leucina | 3,4934 | 3,9397 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Lisina | 1,7983 | 2,028 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Metionina | 1,7098 | 1,9283 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Metionina + cistina | 3,2575 | 3,6737 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Fenilalanina | 2,2994 | 2,5932 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Fenilalanina + tirosina | 3,8029 | 4,2888 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| Treonina | 2,2257 | 2,5101 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
+| **Triptofano** | 0,7223 | 0,8145 | minimo coperto dal contributo noto | copertura non verificabile — minimo ufficiale (min 0,539 g/1000 kcal): copertura non verificabile — con i dati noti 0,504 g/1000 kcal; dato sconosciuto (non zero) in Olio di lino alimentare |
+| Valina | 2,5205 | 2,8426 | minimo coperto dal contributo noto | minimo coperto dal contributo noto |
 
 Massimi non verificabili nell’app: Calcio, Fosforo, Rapporto calcio/fosforo, Vitamina A, Vitamina D. Massimi superati in modo dimostrato: nessuno.
-Energia rispetto a 1.340 kcal: 1511,901 kcal su obiettivo 1340 (tolleranza ±2%). Energia sconosciuta per Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%) 5 g (0,6% del peso della razione): totale parziale, la tolleranza energetica non è attestata. (controllo mostrato, non requisito per analizzare o conservare la prescrizione).
+Energia rispetto a 1.340 kcal: 1511,199 kcal su obiettivo 1340 (tolleranza ±2%). Energia sconosciuta per Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%) 5 g, Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639) 5 g (1,3% del peso della razione): totale parziale, la tolleranza energetica non è attestata. Contributo parziale dai macronutrienti dichiarati, escluso dal totale: Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639) 0,702 kcal (fermentazione della fibra non stimata). (controllo mostrato, non requisito per analizzare o conservare la prescrizione).
+Base calorica dei minimi: Minimi per 1000 kcal applicati su 1511,2 kcal: il maggiore fra obiettivo (1340 kcal) e calorie calcolate (1511,2 kcal).
+Energia di Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639): EM completa sconosciuta; dai soli macronutrienti dichiarati 0,1404 kcal/g (contributo parziale, escluso dal totale).
 Tabella d’impiego — Q.Diet Compensa (standard, NON Crescita/Ultra): 13 g; Q.Diet Compensa (standard, NON Crescita/Ultra): 13 g/die supera la dose massima consigliata (intervallo consigliato dal produttore 30,2 kg: 4,53–9,06 (interpolato tra 30 e 40 kg) g/die per il peso attuale di 30,2 kg). Serve una valutazione veterinaria. (avviso; dose prescritta non modificata).
 Preferenze e soglie non ufficiali non rispettate o non verificabili (non sono carenze): 
 - Fibra alimentare: preferenza (min 5 · max 15 g/1000 kcal): massimo non verificabile — con i dati noti 10,3 g/1000 kcal; dato sconosciuto in Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%
@@ -826,9 +839,9 @@ Valori canonici dei prodotti già presenti, prima (catalogo attuale della prova 
 
 | Scenario | Energia app (kcal) | Δ energia | Differenze negli apporti noti (app − pacchetto) | Esiti dei minimi coincidenti | Stato dell’analisi |
 |---|---:|---:|---|---:|---|
-| beef_03_carrot_cooked | 1209,6 | 0,702 | energia 0,702 kcal | 38/38 | Bozza parziale: dati mancanti, non interamente verificabile |
-| beef_03_pumpkin_cooked | 1203,45 | 0,702 | energia 0,702 kcal | 38/38 | Bozza parziale: dati mancanti, non interamente verificabile |
-| beef_05_carrot_cooked | 1297,63 | 0,702 | energia 0,702 kcal | 38/38 | Bozza parziale: dati mancanti, non interamente verificabile |
-| beef_05_pumpkin_cooked | 1291,49 | 0,702 | energia 0,702 kcal | 38/38 | Bozza parziale: dati mancanti, non interamente verificabile |
-| beef_10_carrot_cooked | 1518,05 | 0,702 | energia 0,702 kcal | 37/38 | Bozza parziale: dati mancanti, non interamente verificabile |
-| beef_10_pumpkin_cooked | 1511,9 | 0,702 | energia 0,702 kcal | 37/38 | Bozza parziale: dati mancanti, non interamente verificabile |
+| beef_03_carrot_cooked | 1208,9 | 0 | nessuna | 38/38 | Bozza parziale: dati mancanti, non interamente verificabile |
+| beef_03_pumpkin_cooked | 1202,75 | 0 | nessuna | 38/38 | Bozza parziale: dati mancanti, non interamente verificabile |
+| beef_05_carrot_cooked | 1296,93 | 0 | nessuna | 38/38 | Bozza parziale: dati mancanti, non interamente verificabile |
+| beef_05_pumpkin_cooked | 1290,78 | 0 | nessuna | 38/38 | Bozza parziale: dati mancanti, non interamente verificabile |
+| beef_10_carrot_cooked | 1517,35 | 0 | nessuna | 37/38 | Bozza parziale: dati mancanti, non interamente verificabile |
+| beef_10_pumpkin_cooked | 1511,2 | 0 | nessuna | 37/38 | Bozza parziale: dati mancanti, non interamente verificabile |

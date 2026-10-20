@@ -165,7 +165,7 @@ MINS={
 MAXS={'calcium':6.25,'phosphorus':4,'vitamin_a':100000,'vitamin_d':800}
 AA=set(AA_NAMES.values())|{'methionine_cystine','phenylalanine_tyrosine'}
 CANON={v[0]:v[1] for v in MAP.values()}
-CANON.update({x:'g' for x in AA});CANON.update({'vitamin_a':'IU','epa_dha':'g','omega3_total':'g','omega6_total':'g'})
+CANON.update({x:'g' for x in AA});CANON.update({'vitamin_a':'IU','iodine':'mg','epa_dha':'g','omega3_total':'g','omega6_total':'g'})
 
 def per_unit(x,code):
  n=x['nutrients'].get(code,{})

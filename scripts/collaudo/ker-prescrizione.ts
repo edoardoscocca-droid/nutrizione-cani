@@ -29,7 +29,7 @@ const fmt = (n: number | null | undefined, d = 4) => (n === null || n === undefi
 const sha = (t: string) => createHash('sha256').update(t).digest('hex');
 
 // catalogo: copia della modalità prova + importazioni del pacchetto (stesso importatore della scheda Catalogo → Importa)
-const base = await new LocalRepository(null).loadCatalog();
+const base = await new LocalRepository(null).loadCatalog({ bundledUpTo: '2026-10-16' });
 let foods = [...base.foods];
 let supplements = [...base.supplements];
 const importLog: string[] = [];
@@ -90,6 +90,7 @@ o('## Importazione (importatore normale, schema definitivo JSON, modalità stric
 o();
 for (const l of importLog) o(`- ${l}`);
 o('- `non_importare_automaticamente/qdiet_b5_condizionale.json`: **non importato** (stima condizionale, come indicato).');
+o('- Psillio: profilo Erbavoglio Cuticola Bio (EAN 8021354007639) **assunto per il confronto**; la prescrizione non identifica la variante.');
 o();
 o(`Cane: femmina, ${p.age_years} anni, ${p.weight_current_kg} kg (riferimento ${p.weight_reference_kg} kg), BCS ${p.bcs_9}/9; richiesta energetica scritta **${caseFile.target_prescribed_kcal} kcal/die**.`);
 o('Limiti applicati: FEDIAF 2025 tab. III-3b, adulto **95 kcal/kg^0,75** (l’app non contiene la colonna 110: i confronti «110» del pacchetto non sono riproducibili nel motore). Minimi per 1000 kcal su max(1.340, energia calcolata).');
@@ -147,8 +148,7 @@ for (const exp of expected) {
       continue;
     }
     const unitExp = exp.controls.find((c) => c.nutrient === n)?.unit ?? nut.unit;
-    // il pacchetto scrive «g» per lo iodio con valori in mg (0,585 = mg; minimo 0,402 = 0,3 mg × 1,34): si confronta in mg
-    const expCanon = n === 'iodine' ? v : (() => { try { return toCanonical(v, unitExp, nut.unit).value; } catch { return v; } })();
+    const expCanon = (() => { try { return toCanonical(v, unitExp, nut.unit).value; } catch { return v; } })();
     const appV = t?.known ?? null;
     const d = appV === null ? null : appV - expCanon;
     const rel = appV === null ? null : Math.abs(d!) / Math.max(Math.abs(expCanon), 1e-9);
@@ -177,7 +177,7 @@ for (const exp of expected) {
     const same = appRes === c.result95;
     if (!same) minDiff++;
     const reqApp = chk?.dailyReference ?? null;
-    const reqExp = c.nutrient === 'iodine' ? c.min95_1340 : (() => { try { return toCanonical(c.min95_1340, c.unit, row?.unit ?? c.unit).value; } catch { return c.min95_1340; } })();
+    const reqExp = (() => { try { return toCanonical(c.min95_1340, c.unit, row?.unit ?? c.unit).value; } catch { return c.min95_1340; } })();
     mins.push(`| ${same ? '' : '**'}${row?.label ?? c.nutrient}${same ? '' : '**'} | ${fmt(reqExp)} | ${fmt(reqApp)} | ${c.result95} | ${appRes}${chk && chk.color !== 'green' ? ` — ${chk.message.replace(/\|/g, '/').slice(0, 160)}` : ''} |`);
   }
   o('### Minimi FEDIAF 95 sulla richiesta di 1.340 kcal');
@@ -193,6 +193,9 @@ for (const exp of expected) {
   const maxRed = a.rows.flatMap((r) => r.checks.filter((k) => k.limit.upper !== null && k.limit.limitClass !== 'PERSONAL_TARGET' && k.color === 'red').map((k) => `${r.label}: ${k.message}`));
   o(`Massimi non verificabili nell’app: ${[...new Set(maxNV)].join(', ') || 'nessuno'}. Massimi superati in modo dimostrato: ${maxRed.join('; ') || 'nessuno'}.`);
   o(`Energia rispetto a 1.340 kcal: ${a.energyRow.note} (controllo mostrato, non requisito per analizzare o conservare la prescrizione).`);
+  o(`Base calorica dei minimi: ${a.minimaBasis?.text ?? '—'}`);
+  const partial = (a.energySources ?? []).filter((e) => e.partial !== null && e.partial !== undefined);
+  for (const e of partial) o(`Energia di ${e.name}: EM completa sconosciuta; dai soli macronutrienti dichiarati ${fmt(e.partial, 4)} ${e.basis} (contributo parziale, escluso dal totale).`);
   for (const dc of a.doseChecks ?? []) o(`Tabella d’impiego — ${dc.name}: ${fmt(dc.qty)} ${dc.unit}; ${dc.message} (avviso; dose prescritta non modificata).`);
   const prefs = a.rows.flatMap((r) => r.checks.filter((k) => k.limit.limitClass === 'PERSONAL_TARGET' || k.limit.limitClass === 'NON_OFFICIAL_ATTENTION').filter((k) => k.color !== 'green').map((k) => `${r.label}: ${k.message.replace(/\|/g, '/').slice(0, 170)}`));
   o(`Preferenze e soglie non ufficiali non rispettate o non verificabili (non sono carenze): ${prefs.length ? '' : 'nessuna'}`);

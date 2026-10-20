@@ -68,7 +68,8 @@ export class LocalRepository implements Repository {
     return true; // in prova locale l'utente gestisce il proprio catalogo di prova
   }
 
-  async loadCatalog(opts: { withBundledImports?: boolean } = {}): Promise<FullCatalog> {
+  /** bundledUpTo: applica solo le importazioni incluse fino a quella data (es. «2026-10-16», per i test dei dati di allora). */
+  async loadCatalog(opts: { withBundledImports?: boolean; bundledUpTo?: string } = {}): Promise<FullCatalog> {
     const refs = packageReferences();
     const override = <T extends { id: string }>(base: T[], edits: T[]) => {
       const m = new Map(base.map((x) => [x.id, x]));
@@ -86,12 +87,14 @@ export class LocalRepository implements Repository {
       categories: CATEGORIES,
     };
     if (opts.withBundledImports !== false) {
-      for (const b of BUNDLED_IMPORTS) {
-        const plan = planImport(parseImport(JSON.stringify(b.data), b.kind, cat.nutrients, { mode: 'legacy' }), cat, b.label);
-        if (plan.errors.length) continue;
+      for (const b of BUNDLED_IMPORTS.filter((x) => !opts.bundledUpTo || x.date <= opts.bundledUpTo)) {
+        const plan = planImport(parseImport(JSON.stringify(b.data), b.kind, cat.nutrients, { mode: b.mode }), cat, b.label);
+        if (!plan.canApply) continue;
         const next = plan.items.filter((i) => i.action !== 'unchanged').map((i) => i.next);
         if (b.kind === 'foods') cat.foods = override(cat.foods, next as Food[]);
         else cat.supplements = override(cat.supplements, next as Supplement[]);
+        // il file successivo si confronta con lo stato già aggiornato (stessi valori dell'energia calcolata)
+        Object.assign(cat, applyEnergyMethods(cat));
       }
     }
     cat.foods = override(cat.foods, this.store.foods);

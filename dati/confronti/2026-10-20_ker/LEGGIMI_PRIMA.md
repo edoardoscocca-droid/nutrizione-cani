@@ -138,3 +138,7 @@ Restituire un confronto campo-per-campo con eventuali scostamenti. Solo dopo il 
 - FEDIAF2025, tabellaIII-3b,pagina16: https://www.europeanpetfood.org/wp-content/uploads/2025/09/FEDIAF-Nutritional-Guidelines_2025.pdf
 
 Verifiche svolte: normalizzazione unità; choline_chloride e formeE; somme e sottoinsiemi; grammi prescritti; fonti dei nuovi zeri; distinzione tipo di fibra; sei scenari; esportazione JSON; controlli strutturali locali. Importazione e confronto nel codice dell’app ancora da eseguire. Non è stata attestata la completezza clinica del menù né modificata la dieta di Ker.
+
+## Errata corrige dopo confronto con l’app
+
+L’unità dello iodio nelle righe di controllo e nel CSV era erroneamente indicata come g: corretta in mg. I numeri e i contributi non cambiano (caso principale: 0,585 mg/giorno). I confronti del pacchetto restano nominali su 1340 kcal; l’app applica invece la specifica max(calorie obiettivo, calorie calcolate). Per questo il giudizio sul triptofano dello scenario al 10% può differire senza differenze negli apporti. Il confronto FEDIAF110 resta documentale, non implementato nell’app.

@@ -1,0 +1,238 @@
+{
+  "supplements": [
+    {
+      "id": "psyllium_erbavoglio_husk_bio",
+      "name_it": "Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639)",
+      "brand": "Erbavoglio",
+      "product_variant": "Cuticola Bio, 200 g; EAN 8021354007639; NON polvere di cuticola Bio",
+      "class": "fiber",
+      "dose_unit": "g",
+      "integer_dose": false,
+      "label_source": "Erbavoglio, Cuticola di Psillio Bio, EAN 8021354007639; https://erbavoglio.it/shop/cuticola-di-psillio-bio/ ; scheda consultata 20/10/2026",
+      "source_url": "https://erbavoglio.it/shop/cuticola-di-psillio-bio/",
+      "product_version": "Scheda produttore consultata 20/10/2026; confezione del 2025 non verificata",
+      "data_status": "review_required",
+      "label_added_only": false,
+      "usable_for_optimization": false,
+      "notes": "Profilo di confronto, non identificazione certa del prodotto usato nel 2025. La prescrizione dice cuticole Erbavoglio ma non EAN. Etichetta 194 kcal/100 g per uso umano (811 kJ), NON ME canina. Energia per dose omessa perché non documentata per il cane. L’eventuale 4/9/4 sui soli macro non fibrosi darebbe 0,1404 kcal/g ma omette la fermentazione della fibra: il motore non deve farne una ME completa attestata. Non trasferire al cane la dose umana. Sale etichetta arrotondato a 0 non diventa sodio/cloruro zero. Variante polvere Bio diversa: proteine5%, grassi1,25%, carboidrati0,2%, fibra85%; energia pubblicata incoerente tra kJ e kcal. Non mescolare i due profili.",
+      "nutrients": {
+        "protein": {
+          "value": 0.8,
+          "unit": "g",
+          "status": "label",
+          "basis": "per_100g",
+          "source": "Erbavoglio, Cuticola di Psillio Bio, EAN 8021354007639; https://erbavoglio.it/shop/cuticola-di-psillio-bio/ ; scheda consultata 20/10/2026",
+          "method": "Etichetta del produttore per 100 g; profilo specifico Cuticola Bio.",
+          "declared_total_or_added": "total"
+        },
+        "fat": {
+          "value": 0.24,
+          "unit": "g",
+          "status": "label",
+          "basis": "per_100g",
+          "source": "Erbavoglio, Cuticola di Psillio Bio, EAN 8021354007639; https://erbavoglio.it/shop/cuticola-di-psillio-bio/ ; scheda consultata 20/10/2026",
+          "method": "Etichetta del produttore per 100 g; profilo specifico Cuticola Bio.",
+          "declared_total_or_added": "total"
+        },
+        "carbohydrate_available": {
+          "value": 2.17,
+          "unit": "g",
+          "status": "label",
+          "basis": "per_100g",
+          "source": "Erbavoglio, Cuticola di Psillio Bio, EAN 8021354007639; https://erbavoglio.it/shop/cuticola-di-psillio-bio/ ; scheda consultata 20/10/2026",
+          "method": "Etichetta del produttore per 100 g; profilo specifico Cuticola Bio.",
+          "declared_total_or_added": "total"
+        },
+        "fiber": {
+          "value": 89.8,
+          "unit": "g",
+          "status": "label",
+          "basis": "per_100g",
+          "source": "Erbavoglio, Cuticola di Psillio Bio, EAN 8021354007639; https://erbavoglio.it/shop/cuticola-di-psillio-bio/ ; scheda consultata 20/10/2026",
+          "method": "Etichetta del produttore per 100 g; profilo specifico Cuticola Bio.",
+          "declared_total_or_added": "total"
+        },
+        "moisture": {
+          "value": "NA"
+        },
+        "linoleic_acid": {
+          "value": "NA"
+        },
+        "ala": {
+          "value": "NA"
+        },
+        "epa": {
+          "value": "NA"
+        },
+        "dha": {
+          "value": "NA"
+        },
+        "epa_dha": {
+          "value": "NA"
+        },
+        "omega3_total": {
+          "value": "NA"
+        },
+        "omega6_total": {
+          "value": "NA"
+        },
+        "arachidonic_acid": {
+          "value": "NA"
+        },
+        "calcium": {
+          "value": "NA"
+        },
+        "phosphorus": {
+          "value": "NA"
+        },
+        "potassium": {
+          "value": "NA"
+        },
+        "sodium": {
+          "value": "NA"
+        },
+        "chloride": {
+          "value": "NA"
+        },
+        "magnesium": {
+          "value": "NA"
+        },
+        "copper": {
+          "value": "NA"
+        },
+        "iodine": {
+          "value": "NA"
+        },
+        "iron": {
+          "value": "NA"
+        },
+        "manganese": {
+          "value": "NA"
+        },
+        "selenium_wet": {
+          "value": "NA"
+        },
+        "zinc": {
+          "value": "NA"
+        },
+        "vitamin_a": {
+          "value": "NA"
+        },
+        "vitamin_d": {
+          "value": "NA"
+        },
+        "vitamin_e": {
+          "value": "NA"
+        },
+        "vitamin_b1": {
+          "value": "NA"
+        },
+        "vitamin_b2": {
+          "value": "NA"
+        },
+        "vitamin_b3": {
+          "value": "NA"
+        },
+        "vitamin_b5": {
+          "value": "NA"
+        },
+        "vitamin_b6": {
+          "value": "NA"
+        },
+        "vitamin_b9": {
+          "value": "NA"
+        },
+        "vitamin_b12": {
+          "value": "NA"
+        },
+        "choline": {
+          "value": "NA"
+        },
+        "vitamin_c": {
+          "value": "NA"
+        },
+        "vitamin_b7": {
+          "value": "NA"
+        },
+        "vitamin_k": {
+          "value": "NA"
+        },
+        "arginine": {
+          "value": "NA"
+        },
+        "histidine": {
+          "value": "NA"
+        },
+        "isoleucine": {
+          "value": "NA"
+        },
+        "leucine": {
+          "value": "NA"
+        },
+        "lysine": {
+          "value": "NA"
+        },
+        "methionine": {
+          "value": "NA"
+        },
+        "methionine_cystine": {
+          "value": "NA"
+        },
+        "phenylalanine": {
+          "value": "NA"
+        },
+        "phenylalanine_tyrosine": {
+          "value": "NA"
+        },
+        "threonine": {
+          "value": "NA"
+        },
+        "tryptophan": {
+          "value": "NA"
+        },
+        "valine": {
+          "value": "NA"
+        },
+        "taurine": {
+          "value": "NA"
+        },
+        "l_carnitine": {
+          "value": "NA"
+        },
+        "cystine": {
+          "value": "NA"
+        },
+        "tyrosine": {
+          "value": "NA"
+        },
+        "energy_food_kcal": {
+          "value": 194,
+          "unit": "kcal",
+          "status": "label",
+          "basis": "per_100g",
+          "source": "Erbavoglio, Cuticola di Psillio Bio, EAN 8021354007639; https://erbavoglio.it/shop/cuticola-di-psillio-bio/ ; scheda consultata 20/10/2026",
+          "method": "Energia etichetta uso umano, NON ME cane.",
+          "declared_total_or_added": "total"
+        },
+        "carbohydrate_by_difference": {
+          "value": "NA"
+        },
+        "c18_2_undifferentiated": {
+          "value": "NA"
+        },
+        "c20_4_undifferentiated": {
+          "value": "NA"
+        },
+        "vitamin_a_retinol_ug": {
+          "value": "NA"
+        },
+        "vitamin_a_carotenoid_iu": {
+          "value": "NA"
+        },
+        "beta_carotene_ug": {
+          "value": "NA"
+        }
+      }
+    }
+  ]
+}

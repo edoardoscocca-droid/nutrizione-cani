@@ -10,7 +10,7 @@ import { formulate } from '../../src/engine/formulate';
 import { DEFAULT_SETTINGS } from '../../src/engine/types';
 
 const runs = Number(process.argv[2] ?? 20);
-const cat = await new LocalRepository(null).loadCatalog();
+const cat = await new LocalRepository(null).loadCatalog({ bundledUpTo: '2026-10-16' });
 const copy = { ...cat, supplements: cat.supplements.map((s) => (['qdiet', 'omegor_vitality', 'bone_meal'].includes(s.id) ? { ...s, usableForOptimization: true } : s)) };
 const base = newDog({ name: 'Prova', weightCurrentKg: 33, weightIdealKg: 31, kcalTarget: 1800, activityFactor: 2 }, 'bench');
 const dog = applyPreset(base, presetFor('adult_maintenance')!);

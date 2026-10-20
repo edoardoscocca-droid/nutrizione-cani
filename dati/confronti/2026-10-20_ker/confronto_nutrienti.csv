@@ -9,7 +9,7 @@ beef_03_carrot_cooked;sodium;g;0.6893;0.3886;0.335;minimo coperto dal contributo
 beef_03_carrot_cooked;chloride;g;0;0.5762;0.5092;copertura non verificabile;copertura non verificabile;beef_03,oat_dry,coconut_oil,flaxseed_oil,carrot_cooked,bone_meal,qdiet,omegor_vitality,psyllium_erbavoglio_husk_bio;
 beef_03_carrot_cooked;magnesium;g;0.4652;0.268;0.2412;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;
 beef_03_carrot_cooked;copper;mg;4.1043;2.7872;2.412;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
-beef_03_carrot_cooked;iodine;g;0.585;0.402;0.3484;minimo coperto dal contributo noto;minimo coperto dal contributo noto;beef_03,oat_dry,coconut_oil,flaxseed_oil,carrot_cooked,bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
+beef_03_carrot_cooked;iodine;mg;0.585;0.402;0.3484;minimo coperto dal contributo noto;minimo coperto dal contributo noto;beef_03,oat_dry,coconut_oil,flaxseed_oil,carrot_cooked,bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
 beef_03_carrot_cooked;iron;mg;34.475;13.936;12.06;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
 beef_03_carrot_cooked;manganese;mg;7.7255;2.2378;1.9296;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
 beef_03_carrot_cooked;selenium_wet;µg;180.65;90.45;77.05;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
@@ -47,7 +47,7 @@ beef_03_pumpkin_cooked;sodium;g;0.638;0.3886;0.335;minimo coperto dal contributo
 beef_03_pumpkin_cooked;chloride;g;0;0.5762;0.5092;copertura non verificabile;copertura non verificabile;beef_03,oat_dry,coconut_oil,flaxseed_oil,pumpkin_cooked,bone_meal,qdiet,omegor_vitality,psyllium_erbavoglio_husk_bio;
 beef_03_pumpkin_cooked;magnesium;g;0.4643;0.268;0.2412;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;
 beef_03_pumpkin_cooked;copper;mg;4.1709;2.7872;2.412;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
-beef_03_pumpkin_cooked;iodine;g;0.585;0.402;0.3484;minimo coperto dal contributo noto;minimo coperto dal contributo noto;beef_03,oat_dry,coconut_oil,flaxseed_oil,pumpkin_cooked,bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
+beef_03_pumpkin_cooked;iodine;mg;0.585;0.402;0.3484;minimo coperto dal contributo noto;minimo coperto dal contributo noto;beef_03,oat_dry,coconut_oil,flaxseed_oil,pumpkin_cooked,bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
 beef_03_pumpkin_cooked;iron;mg;34.682;13.936;12.06;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
 beef_03_pumpkin_cooked;manganese;mg;7.6661;2.2378;1.9296;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
 beef_03_pumpkin_cooked;selenium_wet;µg;180.2;90.45;77.05;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
@@ -85,7 +85,7 @@ beef_05_carrot_cooked;sodium;g;0.6893;0.3886;0.335;minimo coperto dal contributo
 beef_05_carrot_cooked;chloride;g;0;0.5762;0.5092;copertura non verificabile;copertura non verificabile;beef_05,oat_dry,coconut_oil,flaxseed_oil,carrot_cooked,bone_meal,qdiet,omegor_vitality,psyllium_erbavoglio_husk_bio;
 beef_05_carrot_cooked;magnesium;g;0.4652;0.268;0.2412;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;
 beef_05_carrot_cooked;copper;mg;4.0931;2.7872;2.412;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
-beef_05_carrot_cooked;iodine;g;0.585;0.402;0.3484;minimo coperto dal contributo noto;minimo coperto dal contributo noto;beef_05,oat_dry,coconut_oil,flaxseed_oil,carrot_cooked,bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
+beef_05_carrot_cooked;iodine;mg;0.585;0.402;0.3484;minimo coperto dal contributo noto;minimo coperto dal contributo noto;beef_05,oat_dry,coconut_oil,flaxseed_oil,carrot_cooked,bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
 beef_05_carrot_cooked;iron;mg;34.139;13.936;12.06;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
 beef_05_carrot_cooked;manganese;mg;7.7255;2.2378;1.9296;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
 beef_05_carrot_cooked;selenium_wet;µg;178.97;90.45;77.05;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
@@ -123,7 +123,7 @@ beef_05_pumpkin_cooked;sodium;g;0.638;0.3886;0.335;minimo coperto dal contributo
 beef_05_pumpkin_cooked;chloride;g;0;0.5762;0.5092;copertura non verificabile;copertura non verificabile;beef_05,oat_dry,coconut_oil,flaxseed_oil,pumpkin_cooked,bone_meal,qdiet,omegor_vitality,psyllium_erbavoglio_husk_bio;
 beef_05_pumpkin_cooked;magnesium;g;0.4643;0.268;0.2412;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;
 beef_05_pumpkin_cooked;copper;mg;4.1597;2.7872;2.412;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
-beef_05_pumpkin_cooked;iodine;g;0.585;0.402;0.3484;minimo coperto dal contributo noto;minimo coperto dal contributo noto;beef_05,oat_dry,coconut_oil,flaxseed_oil,pumpkin_cooked,bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
+beef_05_pumpkin_cooked;iodine;mg;0.585;0.402;0.3484;minimo coperto dal contributo noto;minimo coperto dal contributo noto;beef_05,oat_dry,coconut_oil,flaxseed_oil,pumpkin_cooked,bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
 beef_05_pumpkin_cooked;iron;mg;34.346;13.936;12.06;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
 beef_05_pumpkin_cooked;manganese;mg;7.6661;2.2378;1.9296;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
 beef_05_pumpkin_cooked;selenium_wet;µg;178.52;90.45;77.05;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
@@ -161,7 +161,7 @@ beef_10_carrot_cooked;sodium;g;0.6893;0.3886;0.335;minimo coperto dal contributo
 beef_10_carrot_cooked;chloride;g;0;0.5762;0.5092;copertura non verificabile;copertura non verificabile;beef_10,oat_dry,coconut_oil,flaxseed_oil,carrot_cooked,bone_meal,qdiet,omegor_vitality,psyllium_erbavoglio_husk_bio;
 beef_10_carrot_cooked;magnesium;g;0.454;0.268;0.2412;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;
 beef_10_carrot_cooked;copper;mg;4.0595;2.7872;2.412;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
-beef_10_carrot_cooked;iodine;g;0.585;0.402;0.3484;minimo coperto dal contributo noto;minimo coperto dal contributo noto;beef_10,oat_dry,coconut_oil,flaxseed_oil,carrot_cooked,bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
+beef_10_carrot_cooked;iodine;mg;0.585;0.402;0.3484;minimo coperto dal contributo noto;minimo coperto dal contributo noto;beef_10,oat_dry,coconut_oil,flaxseed_oil,carrot_cooked,bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
 beef_10_carrot_cooked;iron;mg;33.355;13.936;12.06;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
 beef_10_carrot_cooked;manganese;mg;7.7255;2.2378;1.9296;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
 beef_10_carrot_cooked;selenium_wet;µg;174.49;90.45;77.05;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
@@ -199,7 +199,7 @@ beef_10_pumpkin_cooked;sodium;g;0.638;0.3886;0.335;minimo coperto dal contributo
 beef_10_pumpkin_cooked;chloride;g;0;0.5762;0.5092;copertura non verificabile;copertura non verificabile;beef_10,oat_dry,coconut_oil,flaxseed_oil,pumpkin_cooked,bone_meal,qdiet,omegor_vitality,psyllium_erbavoglio_husk_bio;
 beef_10_pumpkin_cooked;magnesium;g;0.4531;0.268;0.2412;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;
 beef_10_pumpkin_cooked;copper;mg;4.1261;2.7872;2.412;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
-beef_10_pumpkin_cooked;iodine;g;0.585;0.402;0.3484;minimo coperto dal contributo noto;minimo coperto dal contributo noto;beef_10,oat_dry,coconut_oil,flaxseed_oil,pumpkin_cooked,bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
+beef_10_pumpkin_cooked;iodine;mg;0.585;0.402;0.3484;minimo coperto dal contributo noto;minimo coperto dal contributo noto;beef_10,oat_dry,coconut_oil,flaxseed_oil,pumpkin_cooked,bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
 beef_10_pumpkin_cooked;iron;mg;33.562;13.936;12.06;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
 beef_10_pumpkin_cooked;manganese;mg;7.6661;2.2378;1.9296;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet
 beef_10_pumpkin_cooked;selenium_wet;µg;174.04;90.45;77.05;minimo coperto dal contributo noto;minimo coperto dal contributo noto;bone_meal,omegor_vitality,psyllium_erbavoglio_husk_bio;qdiet

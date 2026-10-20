@@ -215,3 +215,25 @@ describe('verifica della prescrizione di Ker (20/10/2026)', () => {
     expect(r.kcalPerUnit).toBeCloseTo(0.1404, 6);
   });
 });
+
+describe('collaudo di Ker, seconda parte (20/10/2026)', () => {
+  test('integratore con fibra dichiarata: EM completa sconosciuta, stima 4/9/4 solo come contributo parziale', async () => {
+    const { resolveSupplementEnergy } = await import('../src/engine/energy');
+    const m = { id: 'm', version: '1', label: '4/9/4', protein: 4, fat: 9, carbohydrate: 4, caution: null };
+    const s = { id: 'p', nutrients: { protein: { value: 0.008 }, fat: { value: 0.0024 }, carbohydrate_available: { value: 0.0217 }, fiber: { value: 0.898 } }, kcalPerUnit: null } as never;
+    const r = resolveSupplementEnergy(s, m);
+    expect(r.kcalPerUnit).toBeNull();
+    expect(r.kcalPartialPerUnit).toBeCloseTo(0.1404, 6);
+  });
+
+  test('catalogo della prova con il pacchetto del 20/10: profili di confronto e psillio non utilizzabili, nessuna convalida', async () => {
+    const cat = await new LocalRepository(null).loadCatalog();
+    for (const id of ['beef_05', 'beef_10', 'coconut_oil', 'flaxseed_oil']) expect(cat.foods.find((f) => f.id === id)?.availableToFormulate).toBe(false);
+    const ps = cat.supplements.find((s) => s.id === 'psyllium_erbavoglio_husk_bio')!;
+    expect(ps.usableForOptimization).toBe(false);
+    expect(ps.kcalPerUnit).toBeNull();
+    expect(cat.foods.find((f) => f.id === 'oat_dry')?.processingState).toBe('dried');
+    expect(cat.supplements.find((s) => s.id === 'qdiet')?.nutrients.calcium.declared).toBe('total');
+    expect([...cat.foods, ...cat.supplements].filter((x) => x.validatedAt).length).toBe(0);
+  });
+});

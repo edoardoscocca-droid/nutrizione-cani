@@ -136,8 +136,12 @@ export const SUPPLEMENT_ENERGY_CATEGORY = 'supplement';
 export function resolveSupplementEnergy(s: Supplement, method: AppliedEnergyMethod | null): Supplement {
   if (s.kcalOrigin !== 'calculated' && s.kcalPerUnit !== null) return { ...s, kcalOrigin: 'declared', energyMethod: method };
   const kcal = method ? estimateMeFromMacros(s.nutrients, method, 4) : null; // per dose: i macronutrienti sono in g per dose
-  if (kcal === null) return { ...s, kcalPerUnit: null, kcalOrigin: null, energyMethod: method };
-  return { ...s, kcalPerUnit: kcal, kcalOrigin: 'calculated', energyMethod: method };
+  if (kcal === null) return { ...s, kcalPerUnit: null, kcalOrigin: null, kcalPartialPerUnit: null, energyMethod: method };
+  // fibra alimentare dichiarata (es. psillio): il 4/9/4 non stima l'energia da fermentazione → EM completa sconosciuta,
+  // la stima dai macronutrienti resta un contributo parziale mostrato a parte (decisione del 20/10/2026)
+  const fiber = s.nutrients.fiber?.value;
+  if (fiber !== null && fiber !== undefined && fiber > 0) return { ...s, kcalPerUnit: null, kcalOrigin: null, kcalPartialPerUnit: kcal, energyMethod: method };
+  return { ...s, kcalPerUnit: kcal, kcalOrigin: 'calculated', kcalPartialPerUnit: null, energyMethod: method };
 }
 
 /** Applica i metodi energetici a tutto il catalogo: EM calcolata degli alimenti e fattori per le quote energetiche. */

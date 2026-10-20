@@ -131,7 +131,9 @@ export function EnergySourcesCard({ audit }: { audit: AuditResult }) {
             <T small bold>{e.name}</T>
             <T small>
               {e.origin === null
-                ? 'Energia sconosciuta (non dichiarata e non calcolabile)'
+                ? e.partial !== null && e.partial !== undefined
+                  ? `Energia metabolizzabile completa sconosciuta. Dai soli macronutrienti dichiarati: ${num(e.partial, 4)} ${e.basis} (contributo parziale: la fermentazione della fibra non è stimata; escluso dal totale)`
+                  : 'Energia sconosciuta (non dichiarata e non calcolabile)'
                 : `${num(e.kcal as number, 1)} ${e.basis} — ${e.origin === 'declared' ? `inserita${e.source ? ` (${e.source})` : ''}` : `calcolata dai macronutrienti (${e.methodLabel})`}`}
             </T>
             {e.origin === 'declared' && e.fromMacros !== null && (
@@ -198,6 +200,11 @@ export function NutrientList({ audit }: { audit: AuditResult }) {
           {audit.energyRow.note}
         </T>
       </Row>
+      {audit.minimaBasis && (
+        <T small muted>
+          {audit.minimaBasis.text}
+        </T>
+      )}
       {groups.map((g) => (
         <View key={g} style={{ gap: 2 }}>
           <T small muted bold>

@@ -10,7 +10,7 @@ import type { Food, Supplement } from '../../src/engine/types';
 
 const dir = process.argv[2];
 if (!dir) throw new Error('Indicare la cartella dei JSON del 19/10');
-const cat = await new LocalRepository(null).loadCatalog();
+const cat = await new LocalRepository(null).loadCatalog({ bundledUpTo: '2026-10-16' });
 const label = new Map(cat.nutrients.map((n) => [n.id, `${n.label} (${n.unit})`]));
 const fmt = (v: unknown) => (v === null || v === undefined ? '—' : typeof v === 'number' ? v.toLocaleString('it-IT', { maximumFractionDigits: 6 }) : typeof v === 'object' ? JSON.stringify(v) : String(v));
 const same = (a: number | null | undefined, b: number | null | undefined) =>

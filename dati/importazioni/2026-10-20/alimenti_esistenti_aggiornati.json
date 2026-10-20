@@ -1,0 +1,2791 @@
+{
+  "foods": [
+    {
+      "id": "beef_03",
+      "name_it": "Macinato di manzo crudo 3% grassi",
+      "category": "animal",
+      "subcategory": "muscle",
+      "processing_state": "raw",
+      "edible_portion": "100 g di parte edibile; profilo nelle condizioni dichiarate",
+      "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+      "source_url": "https://fdc.nal.usda.gov/food-details/173111/nutrients",
+      "source_version": "SR Legacy; FDC 173111; acquisizione API 20/10/2026",
+      "data_status": "estimated",
+      "available_to_formulate": true,
+      "kcal_me_per_100g": 114.92,
+      "me_method": "Stima di confronto 4/9/4 su proteine, grassi e carboidrati disponibili; non ME canina misurata; per oli arrotondata alle kcal intere per 100 g.",
+      "uncertainty": "Proxy generico USDA: composizione tipica, non lotto; cloruro e iodio non disponibili; non si sommano acidi grassi alle masse dei grassi.",
+      "preparation": "Pesare crudo.",
+      "notes": "Fonte primaria: Beef, ground, 97% lean meat / 3% fat, raw. Energia USDA per uso umano conservata separatamente. Vitamina D: usare UI native USDA; µg arrotondati possono dare una conversione diversa. Linoleico solo se 18:2 n-6 cis,cis presente; 18:2 non differenziato resta separato. Questo aggiornamento non convalida il prodotto.",
+      "nutrients": {
+        "protein": {
+          "value": 21.98,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Protein, ID 1003, 21.98 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "fat": {
+          "value": 3.0,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Total lipid (fat), ID 1004, 3.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "carbohydrate_available": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Carboidrati per differenza meno fibra alimentare totale: stima, non misura diretta né ENA garantiti."
+        },
+        "fiber": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Fiber, total dietary, ID 1079, 0.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "moisture": {
+          "value": 74.75,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Water, ID 1051, 74.75 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "linoleic_acid": {
+          "value": "NA"
+        },
+        "ala": {
+          "value": 0.025,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 18:3 n-3 c,c,c (ALA), ID 1404, 0.025 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "epa": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 20:5 n-3 (EPA), ID 1278, 0.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "dha": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 22:6 n-3 (DHA), ID 1272, 0.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "epa_dha": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Somma EPA+DHA, sottoinsieme dei grassi."
+        },
+        "omega3_total": {
+          "value": "NA"
+        },
+        "omega6_total": {
+          "value": "NA"
+        },
+        "arachidonic_acid": {
+          "value": "NA"
+        },
+        "calcium": {
+          "value": 0.008,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Calcium, Ca, ID 1087, 8.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "phosphorus": {
+          "value": 0.203,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Phosphorus, P, ID 1091, 203.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "potassium": {
+          "value": 0.357,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Potassium, K, ID 1092, 357.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "sodium": {
+          "value": 0.066,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Sodium, Na, ID 1093, 66.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "chloride": {
+          "value": "NA"
+        },
+        "magnesium": {
+          "value": 0.022,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Magnesium, Mg, ID 1090, 22.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "copper": {
+          "value": 0.08,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Copper, Cu, ID 1098, 0.08 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "iodine": {
+          "value": "NA"
+        },
+        "iron": {
+          "value": 2.44,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Iron, Fe, ID 1089, 2.44 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "manganese": {
+          "value": 0.01,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Manganese, Mn, ID 1101, 0.01 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "selenium_wet": {
+          "value": 17.7,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Selenium, Se, ID 1103, 17.7 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "zinc": {
+          "value": 5.21,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Zinc, Zn, ID 1095, 5.21 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_a": {
+          "value": 13.333333333333,
+          "unit": "IU",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026; NIH/USDA DSID https://dsid.od.nih.gov/unit-conversions",
+          "method": "Retinolo preformato /0,3 µg per UI; carotenoidi specificati dalla fonte pari a zero. Non conversione di RAE vegetali."
+        },
+        "vitamin_d": {
+          "value": 3.0,
+          "unit": "IU",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin D (D2 + D3), International Units, ID 1110, 3.0 IU/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_e": {
+          "value": 0.2533,
+          "unit": "IU",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin E (alpha-tocopherol), ID 1109, 0.17 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×1.49. Alfa-tocoferolo alimentare naturale: conversione convenzionale 1,49 UI/mg; non tutti i tocoferoli.",
+          "form": "d_alpha_tocopherol"
+        },
+        "vitamin_b1": {
+          "value": 0.041,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Thiamin, ID 1165, 0.041 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b2": {
+          "value": 0.151,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Riboflavin, ID 1166, 0.151 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b3": {
+          "value": 5.663,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Niacin, ID 1167, 5.663 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b5": {
+          "value": 0.673,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Pantothenic acid, ID 1170, 0.673 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b6": {
+          "value": 0.401,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin B-6, ID 1175, 0.401 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b9": {
+          "value": 4.0,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Folate, total, ID 1177, 4.0 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b12": {
+          "value": 2.26,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin B-12, ID 1178, 2.26 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "choline": {
+          "value": 72.8,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Choline, total, ID 1180, 72.8 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_c": {
+          "value": 0.0,
+          "unit": "mg",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin C, total ascorbic acid, ID 1162, 0.0 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b7": {
+          "value": "NA"
+        },
+        "vitamin_k": {
+          "value": 0.1,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin K (phylloquinone), ID 1185, 0.1 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "arginine": {
+          "value": 1.432,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Arginine, ID 1220; per 100 g."
+        },
+        "histidine": {
+          "value": 0.715,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Histidine, ID 1221; per 100 g."
+        },
+        "isoleucine": {
+          "value": 0.972,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Isoleucine, ID 1212; per 100 g."
+        },
+        "leucine": {
+          "value": 1.715,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Leucine, ID 1213; per 100 g."
+        },
+        "lysine": {
+          "value": 1.822,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Lysine, ID 1214; per 100 g."
+        },
+        "methionine": {
+          "value": 0.566,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Methionine, ID 1215; per 100 g."
+        },
+        "methionine_cystine": {
+          "value": 0.792,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Somma methionine+cystine, senza doppio conteggio."
+        },
+        "phenylalanine": {
+          "value": 0.858,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Phenylalanine, ID 1217; per 100 g."
+        },
+        "phenylalanine_tyrosine": {
+          "value": 1.535,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Somma phenylalanine+tyrosine, senza doppio conteggio."
+        },
+        "threonine": {
+          "value": 0.851,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Threonine, ID 1211; per 100 g."
+        },
+        "tryptophan": {
+          "value": 0.112,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Tryptophan, ID 1210; per 100 g."
+        },
+        "valine": {
+          "value": 1.081,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Valine, ID 1219; per 100 g."
+        },
+        "taurine": {
+          "value": "NA"
+        },
+        "l_carnitine": {
+          "value": "NA"
+        },
+        "cystine": {
+          "value": 0.226,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Cystine, ID 1216; per 100 g."
+        },
+        "tyrosine": {
+          "value": 0.677,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Tyrosine, ID 1218; per 100 g."
+        },
+        "energy_food_kcal": {
+          "value": 121.0,
+          "unit": "kcal",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Energy, ID 1008, 121.0 kcal/100 g; profilo tipico, non analisi del lotto."
+        },
+        "carbohydrate_by_difference": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Carbohydrate, by difference, ID 1005, 0.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "c18_2_undifferentiated": {
+          "value": 0.154,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 18:2, ID 1269, 0.154 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "c20_4_undifferentiated": {
+          "value": 0.035,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 20:4, ID 1271, 0.035 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_a_retinol_ug": {
+          "value": 4.0,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Retinol, ID 1105, 4.0 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_a_carotenoid_iu": {
+          "value": "NA"
+        },
+        "beta_carotene_ug": {
+          "value": 0.0,
+          "unit": "µg",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173111; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Carotene, beta, ID 1107, 0.0 µg/100 g; profilo tipico, non analisi del lotto."
+        }
+      }
+    },
+    {
+      "id": "beef_15",
+      "name_it": "Macinato di manzo crudo 15% grassi",
+      "category": "animal",
+      "subcategory": "muscle",
+      "processing_state": "raw",
+      "edible_portion": "100 g di parte edibile; profilo nelle condizioni dichiarate",
+      "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+      "source_url": "https://fdc.nal.usda.gov/food-details/171796/nutrients",
+      "source_version": "SR Legacy; FDC 171796; acquisizione API 20/10/2026",
+      "data_status": "estimated",
+      "available_to_formulate": true,
+      "kcal_me_per_100g": 209.36,
+      "me_method": "Stima di confronto 4/9/4 su proteine, grassi e carboidrati disponibili; non ME canina misurata; per oli arrotondata alle kcal intere per 100 g.",
+      "uncertainty": "Proxy generico USDA: composizione tipica, non lotto; cloruro e iodio non disponibili; non si sommano acidi grassi alle masse dei grassi.",
+      "preparation": "Pesare crudo.",
+      "notes": "Fonte primaria: Beef, ground, 85% lean meat / 15% fat, raw (Includes foods for USDA's Food Distribution Program). Energia USDA per uso umano conservata separatamente. Vitamina D: usare UI native USDA; µg arrotondati possono dare una conversione diversa. Linoleico solo se 18:2 n-6 cis,cis presente; 18:2 non differenziato resta separato. Questo aggiornamento non convalida il prodotto.",
+      "nutrients": {
+        "protein": {
+          "value": 18.59,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Protein, ID 1003, 18.59 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "fat": {
+          "value": 15.0,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Total lipid (fat), ID 1004, 15.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "carbohydrate_available": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Carboidrati per differenza meno fibra alimentare totale: stima, non misura diretta né ENA garantiti."
+        },
+        "fiber": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Fiber, total dietary, ID 1079, 0.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "moisture": {
+          "value": 65.66,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Water, ID 1051, 65.66 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "linoleic_acid": {
+          "value": "NA"
+        },
+        "ala": {
+          "value": 0.042,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 18:3 n-3 c,c,c (ALA), ID 1404, 0.042 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "epa": {
+          "value": 0.002,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 20:5 n-3 (EPA), ID 1278, 0.002 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "dha": {
+          "value": 0.001,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 22:6 n-3 (DHA), ID 1272, 0.001 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "epa_dha": {
+          "value": 0.003,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Somma EPA+DHA, sottoinsieme dei grassi."
+        },
+        "omega3_total": {
+          "value": "NA"
+        },
+        "omega6_total": {
+          "value": "NA"
+        },
+        "arachidonic_acid": {
+          "value": "NA"
+        },
+        "calcium": {
+          "value": 0.015,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Calcium, Ca, ID 1087, 15.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "phosphorus": {
+          "value": 0.171,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Phosphorus, P, ID 1091, 171.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "potassium": {
+          "value": 0.295,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Potassium, K, ID 1092, 295.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "sodium": {
+          "value": 0.066,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Sodium, Na, ID 1093, 66.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "chloride": {
+          "value": "NA"
+        },
+        "magnesium": {
+          "value": 0.018,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Magnesium, Mg, ID 1090, 18.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "copper": {
+          "value": 0.067,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Copper, Cu, ID 1098, 0.067 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "iodine": {
+          "value": "NA"
+        },
+        "iron": {
+          "value": 2.09,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Iron, Fe, ID 1089, 2.09 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "manganese": {
+          "value": 0.01,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Manganese, Mn, ID 1101, 0.01 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "selenium_wet": {
+          "value": 15.8,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Selenium, Se, ID 1103, 15.8 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "zinc": {
+          "value": 4.48,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Zinc, Zn, ID 1095, 4.48 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_a": {
+          "value": 13.333333333333,
+          "unit": "IU",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026; NIH/USDA DSID https://dsid.od.nih.gov/unit-conversions",
+          "method": "Retinolo preformato /0,3 µg per UI; carotenoidi specificati dalla fonte pari a zero. Non conversione di RAE vegetali."
+        },
+        "vitamin_d": {
+          "value": 3.0,
+          "unit": "IU",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin D (D2 + D3), International Units, ID 1110, 3.0 IU/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_e": {
+          "value": 0.2533,
+          "unit": "IU",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin E (alpha-tocopherol), ID 1109, 0.17 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×1.49. Alfa-tocoferolo alimentare naturale: conversione convenzionale 1,49 UI/mg; non tutti i tocoferoli.",
+          "form": "d_alpha_tocopherol"
+        },
+        "vitamin_b1": {
+          "value": 0.042,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Thiamin, ID 1165, 0.042 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b2": {
+          "value": 0.151,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Riboflavin, ID 1166, 0.151 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b3": {
+          "value": 4.649,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Niacin, ID 1167, 4.649 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b5": {
+          "value": 0.549,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Pantothenic acid, ID 1170, 0.549 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b6": {
+          "value": 0.346,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin B-6, ID 1175, 0.346 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b9": {
+          "value": 6.0,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Folate, total, ID 1177, 6.0 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b12": {
+          "value": 2.17,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin B-12, ID 1178, 2.17 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "choline": {
+          "value": 61.2,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Choline, total, ID 1180, 61.2 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_c": {
+          "value": 0.0,
+          "unit": "mg",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin C, total ascorbic acid, ID 1162, 0.0 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b7": {
+          "value": "NA"
+        },
+        "vitamin_k": {
+          "value": 1.3,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin K (phylloquinone), ID 1185, 1.3 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "arginine": {
+          "value": 1.21,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Arginine, ID 1220; per 100 g."
+        },
+        "histidine": {
+          "value": 0.604,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Histidine, ID 1221; per 100 g."
+        },
+        "isoleucine": {
+          "value": 0.822,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Isoleucine, ID 1212; per 100 g."
+        },
+        "leucine": {
+          "value": 1.45,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Leucine, ID 1213; per 100 g."
+        },
+        "lysine": {
+          "value": 1.54,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Lysine, ID 1214; per 100 g."
+        },
+        "methionine": {
+          "value": 0.478,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Methionine, ID 1215; per 100 g."
+        },
+        "methionine_cystine": {
+          "value": 0.669,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Somma methionine+cystine, senza doppio conteggio."
+        },
+        "phenylalanine": {
+          "value": 0.725,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Phenylalanine, ID 1217; per 100 g."
+        },
+        "phenylalanine_tyrosine": {
+          "value": 1.297,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Somma phenylalanine+tyrosine, senza doppio conteggio."
+        },
+        "threonine": {
+          "value": 0.72,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Threonine, ID 1211; per 100 g."
+        },
+        "tryptophan": {
+          "value": 0.094,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Tryptophan, ID 1210; per 100 g."
+        },
+        "valine": {
+          "value": 0.914,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Valine, ID 1219; per 100 g."
+        },
+        "taurine": {
+          "value": "NA"
+        },
+        "l_carnitine": {
+          "value": "NA"
+        },
+        "cystine": {
+          "value": 0.191,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Cystine, ID 1216; per 100 g."
+        },
+        "tyrosine": {
+          "value": 0.572,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Tyrosine, ID 1218; per 100 g."
+        },
+        "energy_food_kcal": {
+          "value": 215.0,
+          "unit": "kcal",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Energy, ID 1008, 215.0 kcal/100 g; profilo tipico, non analisi del lotto."
+        },
+        "carbohydrate_by_difference": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Carbohydrate, by difference, ID 1005, 0.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "c18_2_undifferentiated": {
+          "value": 0.331,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 18:2, ID 1269, 0.331 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "c20_4_undifferentiated": {
+          "value": 0.034,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 20:4, ID 1271, 0.034 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_a_retinol_ug": {
+          "value": 4.0,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Retinol, ID 1105, 4.0 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_a_carotenoid_iu": {
+          "value": "NA"
+        },
+        "beta_carotene_ug": {
+          "value": 0.0,
+          "unit": "µg",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 171796; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Carotene, beta, ID 1107, 0.0 µg/100 g; profilo tipico, non analisi del lotto."
+        }
+      }
+    },
+    {
+      "id": "beef_30",
+      "name_it": "Macinato di manzo crudo 30% grassi",
+      "category": "animal",
+      "subcategory": "muscle",
+      "processing_state": "raw",
+      "edible_portion": "100 g di parte edibile; profilo nelle condizioni dichiarate",
+      "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+      "source_url": "https://fdc.nal.usda.gov/food-details/168652/nutrients",
+      "source_version": "SR Legacy; FDC 168652; acquisizione API 20/10/2026",
+      "data_status": "estimated",
+      "available_to_formulate": true,
+      "kcal_me_per_100g": 327.4,
+      "me_method": "Stima di confronto 4/9/4 su proteine, grassi e carboidrati disponibili; non ME canina misurata; per oli arrotondata alle kcal intere per 100 g.",
+      "uncertainty": "Proxy generico USDA: composizione tipica, non lotto; cloruro e iodio non disponibili; non si sommano acidi grassi alle masse dei grassi.",
+      "preparation": "Pesare crudo.",
+      "notes": "Fonte primaria: Beef, ground, 70% lean meat / 30% fat, raw. Energia USDA per uso umano conservata separatamente. Vitamina D: usare UI native USDA; µg arrotondati possono dare una conversione diversa. Linoleico solo se 18:2 n-6 cis,cis presente; 18:2 non differenziato resta separato. Questo aggiornamento non convalida il prodotto.",
+      "nutrients": {
+        "protein": {
+          "value": 14.35,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Protein, ID 1003, 14.35 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "fat": {
+          "value": 30.0,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Total lipid (fat), ID 1004, 30.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "carbohydrate_available": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Carboidrati per differenza meno fibra alimentare totale: stima, non misura diretta né ENA garantiti."
+        },
+        "fiber": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Fiber, total dietary, ID 1079, 0.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "moisture": {
+          "value": 54.3,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Water, ID 1051, 54.3 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "linoleic_acid": {
+          "value": "NA"
+        },
+        "ala": {
+          "value": 0.065,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 18:3 n-3 c,c,c (ALA), ID 1404, 0.065 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "epa": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 20:5 n-3 (EPA), ID 1278, 0.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "dha": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 22:6 n-3 (DHA), ID 1272, 0.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "epa_dha": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Somma EPA+DHA, sottoinsieme dei grassi."
+        },
+        "omega3_total": {
+          "value": "NA"
+        },
+        "omega6_total": {
+          "value": "NA"
+        },
+        "arachidonic_acid": {
+          "value": "NA"
+        },
+        "calcium": {
+          "value": 0.024,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Calcium, Ca, ID 1087, 24.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "phosphorus": {
+          "value": 0.132,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Phosphorus, P, ID 1091, 132.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "potassium": {
+          "value": 0.218,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Potassium, K, ID 1092, 218.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "sodium": {
+          "value": 0.066,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Sodium, Na, ID 1093, 66.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "chloride": {
+          "value": "NA"
+        },
+        "magnesium": {
+          "value": 0.014,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Magnesium, Mg, ID 1090, 14.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "copper": {
+          "value": 0.05,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Copper, Cu, ID 1098, 0.05 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "iodine": {
+          "value": "NA"
+        },
+        "iron": {
+          "value": 1.64,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Iron, Fe, ID 1089, 1.64 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "manganese": {
+          "value": 0.009,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Manganese, Mn, ID 1101, 0.009 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "selenium_wet": {
+          "value": 13.5,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Selenium, Se, ID 1103, 13.5 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "zinc": {
+          "value": 3.57,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Zinc, Zn, ID 1095, 3.57 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_a": {
+          "value": 13.333333333333,
+          "unit": "IU",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026; NIH/USDA DSID https://dsid.od.nih.gov/unit-conversions",
+          "method": "Retinolo preformato /0,3 µg per UI; carotenoidi specificati dalla fonte pari a zero. Non conversione di RAE vegetali."
+        },
+        "vitamin_d": {
+          "value": 3.0,
+          "unit": "IU",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin D (D2 + D3), International Units, ID 1110, 3.0 IU/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_e": {
+          "value": 0.2533,
+          "unit": "IU",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin E (alpha-tocopherol), ID 1109, 0.17 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×1.49. Alfa-tocoferolo alimentare naturale: conversione convenzionale 1,49 UI/mg; non tutti i tocoferoli.",
+          "form": "d_alpha_tocopherol"
+        },
+        "vitamin_b1": {
+          "value": 0.044,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Thiamin, ID 1165, 0.044 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b2": {
+          "value": 0.151,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Riboflavin, ID 1166, 0.151 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b3": {
+          "value": 3.382,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Niacin, ID 1167, 3.382 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b5": {
+          "value": 0.395,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Pantothenic acid, ID 1170, 0.395 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b6": {
+          "value": 0.278,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin B-6, ID 1175, 0.278 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b9": {
+          "value": 9.0,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Folate, total, ID 1177, 9.0 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b12": {
+          "value": 2.07,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin B-12, ID 1178, 2.07 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "choline": {
+          "value": 46.8,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Choline, total, ID 1180, 46.8 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_c": {
+          "value": 0.0,
+          "unit": "mg",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin C, total ascorbic acid, ID 1162, 0.0 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b7": {
+          "value": "NA"
+        },
+        "vitamin_k": {
+          "value": 2.9,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin K (phylloquinone), ID 1185, 2.9 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "arginine": {
+          "value": 0.933,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Arginine, ID 1220; per 100 g."
+        },
+        "histidine": {
+          "value": 0.466,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Histidine, ID 1221; per 100 g."
+        },
+        "isoleucine": {
+          "value": 0.634,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Isoleucine, ID 1212; per 100 g."
+        },
+        "leucine": {
+          "value": 1.118,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Leucine, ID 1213; per 100 g."
+        },
+        "lysine": {
+          "value": 1.188,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Lysine, ID 1214; per 100 g."
+        },
+        "methionine": {
+          "value": 0.369,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Methionine, ID 1215; per 100 g."
+        },
+        "methionine_cystine": {
+          "value": 0.517,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Somma methionine+cystine, senza doppio conteggio."
+        },
+        "phenylalanine": {
+          "value": 0.559,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Phenylalanine, ID 1217; per 100 g."
+        },
+        "phenylalanine_tyrosine": {
+          "value": 1.0,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Somma phenylalanine+tyrosine, senza doppio conteggio."
+        },
+        "threonine": {
+          "value": 0.555,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Threonine, ID 1211; per 100 g."
+        },
+        "tryptophan": {
+          "value": 0.073,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Tryptophan, ID 1210; per 100 g."
+        },
+        "valine": {
+          "value": 0.705,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Valine, ID 1219; per 100 g."
+        },
+        "taurine": {
+          "value": "NA"
+        },
+        "l_carnitine": {
+          "value": "NA"
+        },
+        "cystine": {
+          "value": 0.148,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Cystine, ID 1216; per 100 g."
+        },
+        "tyrosine": {
+          "value": 0.441,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Tyrosine, ID 1218; per 100 g."
+        },
+        "energy_food_kcal": {
+          "value": 332.0,
+          "unit": "kcal",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Energy, ID 1008, 332.0 kcal/100 g; profilo tipico, non analisi del lotto."
+        },
+        "carbohydrate_by_difference": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Carbohydrate, by difference, ID 1005, 0.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "c18_2_undifferentiated": {
+          "value": 0.577,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 18:2, ID 1269, 0.577 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "c20_4_undifferentiated": {
+          "value": 0.035,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 20:4, ID 1271, 0.035 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_a_retinol_ug": {
+          "value": 4.0,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Retinol, ID 1105, 4.0 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_a_carotenoid_iu": {
+          "value": "NA"
+        },
+        "beta_carotene_ug": {
+          "value": 0.0,
+          "unit": "µg",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168652; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Carotene, beta, ID 1107, 0.0 µg/100 g; profilo tipico, non analisi del lotto."
+        }
+      }
+    },
+    {
+      "id": "oat_dry",
+      "name_it": "Avena in fiocchi secca non fortificata",
+      "category": "starch",
+      "subcategory": "cereal",
+      "processing_state": "dried",
+      "edible_portion": "100 g di parte edibile; profilo nelle condizioni dichiarate",
+      "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+      "source_url": "https://fdc.nal.usda.gov/food-details/173904/nutrients",
+      "source_version": "SR Legacy; FDC 173904; acquisizione API 20/10/2026",
+      "data_status": "estimated",
+      "available_to_formulate": true,
+      "kcal_me_per_100g": 341.68,
+      "me_method": "Stima di confronto 4/9/4 su proteine, grassi e carboidrati disponibili; non ME canina misurata; per oli arrotondata alle kcal intere per 100 g.",
+      "uncertainty": "Proxy generico USDA: composizione tipica, non lotto; cloruro e iodio non disponibili; non si sommano acidi grassi alle masse dei grassi.",
+      "preparation": "Pesare secca prima dell’ammollo; acqua non scolata. Ammollo diverso dalla cottura.",
+      "notes": "Fonte primaria: Cereals, oats, regular and quick, not fortified, dry. Energia USDA per uso umano conservata separatamente. Vitamina D: usare UI native USDA; µg arrotondati possono dare una conversione diversa. Linoleico solo se 18:2 n-6 cis,cis presente; 18:2 non differenziato resta separato. Questo aggiornamento non convalida il prodotto.",
+      "nutrients": {
+        "protein": {
+          "value": 13.15,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Protein, ID 1003, 13.15 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "fat": {
+          "value": 6.52,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Total lipid (fat), ID 1004, 6.52 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "carbohydrate_available": {
+          "value": 57.6,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Carboidrati per differenza meno fibra alimentare totale: stima, non misura diretta né ENA garantiti."
+        },
+        "fiber": {
+          "value": 10.1,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Fiber, total dietary, ID 1079, 10.1 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "moisture": {
+          "value": 10.84,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Water, ID 1051, 10.84 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "linoleic_acid": {
+          "value": "NA"
+        },
+        "ala": {
+          "value": "NA"
+        },
+        "epa": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 20:5 n-3 (EPA), ID 1278, 0.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "dha": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 22:6 n-3 (DHA), ID 1272, 0.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "epa_dha": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Somma EPA+DHA, sottoinsieme dei grassi."
+        },
+        "omega3_total": {
+          "value": "NA"
+        },
+        "omega6_total": {
+          "value": "NA"
+        },
+        "arachidonic_acid": {
+          "value": "NA"
+        },
+        "calcium": {
+          "value": 0.052,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Calcium, Ca, ID 1087, 52.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "phosphorus": {
+          "value": 0.41,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Phosphorus, P, ID 1091, 410.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "potassium": {
+          "value": 0.362,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Potassium, K, ID 1092, 362.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "sodium": {
+          "value": 0.006,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Sodium, Na, ID 1093, 6.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "chloride": {
+          "value": "NA"
+        },
+        "magnesium": {
+          "value": 0.138,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Magnesium, Mg, ID 1090, 138.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "copper": {
+          "value": 0.391,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Copper, Cu, ID 1098, 0.391 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "iodine": {
+          "value": "NA"
+        },
+        "iron": {
+          "value": 4.25,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Iron, Fe, ID 1089, 4.25 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "manganese": {
+          "value": 3.63,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Manganese, Mn, ID 1101, 3.63 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "selenium_wet": {
+          "value": 28.9,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Selenium, Se, ID 1103, 28.9 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "zinc": {
+          "value": 3.64,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Zinc, Zn, ID 1095, 3.64 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_a": {
+          "value": 0.0,
+          "unit": "IU",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026; NIH/USDA DSID https://dsid.od.nih.gov/unit-conversions",
+          "method": "Retinolo preformato /0,3 µg per UI; carotenoidi specificati dalla fonte pari a zero. Non conversione di RAE vegetali."
+        },
+        "vitamin_d": {
+          "value": 0.0,
+          "unit": "IU",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin D (D2 + D3), International Units, ID 1110, 0.0 IU/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_e": {
+          "value": 0.6258,
+          "unit": "IU",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin E (alpha-tocopherol), ID 1109, 0.42 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×1.49. Alfa-tocoferolo alimentare naturale: conversione convenzionale 1,49 UI/mg; non tutti i tocoferoli.",
+          "form": "d_alpha_tocopherol"
+        },
+        "vitamin_b1": {
+          "value": 0.46,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Thiamin, ID 1165, 0.46 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b2": {
+          "value": 0.155,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Riboflavin, ID 1166, 0.155 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b3": {
+          "value": 1.125,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Niacin, ID 1167, 1.125 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b5": {
+          "value": 1.12,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Pantothenic acid, ID 1170, 1.12 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b6": {
+          "value": 0.1,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin B-6, ID 1175, 0.1 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b9": {
+          "value": 32.0,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Folate, total, ID 1177, 32.0 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b12": {
+          "value": 0.0,
+          "unit": "µg",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin B-12, ID 1178, 0.0 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "choline": {
+          "value": 40.4,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Choline, total, ID 1180, 40.4 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_c": {
+          "value": 0.0,
+          "unit": "mg",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin C, total ascorbic acid, ID 1162, 0.0 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b7": {
+          "value": "NA"
+        },
+        "vitamin_k": {
+          "value": 2.0,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin K (phylloquinone), ID 1185, 2.0 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "arginine": {
+          "value": 0.85,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Arginine, ID 1220; per 100 g."
+        },
+        "histidine": {
+          "value": 0.275,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Histidine, ID 1221; per 100 g."
+        },
+        "isoleucine": {
+          "value": 0.503,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Isoleucine, ID 1212; per 100 g."
+        },
+        "leucine": {
+          "value": 0.98,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Leucine, ID 1213; per 100 g."
+        },
+        "lysine": {
+          "value": 0.637,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Lysine, ID 1214; per 100 g."
+        },
+        "methionine": {
+          "value": 0.207,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Methionine, ID 1215; per 100 g."
+        },
+        "methionine_cystine": {
+          "value": 0.662,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Somma methionine+cystine, senza doppio conteggio."
+        },
+        "phenylalanine": {
+          "value": 0.665,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Phenylalanine, ID 1217; per 100 g."
+        },
+        "phenylalanine_tyrosine": {
+          "value": 1.06,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Somma phenylalanine+tyrosine, senza doppio conteggio."
+        },
+        "threonine": {
+          "value": 0.382,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Threonine, ID 1211; per 100 g."
+        },
+        "tryptophan": {
+          "value": 0.182,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Tryptophan, ID 1210; per 100 g."
+        },
+        "valine": {
+          "value": 0.688,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Valine, ID 1219; per 100 g."
+        },
+        "taurine": {
+          "value": "NA"
+        },
+        "l_carnitine": {
+          "value": "NA"
+        },
+        "cystine": {
+          "value": 0.455,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Cystine, ID 1216; per 100 g."
+        },
+        "tyrosine": {
+          "value": 0.395,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Tyrosine, ID 1218; per 100 g."
+        },
+        "energy_food_kcal": {
+          "value": 379.0,
+          "unit": "kcal",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Energy, ID 1008, 379.0 kcal/100 g; profilo tipico, non analisi del lotto."
+        },
+        "carbohydrate_by_difference": {
+          "value": 67.7,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Carbohydrate, by difference, ID 1005, 67.7 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "c18_2_undifferentiated": {
+          "value": 2.2,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 18:2, ID 1269, 2.2 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "c20_4_undifferentiated": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 20:4, ID 1271, 0.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_a_retinol_ug": {
+          "value": 0.0,
+          "unit": "µg",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Retinol, ID 1105, 0.0 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_a_carotenoid_iu": {
+          "value": "NA"
+        },
+        "beta_carotene_ug": {
+          "value": 0.0,
+          "unit": "µg",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 173904; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Carotene, beta, ID 1107, 0.0 µg/100 g; profilo tipico, non analisi del lotto."
+        }
+      }
+    },
+    {
+      "id": "carrot_cooked",
+      "name_it": "Carota cotta al vapore (proxy USDA bollita)",
+      "category": "vegetable",
+      "subcategory": "vegetable_generic",
+      "processing_state": "cooked_steamed",
+      "edible_portion": "100 g di parte edibile; profilo nelle condizioni dichiarate",
+      "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+      "source_url": "https://fdc.nal.usda.gov/food-details/170394/nutrients",
+      "source_version": "SR Legacy; FDC 170394; acquisizione API 20/10/2026",
+      "data_status": "estimated",
+      "available_to_formulate": true,
+      "kcal_me_per_100g": 25.54,
+      "me_method": "Stima di confronto 4/9/4 su proteine, grassi e carboidrati disponibili; non ME canina misurata; per oli arrotondata alle kcal intere per 100 g.",
+      "uncertainty": "Proxy generico USDA: composizione tipica, non lotto; cloruro e iodio non disponibili; non si sommano acidi grassi alle masse dei grassi.",
+      "preparation": "Cotta al vapore, pesata cotta; composizione proxy USDA bollita e scolata senza sale.",
+      "notes": "Fonte primaria: Carrots, cooked, boiled, drained, without salt. Energia USDA per uso umano conservata separatamente. Vitamina D: usare UI native USDA; µg arrotondati possono dare una conversione diversa. Linoleico solo se 18:2 n-6 cis,cis presente; 18:2 non differenziato resta separato. Questo aggiornamento non convalida il prodotto.",
+      "nutrients": {
+        "protein": {
+          "value": 0.76,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Protein, ID 1003, 0.76 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "fat": {
+          "value": 0.18,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Total lipid (fat), ID 1004, 0.18 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "carbohydrate_available": {
+          "value": 5.22,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Carboidrati per differenza meno fibra alimentare totale: stima, non misura diretta né ENA garantiti."
+        },
+        "fiber": {
+          "value": 3.0,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Fiber, total dietary, ID 1079, 3.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "moisture": {
+          "value": 90.17,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Water, ID 1051, 90.17 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "linoleic_acid": {
+          "value": "NA"
+        },
+        "ala": {
+          "value": "NA"
+        },
+        "epa": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 20:5 n-3 (EPA), ID 1278, 0.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "dha": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 22:6 n-3 (DHA), ID 1272, 0.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "epa_dha": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Somma EPA+DHA, sottoinsieme dei grassi."
+        },
+        "omega3_total": {
+          "value": "NA"
+        },
+        "omega6_total": {
+          "value": "NA"
+        },
+        "arachidonic_acid": {
+          "value": "NA"
+        },
+        "calcium": {
+          "value": 0.03,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Calcium, Ca, ID 1087, 30.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "phosphorus": {
+          "value": 0.03,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Phosphorus, P, ID 1091, 30.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "potassium": {
+          "value": 0.235,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Potassium, K, ID 1092, 235.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "sodium": {
+          "value": 0.058,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Sodium, Na, ID 1093, 58.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "chloride": {
+          "value": "NA"
+        },
+        "magnesium": {
+          "value": 0.01,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Magnesium, Mg, ID 1090, 10.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "copper": {
+          "value": 0.017,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Copper, Cu, ID 1098, 0.017 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "iodine": {
+          "value": "NA"
+        },
+        "iron": {
+          "value": 0.34,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Iron, Fe, ID 1089, 0.34 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "manganese": {
+          "value": 0.155,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Manganese, Mn, ID 1101, 0.155 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "selenium_wet": {
+          "value": 0.7,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Selenium, Se, ID 1103, 0.7 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "zinc": {
+          "value": 0.2,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Zinc, Zn, ID 1095, 0.2 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_a": {
+          "value": "NA"
+        },
+        "vitamin_d": {
+          "value": 0.0,
+          "unit": "IU",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin D (D2 + D3), International Units, ID 1110, 0.0 IU/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_e": {
+          "value": 1.5347,
+          "unit": "IU",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin E (alpha-tocopherol), ID 1109, 1.03 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×1.49. Alfa-tocoferolo alimentare naturale: conversione convenzionale 1,49 UI/mg; non tutti i tocoferoli.",
+          "form": "d_alpha_tocopherol"
+        },
+        "vitamin_b1": {
+          "value": 0.066,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Thiamin, ID 1165, 0.066 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b2": {
+          "value": 0.044,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Riboflavin, ID 1166, 0.044 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b3": {
+          "value": 0.645,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Niacin, ID 1167, 0.645 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b5": {
+          "value": 0.232,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Pantothenic acid, ID 1170, 0.232 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b6": {
+          "value": 0.153,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin B-6, ID 1175, 0.153 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b9": {
+          "value": 14.0,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Folate, total, ID 1177, 14.0 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b12": {
+          "value": 0.0,
+          "unit": "µg",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin B-12, ID 1178, 0.0 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "choline": {
+          "value": 8.8,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Choline, total, ID 1180, 8.8 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_c": {
+          "value": 3.6,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin C, total ascorbic acid, ID 1162, 3.6 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b7": {
+          "value": "NA"
+        },
+        "vitamin_k": {
+          "value": 13.7,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin K (phylloquinone), ID 1185, 13.7 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "arginine": {
+          "value": 0.075,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Arginine, ID 1220; per 100 g."
+        },
+        "histidine": {
+          "value": 0.033,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Histidine, ID 1221; per 100 g."
+        },
+        "isoleucine": {
+          "value": 0.063,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Isoleucine, ID 1212; per 100 g."
+        },
+        "leucine": {
+          "value": 0.084,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Leucine, ID 1213; per 100 g."
+        },
+        "lysine": {
+          "value": 0.083,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Lysine, ID 1214; per 100 g."
+        },
+        "methionine": {
+          "value": 0.017,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Methionine, ID 1215; per 100 g."
+        },
+        "methionine_cystine": {
+          "value": 0.085,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Somma methionine+cystine, senza doppio conteggio."
+        },
+        "phenylalanine": {
+          "value": 0.05,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Phenylalanine, ID 1217; per 100 g."
+        },
+        "phenylalanine_tyrosine": {
+          "value": 0.085,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Somma phenylalanine+tyrosine, senza doppio conteggio."
+        },
+        "threonine": {
+          "value": 0.157,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Threonine, ID 1211; per 100 g."
+        },
+        "tryptophan": {
+          "value": 0.01,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Tryptophan, ID 1210; per 100 g."
+        },
+        "valine": {
+          "value": 0.056,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Valine, ID 1219; per 100 g."
+        },
+        "taurine": {
+          "value": "NA"
+        },
+        "l_carnitine": {
+          "value": "NA"
+        },
+        "cystine": {
+          "value": 0.068,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Cystine, ID 1216; per 100 g."
+        },
+        "tyrosine": {
+          "value": 0.035,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Tyrosine, ID 1218; per 100 g."
+        },
+        "energy_food_kcal": {
+          "value": 35.0,
+          "unit": "kcal",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Energy, ID 1008, 35.0 kcal/100 g; profilo tipico, non analisi del lotto."
+        },
+        "carbohydrate_by_difference": {
+          "value": 8.22,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Carbohydrate, by difference, ID 1005, 8.22 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "c18_2_undifferentiated": {
+          "value": 0.087,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 18:2, ID 1269, 0.087 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "c20_4_undifferentiated": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 20:4, ID 1271, 0.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_a_retinol_ug": {
+          "value": 0.0,
+          "unit": "µg",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Retinol, ID 1105, 0.0 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_a_carotenoid_iu": {
+          "value": 17033.0,
+          "unit": "IU",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "UI USDA per etichettatura umana da carotenoidi, conservate solo come dato di fonte; NON attività vitaminica canina."
+        },
+        "beta_carotene_ug": {
+          "value": 8332.0,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 170394; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Carotene, beta, ID 1107, 8332.0 µg/100 g; profilo tipico, non analisi del lotto."
+        }
+      }
+    },
+    {
+      "id": "pumpkin_cooked",
+      "name_it": "Zucca cotta al vapore (proxy USDA bollita)",
+      "category": "vegetable",
+      "subcategory": "vegetable_generic",
+      "processing_state": "cooked_steamed",
+      "edible_portion": "100 g di parte edibile; profilo nelle condizioni dichiarate",
+      "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+      "source_url": "https://fdc.nal.usda.gov/food-details/168449/nutrients",
+      "source_version": "SR Legacy; FDC 168449; acquisizione API 20/10/2026",
+      "data_status": "estimated",
+      "available_to_formulate": true,
+      "kcal_me_per_100g": 18.71,
+      "me_method": "Stima di confronto 4/9/4 su proteine, grassi e carboidrati disponibili; non ME canina misurata; per oli arrotondata alle kcal intere per 100 g.",
+      "uncertainty": "Proxy generico USDA: composizione tipica, non lotto; cloruro e iodio non disponibili; non si sommano acidi grassi alle masse dei grassi.",
+      "preparation": "Cotta al vapore, pesata cotta; composizione proxy USDA bollita e scolata senza sale.",
+      "notes": "Fonte primaria: Pumpkin, cooked, boiled, drained, without salt. Energia USDA per uso umano conservata separatamente. Vitamina D: usare UI native USDA; µg arrotondati possono dare una conversione diversa. Linoleico solo se 18:2 n-6 cis,cis presente; 18:2 non differenziato resta separato. Questo aggiornamento non convalida il prodotto.",
+      "nutrients": {
+        "protein": {
+          "value": 0.72,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Protein, ID 1003, 0.72 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "fat": {
+          "value": 0.07,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Total lipid (fat), ID 1004, 0.07 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "carbohydrate_available": {
+          "value": 3.8,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Carboidrati per differenza meno fibra alimentare totale: stima, non misura diretta né ENA garantiti."
+        },
+        "fiber": {
+          "value": 1.1,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Fiber, total dietary, ID 1079, 1.1 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "moisture": {
+          "value": 93.69,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Water, ID 1051, 93.69 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "linoleic_acid": {
+          "value": "NA"
+        },
+        "ala": {
+          "value": "NA"
+        },
+        "epa": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 20:5 n-3 (EPA), ID 1278, 0.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "dha": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 22:6 n-3 (DHA), ID 1272, 0.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "epa_dha": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Somma EPA+DHA, sottoinsieme dei grassi."
+        },
+        "omega3_total": {
+          "value": "NA"
+        },
+        "omega6_total": {
+          "value": "NA"
+        },
+        "arachidonic_acid": {
+          "value": "NA"
+        },
+        "calcium": {
+          "value": 0.015,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Calcium, Ca, ID 1087, 15.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "phosphorus": {
+          "value": 0.03,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Phosphorus, P, ID 1091, 30.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "potassium": {
+          "value": 0.23,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Potassium, K, ID 1092, 230.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "sodium": {
+          "value": 0.001,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Sodium, Na, ID 1093, 1.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "chloride": {
+          "value": "NA"
+        },
+        "magnesium": {
+          "value": 0.009,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Magnesium, Mg, ID 1090, 9.0 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×0.001."
+        },
+        "copper": {
+          "value": 0.091,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Copper, Cu, ID 1098, 0.091 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "iodine": {
+          "value": "NA"
+        },
+        "iron": {
+          "value": 0.57,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Iron, Fe, ID 1089, 0.57 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "manganese": {
+          "value": 0.089,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Manganese, Mn, ID 1101, 0.089 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "selenium_wet": {
+          "value": 0.2,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Selenium, Se, ID 1103, 0.2 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "zinc": {
+          "value": 0.23,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Zinc, Zn, ID 1095, 0.23 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_a": {
+          "value": "NA"
+        },
+        "vitamin_d": {
+          "value": 0.0,
+          "unit": "IU",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin D (D2 + D3), International Units, ID 1110, 0.0 IU/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_e": {
+          "value": 1.192,
+          "unit": "IU",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin E (alpha-tocopherol), ID 1109, 0.8 mg/100 g; profilo tipico, non analisi del lotto. Conversione ×1.49. Alfa-tocoferolo alimentare naturale: conversione convenzionale 1,49 UI/mg; non tutti i tocoferoli.",
+          "form": "d_alpha_tocopherol"
+        },
+        "vitamin_b1": {
+          "value": 0.031,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Thiamin, ID 1165, 0.031 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b2": {
+          "value": 0.078,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Riboflavin, ID 1166, 0.078 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b3": {
+          "value": 0.413,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Niacin, ID 1167, 0.413 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b5": {
+          "value": 0.201,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Pantothenic acid, ID 1170, 0.201 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b6": {
+          "value": 0.044,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin B-6, ID 1175, 0.044 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b9": {
+          "value": 9.0,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Folate, total, ID 1177, 9.0 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b12": {
+          "value": 0.0,
+          "unit": "µg",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin B-12, ID 1178, 0.0 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "choline": {
+          "value": 6.2,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Choline, total, ID 1180, 6.2 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_c": {
+          "value": 4.7,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin C, total ascorbic acid, ID 1162, 4.7 mg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_b7": {
+          "value": "NA"
+        },
+        "vitamin_k": {
+          "value": 0.8,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Vitamin K (phylloquinone), ID 1185, 0.8 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "arginine": {
+          "value": 0.039,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Arginine, ID 1220; per 100 g."
+        },
+        "histidine": {
+          "value": 0.011,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Histidine, ID 1221; per 100 g."
+        },
+        "isoleucine": {
+          "value": 0.023,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Isoleucine, ID 1212; per 100 g."
+        },
+        "leucine": {
+          "value": 0.034,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Leucine, ID 1213; per 100 g."
+        },
+        "lysine": {
+          "value": 0.039,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Lysine, ID 1214; per 100 g."
+        },
+        "methionine": {
+          "value": 0.008,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Methionine, ID 1215; per 100 g."
+        },
+        "methionine_cystine": {
+          "value": 0.01,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Somma methionine+cystine, senza doppio conteggio."
+        },
+        "phenylalanine": {
+          "value": 0.023,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Phenylalanine, ID 1217; per 100 g."
+        },
+        "phenylalanine_tyrosine": {
+          "value": 0.053,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Somma phenylalanine+tyrosine, senza doppio conteggio."
+        },
+        "threonine": {
+          "value": 0.021,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Threonine, ID 1211; per 100 g."
+        },
+        "tryptophan": {
+          "value": 0.009,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Tryptophan, ID 1210; per 100 g."
+        },
+        "valine": {
+          "value": 0.025,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Valine, ID 1219; per 100 g."
+        },
+        "taurine": {
+          "value": "NA"
+        },
+        "l_carnitine": {
+          "value": "NA"
+        },
+        "cystine": {
+          "value": 0.002,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Cystine, ID 1216; per 100 g."
+        },
+        "tyrosine": {
+          "value": 0.03,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato USDA Tyrosine, ID 1218; per 100 g."
+        },
+        "energy_food_kcal": {
+          "value": 20.0,
+          "unit": "kcal",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Energy, ID 1008, 20.0 kcal/100 g; profilo tipico, non analisi del lotto."
+        },
+        "carbohydrate_by_difference": {
+          "value": 4.9,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Carbohydrate, by difference, ID 1005, 4.9 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "c18_2_undifferentiated": {
+          "value": 0.002,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 18:2, ID 1269, 0.002 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "c20_4_undifferentiated": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: PUFA 20:4, ID 1271, 0.0 g/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_a_retinol_ug": {
+          "value": 0.0,
+          "unit": "µg",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Retinol, ID 1105, 0.0 µg/100 g; profilo tipico, non analisi del lotto."
+        },
+        "vitamin_a_carotenoid_iu": {
+          "value": 5755.0,
+          "unit": "IU",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "UI USDA per etichettatura umana da carotenoidi, conservate solo come dato di fonte; NON attività vitaminica canina."
+        },
+        "beta_carotene_ug": {
+          "value": 2096.0,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA FoodData Central SR Legacy, FDC 168449; API ufficiale acquisita 20/10/2026",
+          "method": "Dato della banca dati: Carotene, beta, ID 1107, 2096.0 µg/100 g; profilo tipico, non analisi del lotto."
+        }
+      }
+    }
+  ]
+}

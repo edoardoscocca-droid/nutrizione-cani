@@ -287,7 +287,7 @@ describe('Importazione: applicazione, storico, ricalcoli', () => {
 
 describe('Dati reali del 16/10/2026', () => {
   test('i file convertiti passano le verifiche e arrivano nel catalogo con lo stato corretto', async () => {
-    const cat = await new LocalRepository(null).loadCatalog();
+    const cat = await new LocalRepository(null).loadCatalog({ bundledUpTo: '2026-10-16' });
     const f = (id: string) => cat.foods.find((x) => x.id === id)!;
     // D4: EM calcolata con FEDIAF 2025 4/9/4 (proteine, grassi, carboidrati disponibili) → dati parziali, non più «da completare»
     const me: Record<string, number> = { beef_03: 114.9, beef_15: 209.4, beef_30: 327.4, oat_dry: 341.7, carrot_cooked: 25.5, pumpkin_cooked: 18.7 };
