@@ -856,7 +856,7 @@ export async function formulate(input: FormulationInput): Promise<FormulationRes
           outcome: 'preferences_unreachable',
           items: proposal,
           audit,
-          message: 'Preferenze non raggiungibili nemmeno con gli ampliamenti documentati. Le quantità mostrate sono solo diagnostiche (vincoli necessari rispettati): non è un menù generato.',
+          message: 'Preferenze non raggiungibili nemmeno con gli ampliamenti documentati. Le quantità mostrate sono solo diagnostiche (vincoli del modello sui contributi noti rispettati; verifica nutrizionale incompleta): non è un menù generato.',
         });
       } else return timeout(b);
     } else return timeout(a);

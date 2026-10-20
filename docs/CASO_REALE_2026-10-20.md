@@ -3,6 +3,8 @@
 Generato con `npx tsx scripts/collaudo/caso-reale.ts` sul motore `motore-2.0.0`. Prodotti reali usati come **copie in memoria**: gli integratori
 sono autorizzati solo per questa prova (nel catalogo restano non attivi); nessun prodotto, ricetta o preferenza salvata è stato modificato.
 
+**Sorgente dei dati: catalogo della modalità prova** = pacchetto (`src/data/packageCatalog.ts`) + importazioni del 16/10 (`dati/importazioni/2026-10-16/import_*.json`, importatore in modalità legacy). Gli stessi file del 16/10 sono quelli caricati in Supabase (`supabase/data/2026-10-16_*.sql`).
+
 ## Cane e impostazioni
 
 Femmina, 5 anni, non sterilizzata; peso **attuale 33 kg** (tabella d’impiego QDiet ed EPA+DHA), ideale 31 kg; BCS 5/9; obiettivo **1.800 kcal/die** impostato manualmente.
@@ -24,7 +26,7 @@ EPA+DHA: apporto raccomandato 30 × 33^0,75 = 413,05 mg/die (vincolo necessario)
 | bone_meal | Farina d ossa (marca/prodotto NON confermato) | v2 | dose in g, contenuto 1 g/unità | sconosciuta | review_required |
 
 Dichiarazioni total/added di QDiet nei dati caricati: calcium = non marcato; phosphorus = non marcato; protein = non marcato; vitamin_a = added; vitamin_d = added; zinc = added; choline = added.
-Nel file consegnato calcio e fosforo sono «reported_or_estimated» con stato ANALYTICAL_DECLARED (non «total»): il motore li tratta come componenti analitici dichiarati; solo i valori marcati «added» sono limiti inferiori.
+Nel file del 16/10 (`dati/importazioni/2026-10-16/originali/integratori/E_composizione_integratori_IMPORT.csv`) calcio e fosforo sono «reported_or_estimated» / ANALYTICAL_DECLARED, senza «total»: componenti analitici dichiarati; solo i valori marcati «added» sono limiti inferiori.
 
 ## Scenario A — preferenze salvate nella ricetta di prova (19/10)
 
@@ -37,9 +39,9 @@ Preferenze effettive passate al calcolo (prima ricerca → seconda ricerca con g
 - Rapporto Ca:P (preferenza 1,2–1,4) → minimo ampliato 1,1 ; massimo ampliato 1,5 ; vincolo necessario 1–2. Coefficienti netti passati al solver per il minimo ampliato (riga «Ca − 1,1·P ≥ 0», g per passo): Macinato di manzo crudo 3% grassi (per 1 g) -0,002153; Macinato di manzo crudo 15% grassi (per 1 g) -0,001731; Macinato di manzo crudo 30% grassi (per 1 g) -0,001212; Avena in fiocchi secca non fortificata (per 1 g) -0,00399; Carota cotta al vapore (proxy USDA bollita) (per 1 g) -0,00003; Zucca cotta al vapore (proxy USDA bollita) (per 1 g) -0,00018; Q.Diet Compensa (standard, NON Crescita/Ultra) (per 0,1 unità) 0,01085; Omegor Vitality 1000 (capsula) (per 1 unità) 0; Farina d ossa (marca/prodotto NON confermato) (per 0,1 unità) 0,00313.
   Righe originarie del rapporto (prima ricerca e vincolo necessario): Rapporto calcio/fosforo: minimo 1 → 0,0115 per QDiet; Rapporto calcio/fosforo: minimo 1,2 → 0,0102 per QDiet.
 
-**Esito: Preferenze non raggiungibili: i vincoli necessari sono rispettati, le preferenze no** (`preferences_unreachable`, 1,69 s, ricerca P1: nessuna riuscita).
+**Esito: Preferenze non raggiungibili: vincoli del modello sui contributi noti rispettati, preferenze no; non è un menù** (`preferences_unreachable`, 1,87 s, ricerca P1: nessuna riuscita).
 
-Quantità diagnostiche (vincoli necessari rispettati; non è un menù):
+Quantità diagnostiche (vincoli del modello sui contributi noti rispettati; non è un menù):
 
 | Componente | Quantità |
 |---|---:|
@@ -149,9 +151,9 @@ Preferenze effettive passate al calcolo (prima ricerca → seconda ricerca con g
 - Rapporto Ca:P (preferenza 1,2–1,4) → minimo ampliato 1,1 ; massimo ampliato 1,5 ; vincolo necessario 1–2. Coefficienti netti passati al solver per il minimo ampliato (riga «Ca − 1,1·P ≥ 0», g per passo): Macinato di manzo crudo 3% grassi (per 1 g) -0,002153; Macinato di manzo crudo 15% grassi (per 1 g) -0,001731; Macinato di manzo crudo 30% grassi (per 1 g) -0,001212; Avena in fiocchi secca non fortificata (per 1 g) -0,00399; Carota cotta al vapore (proxy USDA bollita) (per 1 g) -0,00003; Zucca cotta al vapore (proxy USDA bollita) (per 1 g) -0,00018; Q.Diet Compensa (standard, NON Crescita/Ultra) (per 0,1 unità) 0,01085; Omegor Vitality 1000 (capsula) (per 1 unità) 0; Farina d ossa (marca/prodotto NON confermato) (per 0,1 unità) 0,00313.
   Righe originarie del rapporto (prima ricerca e vincolo necessario): Rapporto calcio/fosforo: minimo 1 → 0,0115 per QDiet; Rapporto calcio/fosforo: minimo 1,2 → 0,0102 per QDiet.
 
-**Esito: Preferenze non raggiungibili: i vincoli necessari sono rispettati, le preferenze no** (`preferences_unreachable`, 0,77 s, ricerca P1: nessuna riuscita).
+**Esito: Preferenze non raggiungibili: vincoli del modello sui contributi noti rispettati, preferenze no; non è un menù** (`preferences_unreachable`, 0,67 s, ricerca P1: nessuna riuscita).
 
-Quantità diagnostiche (vincoli necessari rispettati; non è un menù):
+Quantità diagnostiche (vincoli del modello sui contributi noti rispettati; non è un menù):
 
 | Componente | Quantità |
 |---|---:|

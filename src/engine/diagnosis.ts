@@ -12,8 +12,8 @@ export function diagnosisOf(r: Pick<FormulationResult, 'outcome' | 'audit'>): Di
 
 export const DIAGNOSIS_LABEL: Record<Diagnosis, string> = {
   constraints_incompatible: 'Vincoli nutrizionali o di quantità incompatibili: nessuna soluzione con questi componenti',
-  preferences_unreachable: 'Preferenze non raggiungibili: i vincoli necessari sono rispettati, le preferenze no',
-  insufficient_data: 'Dati insufficienti: soluzione trovata ma non interamente verificabile',
-  verified: 'Soluzione verificata sui dati disponibili',
+  preferences_unreachable: 'Preferenze non raggiungibili: vincoli del modello sui contributi noti rispettati, preferenze no; non è un menù',
+  insufficient_data: 'Vincoli del modello sui contributi noti rispettati; verifica nutrizionale incompleta (dati non verificabili)',
+  verified: 'Verifica nutrizionale completa sui dati disponibili',
   not_completed: 'Calcolo non completato',
 };

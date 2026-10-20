@@ -1,0 +1,18 @@
+CONFRONTO DATI — 20 ottobre 2026
+
+Questi sono gli stessi JSON reali preparati il 19/10, non una nuova revisione nutrizionale. Non importarli automaticamente nel database. Usarli prima come sorgente esplicita di una prova in memoria.
+
+Il resoconto CASO_REALE_2026-10-20.md descrive dati diversi:
+- QDiet calcio e fosforo: qui declared_total_or_added=total, non assente.
+- Omegor: qui content_mass_per_unit_g=1 e kcal_per_unit=9 (stima della sola quota olio); nel resoconto entrambi assenti.
+- Farina d’ossa: qui marca Grau, variante Ca22,6%/P17,7%; nel resoconto prodotto non identificato.
+- Avena: qui processing_state=dried; nel resoconto raw.
+Queste differenze non dimostrano quale passaggio sia errato. Confrontare JSON sorgente, output normalizzato dell’importatore, catalogo effettivo iPhone e fixture dello script di collaudo, campo per campo. Registrare i percorsi effettivi dei file usati dal test. Confrontare i valori canonici: unità normalizzate diverse ma equivalenti non sono discrepanze.
+
+Eseguire lo stesso scenario del resoconto anche caricando direttamente questi JSON in copie in memoria tramite il normale importatore. Non usare fixture legacy al loro posto. Riportare importatore/schema/versione, differenze effettive e cambiamento del risultato.
+
+Le lacune già dichiarate rimangono: non contengono nuovi zeri, dosi o dati analitici aggiunti. La vitamina D nota non cambia: QDiet25UI/g, manzo4UI/100g. Il collo di bottiglia sulla D può quindi restare anche dopo l’allineamento. Verificarlo, senza promettere che questo pacchetto risolva la formulazione.
+
+Non attribuire “tutti i requisiti nutrizionali soddisfatti” a una soluzione dove linoleico, cloruro, rapporti o energia non sono verificabili. Specificare “vincoli del modello sui contributi noti rispettati; verifica nutrizionale incompleta”.
+
+Obiettivo della prova: separare errore/differenza di versione dei dati, limiti della composizione selezionata, preferenze e dati non verificabili. Nessuna modifica alle ricette salvate.

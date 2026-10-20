@@ -10,8 +10,40 @@ import type { CheckRow } from '../../src/engine/audit';
 import { newDog } from '../../src/engine/dogProfile';
 import { DIAGNOSIS_LABEL, diagnosisOf, formulate, inspectModel } from '../../src/engine/formulate';
 import { DEFAULT_SETTINGS, type Food, type Supplement } from '../../src/engine/types';
+import { parseImport, planImport } from '../../src/data/catalogImport';
+import { withCatalogGaps } from '../../src/data/packageCatalog';
+import { applyEnergyMethods } from '../../src/engine/energy';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
-const cat = await new LocalRepository(null).loadCatalog();
+// sorgente: catalogo della modalità prova (pacchetto + importazioni 16/10) oppure, con --json DIR, i JSON reali del 19/10
+// caricati in COPIA tramite il normale importatore (schema definitivo, modalità strict)
+const jsonDir = process.argv.includes('--json') ? process.argv[process.argv.indexOf('--json') + 1] : null;
+const base0 = await new LocalRepository(null).loadCatalog();
+const SOURCE_FILES = jsonDir
+  ? ([['alimenti_reali_2026-10-19.json', 'foods'], ['integratori_reali_2026-10-19.json', 'supplements']] as const).map(([f, kind]) => {
+      const path = resolve(jsonDir, f);
+      const text = readFileSync(path, 'utf8');
+      return { path, kind, sha256: createHash('sha256').update(text).digest('hex'), text };
+    })
+  : [];
+const importLog: string[] = [];
+const cat = jsonDir ? importedCopy() : base0;
+function importedCopy() {
+  let foods = [...base0.foods];
+  let supplements = [...base0.supplements];
+  for (const f of SOURCE_FILES) {
+    const parsed = parseImport(f.text, f.kind, base0.nutrients, { mode: 'strict' });
+    const plan = planImport(parsed, { ...base0, foods, supplements }, f.path);
+    importLog.push(`${f.path} (sha256 ${f.sha256}): formato ${parsed.format}, modalità ${parsed.mode}, ${plan.summary.update} aggiornati, ${plan.summary.create} creati, ${plan.summary.values} valori, errori ${plan.errors.length + plan.items.reduce((a, i) => a + i.errors.length, 0)}, conversioni in sospeso ${plan.items.reduce((a, i) => a + i.pendingConversions.length, 0)}`);
+    if (!plan.canApply) throw new Error(`Importazione non applicabile: ${f.path}`);
+    const next = new Map(plan.items.filter((i) => i.action !== 'unchanged').map((i) => [i.id, i.next]));
+    if (f.kind === 'foods') foods = foods.map((x) => (next.get(x.id) as Food) ?? x);
+    else supplements = supplements.map((x) => (next.get(x.id) as Supplement) ?? x);
+  }
+  return withCatalogGaps(applyEnergyMethods({ ...base0, foods, supplements }));
+}
 const SUPPS = ['qdiet', 'omegor_vitality', 'bone_meal'];
 const FOODS = ['beef_03', 'beef_15', 'beef_30', 'oat_dry', 'carrot_cooked', 'pumpkin_cooked'];
 const copy = { ...cat, supplements: cat.supplements.map((s) => (SUPPS.includes(s.id) ? { ...s, usableForOptimization: true } : s)) };
@@ -48,6 +80,13 @@ p();
 p('Generato con `npx tsx scripts/collaudo/caso-reale.ts` sul motore `motore-2.0.0`. Prodotti reali usati come **copie in memoria**: gli integratori');
 p('sono autorizzati solo per questa prova (nel catalogo restano non attivi); nessun prodotto, ricetta o preferenza salvata è stato modificato.');
 p();
+if (jsonDir) {
+  p('**Sorgente dei dati: JSON reali del 19/10/2026**, caricati con il normale importatore (`src/data/catalogImport.ts`, `parseImport` + `planImport`, schema definitivo JSON, modalità strict) sopra una copia del catalogo della modalità prova:');
+  for (const l of importLog) p(`- ${l}`);
+} else {
+  p('**Sorgente dei dati: catalogo della modalità prova** = pacchetto (`src/data/packageCatalog.ts`) + importazioni del 16/10 (`dati/importazioni/2026-10-16/import_*.json`, importatore in modalità legacy). Gli stessi file del 16/10 sono quelli caricati in Supabase (`supabase/data/2026-10-16_*.sql`).');
+}
+p();
 p('## Cane e impostazioni');
 p();
 p('Femmina, 5 anni, non sterilizzata; peso **attuale 33 kg** (tabella d’impiego QDiet ed EPA+DHA), ideale 31 kg; BCS 5/9; obiettivo **1.800 kcal/die** impostato manualmente.');
@@ -68,7 +107,9 @@ for (const id of SUPPS) {
 }
 p();
 p('Dichiarazioni total/added di QDiet nei dati caricati: ' + ['calcium', 'phosphorus', 'protein', 'vitamin_a', 'vitamin_d', 'zinc', 'choline'].map((k) => `${k} = ${copy.supplements.find((s) => s.id === 'qdiet')!.nutrients[k]?.declared ?? 'non marcato'}`).join('; ') + '.');
-p('Nel file consegnato calcio e fosforo sono «reported_or_estimated» con stato ANALYTICAL_DECLARED (non «total»): il motore li tratta come componenti analitici dichiarati; solo i valori marcati «added» sono limiti inferiori.');
+p(jsonDir
+  ? 'Nei JSON del 19/10 calcio e fosforo di QDiet sono marcati «total»; solo i valori marcati «added» sono limiti inferiori.'
+  : 'Nel file del 16/10 (`dati/importazioni/2026-10-16/originali/integratori/E_composizione_integratori_IMPORT.csv`) calcio e fosforo sono «reported_or_estimated» / ANALYTICAL_DECLARED, senza «total»: componenti analitici dichiarati; solo i valori marcati «added» sono limiti inferiori.');
 p();
 
 const problemRows = (rows: CheckRow[]) => rows.flatMap((r) => r.checks.filter((c) => c.color !== 'green' && c.color !== 'blue').map((c) => ({ r, c })));
@@ -97,7 +138,7 @@ for (const [title, dog] of [['A — preferenze salvate nella ricetta di prova (1
   p(`**Esito: ${DIAGNOSIS_LABEL[diagnosisOf(r)]}** (\`${r.outcome}\`, ${fmt(ms / 1000, 2)} s, ricerca P1: ${r.stats?.p1Stage ?? 'nessuna riuscita'}).`);
   p();
   if (r.items.length) {
-    p(`Quantità ${r.outcome === 'solved' ? 'proposte' : 'diagnostiche (vincoli necessari rispettati; non è un menù)'}:`);
+    p(`Quantità ${r.outcome === 'solved' ? 'proposte' : 'diagnostiche (vincoli del modello sui contributi noti rispettati; non è un menù)'}:`);
     p();
     p('| Componente | Quantità |');
     p('|---|---:|');
@@ -171,6 +212,7 @@ for (const [title, dog] of [['A — preferenze salvate nella ricetta di prova (1
     p();
   }
 }
+if (!jsonDir) {
 p('## Motivo preciso della mancata formulazione');
 p();
 p('Le due prove danno lo stesso esito: **preferenze non raggiungibili**, non «vincoli necessari incompatibili»: esiste sempre una soluzione che rispetta tutti i vincoli necessari');
@@ -200,4 +242,5 @@ p('- Omegor Vitality 1000: valori documentati (anche zero) di calcio, fosforo, f
 p('- Farina d’ossa: confermare la confezione reale (Ca 22,6%, P 17,7% trascritti) ed energia.');
 p('- Alimenti: iodio, cloruro, vitamina A (attività per il cane), acido linoleico 18:2 n-6 da fonti compatibili.');
 p('- Avena: confermare la pesata da secca e la preparazione; l’energia attuale è calcolata 4/9/4 sui fiocchi secchi.');
+}
 console.log(out.join('\n'));
