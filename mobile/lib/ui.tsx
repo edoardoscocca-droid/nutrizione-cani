@@ -19,71 +19,72 @@ import { Feather } from '@expo/vector-icons';
 import type { Color } from '../../src/engine/types';
 import { COLOR_LABEL, DISCLAIMER } from '../../src/ui/format';
 
-// Stile «Caldo e naturale» (scelto il 17/10/2026): crema, terracotta e pesca; titoli Fraunces, testo Nunito Sans.
+// Stile «Chiaro, colori pieni» (scelto il 20/10/2026, proposta D): impostazione chiara e ordinata, blu cobalto,
+// giallo, corallo e menta; testo Manrope. I nomi delle chiavi restano quelli dello stile precedente.
 const light = {
-  bg: '#f7f1e8',
+  bg: '#f5f6fb',
   card: '#ffffff',
-  input: '#fbf8f3',
-  text: '#2c241c',
-  muted: '#6e5f50',
-  line: '#e6dccf',
-  accent: '#9a4a26',
+  input: '#f7f8fc',
+  text: '#14141f',
+  muted: '#55556a',
+  line: '#e6e7ef',
+  accent: '#2f3bd8',
   accentText: '#ffffff',
-  peach: '#f2b48a',
-  peachBg: '#fbe6d4',
-  sage: '#3d5a43',
-  sageBg: '#e3eedf',
-  nav: '#2c241c',
-  navText: '#e9dccb',
-  red: '#b3392b',
-  redBg: '#fbe4df',
-  orange: '#a85f16',
-  orangeBg: '#fff1df',
-  green: '#3d7a52',
-  greenBg: '#e3eedf',
-  blue: '#33669c',
-  blueBg: '#e6eef7',
-  grey: '#776d61',
-  greyBg: '#efe8dd',
-  purple: '#7d4cb3',
+  peach: '#ffd84d',
+  peachBg: '#e9ebff',
+  sage: '#0e5a40',
+  sageBg: '#eef0f7',
+  nav: '#ffffff',
+  navText: '#55556a',
+  red: '#b3261e',
+  redBg: '#fbddda',
+  orange: '#9c4a00',
+  orangeBg: '#ffead9',
+  green: '#0e6b4c',
+  greenBg: '#dff7ee',
+  blue: '#2a33b8',
+  blueBg: '#e9ebff',
+  grey: '#55556a',
+  greyBg: '#efeff5',
+  purple: '#6b3fb3',
   purpleBg: '#f1eafa',
 };
 const dark: typeof light = {
-  bg: '#1b1713',
-  card: '#26201b',
-  input: '#2e2721',
-  text: '#f3ece2',
-  muted: '#b9ab99',
-  line: '#3a322a',
-  accent: '#f2b48a',
-  accentText: '#2c241c',
-  peach: '#f2b48a',
-  peachBg: '#3b2a1f',
-  sage: '#b7d3bd',
-  sageBg: '#223026',
-  nav: '#0f0c0a',
-  navText: '#d8cab7',
-  red: '#f09a8c',
-  redBg: '#3a201b',
-  orange: '#efb36b',
-  orangeBg: '#3a2a17',
-  green: '#86c99a',
-  greenBg: '#1f3326',
-  blue: '#8fb7e6',
-  blueBg: '#1b2838',
-  grey: '#b0a596',
-  greyBg: '#2d2620',
+  bg: '#0f1020',
+  card: '#1a1c30',
+  input: '#22253b',
+  text: '#f1f2f8',
+  muted: '#a9abc2',
+  line: '#2c2f48',
+  accent: '#9aa2ff',
+  accentText: '#0f1020',
+  peach: '#ffd84d',
+  peachBg: '#262a55',
+  sage: '#6fddb3',
+  sageBg: '#20223a',
+  nav: '#1a1c30',
+  navText: '#a9abc2',
+  red: '#ff9a8f',
+  redBg: '#3a1c1c',
+  orange: '#ffb27a',
+  orangeBg: '#3a2616',
+  green: '#6fddb3',
+  greenBg: '#12352a',
+  blue: '#a9b0ff',
+  blueBg: '#20244a',
+  grey: '#a9abc2',
+  greyBg: '#26283c',
   purple: '#c3a2ea',
   purpleBg: '#2c2138',
 };
 /** Famiglie dei caratteri (caricati in app/_layout.tsx; finché non ci sono, iOS usa il carattere di sistema). */
 export const FONTS = {
-  display: 'Fraunces_600SemiBold',
-  body: 'NunitoSans_400Regular',
-  bodySemi: 'NunitoSans_600SemiBold',
-  bodyBold: 'NunitoSans_700Bold',
+  display: 'Manrope_800ExtraBold',
+  body: 'Manrope_500Medium',
+  bodySemi: 'Manrope_600SemiBold',
+  bodyBold: 'Manrope_700Bold',
 };
-const shadow = { shadowColor: '#3c2814', shadowOpacity: 0.08, shadowRadius: 3, shadowOffset: { width: 0, height: 1 }, elevation: 1 };
+const shadow = { shadowColor: '#14141f', shadowOpacity: 0.06, shadowRadius: 10, shadowOffset: { width: 0, height: 4 }, elevation: 1 };
 export type Theme = typeof light;
 
 export function useTheme(): Theme {
@@ -101,7 +102,7 @@ export function Screen({ children, scroll = true }: { children: ReactNode; scrol
   const t = useTheme();
   if (!scroll) return <View style={{ flex: 1, backgroundColor: t.bg, padding: 16 }}>{children}</View>;
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: t.bg }} contentContainerStyle={{ padding: 16, paddingBottom: 120, gap: 14 }} keyboardShouldPersistTaps="handled">
+    <ScrollView style={{ flex: 1, backgroundColor: t.bg }} contentContainerStyle={{ padding: 16, paddingBottom: 40, gap: 14 }} keyboardShouldPersistTaps="handled">
       {children}
     </ScrollView>
   );
@@ -124,12 +125,12 @@ export function T({ children, style, muted, small, bold, size }: { children: Rea
 export function H({ children, level = 2 }: { children: ReactNode; level?: 1 | 2 | 3 }) {
   const t = useTheme();
   const size = level === 1 ? 30 : level === 2 ? 21 : 18;
-  return <Text accessibilityRole="header" style={{ color: t.text, fontFamily: FONTS.display, fontSize: size, lineHeight: size * 1.18 }}>{children}</Text>;
+  return <Text accessibilityRole="header" style={{ color: t.text, fontFamily: FONTS.display, fontSize: size, lineHeight: size * 1.2, letterSpacing: level === 1 ? -0.6 : -0.3 }}>{children}</Text>;
 }
 
 export function Card({ children, style, onPress }: { children: ReactNode; style?: StyleProp<ViewStyle>; onPress?: () => void }) {
   const t = useTheme();
-  const s = [{ backgroundColor: t.card, borderRadius: 22, padding: 16, gap: 8, ...shadow }, style];
+  const s = [{ backgroundColor: t.card, borderRadius: 20, padding: 16, gap: 8, ...shadow }, style];
   if (onPress)
     return (
       <Pressable onPress={onPress} style={({ pressed }) => [...s, pressed && { opacity: 0.7 }]}>

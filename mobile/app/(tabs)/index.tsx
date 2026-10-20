@@ -48,8 +48,8 @@ export default function DogsScreen() {
         return (
           <Card key={d.id} onPress={() => router.push(`/cane/${d.id}`)}>
             <Row>
-              <View style={{ width: 52, height: 52, borderRadius: 26, backgroundColor: t.peachBg, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ color: t.accent, fontFamily: FONTS.display, fontSize: 24 }}>{d.name.slice(0, 1).toUpperCase()}</Text>
+              <View style={{ width: 56, height: 56, borderRadius: 18, backgroundColor: t.peach, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ color: '#14141f', fontFamily: FONTS.display, fontSize: 24 }}>{d.name.slice(0, 1).toUpperCase()}</Text>
               </View>
               <View style={{ flex: 1 }}>
                 <T bold>

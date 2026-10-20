@@ -5,8 +5,7 @@ import { useEffect, useState } from 'react';
 import * as Updates from 'expo-updates';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
-import { Fraunces_600SemiBold } from '@expo-google-fonts/fraunces';
-import { NunitoSans_400Regular, NunitoSans_600SemiBold, NunitoSans_700Bold } from '@expo-google-fonts/nunito-sans';
+import { Manrope_500Medium, Manrope_600SemiBold, Manrope_700Bold, Manrope_800ExtraBold } from '@expo-google-fonts/manrope';
 import { AppProvider, useApp } from '../lib/AppContext';
 import { Button, Disclaimer, FONTS, H, Loading, Screen, T, useTheme } from '../lib/ui';
 import LoginScreen from '../lib/LoginScreen';
@@ -72,7 +71,7 @@ function useApplyUpdatesOnLaunch() {
 export default function Layout() {
   useApplyUpdatesOnLaunch();
   // caratteri dello stile: se non si caricano, l'app parte comunque con quelli di sistema
-  const [loaded, error] = useFonts({ Fraunces_600SemiBold, NunitoSans_400Regular, NunitoSans_600SemiBold, NunitoSans_700Bold });
+  const [loaded, error] = useFonts({ Manrope_500Medium, Manrope_600SemiBold, Manrope_700Bold, Manrope_800ExtraBold });
   if (!loaded && !error) return null;
   return (
     <SafeAreaProvider>
