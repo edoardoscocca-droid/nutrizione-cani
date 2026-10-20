@@ -184,7 +184,7 @@ export function applicableLimits(limits: NutrientLimit[], dog: DogFormulationPro
     })
     .map((l) =>
       dog.eaaMarginPct && l.limitClass === 'OFFICIAL_MIN' && l.lower !== null && EAA.has(l.metric)
-        ? { ...l, lower: Math.round(l.lower * (1 + dog.eaaMarginPct / 100) * 1e6) / 1e6, source: `${l.source} + ${dog.eaaMarginPct}% (digeribilità proteica ≥ 80% non garantita)` }
+        ? { ...l, lower: Math.round(l.lower * (1 + dog.eaaMarginPct / 100) * 1e6) / 1e6, source: `${l.source} + ${dog.eaaMarginPct}% (digeribilità proteica della dieta ≥ 80% non documentata)` }
         : l,
     );
   for (const t of dog.targets) {
@@ -323,7 +323,11 @@ function evaluate(l: NutrientLimit, m: Measured, kcal: number | null, kcalTarget
   const gapOf = (v: number) => ({ requested: `${requested} ${u}`, result: v, deviation: below(v) ? v - (l.lower as number) : above(v) ? v - (l.upper as number) : 0, unit: u });
   const gapText = (v: number) => {
     const g = gapOf(v);
-    return ` — richiesto ${g.requested}, risultato ${nice(v, u)} ${u}, scostamento ${g.deviation > 0 ? '+' : ''}${nice(g.deviation, u)} ${u}`;
+    // scostamenti piccoli: cifre significative, mai «+0»
+    const sig = (x: number, d: number) => x.toLocaleString('it-IT', { maximumSignificantDigits: d });
+    const dev = nice(g.deviation, u) === fmt(0) ? sig(g.deviation, 2) : nice(g.deviation, u);
+    const res = nice(v, u) === fmt(l.upper ?? l.lower ?? NaN) ? sig(v, 8) : nice(v, u);
+    return ` — richiesto ${g.requested}, risultato ${res} ${u}, scostamento ${g.deviation > 0 ? '+' : ''}${dev} ${u}`;
   };
   const failed = (v: number, how: string): LimitCheck => ({ limit: l, color: fail, dailyReference, message: `${what}: ${how}${soft ? gapText(v) : ''}`, gap: soft ? gapOf(v) : undefined });
   const grey = (msg: string): LimitCheck => ({ limit: l, color: 'grey', dailyReference, message: `${what}: ${msg}` });
@@ -415,7 +419,9 @@ export function auditRecipe(input: AuditInput): AuditResult {
     warnings.push('Selenio: dieta casalinga, mista, umida o di tipo non indicato → si usa il maggiore dei due minimi FEDIAF (scelta prudenziale del progetto, non un’equivalenza fisiologica).');
   }
   if (dog.eaaMarginPct) {
-    warnings.push(`Aminoacidi essenziali: minimi aumentati del ${dog.eaaMarginPct}% perché non è garantita una digeribilità proteica di almeno l’80% (margine indicato da FEDIAF).`);
+    warnings.push(`Aminoacidi essenziali: minimi aumentati del ${dog.eaaMarginPct}% perché per questa dieta non è documentata una digeribilità proteica di almeno l’80% (margine indicato da FEDIAF).`);
+  } else if (dog.proteinDigestibilityRef) {
+    warnings.push(`Digeribilità proteica della dieta ≥ 80% documentata (${dog.proteinDigestibilityRef}): nessun margine sugli aminoacidi essenziali.`);
   }
   // lacune del catalogo segnalate e non ancora risolte con dati documentati (§15): la ricetta non è interamente verificata
   for (const it of items) {
@@ -544,13 +550,13 @@ export function auditRecipe(input: AuditInput): AuditResult {
   for (const it of items) {
     const s = it.kind === 'supplement' && it.qty > 0 ? supplements[it.id] : undefined;
     if (!s?.doseGuide) continue;
-    const r = doseRangeFor(s.doseGuide, dog.weightIdealKg);
+    const r = doseRangeFor(s.doseGuide, dog.weightCurrentKg);
     const u = s.doseUnit;
     if (!r) {
-      doseChecks.push({ name: s.name, qty: it.qty, unit: u, range: null, color: 'grey', message: `${s.name}: la tabella d’impiego del produttore copre ${weightSpan(s.doseGuide)}; per ${fmt(dog.weightIdealKg)} kg non c’è un intervallo consigliato.` });
+      doseChecks.push({ name: s.name, qty: it.qty, unit: u, range: null, color: 'grey', message: `${s.name}: la tabella d’impiego del produttore copre ${weightSpan(s.doseGuide)}; per il peso attuale di ${fmt(dog.weightCurrentKg)} kg non c’è un intervallo consigliato.` });
       continue;
     }
-    const where = `intervallo consigliato dal produttore ${r.text} ${u}/die`;
+    const where = `intervallo consigliato dal produttore ${r.text} ${u}/die per il peso attuale di ${fmt(dog.weightCurrentKg)} kg`;
     if (it.qty > r.max + 1e-9) {
       doseChecks.push({ name: s.name, qty: it.qty, unit: u, range: r, color: 'orange', message: `${s.name}: ${fmt(it.qty)} ${u}/die supera la dose massima consigliata (${where}). Serve una valutazione veterinaria.` });
     } else if (it.qty < r.min - 1e-9) {

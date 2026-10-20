@@ -67,11 +67,12 @@ export function supplementData(item: RecipeItem, s: Supplement): ItemData {
       const v = s.nutrients[id]?.value;
       return v === null || v === undefined ? null : v;
     },
-    // «added» non è un'analisi totale (§10): conta come contributo noto, ma per i massimi è solo un limite inferiore
+    // «added» non è un'analisi totale (§10): conta come contributo noto, ma per i massimi è solo un limite inferiore.
+    // Vale SOLO per i valori marcati «added»: l'indicazione di prodotto «etichetta con additivi» non si estende ai
+    // componenti analitici dichiarati (es. calcio e fosforo di QDiet).
     lowerBound: (id) => {
       const v = s.nutrients[id];
-      if (!v || v.value === null) return false;
-      return v.declared === 'added' || (!!s.labelAddedOnly && v.declared !== 'total');
+      return !!v && v.value !== null && v.declared === 'added';
     },
     macroResidual: content ? Math.max(0, content - g('protein') - g('fat') - g('carbohydrate_available') - g('fiber') - g('moisture')) : null,
   };

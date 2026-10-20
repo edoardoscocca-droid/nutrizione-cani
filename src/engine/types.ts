@@ -332,8 +332,10 @@ export interface DogFormulationProfile {
   attentionNotes: AttentionNote[];
   /** obiettivi aggiuntivi (es. apporto raccomandato NRC), solo per le fasi di vita previste. */
   recommended?: AppliedRecommendedTarget[];
-  /** margine % sui minimi degli aminoacidi essenziali (10 se la digeribilità proteica ≥ 80% non è garantita). */
+  /** margine % sui minimi degli aminoacidi essenziali (10 se la digeribilità proteica della dieta ≥ 80% non è documentata). */
   eaaMarginPct?: number;
+  /** riferimento documentale della digeribilità proteica della dieta ≥ 80% (se presente, nessun margine). */
+  proteinDigestibilityRef?: string | null;
   formulationRevision: number;
 }
 

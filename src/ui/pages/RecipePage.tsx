@@ -16,6 +16,7 @@ const ORIGIN: Record<RecipeVersion['origin'], string> = {
   user_edit: 'modificata dall’utente',
   recalculation: 'ricalcolo confermato',
   duplicate: 'nuova formulazione da copia',
+  diagnostic: 'bozza diagnostica (preferenze non raggiungibili)',
 };
 
 export function RecipePage() {

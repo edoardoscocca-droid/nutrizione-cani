@@ -44,7 +44,6 @@ const FORMULATION_KEYS: (keyof Dog)[] = [
   'macroPreferences',
   'fiberTarget',
   'notes',
-  'proteinDigestibilityAtLeast80',
 ];
 
 function same(a: unknown, b: unknown) {
@@ -167,7 +166,8 @@ export function toFormulationProfile(dog: Dog, breedNotes: BreedNote[], recommen
     targets,
     attentionNotes: [...breedNotesFor(dog.breed, breedNotes).map((n) => ({ text: n.text, source: n.source, metrics: n.metrics })), ...dog.notes],
     recommended: recommendedFor(dog, recommendedTargets, nutrients),
-    eaaMarginPct: dog.proteinDigestibilityAtLeast80 ? 0 : 10,
+    // margine sugli aminoacidi essenziali: riguarda la DIETA (digeribilità proteica documentata nella ricetta, vedi buildInput)
+    eaaMarginPct: 10,
     formulationRevision: dog.formulationRevision,
   };
 }

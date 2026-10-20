@@ -256,11 +256,6 @@ export default function DogForm({ id }: { id?: string }) {
           <Check label="usa questa preferenza" value={dog.fiberTarget?.enabled !== false} onChange={(v) => set('fiberTarget', { lower: fiber?.lower ?? null, upper: fiber?.upper ?? null, basis: 'per_day', auto: dog.fiberTarget?.auto ?? null, enabled: v })} />
         </View>
         {preset && <Button title="Ripristina i valori iniziali" kind="secondary" small onPress={() => setDog(applyPreset(dog, preset))} />}
-        <Check
-          label="Digeribilità proteica di almeno l’80% documentata (senza: minimi degli aminoacidi essenziali +10%, come indica FEDIAF)"
-          value={!!dog.proteinDigestibilityAtLeast80}
-          onChange={(v) => set('proteinDigestibilityAtLeast80', v)}
-        />
         <Field label="Preferenze sugli ingredienti" value={dog.ingredientPreferences ?? ''} onChange={(v) => set('ingredientPreferences', v || null)} multiline />
       </Card>
 

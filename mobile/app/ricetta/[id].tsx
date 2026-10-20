@@ -19,6 +19,7 @@ const ORIGIN: Record<RecipeVersion['origin'], string> = {
   user_edit: 'modificata da te',
   recalculation: 'ricalcolo confermato',
   duplicate: 'nuova formulazione da copia',
+  diagnostic: 'bozza diagnostica (preferenze non raggiungibili)',
 };
 
 function htmlOf(name: string, dogName: string, v: RecipeVersion) {
@@ -177,6 +178,12 @@ export default function RecipeScreen() {
         </Card>
       )}
 
+      {shown.draft && !editing && (
+        <Box color="orange">
+          <T small bold>Bozza diagnostica: preferenze non raggiungibili, non è un menù generato.</T>
+          <T small>Puoi modificare i grammi e salvarli come nuova versione: vengono analizzati così come sono, senza riformulazione.</T>
+        </Box>
+      )}
       <ResultBlock
         audit={editing && live ? live : shown.audit}
         items={editing ?? shown.chosenItems}

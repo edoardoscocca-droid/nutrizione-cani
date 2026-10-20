@@ -292,7 +292,7 @@ export class SupabaseRepository implements Repository {
         chosenItems: r.chosen_items as RecipeVersion['chosenItems'], audit: r.audit as RecipeVersion['audit'], snapshot: r.snapshot as RecipeVersion['snapshot'],
         constraintsUsed: r.constraints_used as RecipeVersion['constraintsUsed'], conflicts: r.conflicts as RecipeVersion['conflicts'],
         engineNotes: r.engine_notes as string[], excluded: r.excluded as RecipeVersion['excluded'], author: r.author as string,
-        createdAt: r.created_at as string, note: (r.note as string) ?? null,
+        createdAt: r.created_at as string, note: (r.note as string) ?? null, draft: (r.draft as boolean) ?? false,
       }),
     );
   }
@@ -302,6 +302,8 @@ export class SupabaseRepository implements Repository {
         id: v.id, recipe_id: v.recipeId, owner_id: this.userId, revision: v.revision, origin: v.origin, parent_version_id: v.parentVersionId,
         suggested_items: v.suggestedItems, chosen_items: v.chosenItems, audit: v.audit, snapshot: v.snapshot, constraints_used: v.constraintsUsed,
         conflicts: v.conflicts, engine_notes: v.engineNotes, excluded: v.excluded, author: v.author, note: v.note, created_at: v.createdAt,
+        // solo per le bozze: le versioni normali si salvano anche prima della migrazione 9
+        ...(v.draft ? { draft: true } : {}),
       }),
     );
   }

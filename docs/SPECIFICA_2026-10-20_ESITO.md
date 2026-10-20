@@ -40,12 +40,12 @@ i prodotti reali sono usati solo come copie in memoria nei test e nelle misure d
 ## 2. Casi di accettazione (§16)
 
 Tutti i 23 casi della tabella sono test automatici e passano (`tests/spec-2026-10-20.test.ts`, 28 test in totale nel file). Totale del progetto:
-**126 test dell’app superati** e **test del database superati** (migrazioni 1–8).
+**130 test dell’app superati** e **test del database superati** (migrazioni 1–9).
 
 Note sui casi:
 - «Due minimi incompatibili con un massimo»: non fattibile, nessuna quantità; la diagnosi elenca la violazione minima necessaria (qui i due minimi).
 - «Avena dried senza metodo»: l’alimento è escluso con il motivo esplicito (energia non calcolabile), le preferenze restano nel modello.
-- «QDiet 33 kg → 9,9 g»: verificato sulla tabella. Nel calcolo l’app usa il **peso ideale** per la tabella d’impiego (vedi punto 4.1).
+- «QDiet 33 kg → 9,9 g»: verificato sulla tabella e nel calcolo: la tabella d’impiego usa il **peso attuale** (decisione del 20/10).
 
 ## 3. Tempi misurati
 
@@ -62,13 +62,13 @@ sul piano gratuito di Render, fino a circa un minuto di avvio dopo un periodo di
 
 ## 4. Punti da decidere (contraddizioni o indicazioni insufficienti)
 
-1. **Peso per la tabella d’impiego di QDiet**: il caso §16 usa 33 kg (peso attuale), l’app usa il peso ideale (31 kg → massimo 9,3 g). Quale peso usare?
+1. **Peso per la tabella d’impiego di QDiet**: deciso il 20/10: peso attuale (33 kg → massimo 9,9 g), senza passaggio implicito al peso ideale.
 2. **Avena «dried»**: la specifica chiede una politica esplicita ma non la fornisce. Oggi un alimento essiccato senza energia inserita non ha metodo e resta escluso con il motivo.
 3. **Ampliamento di un Ca:P personalizzato**: documentato solo per 1,2–1,4 → 1,1–1,5. Ho applicato ±0,1 anche a un intervallo Ca:P personalizzato: confermare.
 4. **Altre preferenze personali** (su nutrienti diversi da macro, fibra e Ca:P): non sono nel P1 della specifica; restano preferenze minimizzate dopo P1, senza ampliamento né esito diagnostico.
 5. **Quote macro**: la specifica sostituisce la decisione del 19/10 (quote sull’energia totale, che sommavano al 93,5%) con la ripartizione 4/9/4 su Ep+Ef+Ec, che somma al 100%. Applicata la specifica; la differenza tra energia inserita e stimata resta segnalata a parte.
 6. **Valori non dichiarati dagli integratori**: la specifica (§12) sostituisce la decisione D20 («massimi rispettati sulla composizione dichiarata»): ora un apporto sconosciuto rende un massimo o un rapporto «non verificabile». Effetto pratico sotto (§5).
-7. **Margine aminoacidi +10%**: senza digeribilità documentata si applica sempre. Con i dati reali il triptofano diventa vincolante.
+7. **Margine aminoacidi +10%**: senza digeribilità documentata si applica sempre. La digeribilità è un dato della **dieta** (scelta nella nuova ricetta, con riferimento documentale obbligatorio), non del cane.
 8. **Erbe e spezie** escluse dal minimo pratico: il catalogo non ha questa categoria, quindi oggi il minimo vale per tutti gli alimenti.
 9. **Annullamento del calcolo** dall’interfaccia e **modulo dei limiti legali «L»** su sostanza secca: non realizzati (nel catalogo non ci sono limiti legali).
 
@@ -77,10 +77,10 @@ sul piano gratuito di Render, fino a circa un minuto di avvio dopo un periodo di
 Con le copie dei 6 alimenti reali + QDiet + Omegor + farina d’ossa (cane 33/31 kg, 1.800 kcal, preferenze iniziali) il motore restituisce
 **«preferenze non raggiungibili»**: le quantità sono solo diagnostiche e la ricetta è **bozza parziale**. Cause individuate:
 
-- Ca:P 1,2–1,4 (anche ampliato a 1,1) incompatibile con il minimo di triptofano aumentato del 10%, la dose massima di QDiet e il limite dell’olio.
+- Resoconto completo dopo le correzioni del 20/10: `docs/CASO_REALE_2026-10-20.md` (vincolo guida: vitamina D minima, coperta solo da QDiet e manzo; il minimo ampliato di Ca:P passato al solver è 1,1).
 - Omegor non dichiara calcio, fosforo, fibra, proteine e carboidrati: Ca:P, fibra e quote macro risultano non verificabili quando è usato.
   Servono valori documentati (anche zeri) e la massa del contenuto della capsula.
-- QDiet: i dati caricati non distinguono «totale» e «aggiunto» (etichetta di soli additivi): i massimi di Ca, P, vitamine A e D e il rapporto Ca:P non sono dimostrabili.
+- QDiet: solo i valori marcati «added» (vitamine A e D, oligoelementi, colina…) sono limiti inferiori; calcio e fosforo, non marcati, sono componenti analitici dichiarati (correzione del 20/10: prima l’etichetta di soli additivi li rendeva tutti «aggiunti»).
 - Farina d’ossa: energia ignota (energia della ricetta non attestata); variante da confermare.
 - I 6 alimenti: acido linoleico solo come 18:2 non differenziato; cloruro e iodio mancanti; vitamina A solo come dati di fonte; energia stimata 4/9/4.
 - Avena: pesata secca e preparazione da verificare.

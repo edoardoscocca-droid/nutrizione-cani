@@ -71,6 +71,27 @@ export interface Conflict {
 
 export type Outcome = 'solved' | 'infeasible' | 'blocked' | 'timeout' | 'error' | 'preferences_unreachable';
 
+/**
+ * Esito per l'utente, tenuto separato: vincoli necessari incompatibili; preferenze non raggiungibili (vincoli rispettati);
+ * dati insufficienti per verificare la soluzione; soluzione verificata (con o senza scostamenti dichiarati).
+ */
+export type Diagnosis = 'constraints_incompatible' | 'preferences_unreachable' | 'insufficient_data' | 'verified' | 'not_completed';
+
+export function diagnosisOf(r: Pick<FormulationResult, 'outcome' | 'audit'>): Diagnosis {
+  if (r.outcome === 'infeasible') return 'constraints_incompatible';
+  if (r.outcome === 'preferences_unreachable') return 'preferences_unreachable';
+  if (r.outcome === 'solved') return r.audit?.status === 'INSUFFICIENT_DATA' ? 'insufficient_data' : 'verified';
+  return 'not_completed';
+}
+
+export const DIAGNOSIS_LABEL: Record<Diagnosis, string> = {
+  constraints_incompatible: 'Vincoli nutrizionali o di quantità incompatibili: nessuna soluzione con questi componenti',
+  preferences_unreachable: 'Preferenze non raggiungibili: i vincoli necessari sono rispettati, le preferenze no',
+  insufficient_data: 'Dati insufficienti: soluzione trovata ma non interamente verificabile',
+  verified: 'Soluzione verificata sui dati disponibili',
+  not_completed: 'Calcolo non completato',
+};
+
 export interface FormulationResult {
   outcome: Outcome;
   engineVersion: string;
@@ -231,8 +252,9 @@ function buildItems(input: FormulationInput, foods: FormulationInput['foods'], s
   supplements.forEach(({ supplement: s, constraint }, i) => {
     const step = supplementStep(s, st);
     // tabella d'impiego del produttore: il massimo consigliato non si supera in automatico (serve una valutazione veterinaria)
-    const range = doseRangeFor(s.doseGuide, input.dog.weightIdealKg);
-    if (s.doseGuide && !range) notes.push(`${s.name}: la tabella d’impiego del produttore copre ${weightSpan(s.doseGuide)}; per ${input.dog.weightIdealKg} kg nessun intervallo applicato.`);
+    // tabella d'impiego del produttore sul PESO ATTUALE del cane, indicato esplicitamente (mai il peso ideale in modo implicito)
+    const range = doseRangeFor(s.doseGuide, input.dog.weightCurrentKg);
+    if (s.doseGuide && !range) notes.push(`${s.name}: la tabella d’impiego del produttore copre ${weightSpan(s.doseGuide)}; per il peso attuale di ${fmt(input.dog.weightCurrentKg)} kg nessun intervallo applicato.`);
     const declaredMax = s.maxDailyUnits !== null && s.maxDailySource ? s.maxDailyUnits : null;
     const productMax = range ? (declaredMax === null ? range.max : Math.min(declaredMax, range.max)) : declaredMax;
     // olio con EPA+DHA documentati: corregge solo il deficit di EPA+DHA, non completa calorie o vitamine (§9)
@@ -261,7 +283,7 @@ function buildItems(input: FormulationInput, foods: FormulationInput['foods'], s
       maxQty: constraint?.maxQty ?? null,
       productMax: productMax !== null ? Math.floor(productMax / step + 1e-9) : null,
       guideMin: range ? range.min : null,
-      guideText: range ? `${range.text} ${s.doseUnit}/die — ${s.doseGuide!.source}` : null,
+      guideText: range ? `${range.text} ${s.doseUnit}/die per il peso attuale di ${fmt(input.dog.weightCurrentKg)} kg — ${s.doseGuide!.source}` : null,
       practicalMin: null,
       omega,
       omegaMax: omegaUnits !== null ? Math.floor(omegaUnits / step + 1e-9) : null,
@@ -444,6 +466,8 @@ interface Built {
   items: ModelItem[];
   energyDev: string[];
   K: number;
+  /** livelli già fissati dalle fasi precedenti (copertura H, unità EPA+DHA): la diagnosi li tratta come vincoli. */
+  locks?: { row: Row; info: ConstraintInfo }[];
 }
 
 function buildModel(input: FormulationInput, items: ModelItem[], limits: NutrientLimit[], notes: string[]): Built {
@@ -577,6 +601,11 @@ function diagnoseWith(built: Built, highsSolve: (m: Model) => SolveResult, relax
     } else {
       rows.push({ name: r.name, terms: r.terms, op: r.op, rhs: r.rhs });
     }
+  }
+  for (const l of built.locks ?? []) {
+    const cov = built.rows.find((r) => r.dev && l.row.terms.length === 1 && r.dev.v === l.row.terms[0].v);
+    const s = addSlack(l.info, cov ? cov.scale : Math.max(Math.abs(l.row.rhs), 1e-3), cov ? 'deficit' : 'excess');
+    rows.push({ name: l.row.name, terms: [...l.row.terms, { v: s, c: -1 }], op: l.row.op, rhs: l.row.rhs });
   }
   for (const it of built.items) {
     const ub = [it.ub, it.productMax, it.omegaMax].filter((x): x is number => x !== null);
@@ -739,7 +768,7 @@ export async function formulate(input: FormulationInput): Promise<FormulationRes
       constraints.push({ name: `semi_${it.v}`, label: `${it.name}: se usato, almeno ${fmt(it.semiMin * it.step)}${it.practicalMin !== null ? ' (minimo pratico del generatore: 5 g o 0,5% delle kcal)' : ''} — altrimenti 0`, kind: 'user_bound', hardness: 'hard' });
     if (it.maxQty !== null) constraints.push({ name: `ub_${it.v}`, label: `${it.name}: non oltre ${fmt(it.maxQty)}`, kind: 'user_bound', hardness: 'hard' });
     if (it.productMax !== null)
-      constraints.push({ name: `pm_${it.v}`, label: `${it.name}: dose massima del produttore ${fmt(it.productMax * it.step)} — non superata in automatico: oltre serve una valutazione veterinaria`, kind: 'product_max', hardness: 'hard' });
+      constraints.push({ name: `pm_${it.v}`, label: `${it.name}: dose massima del produttore ${fmt(it.productMax * it.step)}${it.guideText ? ` (tabella d’impiego: ${it.guideText})` : ''} — non superata in automatico: oltre serve una valutazione veterinaria`, kind: 'product_max', hardness: 'hard' });
     if (it.omegaMax !== null)
       constraints.push({ name: `om_${it.v}`, label: `${it.name}: limite operativo del generatore ${fmt(it.omegaMax * it.step)} (copre l’obiettivo EPA+DHA; non è un massimo clinico)`, kind: 'product_max', hardness: 'hard' });
     if (it.kind === 'supplement' && it.step === 1) constraints.push({ name: `int_${it.v}`, label: `${it.name}: solo dosi intere`, kind: 'product_max', hardness: 'hard' });
@@ -767,6 +796,27 @@ export async function formulate(input: FormulationInput): Promise<FormulationRes
   }
   if (h.status !== 'optimal') return timeout(h);
   model = fixObjective(model, cover, h.objective, 'fix_cover');
+  const locks: NonNullable<Built['locks']> = [];
+  const lockOf = (name: string, label: string, kind: ConstraintKind) => {
+    const row = model.rows.find((r) => r.name === name);
+    if (row) locks.push({ row, info: { name, label, kind, hardness: 'hard' } });
+  };
+  // per la diagnosi: ogni minimo con dati incompleti al livello di copertura raggiunto in H (coperto = vincolo; parziale = deficit fissato)
+  for (const r of built.rows) {
+    if (r.dev?.group !== 'coverage') continue;
+    const d = h.values[r.dev.v] ?? 0;
+    const covered = d / r.scale <= 1e-6;
+    locks.push({
+      row: { name: `lock_${r.name}`, terms: [{ v: r.dev.v, c: 1 }], op: '<=', rhs: covered ? 0 : d * (1 + 1e-6) + 1e-9 },
+      info: {
+        name: `lock_${r.name}`,
+        label: `${r.info.label.replace(' — dati parziali', '')} — ${covered ? 'coperto con i soli dati noti (livello H)' : 'copertura parziale massima con i dati noti, fissata in H'}`,
+        kind: 'coverage_partial',
+        hardness: 'hard',
+        metric: r.info.metric,
+      },
+    });
+  }
   let last = h;
 
   // oli EPA+DHA: il minor numero di unità che copre l'obiettivo, prima di qualunque preferenza (§9)
@@ -776,6 +826,7 @@ export async function formulate(input: FormulationInput): Promise<FormulationRes
     phases.push({ name: 'EPA+DHA: minimo indispensabile', status: o.rawStatus, objective: o.status === 'optimal' ? o.objective : null });
     if (o.status !== 'optimal') return timeout(o);
     model = fixObjective(model, omegaObj, o.objective, 'fix_omega');
+    lockOf('fix_omega', `Livello H — EPA+DHA con il minor numero di unità di olio (${fmt(o.objective)})`, 'recommended');
     last = o;
   }
 
@@ -809,11 +860,14 @@ export async function formulate(input: FormulationInput): Promise<FormulationRes
         if (c.status !== 'optimal') return timeout(c);
         const proposal = toItems(built, c.values);
         const audit = finalAudit(input, proposal, excluded);
-        const softGaps = softGapAnalysis(built, c.values, runSolve);
+        const softGaps = softGapAnalysis({ ...built, locks }, c.values, runSolve);
         if (softGaps.length) audit.softGaps = softGaps;
+        // motivo: violazione minima necessaria con le preferenze AMPLIATE trattate come vincoli (insieme ai vincoli H)
+        const p1Conflicts = diagnoseWith({ ...built, locks, rows: [...built.rows, ...built.widened] }, runSolve, false) ?? [];
         return done({
           ...base,
-          constraints,
+          constraints: [...constraints, ...built.widened.map((w) => w.info)],
+          conflicts: p1Conflicts,
           outcome: 'preferences_unreachable',
           items: proposal,
           audit,
@@ -869,7 +923,7 @@ export async function formulate(input: FormulationInput): Promise<FormulationRes
   }
   // verifica indipendente sulle quantità mostrate (già intere/arrotondate ai passi)
   const audit = finalAudit(input, proposal, excluded);
-  const softGaps = softGapAnalysis(built, last.values, runSolve);
+  const softGaps = softGapAnalysis({ ...built, locks }, last.values, runSolve);
   if (softGaps.length) audit.softGaps = softGaps;
   return done({
     ...base,
@@ -880,6 +934,25 @@ export async function formulate(input: FormulationInput): Promise<FormulationRes
     message: audit.statusLabel,
     stats: { p1Stage },
   } as Omit<FormulationResult, 'stats'>);
+}
+
+/** Righe del modello come passate al solver (per il collaudo e i resoconti): coefficienti per ingrediente. */
+export function inspectModel(input: FormulationInput) {
+  const notes: string[] = [];
+  const { foods, supplements } = checkUsability(input);
+  const limits = applicableLimits(input.limits, input.dog, input.dietMoisture);
+  const items = buildItems(input, foods, supplements, notes);
+  const built = buildModel(input, items, limits, notes);
+  const names = new Map(items.map((it) => [it.v, `${it.name} (per ${fmt(it.step)} ${it.kind === 'food' ? 'g' : 'unità'})`]));
+  const byVar = new Map(items.map((it) => [it.v, it]));
+  const show = (r: Row & { info?: ConstraintInfo; dev?: unknown }) => ({
+    label: r.info?.label ?? r.name,
+    op: r.op,
+    rhs: r.rhs,
+    hard: !r.dev,
+    terms: r.terms.filter((t) => names.has(t.v)).map((t) => ({ item: names.get(t.v)!, id: byVar.get(t.v)!.id, step: byVar.get(t.v)!.step, coef: t.c })),
+  });
+  return { rows: built.rows.map(show), widened: built.widened.map(show), items: items.map((it) => ({ name: it.name, lb: it.lb * it.step, ub: [it.ub, it.productMax, it.omegaMax].filter((x): x is number => x !== null).map((x) => x * it.step), semiMin: it.semiMin === null ? null : it.semiMin * it.step })), notes };
 }
 
 function finalAudit(input: FormulationInput, proposal: RecipeItem[], excluded: FormulationResult['excluded']) {

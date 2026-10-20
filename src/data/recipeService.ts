@@ -16,6 +16,14 @@ export interface Selection {
   foods: { id: string; constraint?: ItemConstraint }[];
   supplements: { id: string; constraint?: ItemConstraint }[];
   dietMoisture: DietMoisture;
+  /** digeribilità proteica della DIETA ≥ 80% documentata (con riferimento): senza, minimi degli aminoacidi essenziali +10%. */
+  proteinDigestibility?: { atLeast80: boolean; reference: string | null } | null;
+}
+
+/** La digeribilità vale solo se documentata: serve il riferimento. */
+export function digestibilityRef(sel: Pick<Selection, 'proteinDigestibility'>): string | null {
+  const d = sel.proteinDigestibility;
+  return d?.atLeast80 && d.reference?.trim() ? d.reference.trim() : null;
 }
 
 export interface CatalogState extends Catalog {
@@ -61,8 +69,9 @@ export function buildInput(dog: Dog, sel: Selection, cat: CatalogState, settings
     if (!supplement) throw new Error(`Integratore non più presente in catalogo: ${s.id}`);
     return { supplement, constraint: s.constraint };
   });
+  const ref = digestibilityRef(sel);
   return {
-    dog: toFormulationProfile(dog, cat.breedNotes, cat.recommendedTargets, cat.nutrients),
+    dog: { ...toFormulationProfile(dog, cat.breedNotes, cat.recommendedTargets, cat.nutrients), eaaMarginPct: ref ? 0 : 10, proteinDigestibilityRef: ref },
     foods,
     supplements,
     nutrients: cat.nutrients,
@@ -99,6 +108,7 @@ export function selectionFromSnapshot(s: RecipeSnapshot): Selection {
     foods: Object.keys(s.foods).map((id) => ({ id, constraint: s.constraints[id] })),
     supplements: Object.keys(s.supplements).map((id) => ({ id, constraint: s.constraints[id] })),
     dietMoisture: s.dietMoisture,
+    proteinDigestibility: s.dog.proteinDigestibilityRef ? { atLeast80: true, reference: s.dog.proteinDigestibilityRef } : null,
   };
 }
 
@@ -108,12 +118,15 @@ export function versionFromResult(
   input: FormulationInput,
   now = new Date().toISOString(),
 ): RecipeVersion {
-  if (result.outcome !== 'solved' || !result.audit) throw new Error('Si salvano solo formulazioni con una proposta di quantità.');
+  // si salvano le soluzioni e, come BOZZA, le proposte diagnostiche (preferenze non raggiungibili, vincoli necessari rispettati)
+  const draft = result.outcome === 'preferences_unreachable';
+  if ((result.outcome !== 'solved' && !draft) || !result.audit || !result.items.length) throw new Error('Si salvano solo formulazioni con una proposta di quantità.');
   return {
     id: args.id,
     recipeId: args.recipeId,
     revision: args.revision,
-    origin: args.origin,
+    origin: draft ? 'diagnostic' : args.origin,
+    draft,
     parentVersionId: args.parentVersionId,
     suggestedItems: result.items,
     chosenItems: result.items,
@@ -153,6 +166,8 @@ export function editedVersion(prev: RecipeVersion, items: RecipeItem[], args: { 
     id: args.id,
     revision: args.revision,
     origin: 'user_edit',
+    // quantità scelte dall'utente: analizzate così come sono (non è più la bozza del motore)
+    draft: false,
     parentVersionId: prev.id,
     chosenItems: items,
     audit: auditOnSnapshot(prev.snapshot, items, prev.excluded),

@@ -145,9 +145,9 @@ describe('T05 omega', () => {
 describe('T06 cambio alimento', () => {
   test('manzo → agnello: tutto ricalcolato, originale immutato', async () => {
     const cat = catalog();
-    // digeribilità proteica documentata (niente margine sugli aminoacidi) e olio per l'obiettivo EPA+DHA attivo
-    const d = newDog({ name: 'Fido', weightCurrentKg: 30, kcalTarget: 1400, proteinDigestibilityAtLeast80: true }, 'd1');
-    const sel = { foods: [{ id: 'test_beef' }, { id: 'test_oats' }], supplements: [{ id: 'test_multi' }, { id: 'test_bone_meal' }, { id: 'test_fish_oil_caps' }], dietMoisture: 'wet' as const };
+    // digeribilità proteica della dieta documentata (niente margine sugli aminoacidi) e olio per l'obiettivo EPA+DHA attivo
+    const d = newDog({ name: 'Fido', weightCurrentKg: 30, kcalTarget: 1400 }, 'd1');
+    const sel = { foods: [{ id: 'test_beef' }, { id: 'test_oats' }], supplements: [{ id: 'test_multi' }, { id: 'test_bone_meal' }, { id: 'test_fish_oil_caps' }], dietMoisture: 'wet' as const, proteinDigestibility: { atLeast80: true, reference: 'test: digeribilità documentata' } };
     const in1 = buildInput(d, sel, cat, DEFAULT_SETTINGS, []);
     const r1 = await formulate(in1);
     const v1 = versionFromResult({ id: 'v1', recipeId: 'r1', revision: 1, origin: 'engine', parentVersionId: null, author: 'u' }, r1, in1);
@@ -222,9 +222,9 @@ describe('T09 prezzo', () => {
 describe('T10 / T16 istantanee e provenienza', () => {
   test('aggiornare FEDIAF o un profilo: valori vecchi congelati, avviso, anteprima senza salvataggio', async () => {
     const cat = catalog();
-    // digeribilità proteica documentata (niente margine sugli aminoacidi) e olio per l'obiettivo EPA+DHA attivo
-    const d = newDog({ name: 'Fido', weightCurrentKg: 30, kcalTarget: 1400, proteinDigestibilityAtLeast80: true }, 'd1');
-    const sel = { foods: [{ id: 'test_beef' }, { id: 'test_oats' }], supplements: [{ id: 'test_multi' }, { id: 'test_bone_meal' }, { id: 'test_fish_oil_caps' }], dietMoisture: 'wet' as const };
+    // digeribilità proteica della dieta documentata (niente margine sugli aminoacidi) e olio per l'obiettivo EPA+DHA attivo
+    const d = newDog({ name: 'Fido', weightCurrentKg: 30, kcalTarget: 1400 }, 'd1');
+    const sel = { foods: [{ id: 'test_beef' }, { id: 'test_oats' }], supplements: [{ id: 'test_multi' }, { id: 'test_bone_meal' }, { id: 'test_fish_oil_caps' }], dietMoisture: 'wet' as const, proteinDigestibility: { atLeast80: true, reference: 'test: digeribilità documentata' } };
     const inp = buildInput(d, sel, cat, DEFAULT_SETTINGS, []);
     const r = await formulate(inp);
     const v = versionFromResult({ id: 'v1', recipeId: 'r1', revision: 1, origin: 'engine', parentVersionId: null, author: 'u' }, r, inp);

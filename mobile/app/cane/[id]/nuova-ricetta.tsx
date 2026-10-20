@@ -2,11 +2,11 @@ import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { foodStatus, supplementStatus } from '../../../../src/engine/catalogStatus';
-import type { FormulationInput, FormulationResult, PreliminaryResult } from '../../../../src/engine/formulate';
+import { DIAGNOSIS_LABEL, diagnosisOf, type FormulationInput, type FormulationResult, type PreliminaryResult } from '../../../../src/engine/formulate';
 import type { ItemConstraint } from '../../../../src/engine/types';
 import { MAX_RECIPES_PER_DOG, type Recipe } from '../../../../src/data/model';
 import { PROCESSING_LABEL } from '../../../../src/data/packageCatalog';
-import { assertCanAddRecipe, buildInput, costOf, selectionFromSnapshot, versionFromResult, type Selection } from '../../../../src/data/recipeService';
+import { assertCanAddRecipe, buildInput, costOf, digestibilityRef, selectionFromSnapshot, versionFromResult, type Selection } from '../../../../src/data/recipeService';
 import { uid } from '../../../../src/data/repository';
 import { useApp, useData } from '../../../lib/AppContext';
 import { formulateRemote, preliminaryRemote } from '../../../lib/engineClient';
@@ -150,6 +150,21 @@ export default function NewRecipe() {
               value={sel.dietMoisture}
               onChange={(v) => setSel({ ...sel, dietMoisture: v })}
             />
+            <Check
+              label="Digeribilità proteica di questa dieta ≥ 80% documentata"
+              value={!!sel.proteinDigestibility?.atLeast80}
+              onChange={(v) => setSel({ ...sel, proteinDigestibility: { atLeast80: v, reference: sel.proteinDigestibility?.reference ?? null } })}
+            />
+            {sel.proteinDigestibility?.atLeast80 && (
+              <Field
+                label="Riferimento documentale (analisi, studio, scheda)"
+                value={sel.proteinDigestibility.reference ?? ''}
+                onChange={(v) => setSel({ ...sel, proteinDigestibility: { atLeast80: true, reference: v || null } })}
+              />
+            )}
+            <T small muted>
+              {digestibilityRef(sel) ? 'Documentata: nessun margine sugli aminoacidi essenziali.' : 'Non documentata: i minimi degli aminoacidi essenziali sono aumentati del 10% (FEDIAF).'}
+            </T>
           </Card>
           <Card>
             <H level={3}>Alimenti disponibili</H>
@@ -301,7 +316,9 @@ export default function NewRecipe() {
               {result.r.stats.p1Stage === 2 ? ' · preferenze raggiunte con la seconda ricerca (ampliamenti documentati)' : ''}
             </T>
           )}
+          <T small muted>{DIAGNOSIS_LABEL[diagnosisOf(result.r)]}</T>
           {result.r.outcome === 'solved' && <Button title="Salva ricetta" busy={!!busy} onPress={save} />}
+          {result.r.outcome === 'preferences_unreachable' && result.r.items.length > 0 && <Button title="Salva come bozza diagnostica" kind="secondary" busy={!!busy} onPress={save} />}
           <Button title="← Modifica scelte" kind="secondary" onPress={() => setStep(2)} />
           <Disclaimer compact />
         </>

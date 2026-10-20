@@ -13,7 +13,7 @@ import { doseRangeFor } from '../src/engine/doseGuide';
 import { formulate } from '../src/engine/formulate';
 import { recommendedFor } from '../src/engine/recommended';
 import { compoundValue } from '../src/engine/totals';
-import { DEFAULT_SETTINGS, type Food, type NutrientLimit, type RecipeItem, type Supplement } from '../src/engine/types';
+import { DEFAULT_SETTINGS, type DogFormulationProfile, type Food, type NutrientLimit, type RecipeItem, type Supplement } from '../src/engine/types';
 
 const refs = packageReferences();
 const real = await new LocalRepository(null).loadCatalog();
@@ -49,11 +49,13 @@ function catalogWith(foods: Food[], supplements: Supplement[]): CatalogState {
   return { ...refs, foods, supplements, breedNotes: BREED_NOTES };
 }
 const dog33 = (over: Record<string, unknown> = {}) =>
-  newDog({ name: 'Prova', weightCurrentKg: 33, weightIdealKg: 33, kcalTarget: 1500, proteinDigestibilityAtLeast80: true, ...over }, 'd33');
+  newDog({ name: 'Prova', weightCurrentKg: 33, weightIdealKg: 33, kcalTarget: 1500, ...over }, 'd33');
 const sel = (foods: string[], supps: string[], c: Record<string, object> = {}) => ({
   foods: foods.map((id) => ({ id, constraint: c[id] })),
   supplements: supps.map((id) => ({ id, constraint: c[id] })),
   dietMoisture: null,
+  // profili sintetici: digeribilità proteica della dieta documentata (il margine +10% si prova a parte)
+  proteinDigestibility: { atLeast80: true, reference: 'test: digeribilità documentata' },
 });
 const qty = (items: RecipeItem[], id: string) => items.find((i) => i.id === id)?.qty ?? 0;
 const limit = (metric: string, lower: number | null, upper: number | null, basis: NutrientLimit['basis'] = 'per_day', cls: NutrientLimit['limitClass'] = 'OFFICIAL_MIN'): NutrientLimit => ({
@@ -67,7 +69,7 @@ describe('§16 casi di accettazione', () => {
     expect(K * 1.02).toBeCloseTo(1406.58, 2);
     // ricetta all'estremo basso: 70 g di proteine = 51,8 g/1000 kcal su E_finale 1351,42 ma solo 50,76 su E_obiettivo
     const f: Food = { ...syntheticBase('p'), kcalMePer100g: 135.142, nutrients: { protein: { value: 7.0, status: 'measured', source: 's' } } };
-    const dog = toFormulationProfile(newDog({ name: 'x', weightCurrentKg: 20, kcalTarget: K, proteinDigestibilityAtLeast80: true }, 'x'), []);
+    const dog = { ...toFormulationProfile(newDog({ name: 'x', weightCurrentKg: 20, kcalTarget: K }, 'x'), []), eaaMarginPct: 0 };
     const a = auditRecipe({ items: [{ kind: 'food', id: 'p', qty: 1000 }], foods: { p: f }, supplements: {}, nutrients: refs.nutrients, limits: [limit('protein', 51, null, 'per_1000_kcal_me')], dog, dietMoisture: null, settings: DEFAULT_SETTINGS });
     expect(a.kcal).toBeCloseTo(1351.42, 6);
     const c = a.rows.find((r) => r.metric === 'protein')!.checks[0];
@@ -143,7 +145,7 @@ describe('§16 casi di accettazione', () => {
   });
 
   test('1 g di carote: non ammesso nella generazione a 1.400 kcal; in analisi manuale resta 1 g', async () => {
-    const d = newDog({ name: 'x', weightCurrentKg: 30, kcalTarget: 1400, proteinDigestibilityAtLeast80: true }, 'x');
+    const d = newDog({ name: 'x', weightCurrentKg: 30, kcalTarget: 1400 }, 'x');
     const cat = catalogWith(structuredClone(TEST_FOODS), structuredClone(TEST_SUPPLEMENTS));
     const input = buildInput(d, sel(['test_beef', 'test_oats', 'test_carrot'], ['test_multi', 'test_bone_meal', 'test_fish_oil_caps']), cat, DEFAULT_SETTINGS, []);
     const r = await formulate(input);
@@ -209,7 +211,7 @@ describe('§16 casi di accettazione', () => {
   test('avena «dried» senza metodo energetico: nessuna esclusione silenziosa dei vincoli', async () => {
     const oat = { ...structuredClone(TEST_FOODS.find((f) => f.id === 'test_oats')!), processingState: 'dried' as const, kcalMePer100g: null, kcalMeOrigin: 'calculated' as const, energyMethod: null };
     const cat = catalogWith([...structuredClone(TEST_FOODS).filter((f) => f.id !== 'test_oats'), oat], structuredClone(TEST_SUPPLEMENTS));
-    const d = newDog({ name: 'x', weightCurrentKg: 30, kcalTarget: 1400, proteinDigestibilityAtLeast80: true, macroPreferences: [{ metric: 'protein_energy_pct', lower: 25, upper: 40, locked: false }] }, 'x');
+    const d = newDog({ name: 'x', weightCurrentKg: 30, kcalTarget: 1400, macroPreferences: [{ metric: 'protein_energy_pct', lower: 25, upper: 40, locked: false }] }, 'x');
     const r = await formulate(buildInput(d, sel(['test_beef', 'test_oats'], ['test_multi', 'test_bone_meal', 'test_fish_oil_caps']), cat, DEFAULT_SETTINGS, []));
     // l'avena senza energia è esclusa in modo esplicito (motivo indicato), le preferenze restano nel modello
     expect(r.excluded.find((e) => e.id === 'test_oats')!.reason).toMatch(/energia metabolizzabile/);
@@ -272,7 +274,7 @@ describe('§16 casi di accettazione', () => {
   });
 
   test('tempo scaduto senza soluzione: «calcolo non completato», mai «nessuna soluzione esistente»', async () => {
-    const d = newDog({ name: 'x', weightCurrentKg: 30, kcalTarget: 1400, proteinDigestibilityAtLeast80: true }, 'x');
+    const d = newDog({ name: 'x', weightCurrentKg: 30, kcalTarget: 1400 }, 'x');
     const cat = catalogWith(structuredClone(TEST_FOODS), structuredClone(TEST_SUPPLEMENTS));
     const s = sel(['test_beef', 'test_beef_heart', 'test_beef_liver', 'test_oats', 'test_carrot', 'test_sardine'], ['test_multi', 'test_bone_meal', 'test_fish_oil_caps']);
     const r = await formulate(buildInput(d, s, cat, { ...DEFAULT_SETTINGS, timeLimitSeconds: 1e-9 }, []));
@@ -294,7 +296,7 @@ describe('§16 casi di accettazione', () => {
 
   test('ricalcolo della stessa ricetta: risultato deterministico', async () => {
     const cat = catalogWith(structuredClone(TEST_FOODS), structuredClone(TEST_SUPPLEMENTS));
-    const d = newDog({ name: 'x', weightCurrentKg: 30, kcalTarget: 1400, proteinDigestibilityAtLeast80: true }, 'x');
+    const d = newDog({ name: 'x', weightCurrentKg: 30, kcalTarget: 1400 }, 'x');
     const s = sel(['test_beef', 'test_oats', 'test_carrot'], ['test_multi', 'test_bone_meal', 'test_fish_oil_caps']);
     const a = await formulate(buildInput(d, s, cat, DEFAULT_SETTINGS, []));
     const b = await formulate(buildInput(d, s, cat, DEFAULT_SETTINGS, []));
@@ -313,24 +315,32 @@ describe('altre regole della specifica', () => {
     expect(a.status).not.toBe('VERIFIED_AVAILABLE_CHECKS');
   });
 
-  test('aminoacidi essenziali +10% se la digeribilità proteica ≥ 80% non è garantita, dichiarato', () => {
+  test('aminoacidi essenziali +10% se la digeribilità proteica della dieta ≥ 80% non è documentata (nella ricetta, non nel cane)', () => {
+    const cat = catalogWith(structuredClone(TEST_FOODS), []);
+    const d = newDog({ name: 'x', weightCurrentKg: 30, kcalTarget: 1400 }, 'x');
+    expect(buildInput(d, { foods: [{ id: 'test_beef' }], supplements: [], dietMoisture: null }, cat, DEFAULT_SETTINGS, []).dog.eaaMarginPct).toBe(10);
+    // dichiarata ma senza riferimento documentale: il margine resta
+    expect(buildInput(d, { foods: [{ id: 'test_beef' }], supplements: [], dietMoisture: null, proteinDigestibility: { atLeast80: true, reference: ' ' } }, cat, DEFAULT_SETTINGS, []).dog.eaaMarginPct).toBe(10);
+    const doc = buildInput(d, { foods: [{ id: 'test_beef' }], supplements: [], dietMoisture: null, proteinDigestibility: { atLeast80: true, reference: 'Analisi XY 2026' } }, cat, DEFAULT_SETTINGS, []);
+    expect(doc.dog.eaaMarginPct).toBe(0);
+    expect(doc.dog.proteinDigestibilityRef).toBe('Analisi XY 2026');
     const noDig = toFormulationProfile(newDog({ name: 'x', weightCurrentKg: 30 }, 'x'), []);
-    const dig = toFormulationProfile(newDog({ name: 'x', weightCurrentKg: 30, proteinDigestibilityAtLeast80: true }, 'x'), []);
-    const trp = (d: typeof dig) => applicableLimits(refs.limits, d, null).find((l) => l.metric === 'tryptophan')!.lower;
+    const dig = { ...toFormulationProfile(newDog({ name: 'x', weightCurrentKg: 30 }, 'x'), []), eaaMarginPct: 0 };
+    const trp = (d: DogFormulationProfile) => applicableLimits(refs.limits, d, null).find((l) => l.metric === 'tryptophan')!.lower;
     expect(trp(noDig)).toBeCloseTo(0.49 * 1.1, 9);
     expect(trp(dig)).toBe(0.49);
     expect(applicableLimits(refs.limits, noDig, null).find((l) => l.metric === 'protein')!.lower).toBe(52.1); // non tutte le proteine
   });
 
   test('sotto 95 kcal/kg^0,75: nessuna generazione conforme senza profilo a bassa energia', async () => {
-    const d = newDog({ name: 'x', weightCurrentKg: 30, kcalTarget: 1000, proteinDigestibilityAtLeast80: true }, 'x');
+    const d = newDog({ name: 'x', weightCurrentKg: 30, kcalTarget: 1000 }, 'x');
     const r = await formulate(buildInput(d, sel(['test_beef'], []), catalogWith(structuredClone(TEST_FOODS), []), DEFAULT_SETTINGS, []));
     expect(r.outcome).toBe('blocked');
     expect(r.message).toMatch(/profilo a bassa energia/);
   });
 
   test('seconda ricerca: solo gli ampliamenti documentati, con la ricerca usata registrata', async () => {
-    const d = newDog({ name: 'x', weightCurrentKg: 30, kcalTarget: 1400, proteinDigestibilityAtLeast80: true, macroPreferences: [{ metric: 'protein_energy_pct', lower: 45, upper: 60, locked: false }] }, 'x');
+    const d = newDog({ name: 'x', weightCurrentKg: 30, kcalTarget: 1400, macroPreferences: [{ metric: 'protein_energy_pct', lower: 45, upper: 60, locked: false }] }, 'x');
     const cat = catalogWith(structuredClone(TEST_FOODS), structuredClone(TEST_SUPPLEMENTS));
     const r = await formulate(buildInput(d, sel(['test_beef', 'test_oats'], ['test_multi', 'test_bone_meal', 'test_fish_oil_caps']), cat, DEFAULT_SETTINGS, []));
     if (r.outcome === 'solved') {
@@ -347,5 +357,59 @@ describe('altre regole della specifica', () => {
     const p = planImport(parseImport('{"supplements":[{"id":"bone_meal","kcal_per_unit":"NA"}]}', 'supplements', cat.nutrients), cat, 'x');
     expect(p.items[0].fieldChanges.find((c) => c.field === 'kcalPerUnit')?.after ?? null).toBeNull();
     expect(p.warnings.some((w) => /cancellata/.test(w.message)) || p.items[0].action === 'unchanged').toBe(true);
+  });
+});
+
+describe('correzioni della formulazione reale (20/10/2026)', () => {
+  test('QDiet: solo i valori marcati «added» sono limiti inferiori; calcio e fosforo dichiarati restano analitici', () => {
+    expect(qdiet.nutrients.calcium.declared ?? null).toBeNull(); // nel file: «reported_or_estimated», non «total»
+    expect(qdiet.nutrients.vitamin_a.declared).toBe('added');
+    const dog = toFormulationProfile(dog33(), []);
+    const a = auditRecipe({ items: [{ kind: 'supplement', id: qdiet.id, qty: 9 }], foods: {}, supplements: { [qdiet.id]: qdiet }, nutrients: refs.nutrients, limits: [], dog, dietMoisture: null, settings: DEFAULT_SETTINGS });
+    expect(a.totals.nutrients.calcium.lowerBoundFrom).toEqual([]);
+    expect(a.totals.nutrients.phosphorus.lowerBoundFrom).toEqual([]);
+    expect(a.totals.nutrients.vitamin_a.lowerBoundFrom).toEqual([qdiet.name]);
+    expect(a.totals.nutrients.vitamin_d.lowerBoundFrom).toEqual([qdiet.name]);
+  });
+
+  test('tabella d’impiego sul peso attuale (33 kg → massimo 9,9 g), indicato esplicitamente', async () => {
+    const d = newDog({ name: 'x', weightCurrentKg: 33, weightIdealKg: 31, kcalTarget: 1800 }, 'x');
+    const r = await formulate(buildInput(d, sel(['base_sintetica'], [qdiet.id, omegor.id]), catalogWith([syntheticBase()], [qdiet, omegor]), DEFAULT_SETTINGS, []));
+    const c = r.constraints.find((x) => x.label.startsWith(`${qdiet.name}: dose massima del produttore`))!;
+    expect(c.label).toMatch(/9,9.*peso attuale di 33 kg/);
+    expect(qty(r.items, qdiet.id)).toBeLessThanOrEqual(9.9 + 1e-9);
+  });
+
+  test('bozza diagnostica: si salva come bozza; esiti distinti', async () => {
+    const { diagnosisOf } = await import('../src/engine/formulate');
+    const d = newDog({ name: 'x', weightCurrentKg: 30, kcalTarget: 1400, macroPreferences: [{ metric: 'protein_energy_pct', lower: 60, upper: 85, locked: false }] }, 'x');
+    const cat = catalogWith(structuredClone(TEST_FOODS), structuredClone(TEST_SUPPLEMENTS));
+    const input = buildInput(d, sel(['test_beef', 'test_oats'], ['test_multi', 'test_bone_meal', 'test_fish_oil_caps']), cat, DEFAULT_SETTINGS, []);
+    const r = await formulate(input);
+    expect(r.outcome).toBe('preferences_unreachable');
+    expect(diagnosisOf(r)).toBe('preferences_unreachable');
+    expect(r.conflicts.length).toBeGreaterThan(0);
+    const v = versionFromResult({ id: 'v1', recipeId: 'r', revision: 1, origin: 'engine', parentVersionId: null, author: 'u' }, r, input);
+    expect(v.draft).toBe(true);
+    expect(v.origin).toBe('diagnostic');
+    const manual = v.chosenItems.map((i) => ({ ...i, qty: i.qty + 1 }));
+    const e = editedVersion(v, manual, { id: 'v2', revision: 2, author: 'u' });
+    expect(e.chosenItems).toEqual(manual);
+    expect(diagnosisOf({ outcome: 'infeasible', audit: null })).toBe('constraints_incompatible');
+  });
+
+  test('seconda ricerca: Ca:P 1,2–1,4 passato al solver come 1,1–1,5', async () => {
+    const { inspectModel } = await import('../src/engine/formulate');
+    const d = newDog({ name: 'x', weightCurrentKg: 30, kcalTarget: 1400 }, 'x');
+    const input = buildInput(d, sel(['test_beef', 'test_oats'], ['test_bone_meal']), catalogWith(structuredClone(TEST_FOODS), structuredClone(TEST_SUPPLEMENTS)), DEFAULT_SETTINGS, []);
+    const m = inspectModel(input);
+    const w = m.widened.filter((r) => /calcio\/fosforo/i.test(r.label));
+    expect(w.map((r) => r.label).join(' | ')).toMatch(/minimo ampliato 1,1.*massimo ampliato 1,5/);
+    // coefficienti: Ca − 1,1·P per ogni ingrediente
+    const oats = TEST_FOODS.find((f) => f.id === 'test_oats')!;
+    const lo = w.find((r) => r.op === '>=')!;
+    const t = lo.terms.filter((x) => x.item.startsWith(oats.name));
+    const sum = t.reduce((a, x) => a + x.coef, 0);
+    expect(sum).toBeCloseTo((oats.nutrients.calcium.value! - 1.1 * oats.nutrients.phosphorus.value!) / 100, 9);
   });
 });
