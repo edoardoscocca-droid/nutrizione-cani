@@ -622,7 +622,7 @@ export function auditRecipe(input: AuditInput): AuditResult {
     } else {
       const sp = supplements[it.id];
       const m = sp.energyMethod ?? null;
-      const calc = m ? estimateMeFromMacros(sp.nutrients, m) : null;
+      const calc = m ? estimateMeFromMacros(sp.nutrients, m, 4) : null;
       energySources.push({
         name: sp.name, kind: 'supplement', origin: sp.kcalPerUnit === null ? null : (sp.kcalOrigin ?? 'declared'), kcal: sp.kcalPerUnit, basis: `kcal/${sp.doseUnit}`,
         fromMacros: calc, methodLabel: m ? m.label : null,

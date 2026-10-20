@@ -51,13 +51,16 @@ export const FORMULATION_FIELDS = [
 export function estimateMeFromMacros(
   nutrients: Record<string, { value: number | null } | undefined>,
   factors: { protein: number | null; fat: number | null; carbohydrate: number | null },
+  /** cifre decimali: 1 per 100 g (alimenti); di più per una singola dose (integratori, es. 1 g). */
+  decimals = 1,
 ): number | null {
   if (factors.protein === null || factors.fat === null || factors.carbohydrate === null) return null;
   const p = nutrients.protein?.value;
   const f = nutrients.fat?.value;
   const c = nutrients.carbohydrate_available?.value;
   if (p === null || p === undefined || f === null || f === undefined || c === null || c === undefined) return null;
-  return Math.round((p * factors.protein + f * factors.fat + c * factors.carbohydrate) * 10) / 10;
+  const k = 10 ** decimals;
+  return Math.round((p * factors.protein + f * factors.fat + c * factors.carbohydrate) * k) / k;
 }
 
 export function processingGroup(state: ProcessingState): ProcessingGroup | null {
@@ -132,7 +135,7 @@ export const SUPPLEMENT_ENERGY_CATEGORY = 'supplement';
  */
 export function resolveSupplementEnergy(s: Supplement, method: AppliedEnergyMethod | null): Supplement {
   if (s.kcalOrigin !== 'calculated' && s.kcalPerUnit !== null) return { ...s, kcalOrigin: 'declared', energyMethod: method };
-  const kcal = method ? estimateMeFromMacros(s.nutrients, method) : null; // per dose: i macronutrienti sono in g per dose
+  const kcal = method ? estimateMeFromMacros(s.nutrients, method, 4) : null; // per dose: i macronutrienti sono in g per dose
   if (kcal === null) return { ...s, kcalPerUnit: null, kcalOrigin: null, energyMethod: method };
   return { ...s, kcalPerUnit: kcal, kcalOrigin: 'calculated', energyMethod: method };
 }

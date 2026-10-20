@@ -1,0 +1,845 @@
+{
+  "supplements": [
+    {
+      "id": "qdiet",
+      "name_it": "Q.Diet Compensa (standard, NON Crescita/Ultra)",
+      "brand": "Q.Diet",
+      "product_variant": "Compensa polvere standard",
+      "class": "multinutrient",
+      "dose_unit": "g",
+      "integer_dose": false,
+      "kcal_per_unit": 0.96,
+      "label_source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf",
+      "source_url": "https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf",
+      "product_version": "Catalogo 2024, polvere standard; scheda produttore consultata 2026-10-19",
+      "data_status": "review_required",
+      "label_added_only": true,
+      "usable_for_optimization": true,
+      "dose_guide": {
+        "points": [
+          {
+            "weight_kg": 5,
+            "min": 1,
+            "max": 1.5
+          },
+          {
+            "weight_kg": 10,
+            "min": 1.5,
+            "max": 3
+          },
+          {
+            "weight_kg": 20,
+            "min": 3,
+            "max": 6
+          },
+          {
+            "weight_kg": 30,
+            "min": 4.5,
+            "max": 9
+          },
+          {
+            "weight_kg": 40,
+            "min": 6,
+            "max": 12
+          }
+        ],
+        "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf",
+        "note": "Intervalli d’impiego, non limiti tossicologici; misurino raso 3 g. Nessuna estrapolazione oltre la tabella autorizzata da questo file."
+      },
+      "notes": "Composizione: sostanze minerali, maltodestrina. Energia dichiarata 96 kcal/100 g. Ceneri grezze 73%; fibra GREZZA 0,01%, non equiparata alla fibra alimentare totale. Calcio D-pantotenato 450 mg/kg conservato qui, non conteggiato come B5 finché la conversione non è documentata. Colina: conversione 0,746 assumendo cloruro puro; contributo dell’additivo, non analisi totale. Nutrienti non dichiarati NA. Nessun lotto fisico indicato.",
+      "nutrients": {
+        "protein": {
+          "value": 4.25,
+          "unit": "g",
+          "status": "label",
+          "basis": "per_100g",
+          "declared_total_or_added": "total",
+          "source": "Componenti analitici Q.Diet: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf ; https://www.qdiet.it/products/compensa-250-g"
+        },
+        "fat": {
+          "value": 0.07,
+          "unit": "g",
+          "status": "label",
+          "basis": "per_100g",
+          "declared_total_or_added": "total",
+          "source": "Componenti analitici Q.Diet: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf ; https://www.qdiet.it/products/compensa-250-g"
+        },
+        "carbohydrate_available": {
+          "value": "NA"
+        },
+        "fiber": {
+          "value": "NA"
+        },
+        "moisture": {
+          "value": 3.0,
+          "unit": "g",
+          "status": "label",
+          "basis": "per_100g",
+          "declared_total_or_added": "total",
+          "source": "Componenti analitici Q.Diet: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf ; https://www.qdiet.it/products/compensa-250-g"
+        },
+        "linoleic_acid": {
+          "value": "NA"
+        },
+        "ala": {
+          "value": "NA"
+        },
+        "epa": {
+          "value": "NA"
+        },
+        "dha": {
+          "value": "NA"
+        },
+        "epa_dha": {
+          "value": "NA"
+        },
+        "omega3_total": {
+          "value": "NA"
+        },
+        "omega6_total": {
+          "value": "NA"
+        },
+        "arachidonic_acid": {
+          "value": "NA"
+        },
+        "calcium": {
+          "value": 18.0,
+          "unit": "g",
+          "status": "label",
+          "basis": "per_100g",
+          "declared_total_or_added": "total",
+          "source": "Componenti analitici Q.Diet: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf ; https://www.qdiet.it/products/compensa-250-g"
+        },
+        "phosphorus": {
+          "value": 6.5,
+          "unit": "g",
+          "status": "label",
+          "basis": "per_100g",
+          "declared_total_or_added": "total",
+          "source": "Componenti analitici Q.Diet: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf ; https://www.qdiet.it/products/compensa-250-g"
+        },
+        "potassium": {
+          "value": 7.5,
+          "unit": "g",
+          "status": "label",
+          "basis": "per_100g",
+          "declared_total_or_added": "total",
+          "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+        },
+        "sodium": {
+          "value": 2.0,
+          "unit": "g",
+          "status": "label",
+          "basis": "per_100g",
+          "declared_total_or_added": "total",
+          "source": "Componenti analitici Q.Diet: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf ; https://www.qdiet.it/products/compensa-250-g"
+        },
+        "chloride": {
+          "value": "NA"
+        },
+        "magnesium": {
+          "value": 1.5,
+          "unit": "g",
+          "status": "label",
+          "basis": "per_100g",
+          "declared_total_or_added": "total",
+          "source": "Componenti analitici Q.Diet: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf ; https://www.qdiet.it/products/compensa-250-g"
+        },
+        "copper": {
+          "value": 250.0,
+          "unit": "mg",
+          "status": "label",
+          "basis": "per_kg",
+          "declared_total_or_added": "added",
+          "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+        },
+        "iodine": {
+          "value": 45.0,
+          "unit": "mg",
+          "status": "label",
+          "basis": "per_kg",
+          "declared_total_or_added": "added",
+          "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+        },
+        "iron": {
+          "value": 1250.0,
+          "unit": "mg",
+          "status": "label",
+          "basis": "per_kg",
+          "declared_total_or_added": "added",
+          "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+        },
+        "manganese": {
+          "value": 300.0,
+          "unit": "mg",
+          "status": "label",
+          "basis": "per_kg",
+          "declared_total_or_added": "added",
+          "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+        },
+        "selenium_wet": {
+          "value": 4000.0,
+          "unit": "µg",
+          "status": "label",
+          "basis": "per_kg",
+          "declared_total_or_added": "added",
+          "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+        },
+        "zinc": {
+          "value": 2000.0,
+          "unit": "mg",
+          "status": "label",
+          "basis": "per_kg",
+          "declared_total_or_added": "added",
+          "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+        },
+        "vitamin_a": {
+          "value": 250000.0,
+          "unit": "IU",
+          "status": "label",
+          "basis": "per_kg",
+          "declared_total_or_added": "added",
+          "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+        },
+        "vitamin_d": {
+          "value": 25000.0,
+          "unit": "IU",
+          "status": "label",
+          "basis": "per_kg",
+          "declared_total_or_added": "added",
+          "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+        },
+        "vitamin_e": {
+          "value": 2000,
+          "unit": "mg",
+          "status": "label",
+          "basis": "per_kg",
+          "declared_total_or_added": "added",
+          "form": "all_rac_alpha_tocopheryl_acetate",
+          "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+        },
+        "vitamin_b1": {
+          "value": 75.0,
+          "unit": "mg",
+          "status": "label",
+          "basis": "per_kg",
+          "declared_total_or_added": "added",
+          "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+        },
+        "vitamin_b2": {
+          "value": 250.0,
+          "unit": "mg",
+          "status": "label",
+          "basis": "per_kg",
+          "declared_total_or_added": "added",
+          "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+        },
+        "vitamin_b3": {
+          "value": 50.0,
+          "unit": "mg",
+          "status": "label",
+          "basis": "per_kg",
+          "declared_total_or_added": "added",
+          "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+        },
+        "vitamin_b5": {
+          "value": "NA"
+        },
+        "vitamin_b6": {
+          "value": 50.0,
+          "unit": "mg",
+          "status": "label",
+          "basis": "per_kg",
+          "declared_total_or_added": "added",
+          "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+        },
+        "vitamin_b9": {
+          "value": 10000.0,
+          "unit": "µg",
+          "status": "label",
+          "basis": "per_kg",
+          "declared_total_or_added": "added",
+          "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+        },
+        "vitamin_b12": {
+          "value": 1000.0,
+          "unit": "µg",
+          "status": "label",
+          "basis": "per_kg",
+          "declared_total_or_added": "added",
+          "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+        },
+        "choline": {
+          "value": 90000,
+          "unit": "mg",
+          "status": "label",
+          "basis": "per_kg",
+          "declared_total_or_added": "added",
+          "form": "choline_chloride",
+          "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf",
+          "method": "Massa dichiarata del cloruro di colina; conversione prevista 0,746 assumendo sale puro. Non sommare a una seconda voce colina."
+        },
+        "vitamin_c": {
+          "value": 1250.0,
+          "unit": "mg",
+          "status": "label",
+          "basis": "per_kg",
+          "declared_total_or_added": "added",
+          "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+        },
+        "vitamin_b7": {
+          "value": 2500.0,
+          "unit": "µg",
+          "status": "label",
+          "basis": "per_kg",
+          "declared_total_or_added": "added",
+          "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+        },
+        "vitamin_k": {
+          "value": "NA"
+        },
+        "arginine": {
+          "value": "NA"
+        },
+        "histidine": {
+          "value": "NA"
+        },
+        "isoleucine": {
+          "value": "NA"
+        },
+        "leucine": {
+          "value": "NA"
+        },
+        "lysine": {
+          "value": "NA"
+        },
+        "methionine": {
+          "value": "NA"
+        },
+        "methionine_cystine": {
+          "value": "NA"
+        },
+        "phenylalanine": {
+          "value": "NA"
+        },
+        "phenylalanine_tyrosine": {
+          "value": "NA"
+        },
+        "threonine": {
+          "value": "NA"
+        },
+        "tryptophan": {
+          "value": "NA"
+        },
+        "valine": {
+          "value": "NA"
+        },
+        "taurine": {
+          "value": 50000.0,
+          "unit": "mg",
+          "status": "label",
+          "basis": "per_kg",
+          "declared_total_or_added": "added",
+          "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+        },
+        "l_carnitine": {
+          "value": "NA"
+        },
+        "cystine": {
+          "value": "NA"
+        },
+        "tyrosine": {
+          "value": "NA"
+        },
+        "energy_food_kcal": {
+          "value": "NA"
+        },
+        "carbohydrate_by_difference": {
+          "value": "NA"
+        },
+        "c18_2_undifferentiated": {
+          "value": "NA"
+        },
+        "c20_4_undifferentiated": {
+          "value": "NA"
+        },
+        "vitamin_a_retinol_ug": {
+          "value": "NA"
+        },
+        "vitamin_a_carotenoid_iu": {
+          "value": "NA"
+        },
+        "beta_carotene_ug": {
+          "value": "NA"
+        }
+      }
+    },
+    {
+      "id": "omegor_vitality",
+      "name_it": "Omegor Vitality 1000 (capsula)",
+      "brand": "Omegor",
+      "product_variant": "Vitality 1000",
+      "class": "fish_oil",
+      "dose_unit": "capsule",
+      "integer_dose": true,
+      "content_mass_per_unit_g": 1,
+      "kcal_per_unit": 9,
+      "label_source": "Scheda ufficiale Omegor Vitality 1000, per capsula; https://www.omegor.com/products/omegor-vitality-1000/",
+      "source_url": "https://www.omegor.com/products/omegor-vitality-1000/",
+      "product_version": "Scheda produttore consultata 2026-10-19; lotto non indicato",
+      "data_status": "estimated",
+      "label_added_only": false,
+      "usable_for_optimization": true,
+      "notes": "Contenuto dichiarato: olio di pesce 1000 mg. Grassi 1 g e 9 kcal/capsula sono stime della sola quota olio, non analisi dell’intera capsula; gelatina e glicerolo non quantificati. Massa lorda ignota, omessa. Vitamina E naturale d-alfa-tocoferolo 10 mg. Nessun limite posologico umano trasferito al cane. EPA e DHA inclusi nei 900 mg di omega-3 totali.",
+      "nutrients": {
+        "protein": {
+          "value": "NA"
+        },
+        "fat": {
+          "value": 1,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_dose",
+          "declared_total_or_added": "total",
+          "source": "https://www.omegor.com/products/omegor-vitality-1000/",
+          "method": "1000 mg di olio dichiarato approssimati a 1 g di grassi; non analisi del guscio."
+        },
+        "carbohydrate_available": {
+          "value": "NA"
+        },
+        "fiber": {
+          "value": "NA"
+        },
+        "moisture": {
+          "value": "NA"
+        },
+        "linoleic_acid": {
+          "value": "NA"
+        },
+        "ala": {
+          "value": "NA"
+        },
+        "epa": {
+          "value": 535,
+          "unit": "mg",
+          "status": "label",
+          "basis": "per_dose",
+          "declared_total_or_added": "total",
+          "source": "https://www.omegor.com/products/omegor-vitality-1000/"
+        },
+        "dha": {
+          "value": 268,
+          "unit": "mg",
+          "status": "label",
+          "basis": "per_dose",
+          "declared_total_or_added": "total",
+          "source": "https://www.omegor.com/products/omegor-vitality-1000/"
+        },
+        "epa_dha": {
+          "value": 803,
+          "unit": "mg",
+          "status": "calculated",
+          "basis": "per_dose",
+          "declared_total_or_added": "total",
+          "source": "https://www.omegor.com/products/omegor-vitality-1000/",
+          "method": "535 mg EPA + 268 mg DHA; sottoinsieme di omega-3 totali."
+        },
+        "omega3_total": {
+          "value": 900,
+          "unit": "mg",
+          "status": "label",
+          "basis": "per_dose",
+          "declared_total_or_added": "total",
+          "source": "https://www.omegor.com/products/omegor-vitality-1000/"
+        },
+        "omega6_total": {
+          "value": "NA"
+        },
+        "arachidonic_acid": {
+          "value": "NA"
+        },
+        "calcium": {
+          "value": "NA"
+        },
+        "phosphorus": {
+          "value": "NA"
+        },
+        "potassium": {
+          "value": "NA"
+        },
+        "sodium": {
+          "value": "NA"
+        },
+        "chloride": {
+          "value": "NA"
+        },
+        "magnesium": {
+          "value": "NA"
+        },
+        "copper": {
+          "value": "NA"
+        },
+        "iodine": {
+          "value": "NA"
+        },
+        "iron": {
+          "value": "NA"
+        },
+        "manganese": {
+          "value": "NA"
+        },
+        "selenium_wet": {
+          "value": "NA"
+        },
+        "zinc": {
+          "value": "NA"
+        },
+        "vitamin_a": {
+          "value": "NA"
+        },
+        "vitamin_d": {
+          "value": "NA"
+        },
+        "vitamin_e": {
+          "value": 10,
+          "unit": "mg",
+          "status": "label",
+          "basis": "per_dose",
+          "declared_total_or_added": "total",
+          "form": "d_alpha_tocopherol",
+          "source": "https://www.omegor.com/products/omegor-vitality-1000/"
+        },
+        "vitamin_b1": {
+          "value": "NA"
+        },
+        "vitamin_b2": {
+          "value": "NA"
+        },
+        "vitamin_b3": {
+          "value": "NA"
+        },
+        "vitamin_b5": {
+          "value": "NA"
+        },
+        "vitamin_b6": {
+          "value": "NA"
+        },
+        "vitamin_b9": {
+          "value": "NA"
+        },
+        "vitamin_b12": {
+          "value": "NA"
+        },
+        "choline": {
+          "value": "NA"
+        },
+        "vitamin_c": {
+          "value": "NA"
+        },
+        "vitamin_b7": {
+          "value": "NA"
+        },
+        "vitamin_k": {
+          "value": "NA"
+        },
+        "arginine": {
+          "value": "NA"
+        },
+        "histidine": {
+          "value": "NA"
+        },
+        "isoleucine": {
+          "value": "NA"
+        },
+        "leucine": {
+          "value": "NA"
+        },
+        "lysine": {
+          "value": "NA"
+        },
+        "methionine": {
+          "value": "NA"
+        },
+        "methionine_cystine": {
+          "value": "NA"
+        },
+        "phenylalanine": {
+          "value": "NA"
+        },
+        "phenylalanine_tyrosine": {
+          "value": "NA"
+        },
+        "threonine": {
+          "value": "NA"
+        },
+        "tryptophan": {
+          "value": "NA"
+        },
+        "valine": {
+          "value": "NA"
+        },
+        "taurine": {
+          "value": "NA"
+        },
+        "l_carnitine": {
+          "value": "NA"
+        },
+        "cystine": {
+          "value": "NA"
+        },
+        "tyrosine": {
+          "value": "NA"
+        },
+        "energy_food_kcal": {
+          "value": "NA"
+        },
+        "carbohydrate_by_difference": {
+          "value": "NA"
+        },
+        "c18_2_undifferentiated": {
+          "value": "NA"
+        },
+        "c20_4_undifferentiated": {
+          "value": "NA"
+        },
+        "vitamin_a_retinol_ug": {
+          "value": "NA"
+        },
+        "vitamin_a_carotenoid_iu": {
+          "value": "NA"
+        },
+        "beta_carotene_ug": {
+          "value": "NA"
+        }
+      }
+    },
+    {
+      "id": "bone_meal",
+      "name_it": "Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%)",
+      "brand": "Grau",
+      "product_variant": "Profilo riferito dall’utente: Ca 22,6%, P 17,7%; non nuova formulazione Ca 23,8%",
+      "class": "calcium_phosphorus",
+      "dose_unit": "g",
+      "integer_dose": false,
+      "label_source": "Trascrizione dell’utente del 19/10/2026, scheda Grau variante Ca 22,6%, P 17,7%; riscontro scheda rivenditore https://www.barfou.de/products/knochenmehl-in-verschiedenen-groessen-von-grau-gmbh-3",
+      "source_url": "https://www.barfou.de/products/knochenmehl-in-verschiedenen-groessen-von-grau-gmbh-3",
+      "product_version": "Variante storica Ca 22,6%, P 17,7%; lotto non documentato",
+      "data_status": "review_required",
+      "label_added_only": false,
+      "usable_for_optimization": true,
+      "notes": "Valori trascritti dall’utente il 19/10/2026: proteine grezze 0,6%, grassi grezzi 0,3%, fibra grezza 0,3%, ceneri grezze 72,8%, umidità 20,9%, calcio 22,6%, fosforo 17,7%, sodio 0,03%. Fibra grezza non mappata su fibra alimentare totale; ceneri non sommate ai minerali. Energia e carboidrati non dichiarati, non assunti zero. ATTENZIONE: la pagina ufficiale consultata oggi riporta una formulazione diversa (Ca 23,8%, P 17,6%, umidità 2,3%, ossa bovine e suine): verificare variante sulla propria confezione, senza mescolare profili. Fonte attuale: https://www.grau-generationpet.de/00001073/naturreines-knochenmehl-175-g",
+      "nutrients": {
+        "protein": {
+          "value": 0.6,
+          "unit": "g",
+          "status": "label",
+          "basis": "per_100g",
+          "declared_total_or_added": "total"
+        },
+        "fat": {
+          "value": 0.3,
+          "unit": "g",
+          "status": "label",
+          "basis": "per_100g",
+          "declared_total_or_added": "total"
+        },
+        "carbohydrate_available": {
+          "value": "NA"
+        },
+        "fiber": {
+          "value": "NA"
+        },
+        "moisture": {
+          "value": 20.9,
+          "unit": "g",
+          "status": "label",
+          "basis": "per_100g",
+          "declared_total_or_added": "total"
+        },
+        "linoleic_acid": {
+          "value": "NA"
+        },
+        "ala": {
+          "value": "NA"
+        },
+        "epa": {
+          "value": "NA"
+        },
+        "dha": {
+          "value": "NA"
+        },
+        "epa_dha": {
+          "value": "NA"
+        },
+        "omega3_total": {
+          "value": "NA"
+        },
+        "omega6_total": {
+          "value": "NA"
+        },
+        "arachidonic_acid": {
+          "value": "NA"
+        },
+        "calcium": {
+          "value": 22.6,
+          "unit": "g",
+          "status": "label",
+          "basis": "per_100g",
+          "declared_total_or_added": "total"
+        },
+        "phosphorus": {
+          "value": 17.7,
+          "unit": "g",
+          "status": "label",
+          "basis": "per_100g",
+          "declared_total_or_added": "total"
+        },
+        "potassium": {
+          "value": "NA"
+        },
+        "sodium": {
+          "value": 0.03,
+          "unit": "g",
+          "status": "label",
+          "basis": "per_100g",
+          "declared_total_or_added": "total"
+        },
+        "chloride": {
+          "value": "NA"
+        },
+        "magnesium": {
+          "value": "NA"
+        },
+        "copper": {
+          "value": "NA"
+        },
+        "iodine": {
+          "value": "NA"
+        },
+        "iron": {
+          "value": "NA"
+        },
+        "manganese": {
+          "value": "NA"
+        },
+        "selenium_wet": {
+          "value": "NA"
+        },
+        "zinc": {
+          "value": "NA"
+        },
+        "vitamin_a": {
+          "value": "NA"
+        },
+        "vitamin_d": {
+          "value": "NA"
+        },
+        "vitamin_e": {
+          "value": "NA"
+        },
+        "vitamin_b1": {
+          "value": "NA"
+        },
+        "vitamin_b2": {
+          "value": "NA"
+        },
+        "vitamin_b3": {
+          "value": "NA"
+        },
+        "vitamin_b5": {
+          "value": "NA"
+        },
+        "vitamin_b6": {
+          "value": "NA"
+        },
+        "vitamin_b9": {
+          "value": "NA"
+        },
+        "vitamin_b12": {
+          "value": "NA"
+        },
+        "choline": {
+          "value": "NA"
+        },
+        "vitamin_c": {
+          "value": "NA"
+        },
+        "vitamin_b7": {
+          "value": "NA"
+        },
+        "vitamin_k": {
+          "value": "NA"
+        },
+        "arginine": {
+          "value": "NA"
+        },
+        "histidine": {
+          "value": "NA"
+        },
+        "isoleucine": {
+          "value": "NA"
+        },
+        "leucine": {
+          "value": "NA"
+        },
+        "lysine": {
+          "value": "NA"
+        },
+        "methionine": {
+          "value": "NA"
+        },
+        "methionine_cystine": {
+          "value": "NA"
+        },
+        "phenylalanine": {
+          "value": "NA"
+        },
+        "phenylalanine_tyrosine": {
+          "value": "NA"
+        },
+        "threonine": {
+          "value": "NA"
+        },
+        "tryptophan": {
+          "value": "NA"
+        },
+        "valine": {
+          "value": "NA"
+        },
+        "taurine": {
+          "value": "NA"
+        },
+        "l_carnitine": {
+          "value": "NA"
+        },
+        "cystine": {
+          "value": "NA"
+        },
+        "tyrosine": {
+          "value": "NA"
+        },
+        "energy_food_kcal": {
+          "value": "NA"
+        },
+        "carbohydrate_by_difference": {
+          "value": "NA"
+        },
+        "c18_2_undifferentiated": {
+          "value": "NA"
+        },
+        "c20_4_undifferentiated": {
+          "value": "NA"
+        },
+        "vitamin_a_retinol_ug": {
+          "value": "NA"
+        },
+        "vitamin_a_carotenoid_iu": {
+          "value": "NA"
+        },
+        "beta_carotene_ug": {
+          "value": "NA"
+        }
+      }
+    }
+  ]
+}

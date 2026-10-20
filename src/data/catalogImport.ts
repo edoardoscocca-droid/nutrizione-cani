@@ -849,8 +849,12 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
     const compound = compoundForm
       ? (catalog.unitConversions ?? []).find((c) => c.nutrientId === nut.id && c.form === compoundForm && isMassUnit(c.fromUnit) && isMassUnit(c.toUnit) && isMassUnit(v.unit))
       : undefined;
+    // unità del dizionario con una precisazione tra parentesi (es. «IU (carotenoids; human labeling)»): la stessa unità base
+    // scritta senza precisazione è equivalente; il valore resta nel campo informativo e non si somma ad altri nutrienti
+    const qualified = /^(.+?)\s*\(.+\)$/.exec(nut.unit);
+    const unitIn = qualified && normalizeUnit(qualified[1]) === normalizeUnit(v.unit) ? nut.unit : v.unit;
     try {
-      conv = toCanonical(value, v.unit, nut.unit);
+      conv = toCanonical(value, unitIn, nut.unit);
       if (compound) {
         converted = compound;
         const inFrom = toCanonical(value, v.unit, compound.fromUnit).value * compound.factor;

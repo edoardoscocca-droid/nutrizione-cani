@@ -1,0 +1,5 @@
+Verifica locale 20/10/2026
+Ricalcolo in cartella temporanea separata: riuscito.
+Cinque JSON principali rigenerati identici al pacchetto.
+Tutti i file JSON sintatticamente validi.
+Questa verifica non esegue il motore dell’app né ne certifica il risultato.

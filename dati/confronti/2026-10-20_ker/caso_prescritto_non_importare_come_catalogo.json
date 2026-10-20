@@ -1,0 +1,82 @@
+{
+  "purpose": "Analisi prescrizione a quantità fisse; NON file del catalogo e NON schema importatore ricette.",
+  "source_document": {
+    "filename": "TRIVISANI, KER.pdf",
+    "sha256": "0c94804fb86cb5d55571ca3eac59316b66bd0c9df84e6d8444d6fb1b66219e36",
+    "page": 2,
+    "prescription_date": "2025-10-01"
+  },
+  "patient_at_prescription": {
+    "name": "Ker",
+    "species": "dog",
+    "sex": "female",
+    "age_years": 6,
+    "weight_current_kg": 30.2,
+    "weight_reference_kg": 27.2,
+    "bcs_9": 6
+  },
+  "target_prescribed_kcal": 1340,
+  "fixed_quantities": [
+    {
+      "id": "beef_05",
+      "quantity": 560,
+      "unit": "g"
+    },
+    {
+      "id": "oat_dry",
+      "quantity": 100,
+      "unit": "g"
+    },
+    {
+      "id": "coconut_oil",
+      "quantity": 10,
+      "unit": "g"
+    },
+    {
+      "id": "flaxseed_oil",
+      "quantity": 10,
+      "unit": "g"
+    },
+    {
+      "id": "carrot_cooked",
+      "quantity": 90,
+      "unit": "g"
+    },
+    {
+      "id": "bone_meal",
+      "quantity": 5,
+      "unit": "g"
+    },
+    {
+      "id": "qdiet",
+      "quantity": 13,
+      "unit": "g"
+    },
+    {
+      "id": "omegor_vitality",
+      "quantity": 1,
+      "unit": "capsule"
+    },
+    {
+      "id": "psyllium_erbavoglio_husk_bio",
+      "quantity": 5,
+      "unit": "g"
+    }
+  ],
+  "scenario_assumptions": [
+    "Il bovino5% è un proxy esemplificativo, NON la carne identificata dalla prescrizione: confrontare anche3% e10%.",
+    "Scelte esplicite fra alternative: carote e olio di lino; non canapa o zucca in contemporanea.",
+    "Verdure90g considerate pesate cotte nel confronto; il documento non rende esplicita questa convenzione di pesata.",
+    "Avena100g considerata pesata secca prima dell’ammollo indicato nelle istruzioni.",
+    "Psillio: variante Cuticola Bio attuale assunta, non confezione2025 identificata; confronto con polvere Bio separato.",
+    "Grau: profilo trascritto22,6%Ca/17,7%P, non nuova formulazione.",
+    "Tutte le quantità bloccate. QDiet13g da prescrizione, tabella d’impiego come avviso: nessun cambiamento automatico del limite del generatore."
+  ],
+  "b5_conditional": {
+    "factor": 0.9201678908709339,
+    "mg_per_g_qdiet": 0.4140755508919202,
+    "mg_at_13g": 5.3829821615949625,
+    "import_status": "non applicata nel calcolo principale; stima condizionale separata"
+  },
+  "independent_results_file": "risultati_dettagliati.json"
+}

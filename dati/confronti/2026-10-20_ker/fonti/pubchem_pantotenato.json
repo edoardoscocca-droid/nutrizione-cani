@@ -1,0 +1,16 @@
+{
+  "PropertyTable": {
+    "Properties": [
+      {
+        "CID": 443753,
+        "MolecularFormula": "C18H32CaN2O10",
+        "MolecularWeight": "476.5"
+      },
+      {
+        "CID": 6613,
+        "MolecularFormula": "C9H17NO5",
+        "MolecularWeight": "219.23"
+      }
+    ]
+  }
+}

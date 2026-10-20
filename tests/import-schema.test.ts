@@ -195,3 +195,23 @@ describe('base quantitativa', () => {
     expect(errs(bad)).toMatch(/base «per_confezione» non valida/);
   });
 });
+
+describe('verifica della prescrizione di Ker (20/10/2026)', () => {
+  test('unità del dizionario con precisazione: «IU» vale «IU (carotenoids; human labeling)» solo nel campo informativo', async () => {
+    const p = await plan(fresh(), 'foods', food({ vitamin_a_carotenoid_iu: { value: 17033, unit: 'IU', basis: 'per_100g', status: 'estimated' }, vitamin_a: { value: 'NA' } }));
+    expect(errs(p)).toBe('');
+    const n = p.items[0].next.nutrients;
+    expect(n.vitamin_a_carotenoid_iu.value).toBe(17033);
+    expect(n.vitamin_a?.value ?? null).toBeNull();
+    // un'unità di altra natura resta un errore
+    const bad = await plan(fresh(), 'foods', food({ vitamin_a_carotenoid_iu: { value: 5, unit: 'mg', basis: 'per_100g', status: 'estimated' } }));
+    expect(errs(bad)).toMatch(/non riconosciuta o non convertibile/);
+  });
+
+  test('energia 4/9/4 di un integratore per dose: nessun arrotondamento a 0,1 kcal', async () => {
+    const { resolveSupplementEnergy } = await import('../src/engine/energy');
+    const s = { id: 'x', nutrients: { protein: { value: 0.008 }, fat: { value: 0.0024 }, carbohydrate_available: { value: 0.0217 } }, kcalPerUnit: null } as never;
+    const r = resolveSupplementEnergy(s, { id: 'm', version: '1', label: '4/9/4', protein: 4, fat: 9, carbohydrate: 4, caution: null });
+    expect(r.kcalPerUnit).toBeCloseTo(0.1404, 6);
+  });
+});

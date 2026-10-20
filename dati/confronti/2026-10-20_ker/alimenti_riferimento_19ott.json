@@ -1,0 +1,2571 @@
+{
+  "foods": [
+    {
+      "id": "beef_03",
+      "name_it": "Macinato di manzo crudo 3% grassi",
+      "category": "animal",
+      "subcategory": "muscle",
+      "processing_state": "raw",
+      "edible_portion": "100 g di parte edibile; profilo nelle condizioni dichiarate",
+      "source": "USDA SR Legacy FDC 173111",
+      "source_url": "https://whatyoueat.io/foods/173111-ground-beef-97-lean",
+      "source_version": "USDA SR Legacy; snapshot del dataset fornito 2026-10-16",
+      "data_status": "estimated",
+      "available_to_formulate": true,
+      "kcal_me_per_100g": 114.92,
+      "me_method": "Stima di progetto 4/9/4 kcal/g: proteine ×4 + grassi ×9 + carboidrati disponibili ×4; non energia misurata.",
+      "uncertainty": "Valori tipici di banca dati/proxy; nutrienti non riportati sconosciuti; nessuna analisi del lotto.",
+      "preparation": "Pesare crudo.",
+      "notes": "USDA profile 97% lean, 3% fat; non analisi lotto specifico; carotenoidi e acidi grassi non differenziati restano dati di fonte. Nessuna convalida amministrativa attribuita dal file.",
+      "nutrients": {
+        "protein": {
+          "value": 21.98,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "fat": {
+          "value": 3.0,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "carbohydrate_available": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. Profilo USDA indica carboidrati 0; non è stima per tutti i tagli"
+        },
+        "fiber": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. "
+        },
+        "moisture": {
+          "value": 74.75,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "linoleic_acid": {
+          "value": "NA"
+        },
+        "ala": {
+          "value": 0.025,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "epa": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. "
+        },
+        "dha": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. "
+        },
+        "epa_dha": {
+          "value": "NA"
+        },
+        "omega3_total": {
+          "value": "NA"
+        },
+        "omega6_total": {
+          "value": "NA"
+        },
+        "arachidonic_acid": {
+          "value": "NA"
+        },
+        "calcium": {
+          "value": 8.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "phosphorus": {
+          "value": 203.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "potassium": {
+          "value": 357.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "sodium": {
+          "value": 66.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "chloride": {
+          "value": "NA"
+        },
+        "magnesium": {
+          "value": 22.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "copper": {
+          "value": 0.08,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "iodine": {
+          "value": "NA"
+        },
+        "iron": {
+          "value": 2.44,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "manganese": {
+          "value": 0.01,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "selenium_wet": {
+          "value": 17.7,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "zinc": {
+          "value": 5.21,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_a": {
+          "value": "NA"
+        },
+        "vitamin_d": {
+          "value": 0.1,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. USDA µg, IU da convertire secondo forma; dato arrotondato alla fonte"
+        },
+        "vitamin_e": {
+          "value": 0.17,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Fonte espressa in mg alfa-tocoferolo o equivalenti; conversione in IU FEDIAF necessita scelta chimica esplicita Conversione convenzionale di progetto per alpha-tocopherol USDA.",
+          "form": "d_alpha_tocopherol"
+        },
+        "vitamin_b1": {
+          "value": 0.041,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b2": {
+          "value": 0.151,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b3": {
+          "value": 5.663,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b5": {
+          "value": 0.673,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b6": {
+          "value": 0.401,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b9": {
+          "value": 4.0,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b12": {
+          "value": 2.26,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "choline": {
+          "value": 72.8,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_c": {
+          "value": 0.0,
+          "unit": "mg",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. "
+        },
+        "vitamin_b7": {
+          "value": "NA"
+        },
+        "vitamin_k": {
+          "value": "NA"
+        },
+        "arginine": {
+          "value": 1.432,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "histidine": {
+          "value": 0.715,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "isoleucine": {
+          "value": 0.972,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "leucine": {
+          "value": 1.715,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "lysine": {
+          "value": 1.822,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "methionine": {
+          "value": 0.566,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "methionine_cystine": {
+          "value": "NA"
+        },
+        "phenylalanine": {
+          "value": 0.858,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "phenylalanine_tyrosine": {
+          "value": "NA"
+        },
+        "threonine": {
+          "value": 0.851,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "tryptophan": {
+          "value": 0.112,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "valine": {
+          "value": 1.081,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "taurine": {
+          "value": "NA"
+        },
+        "l_carnitine": {
+          "value": "NA"
+        },
+        "cystine": {
+          "value": 0.226,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "tyrosine": {
+          "value": 0.677,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "energy_food_kcal": {
+          "value": 121.0,
+          "unit": "kcal",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Valore alimentare USDA destinato all'uomo: non assumere automaticamente come energia metabolizzabile del cane"
+        },
+        "carbohydrate_by_difference": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. "
+        },
+        "c18_2_undifferentiated": {
+          "value": 0.154,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Acido grasso 18:2 non distinto per isomero, NON considerare misura specifica certificata di linoleico n-6"
+        },
+        "c20_4_undifferentiated": {
+          "value": 0.035,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Acido grasso 20:4 non distinto per isomero, NON assegnare automaticamente ad arachidonico"
+        },
+        "vitamin_a_retinol_ug": {
+          "value": 4.0,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173111; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_a_carotenoid_iu": {
+          "value": "NA"
+        },
+        "beta_carotene_ug": {
+          "value": "NA"
+        }
+      }
+    },
+    {
+      "id": "beef_15",
+      "name_it": "Macinato di manzo crudo 15% grassi",
+      "category": "animal",
+      "subcategory": "muscle",
+      "processing_state": "raw",
+      "edible_portion": "100 g di parte edibile; profilo nelle condizioni dichiarate",
+      "source": "USDA SR Legacy FDC 171796",
+      "source_url": "https://whatyoueat.io/foods/171796-ground-beef-85-lean",
+      "source_version": "USDA SR Legacy; snapshot del dataset fornito 2026-10-16",
+      "data_status": "estimated",
+      "available_to_formulate": true,
+      "kcal_me_per_100g": 209.36,
+      "me_method": "Stima di progetto 4/9/4 kcal/g: proteine ×4 + grassi ×9 + carboidrati disponibili ×4; non energia misurata.",
+      "uncertainty": "Valori tipici di banca dati/proxy; nutrienti non riportati sconosciuti; nessuna analisi del lotto.",
+      "preparation": "Pesare crudo.",
+      "notes": "USDA profile 85% lean, 15% fat; non analisi lotto specifico; carotenoidi e acidi grassi non differenziati restano dati di fonte. Nessuna convalida amministrativa attribuita dal file.",
+      "nutrients": {
+        "protein": {
+          "value": 18.59,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "fat": {
+          "value": 15.0,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "carbohydrate_available": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. Profilo USDA indica carboidrati 0; non è stima per tutti i tagli"
+        },
+        "fiber": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. "
+        },
+        "moisture": {
+          "value": 65.66,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "linoleic_acid": {
+          "value": "NA"
+        },
+        "ala": {
+          "value": 0.042,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "epa": {
+          "value": 0.002,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "dha": {
+          "value": 0.001,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "epa_dha": {
+          "value": "NA"
+        },
+        "omega3_total": {
+          "value": "NA"
+        },
+        "omega6_total": {
+          "value": "NA"
+        },
+        "arachidonic_acid": {
+          "value": "NA"
+        },
+        "calcium": {
+          "value": 15.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "phosphorus": {
+          "value": 171.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "potassium": {
+          "value": 295.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "sodium": {
+          "value": 66.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "chloride": {
+          "value": "NA"
+        },
+        "magnesium": {
+          "value": 18.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "copper": {
+          "value": 0.067,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "iodine": {
+          "value": "NA"
+        },
+        "iron": {
+          "value": 2.09,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "manganese": {
+          "value": 0.01,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "selenium_wet": {
+          "value": 15.8,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "zinc": {
+          "value": 4.48,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_a": {
+          "value": "NA"
+        },
+        "vitamin_d": {
+          "value": 0.1,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. USDA µg, IU da convertire secondo forma; dato arrotondato alla fonte"
+        },
+        "vitamin_e": {
+          "value": 0.17,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Fonte espressa in mg alfa-tocoferolo o equivalenti; conversione in IU FEDIAF necessita scelta chimica esplicita Conversione convenzionale di progetto per alpha-tocopherol USDA.",
+          "form": "d_alpha_tocopherol"
+        },
+        "vitamin_b1": {
+          "value": 0.042,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b2": {
+          "value": 0.151,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b3": {
+          "value": 4.649,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b5": {
+          "value": 0.549,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b6": {
+          "value": 0.346,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b9": {
+          "value": 6.0,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b12": {
+          "value": 2.17,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "choline": {
+          "value": 61.2,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_c": {
+          "value": 0.0,
+          "unit": "mg",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. "
+        },
+        "vitamin_b7": {
+          "value": "NA"
+        },
+        "vitamin_k": {
+          "value": "NA"
+        },
+        "arginine": {
+          "value": 1.21,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "histidine": {
+          "value": 0.604,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "isoleucine": {
+          "value": 0.822,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "leucine": {
+          "value": 1.45,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "lysine": {
+          "value": 1.54,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "methionine": {
+          "value": 0.478,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "methionine_cystine": {
+          "value": "NA"
+        },
+        "phenylalanine": {
+          "value": 0.725,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "phenylalanine_tyrosine": {
+          "value": "NA"
+        },
+        "threonine": {
+          "value": 0.72,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "tryptophan": {
+          "value": 0.094,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "valine": {
+          "value": 0.914,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "taurine": {
+          "value": "NA"
+        },
+        "l_carnitine": {
+          "value": "NA"
+        },
+        "cystine": {
+          "value": 0.191,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "tyrosine": {
+          "value": 0.572,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "energy_food_kcal": {
+          "value": 215.0,
+          "unit": "kcal",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Valore alimentare USDA destinato all'uomo: non assumere automaticamente come energia metabolizzabile del cane"
+        },
+        "carbohydrate_by_difference": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. "
+        },
+        "c18_2_undifferentiated": {
+          "value": 0.331,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Acido grasso 18:2 non distinto per isomero, NON considerare misura specifica certificata di linoleico n-6"
+        },
+        "c20_4_undifferentiated": {
+          "value": 0.034,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Acido grasso 20:4 non distinto per isomero, NON assegnare automaticamente ad arachidonico"
+        },
+        "vitamin_a_retinol_ug": {
+          "value": 4.0,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 171796; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_a_carotenoid_iu": {
+          "value": "NA"
+        },
+        "beta_carotene_ug": {
+          "value": "NA"
+        }
+      }
+    },
+    {
+      "id": "beef_30",
+      "name_it": "Macinato di manzo crudo 30% grassi",
+      "category": "animal",
+      "subcategory": "muscle",
+      "processing_state": "raw",
+      "edible_portion": "100 g di parte edibile; profilo nelle condizioni dichiarate",
+      "source": "USDA SR Legacy FDC 168652",
+      "source_url": "https://whatyoueat.io/foods/168652-ground-beef-70-lean",
+      "source_version": "USDA SR Legacy; snapshot del dataset fornito 2026-10-16",
+      "data_status": "estimated",
+      "available_to_formulate": true,
+      "kcal_me_per_100g": 327.4,
+      "me_method": "Stima di progetto 4/9/4 kcal/g: proteine ×4 + grassi ×9 + carboidrati disponibili ×4; non energia misurata.",
+      "uncertainty": "Valori tipici di banca dati/proxy; nutrienti non riportati sconosciuti; nessuna analisi del lotto.",
+      "preparation": "Pesare crudo.",
+      "notes": "USDA profile 70% lean, 30% fat; non analisi lotto specifico; carotenoidi e acidi grassi non differenziati restano dati di fonte. Nessuna convalida amministrativa attribuita dal file.",
+      "nutrients": {
+        "protein": {
+          "value": 14.35,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "fat": {
+          "value": 30.0,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "carbohydrate_available": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. Profilo USDA indica carboidrati 0; non è stima per tutti i tagli"
+        },
+        "fiber": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. "
+        },
+        "moisture": {
+          "value": 54.3,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "linoleic_acid": {
+          "value": "NA"
+        },
+        "ala": {
+          "value": 0.065,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "epa": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. "
+        },
+        "dha": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. "
+        },
+        "epa_dha": {
+          "value": "NA"
+        },
+        "omega3_total": {
+          "value": "NA"
+        },
+        "omega6_total": {
+          "value": "NA"
+        },
+        "arachidonic_acid": {
+          "value": "NA"
+        },
+        "calcium": {
+          "value": 24.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "phosphorus": {
+          "value": 132.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "potassium": {
+          "value": 218.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "sodium": {
+          "value": 66.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "chloride": {
+          "value": "NA"
+        },
+        "magnesium": {
+          "value": 14.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "copper": {
+          "value": 0.05,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "iodine": {
+          "value": "NA"
+        },
+        "iron": {
+          "value": 1.64,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "manganese": {
+          "value": 0.009,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "selenium_wet": {
+          "value": 13.5,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "zinc": {
+          "value": 3.57,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_a": {
+          "value": "NA"
+        },
+        "vitamin_d": {
+          "value": 0.1,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. USDA µg, IU da convertire secondo forma; dato arrotondato alla fonte"
+        },
+        "vitamin_e": {
+          "value": 0.17,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Fonte espressa in mg alfa-tocoferolo o equivalenti; conversione in IU FEDIAF necessita scelta chimica esplicita Conversione convenzionale di progetto per alpha-tocopherol USDA.",
+          "form": "d_alpha_tocopherol"
+        },
+        "vitamin_b1": {
+          "value": 0.044,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b2": {
+          "value": 0.151,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b3": {
+          "value": 3.382,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b5": {
+          "value": 0.395,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b6": {
+          "value": 0.278,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b9": {
+          "value": 9.0,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b12": {
+          "value": 2.07,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "choline": {
+          "value": 46.8,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_c": {
+          "value": 0.0,
+          "unit": "mg",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. "
+        },
+        "vitamin_b7": {
+          "value": "NA"
+        },
+        "vitamin_k": {
+          "value": "NA"
+        },
+        "arginine": {
+          "value": 0.933,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "histidine": {
+          "value": 0.466,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "isoleucine": {
+          "value": 0.634,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "leucine": {
+          "value": 1.118,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "lysine": {
+          "value": 1.188,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "methionine": {
+          "value": 0.369,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "methionine_cystine": {
+          "value": "NA"
+        },
+        "phenylalanine": {
+          "value": 0.559,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "phenylalanine_tyrosine": {
+          "value": "NA"
+        },
+        "threonine": {
+          "value": 0.555,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "tryptophan": {
+          "value": 0.073,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "valine": {
+          "value": 0.705,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "taurine": {
+          "value": "NA"
+        },
+        "l_carnitine": {
+          "value": "NA"
+        },
+        "cystine": {
+          "value": 0.148,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "tyrosine": {
+          "value": 0.441,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "energy_food_kcal": {
+          "value": 332.0,
+          "unit": "kcal",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Valore alimentare USDA destinato all'uomo: non assumere automaticamente come energia metabolizzabile del cane"
+        },
+        "carbohydrate_by_difference": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. "
+        },
+        "c18_2_undifferentiated": {
+          "value": 0.577,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Acido grasso 18:2 non distinto per isomero, NON considerare misura specifica certificata di linoleico n-6"
+        },
+        "c20_4_undifferentiated": {
+          "value": 0.035,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Acido grasso 20:4 non distinto per isomero, NON assegnare automaticamente ad arachidonico"
+        },
+        "vitamin_a_retinol_ug": {
+          "value": 4.0,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 168652; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_a_carotenoid_iu": {
+          "value": "NA"
+        },
+        "beta_carotene_ug": {
+          "value": "NA"
+        }
+      }
+    },
+    {
+      "id": "oat_dry",
+      "name_it": "Avena in fiocchi secca non fortificata",
+      "category": "starch",
+      "subcategory": "cereal",
+      "processing_state": "dried",
+      "edible_portion": "100 g di parte edibile; profilo nelle condizioni dichiarate",
+      "source": "USDA SR Legacy FDC 173904",
+      "source_url": "https://whatyoueat.io/foods/173904-unfortified-oats",
+      "source_version": "USDA SR Legacy; snapshot del dataset fornito 2026-10-16",
+      "data_status": "estimated",
+      "available_to_formulate": true,
+      "kcal_me_per_100g": 341.68,
+      "me_method": "Stima di progetto 4/9/4 kcal/g: proteine ×4 + grassi ×9 + carboidrati disponibili ×4; non energia misurata.",
+      "uncertainty": "Valori tipici di banca dati/proxy; nutrienti non riportati sconosciuti; nessuna analisi del lotto.",
+      "preparation": "Pesare secca prima dell’ammollo; acqua non scolata. Ammollo diverso dalla cottura.",
+      "notes": "Pesare secca; ammollo acqua senza scarico; valori USDA per prodotto secco; carotenoidi e acidi grassi non differenziati restano dati di fonte. Nessuna convalida amministrativa attribuita dal file.",
+      "nutrients": {
+        "protein": {
+          "value": 13.15,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "fat": {
+          "value": 6.52,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "carbohydrate_available": {
+          "value": 57.6,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Carboidrati per differenza meno fibra; approssimazione, non analisi dei carboidrati realmente digeribili"
+        },
+        "fiber": {
+          "value": 10.1,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "moisture": {
+          "value": 10.84,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "linoleic_acid": {
+          "value": "NA"
+        },
+        "ala": {
+          "value": "NA"
+        },
+        "epa": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. "
+        },
+        "dha": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. "
+        },
+        "epa_dha": {
+          "value": "NA"
+        },
+        "omega3_total": {
+          "value": "NA"
+        },
+        "omega6_total": {
+          "value": "NA"
+        },
+        "arachidonic_acid": {
+          "value": "NA"
+        },
+        "calcium": {
+          "value": 52.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "phosphorus": {
+          "value": 410.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "potassium": {
+          "value": 362.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "sodium": {
+          "value": 6.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "chloride": {
+          "value": "NA"
+        },
+        "magnesium": {
+          "value": 138.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "copper": {
+          "value": 0.391,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "iodine": {
+          "value": "NA"
+        },
+        "iron": {
+          "value": 4.25,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "manganese": {
+          "value": 3.63,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "selenium_wet": {
+          "value": 28.9,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "zinc": {
+          "value": 3.64,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_a": {
+          "value": "NA"
+        },
+        "vitamin_d": {
+          "value": 0.0,
+          "unit": "µg",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. USDA µg, IU da convertire secondo forma; dato arrotondato alla fonte"
+        },
+        "vitamin_e": {
+          "value": 0.42,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Fonte espressa in mg alfa-tocoferolo o equivalenti; conversione in IU FEDIAF necessita scelta chimica esplicita Conversione convenzionale di progetto per alpha-tocopherol USDA.",
+          "form": "d_alpha_tocopherol"
+        },
+        "vitamin_b1": {
+          "value": 0.46,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b2": {
+          "value": 0.155,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b3": {
+          "value": 1.125,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b5": {
+          "value": 1.12,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b6": {
+          "value": 0.1,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b9": {
+          "value": 32.0,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_b12": {
+          "value": 0.0,
+          "unit": "µg",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. "
+        },
+        "choline": {
+          "value": 40.4,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "vitamin_c": {
+          "value": 0.0,
+          "unit": "mg",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. "
+        },
+        "vitamin_b7": {
+          "value": "NA"
+        },
+        "vitamin_k": {
+          "value": "NA"
+        },
+        "arginine": {
+          "value": 0.85,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "histidine": {
+          "value": 0.275,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "isoleucine": {
+          "value": 0.503,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "leucine": {
+          "value": 0.98,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "lysine": {
+          "value": 0.637,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "methionine": {
+          "value": 0.207,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "methionine_cystine": {
+          "value": "NA"
+        },
+        "phenylalanine": {
+          "value": 0.665,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "phenylalanine_tyrosine": {
+          "value": "NA"
+        },
+        "threonine": {
+          "value": 0.382,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "tryptophan": {
+          "value": 0.182,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "valine": {
+          "value": 0.688,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "taurine": {
+          "value": "NA"
+        },
+        "l_carnitine": {
+          "value": "NA"
+        },
+        "cystine": {
+          "value": 0.455,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "tyrosine": {
+          "value": 0.395,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "energy_food_kcal": {
+          "value": 379.0,
+          "unit": "kcal",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Valore alimentare USDA destinato all'uomo: non assumere automaticamente come energia metabolizzabile del cane"
+        },
+        "carbohydrate_by_difference": {
+          "value": 67.7,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. "
+        },
+        "c18_2_undifferentiated": {
+          "value": 2.2,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 173904; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Acido grasso 18:2 non distinto per isomero, NON considerare misura specifica certificata di linoleico n-6"
+        },
+        "c20_4_undifferentiated": {
+          "value": "NA"
+        },
+        "vitamin_a_retinol_ug": {
+          "value": "NA"
+        },
+        "vitamin_a_carotenoid_iu": {
+          "value": "NA"
+        },
+        "beta_carotene_ug": {
+          "value": "NA"
+        }
+      }
+    },
+    {
+      "id": "carrot_cooked",
+      "name_it": "Carota cotta al vapore (proxy USDA bollita)",
+      "category": "vegetable",
+      "subcategory": "vegetable_generic",
+      "processing_state": "cooked_steamed",
+      "edible_portion": "100 g di parte edibile; profilo nelle condizioni dichiarate",
+      "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore",
+      "source_url": "https://whatyoueat.io/foods/170394",
+      "source_version": "USDA SR Legacy; snapshot del dataset fornito 2026-10-16",
+      "data_status": "estimated",
+      "available_to_formulate": true,
+      "kcal_me_per_100g": 25.54,
+      "me_method": "Stima di progetto 4/9/4 kcal/g: proteine ×4 + grassi ×9 + carboidrati disponibili ×4; non energia misurata.",
+      "uncertainty": "Valori tipici di banca dati/proxy; nutrienti non riportati sconosciuti; nessuna analisi del lotto.",
+      "preparation": "Cotta al vapore, pesata cotta; composizione proxy USDA bollita e scolata senza sale.",
+      "notes": "USDA bollita scolata senza sale usata come proxy; ritenzione micronutrienti non identica; carotenoidi e acidi grassi non differenziati restano dati di fonte. Nessuna convalida amministrativa attribuita dal file.",
+      "nutrients": {
+        "protein": {
+          "value": 0.76,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "fat": {
+          "value": 0.18,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "carbohydrate_available": {
+          "value": 5.22,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore; Carboidrati per differenza meno fibra; approssimazione, non analisi dei carboidrati realmente digeribili"
+        },
+        "fiber": {
+          "value": 3.0,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "moisture": {
+          "value": 90.17,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "linoleic_acid": {
+          "value": "NA"
+        },
+        "ala": {
+          "value": "NA"
+        },
+        "epa": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "dha": {
+          "value": 0.0,
+          "unit": "g",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "epa_dha": {
+          "value": "NA"
+        },
+        "omega3_total": {
+          "value": "NA"
+        },
+        "omega6_total": {
+          "value": "NA"
+        },
+        "arachidonic_acid": {
+          "value": "NA"
+        },
+        "calcium": {
+          "value": 30.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "phosphorus": {
+          "value": 30.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "potassium": {
+          "value": 235.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "sodium": {
+          "value": 58.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "chloride": {
+          "value": "NA"
+        },
+        "magnesium": {
+          "value": 10.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "copper": {
+          "value": 0.017,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "iodine": {
+          "value": "NA"
+        },
+        "iron": {
+          "value": 0.34,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "manganese": {
+          "value": 0.155,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "selenium_wet": {
+          "value": 0.7,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "zinc": {
+          "value": 0.2,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "vitamin_a": {
+          "value": "NA"
+        },
+        "vitamin_d": {
+          "value": 0.0,
+          "unit": "µg",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore; USDA µg, IU da convertire secondo forma; dato arrotondato alla fonte"
+        },
+        "vitamin_e": {
+          "value": 1.03,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore; Fonte espressa in mg alfa-tocoferolo o equivalenti; conversione in IU FEDIAF necessita scelta chimica esplicita Conversione convenzionale di progetto per alpha-tocopherol USDA.",
+          "form": "d_alpha_tocopherol"
+        },
+        "vitamin_b1": {
+          "value": 0.066,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "vitamin_b2": {
+          "value": 0.044,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "vitamin_b3": {
+          "value": 0.645,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "vitamin_b5": {
+          "value": 0.232,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "vitamin_b6": {
+          "value": 0.153,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "vitamin_b9": {
+          "value": 14.0,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "vitamin_b12": {
+          "value": 0.0,
+          "unit": "µg",
+          "status": "measured",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Valore zero riportato dalla banca dati USDA nel dataset fornito; non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "choline": {
+          "value": 8.8,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "vitamin_c": {
+          "value": 3.6,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "vitamin_b7": {
+          "value": "NA"
+        },
+        "vitamin_k": {
+          "value": "NA"
+        },
+        "arginine": {
+          "value": 0.075,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "histidine": {
+          "value": 0.033,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "isoleucine": {
+          "value": 0.063,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "leucine": {
+          "value": 0.084,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "lysine": {
+          "value": 0.083,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "methionine": {
+          "value": 0.017,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "methionine_cystine": {
+          "value": "NA"
+        },
+        "phenylalanine": {
+          "value": 0.05,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "phenylalanine_tyrosine": {
+          "value": "NA"
+        },
+        "threonine": {
+          "value": 0.157,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "tryptophan": {
+          "value": 0.01,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "valine": {
+          "value": 0.056,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "taurine": {
+          "value": "NA"
+        },
+        "l_carnitine": {
+          "value": "NA"
+        },
+        "cystine": {
+          "value": 0.068,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "tyrosine": {
+          "value": 0.035,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "energy_food_kcal": {
+          "value": 35.0,
+          "unit": "kcal",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore; Valore alimentare USDA destinato all'uomo: non assumere automaticamente come energia metabolizzabile del cane"
+        },
+        "carbohydrate_by_difference": {
+          "value": 8.22,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "c18_2_undifferentiated": {
+          "value": 0.087,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore; Acido grasso 18:2 non distinto per isomero, NON considerare misura specifica certificata di linoleico n-6"
+        },
+        "c20_4_undifferentiated": {
+          "value": "NA"
+        },
+        "vitamin_a_retinol_ug": {
+          "value": "NA"
+        },
+        "vitamin_a_carotenoid_iu": {
+          "value": 17033.0,
+          "unit": "IU (carotenoids; human labeling)",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore; IU fonte umana da carotenoidi, NON equiparare a vitamina A retinolo per cane e non sommare a IU FEDIAF"
+        },
+        "beta_carotene_ug": {
+          "value": 8332.0,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR Legacy FDC 170394; bollite, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Proxy di cottura bollita/scolata, da verificare per vapore;"
+        }
+      }
+    },
+    {
+      "id": "pumpkin_cooked",
+      "name_it": "Zucca cotta al vapore (proxy USDA bollita)",
+      "category": "vegetable",
+      "subcategory": "vegetable_generic",
+      "processing_state": "cooked_steamed",
+      "edible_portion": "100 g di parte edibile; profilo nelle condizioni dichiarate",
+      "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore",
+      "source_url": "https://www.cooks.com/rec/nutrition?nwal=11423",
+      "source_version": "USDA SR Legacy; snapshot del dataset fornito 2026-10-16",
+      "data_status": "estimated",
+      "available_to_formulate": true,
+      "kcal_me_per_100g": 18.67,
+      "me_method": "Stima di progetto 4/9/4 kcal/g: proteine ×4 + grassi ×9 + carboidrati disponibili ×4; non energia misurata.",
+      "uncertainty": "Valori tipici di banca dati/proxy; nutrienti non riportati sconosciuti; nessuna analisi del lotto.",
+      "preparation": "Cotta al vapore, pesata cotta; composizione proxy USDA bollita e scolata senza sale.",
+      "notes": "Zucca cotta al vapore; dati USDA bollita senza sale usati come proxy; cultivar e ritenzione micronutrienti possono variare; carotenoidi e acidi grassi non differenziati restano dati di fonte. Nessuna convalida amministrativa attribuita dal file.",
+      "nutrients": {
+        "protein": {
+          "value": 0.72,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "fat": {
+          "value": 0.07,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "carbohydrate_available": {
+          "value": 3.79,
+          "unit": "g",
+          "status": "calculated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore; Carboidrati per differenza meno fibra; approssimazione, non analisi dei carboidrati realmente digeribili"
+        },
+        "fiber": {
+          "value": 1.1,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "moisture": {
+          "value": 93.69,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "linoleic_acid": {
+          "value": "NA"
+        },
+        "ala": {
+          "value": "NA"
+        },
+        "epa": {
+          "value": "NA"
+        },
+        "dha": {
+          "value": "NA"
+        },
+        "epa_dha": {
+          "value": "NA"
+        },
+        "omega3_total": {
+          "value": "NA"
+        },
+        "omega6_total": {
+          "value": "NA"
+        },
+        "arachidonic_acid": {
+          "value": "NA"
+        },
+        "calcium": {
+          "value": 15.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "phosphorus": {
+          "value": 30.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "potassium": {
+          "value": 230.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "sodium": {
+          "value": 1.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "chloride": {
+          "value": "NA"
+        },
+        "magnesium": {
+          "value": 9.0,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "copper": {
+          "value": 0.091,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "iodine": {
+          "value": "NA"
+        },
+        "iron": {
+          "value": 0.57,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "manganese": {
+          "value": 0.089,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "selenium_wet": {
+          "value": 0.2,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "zinc": {
+          "value": 0.23,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "vitamin_a": {
+          "value": "NA"
+        },
+        "vitamin_d": {
+          "value": "NA"
+        },
+        "vitamin_e": {
+          "value": 1.06,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore; Fonte espressa in mg alfa-tocoferolo o equivalenti; conversione in IU FEDIAF necessita scelta chimica esplicita Conversione convenzionale di progetto per alpha-tocopherol USDA.",
+          "form": "d_alpha_tocopherol"
+        },
+        "vitamin_b1": {
+          "value": 0.031,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "vitamin_b2": {
+          "value": 0.078,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "vitamin_b3": {
+          "value": 0.413,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "vitamin_b5": {
+          "value": 0.201,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "vitamin_b6": {
+          "value": 0.044,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "vitamin_b9": {
+          "value": 8.5,
+          "unit": "µg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "vitamin_b12": {
+          "value": "NA"
+        },
+        "choline": {
+          "value": "NA"
+        },
+        "vitamin_c": {
+          "value": 4.7,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "vitamin_b7": {
+          "value": "NA"
+        },
+        "vitamin_k": {
+          "value": "NA"
+        },
+        "arginine": {
+          "value": 0.039,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "histidine": {
+          "value": 0.011,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "isoleucine": {
+          "value": 0.023,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "leucine": {
+          "value": 0.034,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "lysine": {
+          "value": 0.039,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "methionine": {
+          "value": 0.008,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "methionine_cystine": {
+          "value": "NA"
+        },
+        "phenylalanine": {
+          "value": 0.023,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "phenylalanine_tyrosine": {
+          "value": "NA"
+        },
+        "threonine": {
+          "value": 0.021,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "tryptophan": {
+          "value": 0.009,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "valine": {
+          "value": 0.025,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "taurine": {
+          "value": "NA"
+        },
+        "l_carnitine": {
+          "value": "NA"
+        },
+        "cystine": {
+          "value": 0.002,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "tyrosine": {
+          "value": 0.03,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "energy_food_kcal": {
+          "value": 20.0,
+          "unit": "kcal",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore; Valore alimentare USDA destinato all'uomo: non assumere automaticamente come energia metabolizzabile del cane"
+        },
+        "carbohydrate_by_difference": {
+          "value": 4.89,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore;"
+        },
+        "c18_2_undifferentiated": {
+          "value": 0.002,
+          "unit": "g",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore; Acido grasso 18:2 non distinto per isomero, NON considerare misura specifica certificata di linoleico n-6"
+        },
+        "c20_4_undifferentiated": {
+          "value": "NA"
+        },
+        "vitamin_a_retinol_ug": {
+          "value": "NA"
+        },
+        "vitamin_a_carotenoid_iu": {
+          "value": 1082.0,
+          "unit": "IU (carotenoids; human labeling)",
+          "status": "estimated",
+          "basis": "per_100g",
+          "source": "USDA SR (legacy NDB 11423, FDC 168449); bollita, proxy vapore; dataset fornito il 16/10/2026",
+          "method": "Profilo tipico USDA usato come proxy, non analisi del lotto. Zucca cultivar e cottura specifica non accertate; Proxy di cottura bollita/scolata, da verificare per vapore; IU fonte umana da carotenoidi, NON equiparare a vitamina A retinolo per cane e non sommare a IU FEDIAF"
+        },
+        "beta_carotene_ug": {
+          "value": "NA"
+        }
+      }
+    }
+  ]
+}

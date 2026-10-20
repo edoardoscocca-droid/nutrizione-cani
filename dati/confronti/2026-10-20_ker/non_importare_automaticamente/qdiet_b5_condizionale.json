@@ -1,0 +1,21 @@
+{
+  "supplements": [
+    {
+      "id": "qdiet",
+      "dose_unit": "g",
+      "label_source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf",
+      "nutrients": {
+        "vitamin_b5": {
+          "value": 414.07555089192,
+          "unit": "mg",
+          "status": "estimated",
+          "basis": "per_kg",
+          "source": "https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf ; PubChem CID443753 e CID6613",
+          "method": "Stima CONDIZIONALE: originale 450 mg/kg di calcio D-pantotenato; assumendo sale anidro e massa riferita al sale attivo, fattore=2×219,23/476,5=0.920167890871. Non sommare ai 450 mg originari. La forma/purezza dell’additivo nel prodotto non è documentata; non analisi totale.",
+          "declared_total_or_added": "added",
+          "form": "calcium_d_pantothenate"
+        }
+      }
+    }
+  ]
+}
