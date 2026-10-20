@@ -236,7 +236,7 @@ export function NutrientList({ audit }: { audit: AuditResult }) {
       ))}
       {rows.length === 0 && <T muted>Niente da segnalare.</T>}
       <Legend />
-      {open && <NutrientDetail row={open} kcal={audit.kcal} onClose={() => setOpen(null)} />}
+      {open && <NutrientDetail row={open} kcal={audit.kcal} vitaminA={audit.totals.vitaminA} onClose={() => setOpen(null)} />}
     </View>
   );
 }
@@ -256,7 +256,7 @@ export function Legend() {
   );
 }
 
-function NutrientDetail({ row, kcal, onClose }: { row: CheckRow; kcal: number | null; onClose: () => void }) {
+function NutrientDetail({ row, kcal, vitaminA, onClose }: { row: CheckRow; kcal: number | null; vitaminA?: AuditResult['totals']['vitaminA']; onClose: () => void }) {
   return (
     <Sheet visible title={row.label} onClose={onClose}>
       <Row>
@@ -315,6 +315,17 @@ function NutrientDetail({ row, kcal, onClose }: { row: CheckRow; kcal: number | 
         <Box color="grey">
           <T small>Non dichiarato in etichetta (sconosciuto, non zero) da: {row.undeclaredFrom.join(', ')}. Il totale comprende solo i valori dichiarati.</T>
         </Box>
+      )}
+      {row.metric === 'vitamin_a' && vitaminA && (
+        <Card>
+          <H level={3}>Come si forma la vitamina A</H>
+          <T small>Preformata (retinolo, esteri): {smart(vitaminA.preformed)} UI{vitaminA.preformedUnknown.length ? ` · sconosciuta per ${vitaminA.preformedUnknown.join(', ')}` : ''}</T>
+          <T small>
+            Dal beta-carotene: {smart(vitaminA.betaCaroteneMg)} mg × 833 = {smart(vitaminA.fromBetaCarotene)} UI
+            {vitaminA.betaCaroteneUnknown.length ? ` · sconosciuto per ${vitaminA.betaCaroteneUnknown.join(', ')}` : ''}
+          </T>
+          <T small muted>Fattore FEDIAF 2025 (tab. VII-14) per il cane. Le UI «per uso umano» da carotenoidi e gli altri carotenoidi non sono conteggiati.</T>
+        </Card>
       )}
       {row.contributions.length > 0 && (
         <Card>

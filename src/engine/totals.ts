@@ -8,6 +8,7 @@
 //    composizione dichiarata; il totale è un limite inferiore e la verifica lo segnala come incertezza.
 
 import type { EnergyFactors, Food, Nutrient, RecipeItem, Supplement } from './types';
+import { vitaminAFrom } from './vitaminA';
 
 export interface ItemData {
   item: RecipeItem;
@@ -134,6 +135,8 @@ export function compoundValue(nutrients: Record<string, { value: number | null }
 }
 
 export function itemValue(d: ItemData, nutrientId: string): number | null {
+  // vitamina A del cane: preformata + beta-carotene × fattore FEDIAF (src/engine/vitaminA.ts)
+  if (nutrientId === 'vitamin_a') return vitaminAFrom(d.valuePerQty('vitamin_a'), d.valuePerQty('beta_carotene_ug')).known;
   const direct = d.valuePerQty(nutrientId);
   if (direct !== null) return direct;
   const pair = COMPOUNDS[nutrientId];
@@ -158,6 +161,18 @@ export function totalNutrient(items: ItemData[], nutrientId: string): Total {
   const t = sum(items, (d) => itemValue(d, nutrientId));
   const lb = (d: ItemData, id: string): boolean => !!d.lowerBound?.(id) || (d.valuePerQty(id) === null && !!COMPOUNDS[id] && COMPOUNDS[id].some((p) => lb(d, p)));
   t.lowerBoundFrom = items.filter((d) => d.item.qty > 0 && d.kind === 'supplement' && itemValue(d, nutrientId) !== null && lb(d, nutrientId)).map((d) => d.name);
+  if (nutrientId === 'vitamin_a') {
+    // una parte nota e l'altra sconosciuta: la parte nota conta, l'altra resta sconosciuta (non zero)
+    for (const d of items) {
+      if (!(d.item.qty > 0)) continue;
+      const v = vitaminAFrom(d.valuePerQty('vitamin_a'), d.valuePerQty('beta_carotene_ug'));
+      if (v.known === null || v.complete) continue;
+      if (d.kind === 'food') {
+        t.complete = false;
+        t.missingFrom.push(d.name);
+      } else t.undeclaredFrom.push(d.name);
+    }
+  }
   const parts = GROUP_PARTS[nutrientId];
   if (parts) {
     // integratore senza il totale di gruppo ma con le parti: le parti dichiarate contano come minimo noto
@@ -188,6 +203,8 @@ export interface RecipeTotals {
   energy: Total;
   nutrients: Record<string, Total>;
   derived: Record<string, DerivedValue>;
+  /** come si forma la vitamina A del cane: preformata + beta-carotene convertito (UI/die), parti sconosciute. */
+  vitaminA?: { preformed: number; fromBetaCarotene: number; betaCaroteneMg: number; preformedUnknown: string[]; betaCaroteneUnknown: string[] };
 }
 
 function ratio(num: Total, den: Total, label: string): DerivedValue {
@@ -284,5 +301,18 @@ export function computeTotals(items: ItemData[], nutrients: Nutrient[], legacyFa
     derived[id] = { value, complete: true };
   }
   void legacyFactors;
-  return { energy, nutrients: out, derived };
+  const vitaminA = { preformed: 0, fromBetaCarotene: 0, betaCaroteneMg: 0, preformedUnknown: [] as string[], betaCaroteneUnknown: [] as string[] };
+  for (const d of items) {
+    if (!(d.item.qty > 0)) continue;
+    const pre = d.valuePerQty('vitamin_a');
+    const bc = d.valuePerQty('beta_carotene_ug');
+    if (pre === null) vitaminA.preformedUnknown.push(d.name);
+    else vitaminA.preformed += pre * d.item.qty;
+    if (bc === null) vitaminA.betaCaroteneUnknown.push(d.name);
+    else {
+      vitaminA.betaCaroteneMg += (bc * d.item.qty) / 1000;
+      vitaminA.fromBetaCarotene += vitaminAFrom(null, bc).known! * d.item.qty;
+    }
+  }
+  return { energy, nutrients: out, derived, vitaminA };
 }

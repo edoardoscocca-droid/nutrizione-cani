@@ -23,6 +23,8 @@ Quantità bloccate: Macinato di manzo crudo 3% grassi 560 g; Avena in fiocchi se
 
 **Stato dell’analisi: Bozza parziale: dati mancanti, non interamente verificabile** — vincoli sui contributi noti; verifica nutrizionale incompleta.
 
+**Vitamina A (cane)**: preformata 3324,6667 UI (sconosciuta per Carota cotta al vapore (proxy USDA bollita), Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639)) + beta-carotene 7,4988 mg × 833 = 6246,5004 UI (sconosciuto per Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Q.Diet Compensa (standard, NON Crescita/Ultra), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639)) → totale noto 9571,1671 UI. Il pacchetto non convertiva il beta-carotene: la differenza attesa è il solo contributo del beta-carotene.
+
 ### Apporti noti giornalieri: pacchetto contro app
 
 | Grandezza | Pacchetto | App | Differenza | Dati sconosciuti o parziali (app) |
@@ -53,7 +55,7 @@ Quantità bloccate: Macinato di manzo crudo 3% grassi 560 g; Avena in fiocchi se
 | Manganese (mg) | 7,7255 | 7,7255 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Selenio (diete umide) (µg) | 180,65 | 180,65 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Zinco (mg) | 59,005 | 59,005 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
-| Vitamina A (IU) | 3324,6667 | 3324,6667 | 0 | mancante in Carota cotta al vapore (proxy USDA bollita); non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
+| **Vitamina A (IU)** | 3324,6667 | 9571,1671 | 6246,5004 | mancante in Carota cotta al vapore (proxy USDA bollita); non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639), Q.Diet Compensa (standard, NON Crescita/Ultra); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Vitamina D (IU) | 341,8 | 341,8 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Vitamina E (IU) | 44,4119 | 44,4119 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Vitamina B1 / tiamina (mg) | 1,724 | 1,724 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
@@ -156,6 +158,8 @@ Quantità bloccate: Macinato di manzo crudo 3% grassi 560 g; Avena in fiocchi se
 
 **Stato dell’analisi: Bozza parziale: dati mancanti, non interamente verificabile** — vincoli sui contributi noti; verifica nutrizionale incompleta.
 
+**Vitamina A (cane)**: preformata 3324,6667 UI (sconosciuta per Zucca cotta al vapore (proxy USDA bollita), Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639)) + beta-carotene 1,8864 mg × 833 = 1571,3712 UI (sconosciuto per Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Q.Diet Compensa (standard, NON Crescita/Ultra), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639)) → totale noto 4896,0379 UI. Il pacchetto non convertiva il beta-carotene: la differenza attesa è il solo contributo del beta-carotene.
+
 ### Apporti noti giornalieri: pacchetto contro app
 
 | Grandezza | Pacchetto | App | Differenza | Dati sconosciuti o parziali (app) |
@@ -186,7 +190,7 @@ Quantità bloccate: Macinato di manzo crudo 3% grassi 560 g; Avena in fiocchi se
 | Manganese (mg) | 7,6661 | 7,6661 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Selenio (diete umide) (µg) | 180,2 | 180,2 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Zinco (mg) | 59,032 | 59,032 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
-| Vitamina A (IU) | 3324,6667 | 3324,6667 | 0 | mancante in Zucca cotta al vapore (proxy USDA bollita); non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
+| **Vitamina A (IU)** | 3324,6667 | 4896,0379 | 1571,3712 | mancante in Zucca cotta al vapore (proxy USDA bollita); non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639), Q.Diet Compensa (standard, NON Crescita/Ultra); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Vitamina D (IU) | 341,8 | 341,8 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Vitamina E (IU) | 44,1035 | 44,1035 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Vitamina B1 / tiamina (mg) | 1,6925 | 1,6925 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
@@ -289,6 +293,8 @@ Quantità bloccate: Macinato di manzo crudo 5% grassi — proxy USDA 560 g; Aven
 
 **Stato dell’analisi: Bozza parziale: dati mancanti, non interamente verificabile** — vincoli sui contributi noti; verifica nutrizionale incompleta.
 
+**Vitamina A (cane)**: preformata 3324,6667 UI (sconosciuta per Carota cotta al vapore (proxy USDA bollita), Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639)) + beta-carotene 7,4988 mg × 833 = 6246,5004 UI (sconosciuto per Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Q.Diet Compensa (standard, NON Crescita/Ultra), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639)) → totale noto 9571,1671 UI. Il pacchetto non convertiva il beta-carotene: la differenza attesa è il solo contributo del beta-carotene.
+
 ### Apporti noti giornalieri: pacchetto contro app
 
 | Grandezza | Pacchetto | App | Differenza | Dati sconosciuti o parziali (app) |
@@ -319,7 +325,7 @@ Quantità bloccate: Macinato di manzo crudo 5% grassi — proxy USDA 560 g; Aven
 | Manganese (mg) | 7,7255 | 7,7255 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Selenio (diete umide) (µg) | 178,97 | 178,97 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Zinco (mg) | 58,333 | 58,333 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
-| Vitamina A (IU) | 3324,6667 | 3324,6667 | 0 | mancante in Carota cotta al vapore (proxy USDA bollita); non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
+| **Vitamina A (IU)** | 3324,6667 | 9571,1671 | 6246,5004 | mancante in Carota cotta al vapore (proxy USDA bollita); non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639), Q.Diet Compensa (standard, NON Crescita/Ultra); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Vitamina D (IU) | 341,8 | 341,8 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Vitamina E (IU) | 44,4119 | 44,4119 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Vitamina B1 / tiamina (mg) | 1,724 | 1,724 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
@@ -423,6 +429,8 @@ Quantità bloccate: Macinato di manzo crudo 5% grassi — proxy USDA 560 g; Aven
 
 **Stato dell’analisi: Bozza parziale: dati mancanti, non interamente verificabile** — vincoli sui contributi noti; verifica nutrizionale incompleta.
 
+**Vitamina A (cane)**: preformata 3324,6667 UI (sconosciuta per Zucca cotta al vapore (proxy USDA bollita), Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639)) + beta-carotene 1,8864 mg × 833 = 1571,3712 UI (sconosciuto per Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Q.Diet Compensa (standard, NON Crescita/Ultra), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639)) → totale noto 4896,0379 UI. Il pacchetto non convertiva il beta-carotene: la differenza attesa è il solo contributo del beta-carotene.
+
 ### Apporti noti giornalieri: pacchetto contro app
 
 | Grandezza | Pacchetto | App | Differenza | Dati sconosciuti o parziali (app) |
@@ -453,7 +461,7 @@ Quantità bloccate: Macinato di manzo crudo 5% grassi — proxy USDA 560 g; Aven
 | Manganese (mg) | 7,6661 | 7,6661 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Selenio (diete umide) (µg) | 178,52 | 178,52 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Zinco (mg) | 58,36 | 58,36 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
-| Vitamina A (IU) | 3324,6667 | 3324,6667 | 0 | mancante in Zucca cotta al vapore (proxy USDA bollita); non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
+| **Vitamina A (IU)** | 3324,6667 | 4896,0379 | 1571,3712 | mancante in Zucca cotta al vapore (proxy USDA bollita); non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639), Q.Diet Compensa (standard, NON Crescita/Ultra); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Vitamina D (IU) | 341,8 | 341,8 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Vitamina E (IU) | 44,1035 | 44,1035 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Vitamina B1 / tiamina (mg) | 1,6925 | 1,6925 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
@@ -557,6 +565,8 @@ Quantità bloccate: Macinato di manzo crudo 10% grassi — proxy USDA 560 g; Ave
 
 **Stato dell’analisi: Bozza parziale: dati mancanti, non interamente verificabile** — vincoli sui contributi noti; verifica nutrizionale incompleta.
 
+**Vitamina A (cane)**: preformata 3324,6667 UI (sconosciuta per Carota cotta al vapore (proxy USDA bollita), Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639)) + beta-carotene 7,4988 mg × 833 = 6246,5004 UI (sconosciuto per Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Q.Diet Compensa (standard, NON Crescita/Ultra), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639)) → totale noto 9571,1671 UI. Il pacchetto non convertiva il beta-carotene: la differenza attesa è il solo contributo del beta-carotene.
+
 ### Apporti noti giornalieri: pacchetto contro app
 
 | Grandezza | Pacchetto | App | Differenza | Dati sconosciuti o parziali (app) |
@@ -587,7 +597,7 @@ Quantità bloccate: Macinato di manzo crudo 10% grassi — proxy USDA 560 g; Ave
 | Manganese (mg) | 7,7255 | 7,7255 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Selenio (diete umide) (µg) | 174,49 | 174,49 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Zinco (mg) | 56,653 | 56,653 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
-| Vitamina A (IU) | 3324,6667 | 3324,6667 | 0 | mancante in Carota cotta al vapore (proxy USDA bollita); non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
+| **Vitamina A (IU)** | 3324,6667 | 9571,1671 | 6246,5004 | mancante in Carota cotta al vapore (proxy USDA bollita); non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639), Q.Diet Compensa (standard, NON Crescita/Ultra); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Vitamina D (IU) | 341,8 | 341,8 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Vitamina E (IU) | 44,4119 | 44,4119 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Vitamina B1 / tiamina (mg) | 1,7296 | 1,7296 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
@@ -691,6 +701,8 @@ Quantità bloccate: Macinato di manzo crudo 10% grassi — proxy USDA 560 g; Ave
 
 **Stato dell’analisi: Bozza parziale: dati mancanti, non interamente verificabile** — vincoli sui contributi noti; verifica nutrizionale incompleta.
 
+**Vitamina A (cane)**: preformata 3324,6667 UI (sconosciuta per Zucca cotta al vapore (proxy USDA bollita), Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639)) + beta-carotene 1,8864 mg × 833 = 1571,3712 UI (sconosciuto per Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Q.Diet Compensa (standard, NON Crescita/Ultra), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639)) → totale noto 4896,0379 UI. Il pacchetto non convertiva il beta-carotene: la differenza attesa è il solo contributo del beta-carotene.
+
 ### Apporti noti giornalieri: pacchetto contro app
 
 | Grandezza | Pacchetto | App | Differenza | Dati sconosciuti o parziali (app) |
@@ -721,7 +733,7 @@ Quantità bloccate: Macinato di manzo crudo 10% grassi — proxy USDA 560 g; Ave
 | Manganese (mg) | 7,6661 | 7,6661 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Selenio (diete umide) (µg) | 174,04 | 174,04 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Zinco (mg) | 56,68 | 56,68 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
-| Vitamina A (IU) | 3324,6667 | 3324,6667 | 0 | mancante in Zucca cotta al vapore (proxy USDA bollita); non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
+| **Vitamina A (IU)** | 3324,6667 | 4896,0379 | 1571,3712 | mancante in Zucca cotta al vapore (proxy USDA bollita); non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639), Q.Diet Compensa (standard, NON Crescita/Ultra); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Vitamina D (IU) | 341,8 | 341,8 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Vitamina E (IU) | 44,1035 | 44,1035 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
 | Vitamina B1 / tiamina (mg) | 1,6981 | 1,6981 | 0 | non dichiarato da Grau — Farina d’ossa naturale (Ca 22,6%, P 17,7%), Omegor Vitality 1000 (capsula), Erbavoglio — Cuticola di Psillio Bio (EAN 8021354007639); solo «added»: Q.Diet Compensa (standard, NON Crescita/Ultra) |
@@ -839,9 +851,9 @@ Valori canonici dei prodotti già presenti, prima (catalogo attuale della prova 
 
 | Scenario | Energia app (kcal) | Δ energia | Differenze negli apporti noti (app − pacchetto) | Esiti dei minimi coincidenti | Stato dell’analisi |
 |---|---:|---:|---|---:|---|
-| beef_03_carrot_cooked | 1208,9 | 0 | nessuna | 38/38 | Bozza parziale: dati mancanti, non interamente verificabile |
-| beef_03_pumpkin_cooked | 1202,75 | 0 | nessuna | 38/38 | Bozza parziale: dati mancanti, non interamente verificabile |
-| beef_05_carrot_cooked | 1296,93 | 0 | nessuna | 38/38 | Bozza parziale: dati mancanti, non interamente verificabile |
-| beef_05_pumpkin_cooked | 1290,78 | 0 | nessuna | 38/38 | Bozza parziale: dati mancanti, non interamente verificabile |
-| beef_10_carrot_cooked | 1517,35 | 0 | nessuna | 37/38 | Bozza parziale: dati mancanti, non interamente verificabile |
-| beef_10_pumpkin_cooked | 1511,2 | 0 | nessuna | 37/38 | Bozza parziale: dati mancanti, non interamente verificabile |
+| beef_03_carrot_cooked | 1208,9 | 0 | Vitamina A 6246,5004 IU (= beta-carotene convertito, atteso) | 38/38 | Bozza parziale: dati mancanti, non interamente verificabile |
+| beef_03_pumpkin_cooked | 1202,75 | 0 | Vitamina A 1571,3712 IU (= beta-carotene convertito, atteso) | 38/38 | Bozza parziale: dati mancanti, non interamente verificabile |
+| beef_05_carrot_cooked | 1296,93 | 0 | Vitamina A 6246,5004 IU (= beta-carotene convertito, atteso) | 38/38 | Bozza parziale: dati mancanti, non interamente verificabile |
+| beef_05_pumpkin_cooked | 1290,78 | 0 | Vitamina A 1571,3712 IU (= beta-carotene convertito, atteso) | 38/38 | Bozza parziale: dati mancanti, non interamente verificabile |
+| beef_10_carrot_cooked | 1517,35 | 0 | Vitamina A 6246,5004 IU (= beta-carotene convertito, atteso) | 37/38 | Bozza parziale: dati mancanti, non interamente verificabile |
+| beef_10_pumpkin_cooked | 1511,2 | 0 | Vitamina A 1571,3712 IU (= beta-carotene convertito, atteso) | 37/38 | Bozza parziale: dati mancanti, non interamente verificabile |

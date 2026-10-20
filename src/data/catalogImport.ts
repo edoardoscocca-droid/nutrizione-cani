@@ -825,6 +825,11 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
       continue;
     }
     const raw0 = value;
+    // vitamina A = solo preformata (retinolo, esteri): il beta-carotene ha il suo campo e il motore lo converte una volta sola
+    if (nut.id === 'vitamin_a' && /carot/i.test(v.form ?? '')) {
+      err(`${nut.label}: forma «${v.form}» — il beta-carotene va in beta_carotene_ug (µg); la vitamina A dichiarata è solo quella preformata. Il contributo del beta-carotene è calcolato dal motore (FEDIAF 2025, 1 mg = 833 UI): inserirlo anche qui lo conterebbe due volte.`);
+      continue;
+    }
     if (!v.unit) {
       err(`${nut.label}: unità mancante (attesa ${nut.unit} o un’unità di massa convertibile).`);
       continue;

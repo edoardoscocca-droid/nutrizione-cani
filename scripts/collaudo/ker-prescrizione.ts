@@ -154,9 +154,15 @@ for (const exp of expected) {
     const rel = appV === null ? null : Math.abs(d!) / Math.max(Math.abs(expCanon), 1e-9);
     const note = [t?.missingFrom.length ? `mancante in ${t.missingFrom.join(', ')}` : '', t?.undeclaredFrom.length ? `non dichiarato da ${t.undeclaredFrom.join(', ')}` : '', t?.lowerBoundFrom.length ? `solo «added»: ${t.lowerBoundFrom.join(', ')}` : ''].filter(Boolean).join('; ');
     const ok = rel !== null && (rel <= 1e-4 || Math.abs(d!) <= 1e-6);
-    if (!ok) diffs.push(`${nut.label} ${fmt(d)} ${nut.unit}`);
+    // vitamina A: dal 20/10 il motore aggiunge il beta-carotene × 833 UI/mg (FEDIAF), che il pacchetto non convertiva
+    const expectedBc = n === 'vitamin_a' && a.totals.vitaminA ? a.totals.vitaminA.fromBetaCarotene : null;
+    const explained = !ok && expectedBc !== null && d !== null && Math.abs(d - expectedBc) <= 1e-6 * Math.max(expectedBc, 1);
+    if (!ok) diffs.push(`${nut.label} ${fmt(d)} ${nut.unit}${explained ? ' (= beta-carotene convertito, atteso)' : ''}`);
     rows.push(`| ${ok ? '' : '**'}${nut.label} (${nut.unit})${ok ? '' : '**'} | ${fmt(expCanon)} | ${fmt(appV)} | ${fmt(d)} | ${note || '—'} |`);
   }
+  const va = a.totals.vitaminA!;
+  o(`**Vitamina A (cane)**: preformata ${fmt(va.preformed)} UI${va.preformedUnknown.length ? ` (sconosciuta per ${va.preformedUnknown.join(', ')})` : ''} + beta-carotene ${fmt(va.betaCaroteneMg)} mg × 833 = ${fmt(va.fromBetaCarotene)} UI${va.betaCaroteneUnknown.length ? ` (sconosciuto per ${va.betaCaroteneUnknown.join(', ')})` : ''} → totale noto ${fmt(a.totals.nutrients.vitamin_a.known)} UI. Il pacchetto non convertiva il beta-carotene: la differenza attesa è il solo contributo del beta-carotene.`);
+  o();
   o('### Apporti noti giornalieri: pacchetto contro app');
   o();
   o('| Grandezza | Pacchetto | App | Differenza | Dati sconosciuti o parziali (app) |');

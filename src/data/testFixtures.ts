@@ -14,6 +14,8 @@ const ALL_IDS = [
   'vitamin_b1', 'vitamin_b2', 'vitamin_b3', 'vitamin_b5', 'vitamin_b6', 'vitamin_b9', 'vitamin_b12', 'choline',
   'vitamin_c', 'vitamin_b7', 'vitamin_k', 'arginine', 'histidine', 'isoleucine', 'leucine', 'lysine', 'methionine',
   'methionine_cystine', 'phenylalanine', 'phenylalanine_tyrosine', 'threonine', 'tryptophan', 'valine', 'taurine', 'l_carnitine',
+  // beta-carotene 0: nei dati fittizi «vitamin_a» è già l'attività totale (nessun contributo da convertire)
+  'beta_carotene_ug',
 ];
 
 function values(p: Profile): Record<string, NutrientValue> {

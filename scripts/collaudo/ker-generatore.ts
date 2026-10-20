@@ -101,6 +101,28 @@ if (a) {
   p(`- Noti: proteine ${fmt(n.protein.known, 1)} g; grassi ${fmt(n.fat.known, 1)} g; fibra ${fmt(n.fiber.known, 1)} g; calcio ${fmt(n.calcium.known, 3)} g; fosforo ${fmt(n.phosphorus.known, 3)} g (Ca/P sui noti ${fmt(n.calcium.known / n.phosphorus.known, 3)}; ${d.ca_p_ratio?.complete === false ? 'rapporto non verificabile' : 'rapporto verificabile'}); vitamina D ${fmt(n.vitamin_d.known, 1)} UI; iodio ${fmt(n.iodine.known, 3)} mg; EPA+DHA ${fmt(n.epa_dha.known * 1000, 0)} mg; linoleico identificato ${fmt(n.linoleic_acid.known, 2)} g; ALA ${fmt(n.ala.known, 2)} g.`);
   for (const e of a.energySources ?? []) if (e.partial !== null && e.partial !== undefined) p(`- ${e.name}: EM completa sconosciuta; dai macronutrienti dichiarati ${fmt(e.partial, 4)} ${e.basis} (contributo parziale escluso dal totale).`);
   for (const dc of a.doseChecks ?? []) p(`- Tabella d’impiego — ${dc.message}`);
+  const va = a.totals.vitaminA!;
+  p(`- **Vitamina A (cane)**: preformata ${fmt(va.preformed, 1)} UI${va.preformedUnknown.length ? ` (sconosciuta per ${va.preformedUnknown.join(', ')})` : ''} + beta-carotene ${fmt(va.betaCaroteneMg, 3)} mg × 833 = ${fmt(va.fromBetaCarotene, 1)} UI${va.betaCaroteneUnknown.length ? ` (sconosciuto per ${va.betaCaroteneUnknown.join(', ')})` : ''} → totale noto ${fmt(n.vitamin_a.known, 1)} UI; minimo ${fmt(1754 * Math.max(1340, a.totals.energy.known) / 1000, 1)} UI.`);
+  p();
+  // linoleico: chi lo apporta, chi è sconosciuto, quanto lino è dettato dal minimo
+  const la = n.linoleic_acid;
+  const req = (3.82 * Math.max(1340, a.totals.energy.known)) / 1000;
+  const flax = copy.foods.find((f) => f.id === 'flaxseed_oil')!;
+  const flaxLa = (flax.nutrients.linoleic_acid?.value ?? 0) / 100;
+  const flaxAla = (flax.nutrients.ala?.value ?? 0) / 100;
+  const flaxQty = r.items.find((x) => x.id === 'flaxseed_oil')?.qty ?? 0;
+  const others = la.contributions.filter((c) => c.name !== flax.name).reduce((x, c) => x + c.amount, 0);
+  p('### Linoleico (18:2 n-6 identificato)');
+  p();
+  p(`Minimo FEDIAF 3,82 g/1000 kcal su ${fmt(Math.max(1340, a.totals.energy.known), 1)} kcal = **${fmt(req, 3)} g/die**. Il 18:2 non differenziato delle fonti non è equiparato al linoleico.`);
+  p();
+  p('| Ingrediente | Linoleico noto (g/die) |');
+  p('|---|---:|');
+  for (const c of [...la.contributions].sort((x, y) => y.amount - x.amount)) p(`| ${c.name} | ${fmt(c.amount, 3)} |`);
+  p();
+  p(`Sconosciuto (non zero) in: ${[...la.missingFrom, ...la.undeclaredFrom].join(', ') || 'nessuno'}.`);
+  p(`Olio di lino: ${fmt(flaxLa * 100, 2)} g di linoleico e ${fmt(flaxAla * 100, 2)} g di ALA per 100 g. Linoleico noto dagli altri ingredienti usati: ${fmt(others, 3)} g → lino necessario per dimostrare il minimo con i soli dati noti: (${fmt(req, 3)} − ${fmt(others, 3)}) / ${fmt(flaxLa, 4)} = **${fmt(Math.max(0, req - others) / flaxLa, 1)} g**; quantità nella soluzione ${fmt(flaxQty, 1)} g (ALA ${fmt(flaxQty * flaxAla, 2)} g). ${Math.abs(flaxQty - Math.max(0, req - others) / flaxLa) <= 1.01 ? 'La quantità di lino è determinata da questo vincolo' : 'La quantità di lino non è determinata solo da questo vincolo'}: non è una dose consigliata, ma il minimo dimostrabile finché il linoleico di carne, avena e verdure resta sconosciuto.`);
+  p();
   p();
   p('### Controlli: preferenze, non verificabili, non rispettati');
   p();

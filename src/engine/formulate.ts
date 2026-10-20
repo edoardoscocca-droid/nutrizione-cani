@@ -6,6 +6,7 @@
 
 import { foodStatus, supplementStatus } from './catalogStatus';
 import { COMPOUNDS } from './totals';
+import { vitaminAParts } from './vitaminA';
 import { doseRangeFor, weightSpan } from './doseGuide';
 import { fediafReferenceKcal } from './energy';
 import { applicableLimits, auditRecipe, type AuditResult, type DietMoisture, type SoftGap } from './audit';
@@ -103,6 +104,8 @@ interface ModelItem {
   kcal: number; // per passo (noto; per gli integratori senza kcal è 0 nel modello e la verifica lo segnala)
   macro: { protein: number; fat: number; carbohydrate: number } | null;
   value: (n: string) => number | null; // per passo
+  /** valore noto solo in parte (es. vitamina A con preformata o beta-carotene sconosciuti): dato incompleto. */
+  partial?: (n: string) => boolean;
   lb: number; // in passi
   ub: number | null;
   /** porzione minima se usato (in passi): 0 oppure almeno questa quantità. */
@@ -124,6 +127,8 @@ interface ModelItem {
 }
 
 function rawValue(nutrients: Record<string, { value: number | null } | undefined>, id: string): number | null {
+  // vitamina A del cane: preformata + beta-carotene × fattore FEDIAF (stessa regola della verifica)
+  if (id === 'vitamin_a') return vitaminAParts(nutrients).known;
   const v = nutrients[id]?.value;
   if (v !== null && v !== undefined) return v;
   const pair = COMPOUNDS[id];
@@ -223,6 +228,7 @@ function buildItems(input: FormulationInput, foods: FormulationInput['foods'], s
         const x = rawValue(food.nutrients, n);
         return x === null ? null : (x / 100) * step;
       },
+      partial: (n) => n === 'vitamin_a' && !vitaminAParts(food.nutrients).complete,
       ...portionBounds(constraint, step, practical),
       ub: constraint?.maxQty !== null && constraint?.maxQty !== undefined ? Math.floor(constraint.maxQty / step + 1e-9) : null,
       maxQty: constraint?.maxQty ?? null,
@@ -337,7 +343,7 @@ function buildRows(
   let devCount = 0;
   // gli integratori valgono per la composizione dichiarata (non dichiarato = sconosciuto, nel modello conta 0:
   // per i minimi e per i massimi i contributi noti sono un limite inferiore del vero totale)
-  const complete = (n: string) => items.every((it) => it.kind === 'supplement' || it.value(n) !== null);
+  const complete = (n: string) => items.every((it) => it.kind === 'supplement' || (it.value(n) !== null && !it.partial?.(n)));
   const coef = (n: string) => items.map((it) => ({ v: it.v, c: it.value(n) ?? 0 }));
   const minDaily = (n: string) => {
     const l = limits.find((x) => x.metric === n && x.limitClass === 'OFFICIAL_MIN' && x.basis === 'per_1000_kcal_me');
