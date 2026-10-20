@@ -700,7 +700,12 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
         else set('processingState', ps);
       }
       for (const k of ['speciesCut', 'preparation', 'ediblePortion', 'meMethod', 'source', 'sourceUrl', 'sourceVersion', 'uncertainty', 'notes'] as const) if (f[k] !== undefined) set(k, f[k]);
-      if (f.kcalMePer100g !== undefined) {
+      if (f.kcalMePer100g !== undefined && CLEAR_TOKENS.has(norm(f.kcalMePer100g))) {
+        // cancellazione esplicita di un valore errato: l'energia torna sconosciuta (o calcolata dal metodo), mai zero
+        set('kcalMePer100g', null);
+        set('meMethod', null);
+        it.warnings.push({ line: p.line, productId: p.id, message: 'Energia inserita cancellata (NA): torna sconosciuta o calcolata con il metodo energetico.' });
+      } else if (f.kcalMePer100g !== undefined) {
         const v = parseNumber(f.kcalMePer100g);
         if (v === null || Number.isNaN(v) || v < 0 || v > 900) err(`Energia «${f.kcalMePer100g}» non valida (kcal EM per 100 g, tra 0 e 900).`);
         else set('kcalMePer100g', v);
@@ -740,6 +745,12 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
       }
       for (const k of ['massPerUnitG', 'grossMassPerUnitG', 'kcalPerUnit', 'maxDailyUnits'] as const) {
         if (f[k] === undefined) continue;
+        if (k === 'kcalPerUnit' && CLEAR_TOKENS.has(norm(f[k]))) {
+          set('kcalPerUnit', null);
+          set('kcalOrigin', null);
+          it.warnings.push({ line: p.line, productId: p.id, message: 'Energia per dose cancellata (NA): torna sconosciuta (non zero).' });
+          continue;
+        }
         const v = parseNumber(f[k]);
         if (v === null || Number.isNaN(v) || v < 0 || (k !== 'kcalPerUnit' && v === 0)) err(`Valore «${f[k]}» non valido per ${k}.`);
         else set(k, v);

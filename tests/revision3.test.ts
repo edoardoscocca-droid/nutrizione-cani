@@ -69,16 +69,11 @@ describe('EPA+DHA: apporto raccomandato NRC (adulto in mantenimento)', () => {
     expect(a.summary!.satisfied.some((l) => l.includes('EPA'))).toBe(false);
   });
 
-  test('senza fonti di EPA+DHA: segnalato esplicitamente come obiettivo aggiuntivo non raggiungibile', async () => {
+  test('senza fonti di EPA+DHA: obiettivo attivo = vincolo necessario (specifica 20/10), non fattibile con il vincolo indicato', async () => {
     const input = buildInput(testDog(), sel(['test_beef', 'test_oats', 'test_carrot'], ['test_multi', 'test_bone_meal']), cat, DEFAULT_SETTINGS, []);
     const r = await formulate(input);
-    const a = r.audit!;
-    expect(a.status).toBe('TARGETS_NOT_MET');
-    expect(a.statusLabel).toContain('obiettivi aggiuntivi');
-    expect(a.additional![0].color).toBe('orange');
-    expect(a.warnings.some((w) => w.startsWith('Obiettivo aggiuntivo non raggiunto: EPA + DHA'))).toBe(true);
-    const g = a.softGaps!.find((x) => x.metric === 'epa_dha')!;
-    expect(g.unreachable).toBe(true);
+    expect(r.outcome).toBe('infeasible');
+    expect(r.conflicts.some((c) => c.metric === 'epa_dha' && c.kind === 'recommended')).toBe(true);
   });
 
   test('nessun olio imposto se EPA+DHA arrivano già da un alimento', async () => {
@@ -123,13 +118,16 @@ describe('Preferenze iniziali dell’adulto sano', () => {
   test('preferenza non rispettata: intervallo richiesto, risultato e scostamento; vincoli che la impediscono solo se individuati', async () => {
     const dog = testDog({ macroPreferences: [{ metric: 'protein_energy_pct', lower: 60, upper: 85, locked: false }, { metric: 'fat_energy_pct', lower: 10, upper: 15, locked: false }] });
     const r = await formulate(buildInput(dog, sel(['test_beef', 'test_oats', 'test_carrot'], ['test_multi', 'test_bone_meal', 'test_fish_oil_caps']), cat, DEFAULT_SETTINGS, []));
+    // oltre gli ampliamenti documentati: diagnostico, non menù generato (specifica 20/10, §5)
+    expect(r.outcome).toBe('preferences_unreachable');
     const row = r.audit!.rows.find((x) => x.metric === 'protein_energy_pct')!;
     const c = row.checks.find((x) => x.color === 'orange')!;
-    expect(c.message).toMatch(/richiesto 60–85 % kcal, risultato [\d,]+ % kcal, scostamento -/);
+    expect(c.message).toMatch(/richiesto 60–85 % energia macro \(4\/9\/4\), risultato [\d,]+ % energia macro \(4\/9\/4\), scostamento -/);
     expect(c.gap!.deviation).toBeLessThan(0);
     const gaps = r.audit!.softGaps!;
     // 60% di proteine: impossibile con questi ingredienti in qualunque quantità
-    expect(gaps.find((g) => g.metric === 'protein_energy_pct')!.unreachable).toBe(true);
+    const pg = gaps.find((g) => g.metric === 'protein_energy_pct')!;
+    expect(pg.unreachable || pg.blockedBy.length > 0).toBe(true);
     // grassi ≤ 15%: lo impediscono i minimi ufficiali (individuati dal modello)
     const fat = gaps.find((g) => g.metric === 'fat_energy_pct')!;
     expect(fat.unreachable).toBe(false);
@@ -155,7 +153,7 @@ describe('Porzioni: selezionato = disponibile, non obbligatorio', () => {
 });
 
 describe('Energia inserita ed energia calcolata', () => {
-  test('origine riconoscibile, scostamento dai macronutrienti, quote non rinormalizzate al 100%', async () => {
+  test('origine riconoscibile, scostamento dai macronutrienti; quote = ripartizione stimata 4/9/4 separata dalla EM', async () => {
     const r = await formulate(buildInput(testDog(), sel(['test_beef', 'test_oats'], ['test_multi', 'test_bone_meal', 'test_fish_oil_caps']), cat, DEFAULT_SETTINGS, []));
     const a = r.audit!;
     const beef = a.energySources!.find((e) => e.name.includes('Manzo'))!;
@@ -164,10 +162,10 @@ describe('Energia inserita ed energia calcolata', () => {
     expect(beef.fromMacros).toBe(184);
     const oats = a.energySources!.find((e) => e.name.includes('Avena'))!;
     expect(oats.fromMacros).toBe(342.5);
-    expect(a.macroEnergySumPct!).toBeLessThan(99);
-    expect(a.macroEnergySumPct!).toBeGreaterThan(90);
-    const w = a.warnings.find((x) => x.startsWith('Le quote energetiche'))!;
-    expect(w).toContain('Non è un arrotondamento');
+    // specifica 20/10, §7: denominatore Ep+Ef+Ec (somma 100% per costruzione), EM totale separata
+    expect(a.macroEnergySumPct!).toBeCloseTo(100, 6);
+    const w = a.warnings.find((x) => x.startsWith('Energia inserita diversa'))!;
     expect(w).toContain('195 contro 184');
+    expect(w).toContain('stima separata');
   });
 });

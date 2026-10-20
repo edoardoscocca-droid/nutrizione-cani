@@ -5,7 +5,7 @@ import type { CustomThreshold, EnergyAssignment, EnergyMethod, Food, Supplement 
 import { applyEnergyMethods, resolveFoodEnergy } from '../engine/energy';
 import { DEFAULT_SETTINGS } from '../engine/types';
 import { MAX_RECIPES_PER_DOG, type AppSettings, type Dog, type Recipe, type RecipeVersion, type UserPrice, type WeightEntry } from './model';
-import { BREED_NOTES, CATEGORIES, packageFoods, packageReferences, packageSupplements } from './packageCatalog';
+import { BREED_NOTES, CATEGORIES, packageFoods, packageReferences, packageSupplements, withCatalogGaps } from './packageCatalog';
 import { RecipeLimitError } from './recipeService';
 import { uid, type FullCatalog, type ImportLogEntry, type ProfileHistoryEntry, type Repository } from './repository';
 import { foodStatus, supplementStatus } from '../engine/catalogStatus';
@@ -96,7 +96,7 @@ export class LocalRepository implements Repository {
     }
     cat.foods = override(cat.foods, this.store.foods);
     cat.supplements = override(cat.supplements, this.store.supplements);
-    return applyEnergyMethods(cat);
+    return withCatalogGaps(applyEnergyMethods(cat));
   }
 
   async listDogs() {

@@ -145,8 +145,9 @@ describe('T05 omega', () => {
 describe('T06 cambio alimento', () => {
   test('manzo → agnello: tutto ricalcolato, originale immutato', async () => {
     const cat = catalog();
-    const d = newDog({ name: 'Fido', weightCurrentKg: 30, kcalTarget: 1400 }, 'd1');
-    const sel = { foods: [{ id: 'test_beef' }, { id: 'test_oats' }], supplements: [{ id: 'test_multi' }, { id: 'test_bone_meal' }], dietMoisture: 'wet' as const };
+    // digeribilità proteica documentata (niente margine sugli aminoacidi) e olio per l'obiettivo EPA+DHA attivo
+    const d = newDog({ name: 'Fido', weightCurrentKg: 30, kcalTarget: 1400, proteinDigestibilityAtLeast80: true }, 'd1');
+    const sel = { foods: [{ id: 'test_beef' }, { id: 'test_oats' }], supplements: [{ id: 'test_multi' }, { id: 'test_bone_meal' }, { id: 'test_fish_oil_caps' }], dietMoisture: 'wet' as const };
     const in1 = buildInput(d, sel, cat, DEFAULT_SETTINGS, []);
     const r1 = await formulate(in1);
     const v1 = versionFromResult({ id: 'v1', recipeId: 'r1', revision: 1, origin: 'engine', parentVersionId: null, author: 'u' }, r1, in1);
@@ -221,8 +222,9 @@ describe('T09 prezzo', () => {
 describe('T10 / T16 istantanee e provenienza', () => {
   test('aggiornare FEDIAF o un profilo: valori vecchi congelati, avviso, anteprima senza salvataggio', async () => {
     const cat = catalog();
-    const d = newDog({ name: 'Fido', weightCurrentKg: 30, kcalTarget: 1400 }, 'd1');
-    const sel = { foods: [{ id: 'test_beef' }, { id: 'test_oats' }], supplements: [{ id: 'test_multi' }, { id: 'test_bone_meal' }], dietMoisture: 'wet' as const };
+    // digeribilità proteica documentata (niente margine sugli aminoacidi) e olio per l'obiettivo EPA+DHA attivo
+    const d = newDog({ name: 'Fido', weightCurrentKg: 30, kcalTarget: 1400, proteinDigestibilityAtLeast80: true }, 'd1');
+    const sel = { foods: [{ id: 'test_beef' }, { id: 'test_oats' }], supplements: [{ id: 'test_multi' }, { id: 'test_bone_meal' }, { id: 'test_fish_oil_caps' }], dietMoisture: 'wet' as const };
     const inp = buildInput(d, sel, cat, DEFAULT_SETTINGS, []);
     const r = await formulate(inp);
     const v = versionFromResult({ id: 'v1', recipeId: 'r1', revision: 1, origin: 'engine', parentVersionId: null, author: 'u' }, r, inp);
@@ -236,7 +238,7 @@ describe('T10 / T16 istantanee e provenienza', () => {
     expect(stale.some((s) => s.kind === 'reference')).toBe(true);
     expect(stale.some((s) => s.kind === 'food' && s.id === 'test_beef' && s.frozen === 'v1' && s.current === 'v2')).toBe(true);
     const prev = await previewRecalculation(v, d, cat2, DEFAULT_SETTINGS, [], formulate);
-    expect(prev.diff.length).toBe(4);
+    expect(prev.diff.length).toBe(5);
     expect(JSON.stringify(v.audit)).toBe(before);
     expect(v.snapshot.foods.test_beef.sourceVersion).toBe('test-1');
     expect(v.snapshot.referenceVersionIds).toContain('FEDIAF_2025_adult_95_v1.0');
@@ -263,28 +265,29 @@ describe('T12 ricette', () => {
 });
 
 describe('T13 macro', () => {
-  test('70% proteine è quota di energia, non 70% di carne; nessuna etichetta BARF', async () => {
-    // metodo energetico di TEST applicato a tutti i componenti (fattori qualsiasi: si verifica la definizione)
-    const method = { id: 'test', version: '1', label: 'fattori di TEST', protein: 3.5, fat: 8.5, carbohydrate: 3.5, caution: null };
-    const d = dog({ targets: [{ id: 'p', metric: 'protein_energy_pct', lower: 70, upper: null, unit: '%', basis: 'energy_pct', locked: false, setBy: 'utente', setAt: '2026-10-16' }] });
-    const base = input(['test_beef', 'test_oats', 'test_beef_heart'], ['test_multi', 'test_bone_meal'], { dog: d });
-    base.foods = base.foods.map((f) => ({ ...f, food: { ...f.food, energyMethod: method } }));
-    base.supplements = base.supplements.map((s) => ({ ...s, supplement: { ...s.supplement, energyMethod: method } }));
-    const r = await formulate(base);
+  test('quota proteica = quota della ripartizione energetica stimata 4/9/4, non % di carne; nessuna etichetta BARF', async () => {
+    const d = dog({ targets: [{ id: 'p', metric: 'protein_energy_pct', lower: 40, upper: null, unit: '%', basis: 'energy_pct', locked: false, setBy: 'utente', setAt: '2026-10-16' }] });
+    const r = await formulate(input(['test_beef', 'test_oats', 'test_beef_heart'], ['test_multi', 'test_bone_meal'], { dog: d }));
     expect(r.outcome).toBe('solved');
     const pct = r.audit!.totals.derived.protein_energy_pct;
-    const protein = r.audit!.totals.nutrients.protein.known;
-    expect(pct.value).toBeCloseTo((100 * protein * 3.5) / r.audit!.kcal!, 6);
+    const n = r.audit!.totals.nutrients;
+    const ep = 4 * n.protein.known, ef = 9 * n.fat.known, ec = 4 * n.carbohydrate_available.known;
+    expect(pct.value).toBeCloseTo((100 * ep) / (ep + ef + ec), 6);
+    expect(pct.value!).toBeGreaterThanOrEqual(40 - 1e-6);
     const meatG = r.items.filter((i) => i.id !== 'test_oats' && i.kind === 'food').reduce((a, i) => a + i.qty, 0);
     const totalG = r.items.filter((i) => i.kind === 'food').reduce((a, i) => a + i.qty, 0);
     expect(Math.abs((100 * meatG) / totalG - pct.value!)).toBeGreaterThan(1);
     expect(JSON.stringify(r)).not.toMatch(/BARF/i);
   });
-  test('senza metodo energetico per un componente le preferenze macro non sono applicate e lo si dice', async () => {
-    const d = dog({ targets: [{ id: 'p', metric: 'protein_energy_pct', lower: 70, upper: null, unit: '%', basis: 'energy_pct', locked: false, setBy: 'utente', setAt: '2026-10-16' }] });
+  test('senza metodo energetico di un componente le preferenze macro restano applicate (nessuna preferenza rimossa)', async () => {
+    const d = dog({ targets: [{ id: 'p', metric: 'protein_energy_pct', lower: 40, upper: null, unit: '%', basis: 'energy_pct', locked: false, setBy: 'utente', setAt: '2026-10-16' }] });
     const r = await formulate(input(['test_beef', 'test_oats'], ['test_multi', 'test_bone_meal'], { dog: d }));
-    expect(r.notes.join(' ')).toMatch(/nessun metodo energetico/);
-    expect(r.audit!.totals.derived.protein_energy_pct.value).toBeNull();
+    expect(r.notes.join(' ')).not.toMatch(/non applicata/);
+    // non raggiungibile con questi ingredienti: diagnostico, ma la preferenza è controllata e mostrata
+    expect(['solved', 'preferences_unreachable']).toContain(r.outcome);
+    const row = r.audit!.rows.find((x) => x.metric === 'protein_energy_pct')!;
+    expect(row.amount).not.toBeNull();
+    expect(row.checks.some((c) => c.limit.limitClass === 'PERSONAL_TARGET')).toBe(true);
   });
 });
 

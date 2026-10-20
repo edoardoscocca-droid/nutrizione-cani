@@ -117,24 +117,25 @@ describe('Revisione della nutrizionista — utilizzabilità, qualità dei dati, 
 });
 
 describe('D20 — integratori: composizione dichiarata, non dichiarato ≠ zero', () => {
-  test('rame non dichiarato: massimo rispettato sui valori dichiarati, con incertezza; la ricetta lo dice', () => {
+  // specifica del 20/10/2026, §12: un apporto ignoto non limitato rende il massimo non verificabile
+  test('rame non dichiarato: massimo non verificabile (apporto ignoto non limitato), mai zero', () => {
     const a = audit(supp({}), [limit('copper', null, 10)]);
     const c = check(a, 'copper');
-    expect(c.color).toBe('green');
-    expect(c.uncertain).toMatch(/Integratore non dichiara/);
+    expect(c.color).toBe('grey');
+    expect(c.message).toMatch(/massimo non verificabile — con i dati noti .*dato sconosciuto in Integratore/);
     expect(a.rows.find((r) => r.metric === 'copper')!.undeclaredFrom).toEqual(['Integratore']);
-    expect(a.declaredCompositionOnly).toBe(true);
-    expect(a.warnings.join(' ')).toMatch(/non dichiarati sono sconosciuti, non zero/);
   });
-  test('minimo raggiunto con i soli valori dichiarati: certo (il non dichiarato può solo aggiungere)', () => {
-    const c = check(audit(supp({}), [limit('copper', 2, null)]), 'copper');
+  test('minimo raggiunto con i soli valori noti: «minimo dimostrato dai dati disponibili»', () => {
+    const a = audit(supp({}), [limit('copper', 2, null)]);
+    const c = check(a, 'copper');
     expect(c.color).toBe('green');
-    expect(c.uncertain).toBeUndefined();
+    expect(c.uncertain).toMatch(/Minimo dimostrato dai dati disponibili/);
+    expect(a.warnings.join(' ')).toMatch(/restano sconosciuti, non zero/);
   });
-  test('minimo NON raggiunto ma un integratore tace sul nutriente: non dimostrato (grigio), mai «zero»', () => {
+  test('minimo NON raggiunto ma un integratore tace sul nutriente: copertura non verificabile (grigio), mai «carenza certa»', () => {
     const a = audit(supp({}), [limit('copper', 50, null)]);
     expect(check(a, 'copper').color).toBe('grey');
-    expect(check(a, 'copper').message).toMatch(/non dimostrato/);
+    expect(check(a, 'copper').message).toMatch(/copertura non verificabile/);
     expect(a.status).toBe('INSUFFICIENT_DATA');
   });
   test('massimo superato già con i valori dichiarati: rosso', () => {
@@ -145,7 +146,7 @@ describe('D20 — integratori: composizione dichiarata, non dichiarato ≠ zero'
     expect(check(a, 'iodine').color).toBe('grey');
     expect(a.rows.find((r) => r.metric === 'iodine')!.missingFrom).toEqual(['Alimento']);
   });
-  test('energia non dichiarata: sconosciuta, nessun valore sostitutivo; non rende incerti i controlli dei nutrienti', () => {
+  test('energia non dichiarata: sconosciuta, totale parziale (nessuna attestazione); i controlli dei nutrienti restano calcolati', () => {
     // 500 g di carne = 1000 kcal; 10 g di integratore senza kcal e senza macronutrienti dichiarati
     const s = supp({ kcalPerUnit: null, nutrients: { zinc: { value: 0, status: 'analytical_zero', source: 'etichetta' } } });
     const a = audit(s, [limit('zinc', 19, null, 'per_1000_kcal_me')], 10);
@@ -154,7 +155,9 @@ describe('D20 — integratori: composizione dichiarata, non dichiarato ≠ zero'
     expect(a.energyRow.note).toMatch(/Energia sconosciuta per Integratore 10 g \(2% del peso della razione\)/);
     expect(a.dataQuality!.unknownEnergy).toEqual(['Integratore']);
     expect(check(a, 'zinc').color).toBe('green'); // 20 mg / 1000 kcal: l'energia mancante non diventa una carenza di zinco
-    expect(a.statusLabel).toMatch(/composizione dichiarata/);
+    expect(a.energyRow.color).toBe('grey');
+    expect(a.status).toBe('INSUFFICIENT_DATA');
+    expect(a.blockers.join(' ')).toMatch(/Energia non determinabile/);
   });
   test('energia stimata solo con un metodo documentabile: macronutrienti dichiarati + metodo approvato', () => {
     const method = { id: 'fediaf_2025_ingredienti_naturali', version: '2025.1', label: 'FEDIAF 2025', protein: 4, fat: 9, carbohydrate: 4, caution: null };

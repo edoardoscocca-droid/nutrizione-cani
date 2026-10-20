@@ -231,8 +231,8 @@ describe('Importazione: applicazione, storico, ricalcoli', () => {
     const repo = new LocalRepository(null);
     let cat = await repo.loadCatalog();
     // ricetta salvata con il manzo di prova v1
-    const d = newDog({ name: 'Fido', weightCurrentKg: 30, kcalTarget: 1400 }, 'd1');
-    const inp = buildInput(d, { foods: [{ id: 'test_beef' }, { id: 'test_oats' }], supplements: [{ id: 'test_multi' }, { id: 'test_bone_meal' }], dietMoisture: 'wet' }, cat, DEFAULT_SETTINGS, []);
+    const d = newDog({ name: 'Fido', weightCurrentKg: 30, kcalTarget: 1400, proteinDigestibilityAtLeast80: true }, 'd1');
+    const inp = buildInput(d, { foods: [{ id: 'test_beef' }, { id: 'test_oats' }], supplements: [{ id: 'test_multi' }, { id: 'test_bone_meal' }, { id: 'test_fish_oil_caps' }], dietMoisture: 'wet' }, cat, DEFAULT_SETTINGS, []);
     const v = versionFromResult({ id: 'v1', recipeId: 'r1', revision: 1, origin: 'engine', parentVersionId: null, author: 'u' }, await formulate(inp), inp);
     expect(staleFor(v, d, cat)).toEqual([]);
 

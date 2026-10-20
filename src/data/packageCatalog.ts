@@ -11,6 +11,7 @@ import suppE from '../../dati/pacchetto/03_Allegati_A_F/E_catalogo_integratori_s
 import energyJson from '../../dati/riferimenti/metodi_energetici.json';
 import conversionsJson from '../../dati/riferimenti/conversioni_unita.json';
 import recommendedJson from '../../dati/riferimenti/obiettivi_aggiuntivi.json';
+import gapsJson from '../../dati/riferimenti/lacune_catalogo.json';
 import {
   buildCustomThresholds,
   buildNutrients,
@@ -90,6 +91,23 @@ export function packageReferences(): Pick<Catalog, 'nutrients' | 'limits' | 'ref
 /** Obiettivi aggiuntivi approvati (oggi solo dal pacchetto, anche con Supabase). */
 export function packageRecommendedTargets(): RecommendedTarget[] {
   return (recommendedJson as unknown as { targets: RecommendedTarget[] }).targets;
+}
+
+/** Lacune del catalogo reale non ancora risolte (§15 della specifica del 20/10/2026), per id prodotto. */
+export function packageCatalogGaps(): Record<string, string[]> {
+  const out: Record<string, string[]> = {};
+  for (const g of (gapsJson as { gaps: { products: string[]; text: string }[] }).gaps) for (const id of g.products) (out[id] ??= []).push(g.text);
+  return out;
+}
+
+/** Applica le lacune ai prodotti (restano nel profilo e vengono congelate nelle istantanee delle ricette). */
+export function withCatalogGaps<C extends { foods: Food[]; supplements: Supplement[] }>(cat: C): C {
+  const gaps = packageCatalogGaps();
+  return {
+    ...cat,
+    foods: cat.foods.map((f) => (gaps[f.id] ? { ...f, openGaps: gaps[f.id] } : f)),
+    supplements: cat.supplements.map((s) => (gaps[s.id] ? { ...s, openGaps: gaps[s.id] } : s)),
+  };
 }
 
 function mapSub(category: string, sub: string): string {

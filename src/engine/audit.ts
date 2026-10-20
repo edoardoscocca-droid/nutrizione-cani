@@ -65,7 +65,7 @@ export const STATUS_LABEL: Record<RecipeStatus, string> = {
   VERIFIED_AVAILABLE_CHECKS: 'Verificata rispetto ai controlli disponibili',
   PREFERENCES_VIOLATED: 'Rispetta i limiti ufficiali, ma non tutte le preferenze',
   TARGETS_NOT_MET: 'Rispetta i limiti ufficiali, ma non tutti gli obiettivi aggiuntivi',
-  INSUFFICIENT_DATA: 'Dati insufficienti: non verificabile',
+  INSUFFICIENT_DATA: 'Bozza parziale: dati mancanti, non interamente verificabile',
   FAILS_OFFICIAL_LIMITS: 'Non rispetta limiti ufficiali',
   NO_VALID_SOLUTION: 'Nessuna soluzione valida',
 };
@@ -168,14 +168,25 @@ export function itemDataList(items: RecipeItem[], foods: Record<string, Food>, s
   });
 }
 
+const EAA = new Set(['arginine', 'histidine', 'isoleucine', 'leucine', 'lysine', 'methionine', 'methionine_cystine', 'phenylalanine', 'phenylalanine_tyrosine', 'threonine', 'tryptophan', 'valine']);
+
 /** Limiti applicabili alla fase di vita e al tipo di dieta (selenio umido/secco). */
 export function applicableLimits(limits: NutrientLimit[], dog: DogFormulationProfile, dietMoisture: DietMoisture): NutrientLimit[] {
-  const out = limits.filter((l) => {
-    if (l.lifeStage !== dog.lifeStage) return false;
-    const m = l.applicability?.dietMoisture;
-    if (m && m !== dietMoisture) return false;
-    return true;
-  });
+  // selenio (§11): mangime secco completo identificato → riferimento secco; casalinga, mista, umida o ignota → il maggiore
+  // dei due (prudenziale). Aminoacidi essenziali: +10% se non è garantita una digeribilità proteica ≥ 80% (§4).
+  const out = limits
+    .filter((l) => {
+      if (l.lifeStage !== dog.lifeStage) return false;
+      const m = l.applicability?.dietMoisture;
+      if (m === 'dry' && dietMoisture !== 'dry') return false;
+      if (m === 'wet' && dietMoisture === 'dry') return false;
+      return true;
+    })
+    .map((l) =>
+      dog.eaaMarginPct && l.limitClass === 'OFFICIAL_MIN' && l.lower !== null && EAA.has(l.metric)
+        ? { ...l, lower: Math.round(l.lower * (1 + dog.eaaMarginPct / 100) * 1e6) / 1e6, source: `${l.source} + ${dog.eaaMarginPct}% (digeribilità proteica ≥ 80% non garantita)` }
+        : l,
+    );
   for (const t of dog.targets) {
     out.push({
       id: `personal_${t.id}`,
@@ -208,7 +219,7 @@ function nice(v: number, unit: string) {
 }
 
 function unitText(unit: string, l: NutrientLimit) {
-  return `${unit === 'ratio' ? '' : unit}${l.basis === 'per_1000_kcal_me' ? '/1000 kcal' : l.basis === 'per_day' ? '/die' : l.basis === 'energy_pct' ? ' kcal' : ''}`.trim();
+  return `${unit === 'ratio' ? '' : unit}${l.basis === 'per_1000_kcal_me' ? '/1000 kcal' : l.basis === 'per_day' ? '/die' : l.basis === 'energy_pct' ? ' energia macro (4/9/4)' : ''}`.trim();
 }
 
 function failColor(l: NutrientLimit): Color {
@@ -237,15 +248,18 @@ function classLabel(l: NutrientLimit): string {
 }
 
 interface Measured {
-  /** valore sui dati dichiarati, nella base del limite (null se incompleto). */
-  value: number | null;
-  /** limite inferiore certo: soli contributi noti e, per 1000 kcal, energia massima possibile. */
-  low: number | null;
+  /** valore per il confronto con i minimi (per 1000 kcal: su E_controllo = max(E_target, E_finale)). */
+  valueMin: number | null;
+  /** valore per il confronto con i massimi (per 1000 kcal: su E_finale). */
+  valueMax: number | null;
+  /** rapporti e quote: intervallo dimostrabile quando una parte è nota solo entro limiti. */
+  range?: [number, number] | null;
+  /** tutti i contributi sono noti (alimenti con il dato, integratori che lo dichiarano come totale). */
   complete: boolean;
-  /** integratori che non dichiarano il nutriente (o una parte del rapporto): valore sconosciuto, non zero. */
-  undeclared: string[];
-  /** integratori senza kcal dichiarate: l'energia vera può essere più alta di quella dichiarata. */
-  energyUncertain: string[];
+  /** sorgenti senza il dato: alimenti con dato mancante, integratori che non lo dichiarano (sconosciuti, mai zero). */
+  unknownFrom: string[];
+  /** integratori con il solo valore aggiunto: per i massimi il loro apporto vero può essere maggiore. */
+  lowerBoundFrom: string[];
   reason?: string;
 }
 
@@ -253,47 +267,41 @@ function measure(
   l: NutrientLimit,
   t: Total | undefined,
   d: DerivedValue | undefined,
-  energy: { kcal: number | null; kcalMax: number | null; complete: boolean; uncertainFrom: string[] },
+  energy: { kcal: number | null; kcalTarget: number | null; complete: boolean },
   dryMatterG: number | null,
 ): Measured {
-  const none = (reason: string): Measured => ({ value: null, low: null, complete: false, undeclared: [], energyUncertain: [], reason });
+  const none = (reason: string): Measured => ({ valueMin: null, valueMax: null, complete: false, unknownFrom: [], lowerBoundFrom: [], reason });
   if (l.basis === 'ratio' || l.basis === 'energy_pct') {
     if (!d) return none('metrica non calcolabile');
-    return { value: d.value, low: null, complete: d.complete, undeclared: d.undeclaredFrom ?? [], energyUncertain: l.basis === 'energy_pct' ? energy.uncertainFrom : [], reason: d.reason };
+    if (!d.complete && !d.range) return { ...none(d.reason ?? 'dati incompleti'), valueMin: d.value, valueMax: d.value };
+    return { valueMin: d.value, valueMax: d.value, range: d.complete ? null : d.range, complete: d.complete, unknownFrom: [], lowerBoundFrom: [], reason: d.reason };
   }
   if (!t) return none('nutriente non presente nel dizionario');
-  if (t.noData) return none('nessun dato disponibile');
-  const missing = t.complete ? undefined : 'dati mancanti';
-  if (l.basis === 'per_day') {
-    return { value: t.complete ? t.known : null, low: t.known, complete: t.complete, undeclared: t.undeclaredFrom, energyUncertain: [], reason: missing };
-  }
+  if (t.noData) return { ...none('nessun dato disponibile'), unknownFrom: [...t.missingFrom, ...t.undeclaredFrom] };
+  const unknownFrom = [...t.missingFrom, ...t.undeclaredFrom];
+  const base = { complete: t.complete && !t.undeclaredFrom.length, unknownFrom, lowerBoundFrom: t.lowerBoundFrom };
+  if (l.basis === 'per_day') return { ...base, valueMin: t.known, valueMax: t.known };
   if (l.basis === 'per_1000_kcal_me') {
-    if (!energy.complete || !energy.kcal || energy.kcalMax === null) return none('energia della ricetta incompleta');
-    const dens = (t.known / energy.kcal) * 1000;
-    return {
-      value: t.complete ? dens : null,
-      low: (t.known / energy.kcalMax) * 1000,
-      complete: t.complete,
-      undeclared: t.undeclaredFrom,
-      // l'energia sconosciuta di un integratore non rende incerti i controlli dei nutrienti (decisione della nutrizionista)
-      energyUncertain: [],
-      reason: missing,
-    };
+    if (!energy.complete || !energy.kcal) return { ...none('energia della ricetta incompleta: densità per 1000 kcal non calcolabile'), unknownFrom };
+    const eControl = Math.max(energy.kcal, energy.kcalTarget ?? 0);
+    return { ...base, valueMin: (t.known / eControl) * 1000, valueMax: (t.known / energy.kcal) * 1000 };
   }
-  // Basi su sostanza secca o mangime al 12% di umidità: confronto solo con conversione approvata (T14).
+  // Basi su sostanza secca: confronto solo con conversione approvata e sostanza secca nota (controllo legale distinto, §4).
   if (l.basis === 'per_kg_dry_matter' && l.applicability?.conversionApproved && dryMatterG && dryMatterG > 0) {
     const v = t.known / (dryMatterG / 1000);
-    return { value: t.complete ? v : null, low: v, complete: t.complete, undeclared: t.undeclaredFrom, energyUncertain: [], reason: missing };
+    return { ...base, valueMin: v, valueMax: v };
   }
-  return none('limite espresso su sostanza secca/mangime: nessun confronto senza conversione verificata');
+  return none('limite espresso su sostanza secca/mangime: nessun confronto senza sostanza secca nota e conversione verificata');
 }
 
 const names = (xs: string[]) => [...new Set(xs)].join(', ');
 
-function evaluate(l: NutrientLimit, m: Measured, kcal: number | null, unit: string): LimitCheck {
+function evaluate(l: NutrientLimit, m: Measured, kcal: number | null, kcalTarget: number | null, unit: string): LimitCheck {
   const dailyReference =
     l.basis === 'per_1000_kcal_me' && kcal
-      ? ((l.lower ?? l.upper) as number) * (kcal / 1000)
+      ? l.lower !== null
+        ? l.lower * (Math.max(kcal, kcalTarget ?? 0) / 1000)
+        : (l.upper as number) * (kcal / 1000)
       : l.basis === 'per_day'
         ? (l.lower ?? l.upper)
         : null;
@@ -302,68 +310,55 @@ function evaluate(l: NutrientLimit, m: Measured, kcal: number | null, unit: stri
     .join(' · ');
   const what = `${classLabel(l)} (${ref} ${unitText(unit, l)})`.replace(' )', ')');
   const fail = failColor(l);
-  const undeclaredNote = m.undeclared.length ? `${names(m.undeclared)} non dichiara questo valore (sconosciuto, non zero)` : '';
-  const energyNote = m.energyUncertain.length ? `l’energia di ${names(m.energyUncertain)} non è dichiarata` : '';
+  const u = unitText(unit, l);
   if (l.limitClass === 'INFORMATIONAL_REFERENCE') {
-    const v = m.value ?? m.low;
+    const v = m.valueMax;
     const above = v !== null && l.upper !== null && v > l.upper + EPS;
     return { limit: l, color: 'blue', dailyReference, message: `${what}: ${above ? 'valore superiore al livello indicato' : 'solo informativo'}` };
   }
-  // Massimo: se già i soli contributi certi lo superano la violazione è certa, anche con dati parziali.
-  if (l.upper !== null && m.low !== null && m.low > l.upper * (1 + 1e-6) + EPS) {
-    const g = fail === 'orange' && m.value !== null ? { requested: `non oltre ${fmt(l.upper)} ${unitText(unit, l)}`, result: m.value, deviation: m.value - l.upper, unit: unitText(unit, l) } : undefined;
-    return {
-      limit: l, color: fail, dailyReference, gap: g,
-      message: `${what}: superato${g ? ` — richiesto ${l.lower !== null ? `${fmt(l.lower)}–${fmt(l.upper)} ${g.unit}` : g.requested}, risultato ${nice(g.result, g.unit)} ${g.unit}, scostamento +${nice(g.deviation, g.unit)} ${g.unit}` : ''}`,
-    };
-  }
-  if (!m.complete || m.value === null) {
-    let extra = '';
-    if (l.lower !== null && m.low !== null && m.low >= l.lower) {
-      extra = ' (il minimo risulta raggiunto anche senza i dati mancanti, ma il controllo resta incompleto)';
-    }
-    return { limit: l, color: 'grey', dailyReference, message: `${what}: non verificabile — ${m.reason ?? 'dati mancanti'}${extra}` };
-  }
   const below = (v: number) => l.lower !== null && v < l.lower * (1 - 1e-6) - EPS;
   const above = (v: number) => l.upper !== null && v > l.upper * (1 + 1e-6) + EPS;
-  const ratioLike = l.basis === 'ratio' || l.basis === 'energy_pct';
-  const u = unitText(unit, l);
   const requested = l.lower !== null && l.upper !== null ? `${fmt(l.lower)}–${fmt(l.upper)}` : l.lower !== null ? `almeno ${fmt(l.lower)}` : `non oltre ${fmt(l.upper as number)}`;
+  const soft = fail === 'orange';
   const gapOf = (v: number) => ({ requested: `${requested} ${u}`, result: v, deviation: below(v) ? v - (l.lower as number) : above(v) ? v - (l.upper as number) : 0, unit: u });
   const gapText = (v: number) => {
     const g = gapOf(v);
     return ` — richiesto ${g.requested}, risultato ${nice(v, u)} ${u}, scostamento ${g.deviation > 0 ? '+' : ''}${nice(g.deviation, u)} ${u}`;
   };
-  const soft = fail === 'orange';
-  if (below(m.value)) {
-    // con la composizione dichiarata il minimo non c'è: è un difetto certo solo se nessun integratore tace sul nutriente
-    if (m.undeclared.length || (ratioLike && m.energyUncertain.length)) {
-      return { limit: l, color: 'grey', dailyReference, message: `${what}: non dimostrato — non raggiunto con i valori dichiarati; ${undeclaredNote || energyNote}` };
-    }
-    return { limit: l, color: fail, dailyReference, message: `${what}: non raggiunto${soft ? gapText(m.value) : ''}`, gap: soft ? gapOf(m.value) : undefined };
+  const failed = (v: number, how: string): LimitCheck => ({ limit: l, color: fail, dailyReference, message: `${what}: ${how}${soft ? gapText(v) : ''}`, gap: soft ? gapOf(v) : undefined });
+  const grey = (msg: string): LimitCheck => ({ limit: l, color: 'grey', dailyReference, message: `${what}: ${msg}` });
+
+  // rapporti e quote con un intervallo dimostrabile (§12): dentro = rispettato, fuori = scostamento certo, a cavallo = non verificabile
+  if (m.range) {
+    const [lo, hi] = m.range;
+    if (below(hi)) return failed(hi, `non raggiunto in tutto l’intervallo possibile (${nice(lo, u)}–${nice(hi, u)} ${u})`);
+    if (above(lo)) return failed(lo, `superato in tutto l’intervallo possibile (${nice(lo, u)}–${nice(hi, u)} ${u})`);
+    if (below(lo) || above(hi)) return grey(`non verificabile — intervallo possibile ${nice(lo, u)}–${nice(hi, u)} ${u}; ${m.reason ?? 'dati parziali'}`);
+    return { limit: l, color: 'green', dailyReference, message: `${what}: rispettato in tutto l’intervallo possibile (${nice(lo, u)}–${nice(hi, u)} ${u}). ${m.reason ?? ''}`.trim(), uncertain: m.reason };
   }
-  if (m.low !== null && below(m.low)) {
-    return { limit: l, color: 'grey', dailyReference, message: `${what}: non dimostrato — raggiunto con l’energia dichiarata, ma ${energyNote}: inserire le kcal per dose` };
+  if (m.valueMin === null && m.valueMax === null) return grey(`non verificabile — ${m.reason ?? 'dati mancanti'}`);
+  if ((l.basis === 'ratio' || l.basis === 'energy_pct') && !m.complete) {
+    return grey(`non verificabile — ${m.reason ?? 'dati incompleti'}${m.valueMax !== null ? ` (con i soli valori noti ${`${nice(m.valueMax, u)} ${u}`.trim()}, non usato per il giudizio)` : ''}`);
   }
-  if (above(m.value)) {
-    if (ratioLike && (m.undeclared.length || m.energyUncertain.length)) {
-      return { limit: l, color: 'grey', dailyReference, message: `${what}: non dimostrato — fuori intervallo con i valori dichiarati; ${undeclaredNote || energyNote}` };
-    }
-    if (!ratioLike && m.energyUncertain.length) {
-      return { limit: l, color: 'grey', dailyReference, message: `${what}: non dimostrato — superato con l’energia dichiarata, ma ${energyNote}` };
-    }
-    return { limit: l, color: fail, dailyReference, message: `${what}: superato${soft ? gapText(m.value) : ''}`, gap: soft ? gapOf(m.value) : undefined };
+  const unknown = names(m.unknownFrom);
+  const lowerB = names(m.lowerBoundFrom);
+  // massimo: superato dai soli contributi noti = superamento dimostrato
+  if (l.upper !== null && m.valueMax !== null && above(m.valueMax)) return failed(m.valueMax, 'superato');
+  // minimo
+  if (l.lower !== null && m.valueMin !== null && below(m.valueMin)) {
+    if (unknown) return grey(`copertura non verificabile — con i dati noti ${nice(m.valueMin, u)} ${u}; dato sconosciuto (non zero) in ${unknown}`);
+    return failed(m.valueMin, 'non raggiunto');
+  }
+  // massimo con apporti ignoti non limitati o valori solo aggiunti
+  if (l.upper !== null && (unknown || lowerB)) {
+    return grey(
+      `massimo non verificabile — con i dati noti ${nice(m.valueMax as number, u)} ${u}; ${[unknown ? `dato sconosciuto in ${unknown}` : '', lowerB ? `${lowerB} dichiara solo quantità aggiunte (totale incerto)` : ''].filter(Boolean).join('; ')}`,
+    );
   }
   const noMax = l.limitClass === 'OFFICIAL_MIN' ? ' Massimo non definito: valori elevati non sono automaticamente sicuri.' : '';
-  // rispettato; con integratori che tacciono sul nutriente il massimo (o il rapporto) vale solo sulla composizione dichiarata
-  // (un'energia vera più alta abbassa la densità per 1000 kcal: per i massimi non è un'incertezza; per le quote % sì)
-  const energyMatters = l.basis === 'energy_pct' && m.energyUncertain.length > 0;
-  const uncertain =
-    (l.upper !== null || ratioLike) && (m.undeclared.length || energyMatters)
-      ? `Calcolato sulla composizione dichiarata: ${[undeclaredNote, energyMatters ? energyNote : ''].filter(Boolean).join('; ')}.`
-      : undefined;
-  const okResult = soft ? ` Risultato ${nice(m.value, u)} ${u}.` : '';
-  return { limit: l, color: 'green', dailyReference, message: `${what}: rispettato.${okResult}${noMax}${uncertain ? ` ${uncertain}` : ''}`, uncertain };
+  const demonstrated = l.lower !== null && unknown ? `Minimo dimostrato dai dati disponibili (altri apporti sconosciuti in ${unknown}).` : undefined;
+  const okResult = soft ? ` Risultato ${nice((m.valueMin ?? m.valueMax) as number, u)} ${u}.` : '';
+  return { limit: l, color: 'green', dailyReference, message: `${what}: rispettato.${okResult}${noMax}${demonstrated ? ` ${demonstrated}` : ''}`, uncertain: demonstrated };
 }
 
 /** limite che definisce un fabbisogno: ufficiale (minimo, massimo, legale) o target fissato da un professionista. */
@@ -399,7 +394,7 @@ export function auditRecipe(input: AuditInput): AuditResult {
   // integratori senza kcal (né dichiarate né stimabili con un metodo): energia sconosciuta, nessun valore sostitutivo;
   // incide solo sull'incertezza dell'energia e delle quote energetiche, non sui controlli di aminoacidi e vitamine
   const energyUncertainFrom = totals.energy.undeclaredFrom;
-  const energyCtx = { kcal, kcalMax: kcal, complete: kcalComplete, uncertainFrom: energyUncertainFrom };
+  const energyCtx = { kcal, kcalTarget: dog.kcalTarget, complete: kcalComplete };
   const limits = applicableLimits(input.limits, dog, input.dietMoisture);
   const moisture = totals.nutrients.moisture;
   const totalMass = items.reduce((a, it) => {
@@ -416,7 +411,18 @@ export function auditRecipe(input: AuditInput): AuditResult {
     blockers.push('Standard disponibile solo per cane adulto in mantenimento: per questa fase di vita la ricetta non è verificabile.');
   }
   if (!kcalComplete) blockers.push(`Energia incompleta: kcal mancanti per ${totals.energy.missingFrom.join(', ')}.`);
-  if (input.dietMoisture === null) blockers.push('Tipo di dieta (umida/secca) non indicato: il minimo di selenio non è determinabile.');
+  if (input.dietMoisture !== 'dry') {
+    warnings.push('Selenio: dieta casalinga, mista, umida o di tipo non indicato → si usa il maggiore dei due minimi FEDIAF (scelta prudenziale del progetto, non un’equivalenza fisiologica).');
+  }
+  if (dog.eaaMarginPct) {
+    warnings.push(`Aminoacidi essenziali: minimi aumentati del ${dog.eaaMarginPct}% perché non è garantita una digeribilità proteica di almeno l’80% (margine indicato da FEDIAF).`);
+  }
+  // lacune del catalogo segnalate e non ancora risolte con dati documentati (§15): la ricetta non è interamente verificata
+  for (const it of items) {
+    if (!(it.qty > 0)) continue;
+    const p = it.kind === 'food' ? foods[it.id] : supplements[it.id];
+    for (const g of p?.openGaps ?? []) blockers.push(`Lacuna del catalogo non risolta — ${p.name}: ${g}`);
+  }
 
   const byMetric = new Map<string, NutrientLimit[]>();
   for (const l of limits) byMetric.set(l.metric, [...(byMetric.get(l.metric) ?? []), l]);
@@ -431,12 +437,11 @@ export function auditRecipe(input: AuditInput): AuditResult {
     const t = totals.nutrients[m.id];
     const d = totals.derived[m.id] ?? (DERIVED_LABELS[m.id] ? { value: null, complete: false, reason: 'non calcolabile' } : undefined);
     const ls = byMetric.get(m.id) ?? [];
-    const checks = ls.map((l) => evaluate(l, measure(l, t, d, energyCtx, dryMatterG), kcal, m.unit));
+    const checks = ls.map((l) => evaluate(l, measure(l, t, d, energyCtx, dryMatterG), kcal, dog.kcalTarget, m.unit));
     let color: Color;
     const complete = t ? t.complete && !t.noData : (d?.complete ?? false);
     if (checks.length) color = worst(checks.map((c) => c.color));
     else color = complete ? 'blue' : 'grey';
-    if (m.id === 'selenium_wet' && input.dietMoisture === null) color = 'grey';
     let note: string | undefined;
     if (!checks.length) note = complete ? 'Monitorato: nessun limite numerico appropriato disponibile.' : 'Dato insufficiente.';
     if (m.kind === 'advanced' && !complete) note = 'Aminoacido essenziale senza dati: la qualità proteica non è verificabile.';
@@ -477,7 +482,10 @@ export function auditRecipe(input: AuditInput): AuditResult {
       });
       const knownMass = unknown.every((it) => mass(it) !== null) && Number.isFinite(totalMass) && totalMass > 0;
       const share = knownMass ? (100 * unknown.reduce((a, it) => a + (mass(it) as number), 0)) / totalMass : null;
-      energyMsg += `. Energia sconosciuta per ${parts.join(', ')}${share !== null ? ` (${fmt(Math.round(share * 10) / 10)}% del peso della razione)` : ''}: le kcal comprendono solo i componenti con energia nota.`;
+      energyMsg += `. Energia sconosciuta per ${parts.join(', ')}${share !== null ? ` (${fmt(Math.round(share * 10) / 10)}% del peso della razione)` : ''}: totale parziale, la tolleranza energetica non è attestata.`;
+      // energia sconosciuta non è zero (§7, §12): totale parziale, nessuna attestazione della tolleranza energetica
+      energyColor = 'grey';
+      blockers.push(`Energia non determinabile: energia sconosciuta per ${energyUncertainFrom.join(', ')} (totale parziale ${fmt(kcal)} kcal).`);
     }
   } else if (!dog.kcalTarget) {
     energyMsg = 'Obiettivo kcal non impostato.';
@@ -574,13 +582,10 @@ export function auditRecipe(input: AuditInput): AuditResult {
       `Dati troppo incompleti${!kcalComplete ? ' (energia compresa)' : ''}: le quantità proposte sono solo indicative e possono risultare poco realistiche. Non usarle per preparare la ricetta finché i dati mancanti non sono completati.`,
     );
   }
-  // composizione dichiarata degli integratori: controlli rispettati ma con valori non dichiarati
+  // minimi dimostrati dai soli dati disponibili (altri apporti sconosciuti, mai zero)
   const uncertainRows = rows.filter((r) => r.checks.some((c) => c.uncertain));
   if (uncertainRows.length) {
-    const who = names(uncertainRows.flatMap((r) => [...r.undeclaredFrom, ...(r.checks.some((c) => c.uncertain?.includes('energia')) ? energyUncertainFrom : [])]));
-    warnings.push(
-      `Verifica sulla composizione dichiarata degli integratori (${who}): ${uncertainRows.map((r) => r.label).join(', ')} rispettati sui soli valori dichiarati. I valori non dichiarati sono sconosciuti, non zero.`,
-    );
+    warnings.push(`Dimostrati dai dati disponibili, con altri apporti sconosciuti: ${uncertainRows.map((r) => r.label).join(', ')}. I valori mancanti o non dichiarati restano sconosciuti, non zero.`);
   }
   // Obiettivi aggiuntivi (es. apporto raccomandato NRC): sezione propria, distinta dai requisiti FEDIAF
   const additional = rows.flatMap((r) =>
@@ -620,18 +625,13 @@ export function auditRecipe(input: AuditInput): AuditResult {
       });
     }
   }
+  // ripartizione energetica stimata 4/9/4 (somma 100% per costruzione), separata dalla EM usata per i fabbisogni
   const pcts = ['protein_energy_pct', 'fat_energy_pct', 'carb_energy_pct'].map((k) => totals.derived[k]);
   const macroEnergySumPct = pcts.every((d) => d?.complete && d.value !== null) ? pcts.reduce((a, d) => a + (d!.value as number), 0) : null;
-  if (macroEnergySumPct !== null && Math.abs(macroEnergySumPct - 100) > 0.5) {
-    const differing = energySources.filter((e) => e.origin === 'declared' && e.diffPct !== null && Math.abs(e.diffPct) >= 0.5);
-    const unknown = energySources.filter((e) => e.origin === null);
+  const differing = energySources.filter((e) => e.origin === 'declared' && e.diffPct !== null && Math.abs(e.diffPct) >= 0.5);
+  if (differing.length) {
     warnings.push(
-      `Le quote energetiche di proteine, grassi e carboidrati disponibili, calcolate con il metodo energetico di ogni componente, sommano al ${fmt(Math.round(macroEnergySumPct * 10) / 10)}% dell’energia della ricetta, non al 100%. ` +
-        (differing.length
-          ? `L’energia usata è quella inserita, che differisce da quella calcolata dai macronutrienti per: ${differing.map((e) => `${e.name} (${fmt(e.kcal as number)} contro ${fmt(e.fromMacros as number)} ${e.basis}, ${(e.diffPct as number) > 0 ? '+' : ''}${fmt(Math.round((e.diffPct as number) * 10) / 10)}%)`).join(', ')}. `
-          : '') +
-        (unknown.length ? `Energia sconosciuta per: ${unknown.map((e) => e.name).join(', ')}. ` : '') +
-        'Non è un arrotondamento: le quote non vengono riportate artificialmente al 100%.',
+      `Energia inserita diversa da quella stimata dai macronutrienti: ${differing.map((e) => `${e.name} (${fmt(e.kcal as number)} contro ${fmt(e.fromMacros as number)} ${e.basis}, ${(e.diffPct as number) > 0 ? '+' : ''}${fmt(Math.round((e.diffPct as number) * 10) / 10)}%)`).join(', ')}. Per i fabbisogni vale l’energia inserita; la ripartizione 4/9/4 delle quote è una stima separata.`,
     );
   }
 
@@ -653,7 +653,7 @@ export function auditRecipe(input: AuditInput): AuditResult {
     unverifiable: essentialRows.filter((r) => !r.checks.some((c) => isEssential(c.limit) && c.color === 'red') && r.checks.some((c) => isEssential(c.limit) && c.color === 'grey')).map((r) => r.label),
   };
   const qualifiers = [
-    uncertainRows.length || energyUncertainFrom.length ? 'sulla composizione dichiarata degli integratori' : null,
+    uncertainRows.length ? 'alcuni minimi dimostrati dai soli dati disponibili' : null,
     lowQuality.length ? `con dati di composizione stimati o non convalidati (${lowQuality.join(', ')})` : null,
   ].filter(Boolean);
   return {

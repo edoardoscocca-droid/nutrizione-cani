@@ -94,6 +94,7 @@ export function foodStatus(f: Food, nutrients: Nutrient[]): StatusResult {
   if (f.processingState === 'raw_or_unspecified') reasons.push('stato crudo/cotto non specificato');
   if (!f.ediblePortion) reasons.push('parte edibile non indicata');
   if (f.dataStatus === 'estimated') reasons.push('profilo dichiarato come stima');
+  for (const g of f.openGaps ?? []) reasons.push(`lacuna non risolta: ${g}`);
   if (f.dataStatus === 'review_required') reasons.push('profilo segnalato da rivedere');
   const readyForValidation = reasons.length === 0;
   if (!f.validatedAt && f.dataStatus !== 'test_fixture') reasons.push('non ancora convalidato da un amministratore');
@@ -118,6 +119,7 @@ export function supplementStatus(s: Supplement, nutrients: Nutrient[]): StatusRe
   if (s.doseUnit !== 'g' && s.doseUnit !== 'ml' && s.massPerUnitG === null) reasons.push('massa del contenuto della singola unità non indicata');
   // qualità e provenienza dei dati del profilo (distinta da utilizzabilità, completezza e convalida)
   if (s.dataStatus === 'estimated') reasons.push('profilo dichiarato come stima');
+  for (const g of s.openGaps ?? []) reasons.push(`lacuna non risolta: ${g}`);
   if (s.dataStatus === 'review_required') reasons.push('profilo segnalato da rivedere');
   // Si verificano i dati DICHIARATI: energia non dichiarata e etichetta con soli additivi aggiunti non impediscono la
   // verifica (decisione della nutrizionista), ma si dichiarano: la composizione completa resta non nota.

@@ -18,6 +18,10 @@ export interface ItemData {
   /** kcal/g di proteine, grassi e carboidrati disponibili del metodo energetico del componente (null = nessun metodo). */
   macroFactors: { protein: number; fat: number; carbohydrate: number } | null;
   valuePerQty: (nutrientId: string) => number | null;
+  /** integratori: valore dichiarato come quantità aggiunta (o etichetta di soli additivi): limite inferiore del totale. */
+  lowerBound?: (nutrientId: string) => boolean;
+  /** integratori: massa per unità non attribuita a proteine, grassi, carboidrati, fibra o umidità dichiarati (g); null = ignota. */
+  macroResidual?: number | null;
 }
 
 export interface Total {
@@ -31,6 +35,8 @@ export interface Total {
   missingFrom: string[];
   /** integratori che non dichiarano il nutriente: valore sconosciuto, non zero. */
   undeclaredFrom: string[];
+  /** integratori con il solo valore aggiunto (additivo): il loro contributo è un limite inferiore. */
+  lowerBoundFrom: string[];
   contributions: { name: string; amount: number }[];
 }
 
@@ -49,6 +55,8 @@ export function foodData(item: RecipeItem, food: Food): ItemData {
 }
 
 export function supplementData(item: RecipeItem, s: Supplement): ItemData {
+  const content = s.doseUnit === 'g' ? 1 : s.massPerUnitG;
+  const g = (k: string) => s.nutrients[k]?.value ?? 0;
   return {
     item,
     kind: 'supplement',
@@ -59,11 +67,18 @@ export function supplementData(item: RecipeItem, s: Supplement): ItemData {
       const v = s.nutrients[id]?.value;
       return v === null || v === undefined ? null : v;
     },
+    // «added» non è un'analisi totale (§10): conta come contributo noto, ma per i massimi è solo un limite inferiore
+    lowerBound: (id) => {
+      const v = s.nutrients[id];
+      if (!v || v.value === null) return false;
+      return v.declared === 'added' || (!!s.labelAddedOnly && v.declared !== 'total');
+    },
+    macroResidual: content ? Math.max(0, content - g('protein') - g('fat') - g('carbohydrate_available') - g('fiber') - g('moisture')) : null,
   };
 }
 
 function sum(items: ItemData[], get: (d: ItemData) => number | null): Total {
-  const t: Total = { known: 0, complete: true, noData: true, missingFrom: [], undeclaredFrom: [], contributions: [] };
+  const t: Total = { known: 0, complete: true, noData: true, missingFrom: [], undeclaredFrom: [], lowerBoundFrom: [], contributions: [] };
   let anyPositive = false;
   for (const d of items) {
     if (!(d.item.qty > 0)) continue;
@@ -140,6 +155,8 @@ export const GROUP_PARTS: Record<string, string[]> = {
 
 export function totalNutrient(items: ItemData[], nutrientId: string): Total {
   const t = sum(items, (d) => itemValue(d, nutrientId));
+  const lb = (d: ItemData, id: string): boolean => !!d.lowerBound?.(id) || (d.valuePerQty(id) === null && !!COMPOUNDS[id] && COMPOUNDS[id].some((p) => lb(d, p)));
+  t.lowerBoundFrom = items.filter((d) => d.item.qty > 0 && d.kind === 'supplement' && itemValue(d, nutrientId) !== null && lb(d, nutrientId)).map((d) => d.name);
   const parts = GROUP_PARTS[nutrientId];
   if (parts) {
     // integratore senza il totale di gruppo ma con le parti: le parti dichiarate contano come minimo noto
@@ -158,6 +175,8 @@ export function totalNutrient(items: ItemData[], nutrientId: string): Total {
 
 export interface DerivedValue {
   value: number | null;
+  /** intervallo dimostrabile quando una parte è nota solo entro limiti (es. macronutrienti non dichiarati di un integratore). */
+  range?: [number, number] | null;
   complete: boolean;
   reason?: string;
   /** integratori che non dichiarano una delle parti: valore calcolato sulla composizione dichiarata. */
@@ -173,6 +192,17 @@ export interface RecipeTotals {
 function ratio(num: Total, den: Total, label: string): DerivedValue {
   if (!num.complete || !den.complete || num.noData || den.noData) {
     return { value: null, complete: false, reason: `dati incompleti per ${label}` };
+  }
+  // §12: un rapporto non si ricava dai soli valori presenti per caso
+  const unknown = [...new Set([...num.undeclaredFrom, ...den.undeclaredFrom])];
+  const lower = [...new Set([...num.lowerBoundFrom, ...den.lowerBoundFrom])];
+  if (unknown.length || lower.length) {
+    const v = den.known > 0 ? num.known / den.known : null;
+    return {
+      value: v,
+      complete: false,
+      reason: `${label} non verificabile: ${[unknown.length ? `${unknown.join(', ')} non dichiara un termine (sconosciuto, non zero)` : '', lower.length ? `${lower.join(', ')} dichiara solo quantità aggiunte (totale incerto)` : ''].filter(Boolean).join('; ')}`,
+    };
   }
   if (!(den.known > 0)) return { value: null, complete: false, reason: 'denominatore zero: rapporto non definito' };
   return { value: num.known / den.known, complete: true, undeclaredFrom: [...new Set([...num.undeclaredFrom, ...den.undeclaredFrom])] };
@@ -195,29 +225,63 @@ export function computeTotals(items: ItemData[], nutrients: Nutrient[], legacyFa
     const r = ratio(o6, o3, 'omega-6/omega-3');
     derived.omega6_omega3_ratio = r.complete && !(o6.known > 0) ? { value: null, complete: false, reason: 'omega-6 pari a zero' } : r;
   }
-  const kcal = energy.complete && !energy.noData && energy.known > 0 ? energy.known : null;
-  // Quote energetiche: ogni componente con i fattori del proprio metodo energetico (tipologia di alimento).
-  const macro: [string, 'protein' | 'fat' | 'carbohydrate_available', 'protein' | 'fat' | 'carbohydrate'][] = [
-    ['protein_energy_pct', 'protein', 'protein'],
-    ['fat_energy_pct', 'fat', 'fat'],
-    ['carb_energy_pct', 'carbohydrate_available', 'carbohydrate'],
-  ];
-  for (const [id, nut, key] of macro) {
-    const t = out[nut];
-    let macroKcal = 0;
-    const noMethod: string[] = [];
-    for (const d of items) {
-      if (!(d.item.qty > 0)) continue;
-      const g = itemValue(d, nut);
-      if (g === null || g === 0) continue;
-      const f = d.macroFactors?.[key] ?? legacyFactors?.[key] ?? null;
-      if (f === null || f === undefined) noMethod.push(d.name);
-      else macroKcal += g * d.item.qty * f;
+  // Ripartizione energetica stimata 4/9/4 (§7): Ep=4·proteine, Ef=9·grassi, Ec=4·carboidrati disponibili, denominatore Ep+Ef+Ec.
+  // È separata dalla EM usata per i fabbisogni e non viene confrontata con essa. Macronutrienti non dichiarati da un
+  // integratore: quote parziali, con un intervallo dimostrabile se la massa della dose non attribuita è nota.
+  const F = { protein: 4, fat: 9, carbohydrate_available: 4 } as const;
+  const keys = Object.keys(F) as (keyof typeof F)[];
+  const known: Record<string, number> = { protein: 0, fat: 0, carbohydrate_available: 0 };
+  const unk: Record<string, number> = { protein: 0, fat: 0, carbohydrate_available: 0 };
+  let missingFood: string[] = [];
+  let unbounded: string[] = [];
+  const partial: string[] = [];
+  for (const d of items) {
+    if (!(d.item.qty > 0)) continue;
+    const vals = keys.map((k) => itemValue(d, k));
+    keys.forEach((k, i) => {
+      const v = vals[i];
+      if (v !== null) known[k] += v * d.item.qty * F[k];
+    });
+    const unknownKeys = keys.filter((_, i) => vals[i] === null);
+    if (!unknownKeys.length) continue;
+    if (d.kind === 'food') missingFood.push(d.name);
+    else if (d.macroResidual === null || d.macroResidual === undefined) unbounded.push(d.name);
+    else {
+      partial.push(d.name);
+      for (const k of unknownKeys) unk[k] += d.macroResidual * d.item.qty * F[k];
     }
-    if (noMethod.length) derived[id] = { value: null, complete: false, reason: `nessun metodo energetico per ${noMethod.join(', ')}` };
-    else if (!t || !t.complete || t.noData) derived[id] = { value: null, complete: false, reason: 'dati dei macronutrienti incompleti' };
-    else if (kcal === null) derived[id] = { value: null, complete: false, reason: 'energia della ricetta incompleta' };
-    else derived[id] = { value: (100 * macroKcal) / kcal, complete: true, undeclaredFrom: [...new Set([...t.undeclaredFrom, ...energy.undeclaredFrom])] };
   }
+  missingFood = [...new Set(missingFood)];
+  unbounded = [...new Set(unbounded)];
+  const den = keys.reduce((a, k) => a + known[k], 0);
+  const macro: [string, keyof typeof F][] = [
+    ['protein_energy_pct', 'protein'],
+    ['fat_energy_pct', 'fat'],
+    ['carb_energy_pct', 'carbohydrate_available'],
+  ];
+  for (const [id, k] of macro) {
+    if (missingFood.length) {
+      derived[id] = { value: null, complete: false, reason: `macronutrienti mancanti per ${missingFood.join(', ')}` };
+      continue;
+    }
+    if (!(den > 0)) {
+      derived[id] = { value: null, complete: false, reason: 'energia dei macronutrienti nulla: quota non definita' };
+      continue;
+    }
+    const value = (100 * known[k]) / den;
+    if (unbounded.length) {
+      derived[id] = { value, complete: false, reason: `quota parziale: ${unbounded.join(', ')} non dichiara tutti i macronutrienti e la massa della dose non è nota` };
+      continue;
+    }
+    if (partial.length) {
+      const others = keys.filter((x) => x !== k).reduce((a, x) => a + unk[x], 0);
+      const lo = (100 * known[k]) / (den + others);
+      const hi = (100 * (known[k] + unk[k])) / (den + unk[k]);
+      derived[id] = { value, range: [lo, hi], complete: false, reason: `quota parziale: macronutrienti non dichiarati da ${partial.join(', ')} (intervallo dalla massa non attribuita della dose)` };
+      continue;
+    }
+    derived[id] = { value, complete: true };
+  }
+  void legacyFactors;
   return { energy, nutrients: out, derived };
 }

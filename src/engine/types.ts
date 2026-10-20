@@ -126,6 +126,8 @@ export interface Food {
   /** convalida esplicita di un amministratore; decade a ogni modifica del profilo. */
   validatedBy?: string | null;
   validatedAt?: string | null;
+  /** lacune del catalogo segnalate e non ancora risolte con dati documentati (dati/riferimenti/lacune_catalogo.json). */
+  openGaps?: string[];
   /** valori per 100 g, unità canonica del nutriente. */
   nutrients: Record<string, NutrientValue>;
 }
@@ -168,6 +170,8 @@ export interface Supplement {
   notes?: string | null;
   validatedBy?: string | null;
   validatedAt?: string | null;
+  /** lacune del catalogo segnalate e non ancora risolte con dati documentati. */
+  openGaps?: string[];
   /** valori per 1 unità di dose (1 g, 1 ml, 1 capsula…). */
   nutrients: Record<string, NutrientValue>;
 }
@@ -328,6 +332,8 @@ export interface DogFormulationProfile {
   attentionNotes: AttentionNote[];
   /** obiettivi aggiuntivi (es. apporto raccomandato NRC), solo per le fasi di vita previste. */
   recommended?: AppliedRecommendedTarget[];
+  /** margine % sui minimi degli aminoacidi essenziali (10 se la digeribilità proteica ≥ 80% non è garantita). */
+  eaaMarginPct?: number;
   formulationRevision: number;
 }
 

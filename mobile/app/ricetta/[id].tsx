@@ -222,8 +222,11 @@ export default function RecipeScreen() {
                 </T>
                 <Button title="Conferma e crea nuova versione" busy={!!busy} onPress={confirmRecalc} />
               </>
-            ) : preview.result.outcome === 'infeasible' ? (
-              <ConflictList conflicts={preview.result.conflicts} suggestions={preview.result.suggestions} />
+            ) : preview.result.outcome === 'infeasible' || preview.result.outcome === 'preferences_unreachable' ? (
+              <>
+                <Box color={preview.result.outcome === 'infeasible' ? 'red' : 'orange'}><T>{preview.result.message}</T></Box>
+                <ConflictList conflicts={preview.result.conflicts} suggestions={preview.result.suggestions} />
+              </>
             ) : (
               <Box color="grey"><T>{preview.result.message}</T></Box>
             )}

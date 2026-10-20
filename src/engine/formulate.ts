@@ -7,6 +7,7 @@
 import { foodStatus, supplementStatus } from './catalogStatus';
 import { COMPOUNDS } from './totals';
 import { doseRangeFor, weightSpan } from './doseGuide';
+import { fediafReferenceKcal } from './energy';
 import { applicableLimits, auditRecipe, type AuditResult, type DietMoisture, type SoftGap } from './audit';
 import { solve, type Model, type Row, type SolveResult, type Term, type VarDef, loadSolver } from './lp';
 import type {
@@ -20,7 +21,7 @@ import type {
   Supplement,
 } from './types';
 
-export const ENGINE_VERSION = 'motore-1.0.0';
+export const ENGINE_VERSION = 'motore-2.0.0';
 
 export interface FormulationInput {
   dog: DogFormulationProfile;
@@ -68,7 +69,7 @@ export interface Conflict {
   direction: 'deficit' | 'excess';
 }
 
-export type Outcome = 'solved' | 'infeasible' | 'blocked' | 'timeout' | 'error';
+export type Outcome = 'solved' | 'infeasible' | 'blocked' | 'timeout' | 'error' | 'preferences_unreachable';
 
 export interface FormulationResult {
   outcome: Outcome;
@@ -82,6 +83,8 @@ export interface FormulationResult {
   phases: { name: string; status: string; objective: number | null }[];
   audit: AuditResult | null;
   message: string;
+  /** tempi e ricerche: durata totale, numero di risoluzioni, ricerca P1 che ha avuto successo (1 = intervalli richiesti, 2 = ampliati). */
+  stats?: { durationMs: number; solves: number; p1Stage: 1 | 2 | null };
 }
 
 interface ModelItem {
@@ -106,6 +109,12 @@ interface ModelItem {
   guideMin: number | null;
   /** testo dell'intervallo consigliato (per le etichette dei vincoli). */
   guideText: string | null;
+  /** minimo pratico del generatore (g) per gli alimenti; null per gli integratori. */
+  practicalMin: number | null;
+  /** prodotto con EPA+DHA documentati (olio): limite operativo ceil(T/u) e al più un prodotto equivalente. */
+  omega: boolean;
+  /** limite operativo del generatore per EPA+DHA, in passi (non è un massimo clinico). */
+  omegaMax: number | null;
 }
 
 function rawValue(nutrients: Record<string, { value: number | null } | undefined>, id: string): number | null {
@@ -121,12 +130,13 @@ function rawValue(nutrients: Record<string, { value: number | null } | undefined
 }
 
 /**
- * Quantità minime scelte dall'utente. Selezionare un ingrediente lo rende solo disponibile (quantità ≥ 0):
- * - «includi sempre» (o un minimo obbligatorio) → almeno la porzione minima, o un passo se non è indicata;
- * - «porzione minima se usato» → 0 oppure almeno quella porzione (nessun minimo nascosto).
+ * Quantità minime (§6 della specifica del 20/10/2026). Selezionare un ingrediente lo rende disponibile (quantità ≥ 0):
+ * - «includi sempre» (o un minimo obbligatorio) → almeno la porzione minima;
+ * - «porzione minima se usato» dell'utente, oppure il minimo pratico del generatore → 0 oppure almeno quella porzione.
  */
-function portionBounds(c: ItemConstraint | undefined, step: number): Pick<ModelItem, 'lb' | 'semiMin' | 'required' | 'minQty'> {
-  const minIfUsed = c?.minIfUsed && c.minIfUsed > 0 ? c.minIfUsed : null;
+function portionBounds(c: ItemConstraint | undefined, step: number, practical: number | null): Pick<ModelItem, 'lb' | 'semiMin' | 'required' | 'minQty'> {
+  const userMin = c?.minIfUsed && c.minIfUsed > 0 ? c.minIfUsed : null;
+  const minIfUsed = userMin ?? practical;
   const required = !!c?.required || (c?.minQty ?? 0) > 0;
   const minQty = required ? Math.max(c?.minQty ?? 0, minIfUsed ?? 0) || null : null;
   return {
@@ -181,8 +191,19 @@ export function checkUsability(input: FormulationInput) {
 function buildItems(input: FormulationInput, foods: FormulationInput['foods'], supplements: FormulationInput['supplements'], notes: string[] = []): ModelItem[] {
   const st = input.settings;
   const items: ModelItem[] = [];
+  const K = input.dog.kcalTarget ?? 0;
+  // obiettivo EPA+DHA attivo (g/die): limite operativo degli oli = ceil(T / EPA+DHA per unità)
+  // (obiettivo aggiuntivo attivo o target EPA+DHA del professionista/utente, il maggiore)
+  const epaTargets = [
+    ...(input.dog.recommended ?? []).filter((r) => r.metric === 'epa_dha').map((r) => r.amountPerDay),
+    ...input.dog.targets.filter((t) => t.metric === 'epa_dha' && t.lower !== null).map((t) => (t.basis === 'per_1000_kcal_me' ? ((t.lower as number) * K) / 1000 : (t.lower as number))),
+  ];
+  const epaTarget = epaTargets.length ? Math.max(...epaTargets) : null;
   foods.forEach(({ food, constraint }, i) => {
     const step = st.roundingFoodG;
+    const kcalPerG = (food.kcalMePer100g as number) / 100;
+    // politica del generatore (§6): un alimento attivo vale almeno max(5 g, 0,5% delle kcal obiettivo); niente grammi simbolici
+    const practical = K > 0 && kcalPerG > 0 ? Math.max(5, (0.005 * K) / kcalPerG) : 5;
     items.push({
       kind: 'food',
       id: food.id,
@@ -196,12 +217,15 @@ function buildItems(input: FormulationInput, foods: FormulationInput['foods'], s
         const x = rawValue(food.nutrients, n);
         return x === null ? null : (x / 100) * step;
       },
-      ...portionBounds(constraint, step),
+      ...portionBounds(constraint, step, practical),
       ub: constraint?.maxQty !== null && constraint?.maxQty !== undefined ? Math.floor(constraint.maxQty / step + 1e-9) : null,
       maxQty: constraint?.maxQty ?? null,
       productMax: null,
       guideMin: null,
       guideText: null,
+      practicalMin: practical,
+      omega: false,
+      omegaMax: null,
     });
   });
   supplements.forEach(({ supplement: s, constraint }, i) => {
@@ -211,6 +235,14 @@ function buildItems(input: FormulationInput, foods: FormulationInput['foods'], s
     if (s.doseGuide && !range) notes.push(`${s.name}: la tabella d’impiego del produttore copre ${weightSpan(s.doseGuide)}; per ${input.dog.weightIdealKg} kg nessun intervallo applicato.`);
     const declaredMax = s.maxDailyUnits !== null && s.maxDailySource ? s.maxDailyUnits : null;
     const productMax = range ? (declaredMax === null ? range.max : Math.min(declaredMax, range.max)) : declaredMax;
+    // olio con EPA+DHA documentati: corregge solo il deficit di EPA+DHA, non completa calorie o vitamine (§9)
+    const u = rawValue(s.nutrients, 'epa_dha');
+    const omega = u !== null && u > 0;
+    let omegaUnits: number | null = null;
+    if (omega) {
+      omegaUnits = epaTarget ? Math.ceil(epaTarget / (u as number) - 1e-9) : 0;
+      if (!epaTarget && !constraint?.required && !constraint?.minQty) notes.push(`${s.name}: nessun obiettivo EPA+DHA attivo, quindi non viene usato (l’olio non serve a completare calorie o altri nutrienti).`);
+    }
     items.push({
       kind: 'supplement',
       id: s.id,
@@ -224,24 +256,28 @@ function buildItems(input: FormulationInput, foods: FormulationInput['foods'], s
         const x = rawValue(s.nutrients, n);
         return x === null ? null : x * step;
       },
-      ...portionBounds(constraint, step),
+      ...portionBounds(constraint, step, null),
       ub: constraint?.maxQty !== null && constraint?.maxQty !== undefined ? Math.floor(constraint.maxQty / step + 1e-9) : null,
       maxQty: constraint?.maxQty ?? null,
       productMax: productMax !== null ? Math.floor(productMax / step + 1e-9) : null,
       guideMin: range ? range.min : null,
       guideText: range ? `${range.text} ${s.doseUnit}/die — ${s.doseGuide!.source}` : null,
+      practicalMin: null,
+      omega,
+      omegaMax: omegaUnits !== null ? Math.floor(omegaUnits / step + 1e-9) : null,
     });
   });
   return items;
 }
 
-type DevGroup = 'coverage' | 'target' | 'preference';
+/** coverage = minimi con dati parziali (H non dimostrabile); p1 = preferenze prioritarie (§3); preference = altre preferenze. */
+type DevGroup = 'coverage' | 'p1' | 'preference';
 
 interface BuiltRow extends Row {
   info: ConstraintInfo;
   /** scala per normalizzare scarti/violazioni. */
   scale: number;
-  /** per righe morbide: nome della variabile di scarto e gruppo di priorità (coverage → target → preference). */
+  /** per righe morbide: nome della variabile di scarto e gruppo di priorità. */
   dev?: { v: string; group: DevGroup };
 }
 
@@ -258,17 +294,38 @@ const MACRO_PARTS: Record<string, 'protein' | 'fat' | 'carbohydrate_available'> 
   fat_energy_pct: 'fat',
   carb_energy_pct: 'carbohydrate_available',
 };
+/** ripartizione energetica stimata dei macronutrienti (§7): fattori fissi 4/9/4, denominatore Ep+Ef+Ec. */
+export const MACRO_SPLIT = { protein: 4, fat: 9, carbohydrate_available: 4 } as const;
+
+/**
+ * Ampliamento della seconda ricerca (§5), solo per le preferenze P1 non fissate da un professionista:
+ * quote macro ±5 punti percentuali; fibra ±20% di ciascun estremo; Ca:P 1,2–1,4 → 1,1–1,5 (±0,1).
+ */
+export function p1Widening(l: NutrientLimit): { lower: number | null; upper: number | null } | null {
+  if (l.hardness === 'hard') return null;
+  if (l.basis === 'energy_pct' && MACRO_PARTS[l.metric] && l.limitClass === 'PERSONAL_TARGET') {
+    return { lower: l.lower === null ? null : Math.max(0, l.lower - 5), upper: l.upper === null ? null : Math.min(100, l.upper + 5) };
+  }
+  if (l.metric === 'fiber' && l.limitClass === 'PERSONAL_TARGET') {
+    return { lower: l.lower === null ? null : l.lower * 0.8, upper: l.upper === null ? null : l.upper * 1.2 };
+  }
+  if (l.metric === 'ca_p_ratio' && (l.limitClass === 'NON_OFFICIAL_ATTENTION' || l.limitClass === 'PERSONAL_TARGET')) {
+    return { lower: l.lower === null ? null : l.lower - 0.1, upper: l.upper === null ? null : l.upper + 0.1 };
+  }
+  return null;
+}
 
 function buildRows(
   input: FormulationInput,
   items: ModelItem[],
   limits: NutrientLimit[],
   notes: string[],
-): { rows: BuiltRow[]; extraVars: VarDef[] } {
+): { rows: BuiltRow[]; widened: BuiltRow[]; extraVars: VarDef[] } {
   const K = input.dog.kcalTarget as number;
   const label = new Map(input.nutrients.map((n) => [n.id, n.label]));
   const unit = new Map(input.nutrients.map((n) => [n.id, n.unit]));
   const rows: BuiltRow[] = [];
+  const widened: BuiltRow[] = [];
   const extraVars: VarDef[] = [];
   let devCount = 0;
   // gli integratori valgono per la composizione dichiarata (non dichiarato = sconosciuto, nel modello conta 0:
@@ -280,14 +337,42 @@ function buildRows(
     return l?.lower ? (l.lower * K) / 1000 : 1;
   };
 
-  const kindOf = (l: NutrientLimit, isUpper: boolean): ConstraintKind => {
+  const kindOf = (l: NutrientLimit): ConstraintKind => {
     if (l.limitClass === 'OFFICIAL_MIN') return l.basis === 'ratio' ? 'official_ratio' : 'official_min';
     if (l.limitClass === 'OFFICIAL_NUTRITIONAL_MAX') return l.basis === 'ratio' ? 'official_ratio' : 'official_max';
     if (l.limitClass === 'LEGAL_MAX') return 'legal_max';
     if (l.limitClass === 'PERSONAL_TARGET') return l.hardness === 'hard' ? 'personal_locked' : 'personal_soft';
     if (l.limitClass === 'RECOMMENDED_ALLOWANCE') return 'recommended';
-    void isUpper;
     return 'non_official';
+  };
+
+  /** termini (≥/≤ 0 dopo aver spostato il limite) di un lato del limite; null = base non utilizzabile nel calcolo. */
+  const termsFor = (l: NutrientLimit, bound: number): { terms: Term[]; rhs: number; scale: number; unitLabel: string; dataComplete: boolean } | null => {
+    if (l.basis === 'per_1000_kcal_me' || l.basis === 'per_day') {
+      if (!label.has(l.metric)) return null;
+      const terms = coef(l.metric);
+      if (l.basis === 'per_1000_kcal_me') {
+        for (const it of items) terms.push({ v: it.v, c: (-bound / 1000) * it.kcal });
+        return { terms, rhs: 0, scale: Math.max((bound * K) / 1000, 1e-9), unitLabel: `${unit.get(l.metric)}/1000 kcal`, dataComplete: complete(l.metric) };
+      }
+      return { terms, rhs: bound, scale: Math.max(bound, 1e-9), unitLabel: `${unit.get(l.metric)}/die`, dataComplete: complete(l.metric) };
+    }
+    if (l.basis === 'ratio') {
+      const parts = RATIO_PARTS[l.metric];
+      if (!parts) return null;
+      const [a, b] = parts;
+      return { terms: [...coef(a), ...coef(b).map((t) => ({ v: t.v, c: -bound * t.c }))], rhs: 0, scale: minDaily(a), unitLabel: '', dataComplete: complete(a) && complete(b) };
+    }
+    if (l.basis === 'energy_pct') {
+      const part = MACRO_PARTS[l.metric];
+      if (!part) return null;
+      // quota sulla ripartizione energetica stimata 4/9/4 (Ep+Ef+Ec), separata dalla EM usata per i fabbisogni
+      const den = (it: ModelItem) => (Object.keys(MACRO_SPLIT) as (keyof typeof MACRO_SPLIT)[]).reduce((a, k) => a + (it.value(k) ?? 0) * MACRO_SPLIT[k], 0);
+      const terms = items.map((it) => ({ v: it.v, c: (it.value(part) ?? 0) * MACRO_SPLIT[part] - (bound / 100) * den(it) }));
+      const dataComplete = (['protein', 'fat', 'carbohydrate_available'] as const).every((k) => complete(k));
+      return { terms, rhs: 0, scale: K, unitLabel: '% energia macro stimata (4/9/4)', dataComplete };
+    }
+    return null;
   };
 
   for (const l of limits) {
@@ -295,108 +380,67 @@ function buildRows(
     const sides: ['lower' | 'upper', number][] = [];
     if (l.lower !== null) sides.push(['lower', l.lower]);
     if (l.upper !== null) sides.push(['upper', l.upper]);
+    const wide = p1Widening(l);
     for (const [side, bound] of sides) {
-      let terms: Term[] = [];
-      let dataComplete = true;
-      let scale = 1;
-      let unitLabel = '';
-      if (l.basis === 'per_1000_kcal_me' || l.basis === 'per_day') {
-        if (!label.has(l.metric)) continue;
-        dataComplete = complete(l.metric);
-        terms = coef(l.metric);
-        if (l.basis === 'per_1000_kcal_me') {
-          // energia dichiarata (composizione dichiarata degli integratori): se un integratore non dichiara le kcal,
-          // la verifica finale controlla anche l'energia massima possibile e segnala i minimi non dimostrati
-          for (const it of items) terms.push({ v: it.v, c: (-bound / 1000) * it.kcal });
-          scale = Math.max((bound * K) / 1000, 1e-9);
-          unitLabel = `${unit.get(l.metric)}/1000 kcal`;
-        } else {
-          scale = Math.max(bound, 1e-9);
-          unitLabel = `${unit.get(l.metric)}/die`;
-        }
-      } else if (l.basis === 'ratio') {
-        const parts = RATIO_PARTS[l.metric];
-        if (!parts) continue;
-        const [a, b] = parts;
-        dataComplete = complete(a) && complete(b);
-        terms = [...coef(a), ...coef(b).map((t) => ({ v: t.v, c: -bound * t.c }))];
-        scale = minDaily(a);
-        unitLabel = '';
-      } else if (l.basis === 'energy_pct') {
-        const part = MACRO_PARTS[l.metric];
-        if (!part) continue;
-        const key = part === 'carbohydrate_available' ? 'carbohydrate' : part;
-        const noMethod = items.filter((it) => (it.value(part) ?? 0) > 0 && !it.macro);
-        if (noMethod.length) {
-          notes.push(`${label.get(l.metric) ?? l.metric}: preferenza non applicata, nessun metodo energetico per ${noMethod.map((i) => i.name).join(', ')}.`);
-          continue;
-        }
-        dataComplete = complete(part);
-        terms = [
-          ...items.map((it) => ({ v: it.v, c: (it.value(part) ?? 0) * (it.macro?.[key] ?? 0) })),
-          ...items.map((it) => ({ v: it.v, c: (-bound / 100) * it.kcal })),
-        ];
-        scale = K;
-        unitLabel = '% kcal';
-      } else {
+      const t = termsFor(l, bound);
+      if (!t) {
         notes.push(`${label.get(l.metric) ?? l.metric}: limite su base ${l.basis} non usato nel calcolo (nessuna conversione verificata).`);
         continue;
       }
       const op: '>=' | '<=' = side === 'lower' ? '>=' : '<=';
-      const kind = kindOf(l, side === 'upper');
+      const kind = kindOf(l);
       const what = l.limitClass === 'RECOMMENDED_ALLOWANCE' ? (l.displayLabel ?? 'apporto raccomandato') : side === 'lower' ? 'minimo' : 'massimo';
-      const desc = `${label.get(l.metric) ?? l.metric}: ${what} ${fmt(bound)} ${unitLabel} (${l.source})`.replace('  ', ' ');
-      // Regole sui dati parziali:
-      //  - massimo: i soli contributi noti sono un limite inferiore del vero totale → vincolo rigido corretto;
-      //  - minimo o rapporto con dati parziali: non dimostrabile → solo copertura morbida, la verifica resta grigia.
-      let hard = l.hardness === 'hard';
-      // obiettivi aggiuntivi (es. EPA+DHA NRC): da raggiungere prima delle preferenze, dopo i limiti ufficiali
-      let group: DevGroup = l.limitClass === 'RECOMMENDED_ALLOWANCE' ? 'target' : 'preference';
-      if (hard && !dataComplete && !(side === 'upper' && l.basis !== 'ratio')) {
+      const desc = `${label.get(l.metric) ?? l.metric}: ${what} ${fmt(bound)} ${t.unitLabel} (${l.source})`.replace('  ', ' ');
+      // Livello H (§3): limiti ufficiali, target professionali, obiettivo EPA+DHA attivo. Con dati parziali un minimo o un
+      // rapporto non è dimostrabile: copertura dei contributi noti (la verifica lo segnala come non verificabile).
+      const isH = l.hardness === 'hard' || l.limitClass === 'RECOMMENDED_ALLOWANCE';
+      let hard = isH;
+      let group: DevGroup = wide ? 'p1' : 'preference';
+      if (hard && !t.dataComplete && !(side === 'upper' && l.basis !== 'ratio')) {
         hard = false;
         group = 'coverage';
       }
-      const name = `r${rows.length}`;
-      const row: BuiltRow = {
-        name,
-        terms,
-        op,
-        rhs: 0,
-        scale,
-        info: { name, label: desc + (group === 'coverage' ? ' — dati parziali' : ''), kind: group === 'coverage' ? 'coverage_partial' : kind, hardness: hard ? 'hard' : 'soft', metric: l.metric },
+      const push = (bnd: number, terms: Term[], rhs: number, extraLabel = '') => {
+        const name = `r${rows.length}`;
+        const row: BuiltRow = {
+          name,
+          terms,
+          op,
+          rhs,
+          scale: t.scale,
+          info: { name, label: desc + extraLabel + (group === 'coverage' ? ' — dati parziali' : ''), kind: group === 'coverage' ? 'coverage_partial' : kind, hardness: hard ? 'hard' : 'soft', metric: l.metric },
+        };
+        void bnd;
+        if (!hard) {
+          const dv = `d${devCount++}`;
+          extraVars.push({ name: dv, lb: 0, ub: null, integer: false });
+          row.terms = [...row.terms, { v: dv, c: op === '>=' ? 1 : -1 }];
+          row.dev = { v: dv, group };
+        }
+        rows.push(row);
       };
-      if (l.basis === 'per_day') row.rhs = bound;
-      if (!hard) {
-        const dv = `d${devCount++}`;
-        extraVars.push({ name: dv, lb: 0, ub: null, integer: false });
-        row.terms = [...row.terms, { v: dv, c: op === '>=' ? 1 : -1 }];
-        row.dev = { v: dv, group };
+      push(bound, t.terms, t.rhs);
+      // minimi per 1000 kcal su E_controllo = max(E_target, E_finale) (§4): non si abbassano con la tolleranza calorica
+      if (side === 'lower' && l.basis === 'per_1000_kcal_me' && K > 0) push(bound, coef(l.metric), (bound * K) / 1000, ` — anche su ${fmt(K)} kcal obiettivo`);
+      // seconda ricerca: stesso vincolo con l'ampliamento documentato, rigido (aggiunto solo se serve)
+      if (wide) {
+        const wb = side === 'lower' ? wide.lower : wide.upper;
+        const wt = wb === null ? null : termsFor(l, wb);
+        if (wt) {
+          const name = `w${widened.length}`;
+          widened.push({ name, terms: wt.terms, op, rhs: wt.rhs, scale: wt.scale, info: { name, label: `${label.get(l.metric) ?? l.metric}: ${side === 'lower' ? 'minimo' : 'massimo'} ampliato ${fmt(wb as number)} ${wt.unitLabel}`, kind, hardness: 'hard', metric: l.metric } });
+        }
       }
-      rows.push(row);
     }
   }
-  // dose minima consigliata dal produttore: preferenza (arancione se non raggiunta), mai sopra i limiti nutrizionali
-  for (const it of items) {
-    if (it.guideMin === null || !(it.guideMin > 0)) continue;
-    const dv = `d${devCount++}`;
-    extraVars.push({ name: dv, lb: 0, ub: null, integer: false });
-    const name = `r${rows.length}`;
-    rows.push({
-      name,
-      terms: [{ v: it.v, c: it.step }, { v: dv, c: 1 }],
-      op: '>=',
-      rhs: it.guideMin,
-      scale: Math.max(it.guideMin, 1e-9),
-      dev: { v: dv, group: 'preference' },
-      info: { name, label: `${it.name}: dose consigliata dal produttore ${it.guideText}`, kind: 'product_range', hardness: 'soft' },
-    });
-  }
-  return { rows, extraVars };
+  return { rows, widened, extraVars };
 }
 
 interface Built {
   model: Model;
   rows: BuiltRow[];
+  /** righe della seconda ricerca (preferenze P1 ampliate). */
+  widened: BuiltRow[];
   items: ModelItem[];
   energyDev: string[];
   K: number;
@@ -405,31 +449,63 @@ interface Built {
 function buildModel(input: FormulationInput, items: ModelItem[], limits: NutrientLimit[], notes: string[]): Built {
   const K = input.dog.kcalTarget as number;
   const tol = input.settings.energyTolerancePct / 100;
-  const { rows, extraVars } = buildRows(input, items, limits, notes);
+  const { rows, widened, extraVars } = buildRows(input, items, limits, notes);
   const vars: VarDef[] = items.map((it) => {
     let ub = it.ub;
-    if (it.productMax !== null) ub = ub === null ? it.productMax : Math.min(ub, it.productMax);
+    for (const m of [it.productMax, it.omegaMax]) if (m !== null) ub = ub === null ? m : Math.min(ub, m);
     if (ub === null) {
       // limite tecnico per evitare modelli illimitati (un componente senza energia): 10 kg o 10.000 dosi
-      ub = Math.ceil((it.kind === 'food' ? 10000 : 10000) / it.step);
+      ub = Math.ceil(10000 / it.step);
     }
     return { name: it.v, lb: it.lb, ub, integer: it.integerUnits };
   });
+  const extraRows: Row[] = [];
   // porzione minima se usato: x = 0 oppure x ≥ porzione (variabile binaria y: x ≤ U·y, x ≥ m·y)
-  const semiRows: Row[] = [];
+  const usedVar = new Map<string, string>();
+  const used = (it: ModelItem) => {
+    let y = usedVar.get(it.v);
+    if (y) return y;
+    y = `y_${it.v}`;
+    usedVar.set(it.v, y);
+    const U = vars.find((x) => x.name === it.v)!.ub as number;
+    vars.push({ name: y, lb: 0, ub: 1, integer: true });
+    extraRows.push({ name: `use_${it.v}`, terms: [{ v: it.v, c: 1 }, { v: y, c: -U }], op: '<=', rhs: 0 });
+    return y;
+  };
   for (const it of items) {
     if (it.semiMin === null) continue;
     const v = vars.find((x) => x.name === it.v)!;
-    const U = v.ub as number;
-    if (it.semiMin > U) {
+    if (it.semiMin > (v.ub as number)) {
       v.ub = 0;
-      notes.push(`${it.name}: la porzione minima scelta supera la quantità massima consentita, quindi non viene usato.`);
+      notes.push(`${it.name}: la porzione minima supera la quantità massima consentita, quindi non viene usato.`);
       continue;
     }
-    const y = `y_${it.v}`;
-    vars.push({ name: y, lb: 0, ub: 1, integer: true });
-    semiRows.push({ name: `semi_hi_${it.v}`, terms: [{ v: it.v, c: 1 }, { v: y, c: -U }], op: '<=', rhs: 0 });
-    semiRows.push({ name: `semi_lo_${it.v}`, terms: [{ v: it.v, c: 1 }, { v: y, c: -it.semiMin }], op: '>=', rhs: 0 });
+    if ((v.ub as number) === 0) continue;
+    const y = used(it);
+    extraRows.push({ name: `semi_lo_${it.v}`, terms: [{ v: it.v, c: 1 }, { v: y, c: -it.semiMin }], op: '>=', rhs: 0 });
+  }
+  // più oli con EPA+DHA equivalenti non si accumulano: al massimo uno, salvo quelli resi obbligatori dall'utente (§9)
+  const omegas = items.filter((it) => it.omega && (vars.find((x) => x.name === it.v)!.ub as number) > 0);
+  if (omegas.length > 1 && omegas.filter((it) => it.required).length <= 1) {
+    extraRows.push({ name: 'omega_one', terms: omegas.map((it) => ({ v: used(it), c: 1 })), op: '<=', rhs: 1 });
+  }
+  // dose minima della tabella del produttore: preferenza solo SE il prodotto viene usato (non ne forza l'uso, §10)
+  let gd = 0;
+  for (const it of items) {
+    if (it.guideMin === null || !(it.guideMin > 0) || (vars.find((x) => x.name === it.v)!.ub as number) === 0) continue;
+    const y = used(it);
+    const dv = `g${gd++}`;
+    vars.push({ name: dv, lb: 0, ub: null, integer: false });
+    const name = `r${rows.length}`;
+    rows.push({
+      name,
+      terms: [{ v: it.v, c: it.step }, { v: dv, c: 1 }, { v: y, c: -it.guideMin }],
+      op: '>=',
+      rhs: 0,
+      scale: Math.max(it.guideMin, 1e-9),
+      dev: { v: dv, group: 'preference' },
+      info: { name, label: `${it.name}: dose consigliata dal produttore ${it.guideText} (se usato)`, kind: 'product_range', hardness: 'soft' },
+    });
   }
   const energyRow: BuiltRow = {
     name: 'energy',
@@ -440,7 +516,7 @@ function buildModel(input: FormulationInput, items: ModelItem[], limits: Nutrien
     info: { name: 'energy', label: `Energia: ${fmt(K)} kcal ±${input.settings.energyTolerancePct}%`, kind: 'energy', hardness: 'hard' },
   };
   vars.push({ name: 'ep', lb: 0, ub: tol * K, integer: false }, { name: 'en', lb: 0, ub: tol * K, integer: false }, ...extraVars);
-  return { model: { vars, rows: [energyRow, ...rows, ...semiRows], objective: [] }, rows: [energyRow, ...rows], items, energyDev: ['ep', 'en'], K };
+  return { model: { vars, rows: [energyRow, ...rows, ...extraRows], objective: [] }, rows: [energyRow, ...rows], widened, items, energyDev: ['ep', 'en'], K };
 }
 
 function devObjective(rows: BuiltRow[], group: DevGroup): Term[] {
@@ -503,7 +579,7 @@ function diagnoseWith(built: Built, highsSolve: (m: Model) => SolveResult, relax
     }
   }
   for (const it of built.items) {
-    const ub = [it.ub, it.productMax].filter((x): x is number => x !== null);
+    const ub = [it.ub, it.productMax, it.omegaMax].filter((x): x is number => x !== null);
     if (it.lb > 0) {
       const s = addSlack({ name: `lb_${it.v}`, label: `Limite scelto: ${it.name} sempre incluso, almeno ${fmt(it.minQty ?? it.lb * it.step)}`, kind: 'user_bound', hardness: 'hard' }, it.lb, 'excess');
       rows.push({ name: `lb_${it.v}`, terms: [{ v: it.v, c: 1 }, { v: s, c: 1 }], op: '>=', rhs: it.lb });
@@ -511,10 +587,15 @@ function diagnoseWith(built: Built, highsSolve: (m: Model) => SolveResult, relax
     if (ub.length) {
       const u = Math.min(...ub);
       const isProduct = it.productMax !== null && u === it.productMax;
+      const isOmega = it.omegaMax !== null && u === it.omegaMax;
       const s = addSlack(
         {
           name: `ub_${it.v}`,
-          label: isProduct ? `Dose massima del produttore: ${it.name} ${fmt(u * it.step)} (superarla richiede una valutazione veterinaria)` : `Limite scelto: ${it.name} non oltre ${fmt(it.maxQty ?? u * it.step)}`,
+          label: isOmega
+            ? `Limite operativo del generatore per EPA+DHA: ${it.name} non oltre ${fmt(u * it.step)} (copre l’obiettivo; non è un massimo clinico)`
+            : isProduct
+              ? `Dose massima del produttore: ${it.name} ${fmt(u * it.step)} (superarla richiede una valutazione veterinaria)`
+              : `Limite scelto: ${it.name} non oltre ${fmt(it.maxQty ?? u * it.step)}`,
           kind: isProduct ? 'product_max' : 'user_bound',
           hardness: 'hard',
         },
@@ -531,13 +612,14 @@ function diagnoseWith(built: Built, highsSolve: (m: Model) => SolveResult, relax
     .map((m) => ({ label: m.info.label, kind: m.info.kind, metric: m.info.metric, shortfall: res.values[m.slack], direction: m.direction }));
   // limiti di quantità rispettati ma "al massimo": contribuiscono al conflitto
   for (const it of built.items) {
-    const ub = [it.ub, it.productMax].filter((x): x is number => x !== null);
+    const ub = [it.ub, it.productMax, it.omegaMax].filter((x): x is number => x !== null);
     if (!ub.length || !out.some((c) => c.kind !== 'user_bound' && c.kind !== 'product_max')) continue;
     const u = Math.min(...ub);
     if ((res.values[it.v] ?? 0) >= u - 1e-6 && !out.some((c) => c.label.includes(it.name))) {
       const isProduct = it.productMax !== null && u === it.productMax;
+      const isOmega = it.omegaMax !== null && u === it.omegaMax;
       out.push({
-        label: `${isProduct ? 'Dose massima del produttore' : 'Limite scelto'}: ${it.name} non oltre ${fmt(u * it.step)} — raggiunto, contribuisce al conflitto`,
+        label: `${isOmega ? 'Limite operativo EPA+DHA' : isProduct ? 'Dose massima del produttore' : 'Limite scelto'}: ${it.name} non oltre ${fmt(u * it.step)} — raggiunto, contribuisce al conflitto`,
         kind: isProduct ? 'product_max' : 'user_bound',
         shortfall: 0,
         direction: 'excess',
@@ -598,8 +680,13 @@ function toItems(built: Built, values: Record<string, number>): RecipeItem[] {
 }
 
 export async function formulate(input: FormulationInput): Promise<FormulationResult> {
+  const t0 = Date.now();
   const highs = await loadSolver();
-  const runSolve = (m: Model) => solve(highs, m, input.settings.timeLimitSeconds);
+  let solves = 0;
+  const runSolve = (m: Model) => {
+    solves++;
+    return solve(highs, m, input.settings.timeLimitSeconds);
+  };
   const notes: string[] = [];
   const phases: FormulationResult['phases'] = [];
   const { foods, supplements, excluded } = checkUsability(input);
@@ -614,40 +701,60 @@ export async function formulate(input: FormulationInput): Promise<FormulationRes
     items: [] as RecipeItem[],
     audit: null,
   };
+  const done = <T extends Omit<FormulationResult, 'stats'>>(r: T): FormulationResult => ({ ...r, stats: { durationMs: Date.now() - t0, solves, p1Stage: null, ...(r as { stats?: object }).stats } });
   if (!input.dog.kcalTarget || !(input.dog.kcalTarget > 0)) {
-    return { ...base, outcome: 'blocked', message: 'Imposta l’obiettivo kcal del cane prima di calcolare.' };
+    return done({ ...base, outcome: 'blocked', message: 'Imposta l’obiettivo kcal del cane prima di calcolare.' });
+  }
+  // §4: sotto 95 kcal/kg^0,75 del peso di riferimento la generazione conforme richiede un profilo a bassa energia validato
+  const refKcal = fediafReferenceKcal(input.dog.weightIdealKg);
+  if (input.dog.lifeStage === 'adult_maintenance' && input.dog.kcalTarget < refKcal - 1e-6) {
+    return done({
+      ...base,
+      outcome: 'blocked',
+      message: `Obiettivo di ${fmt(input.dog.kcalTarget)} kcal sotto il riferimento FEDIAF di 95 kcal/kg^0,75 del peso ideale (${fmt(input.dog.weightIdealKg)} kg → ${fmt(Math.round(refKcal))} kcal): i minimi per 1000 kcal non coprirebbero il fabbisogno. Serve un profilo a bassa energia validato prima di generare una ricetta; le ricette esistenti restano analizzabili.`,
+    });
   }
   if (!foods.length) {
-    return {
+    return done({
       ...base,
       outcome: 'blocked',
       message: 'Nessun alimento selezionato è utilizzabile: le composizioni devono essere inserite e verificate in catalogo.',
-    };
+    });
   }
   const limits = applicableLimits(input.limits, input.dog, input.dietMoisture);
   if (input.dog.lifeStage !== 'adult_maintenance') {
     notes.push('Nessuno standard disponibile per questa fase di vita: il calcolo considera solo energia e target personali.');
+  }
+  // §14.3: infattibilità evidente prima del calcolo (nessuna ricerca inutile)
+  const trivial = trivialConflicts(input, limits);
+  if (trivial.length) {
+    return done({ ...base, outcome: 'preferences_unreachable', conflicts: trivial, message: 'Preferenze incompatibili tra loro: nessun menù può rispettarle. Rivedi gli intervalli indicati.' });
   }
   const items = buildItems(input, foods, supplements, notes);
   const built = buildModel(input, items, limits, notes);
   const constraints = built.rows.map((r) => r.info);
   for (const it of items) {
     if (it.required) constraints.push({ name: `lb_${it.v}`, label: `${it.name}: sempre incluso${it.minQty ? `, almeno ${fmt(it.minQty)}` : ''}`, kind: 'user_bound', hardness: 'hard' });
-    if (it.semiMin !== null) constraints.push({ name: `semi_${it.v}`, label: `${it.name}: se usato, almeno ${fmt(it.semiMin * it.step)} (altrimenti 0)`, kind: 'user_bound', hardness: 'hard' });
+    if (it.semiMin !== null)
+      constraints.push({ name: `semi_${it.v}`, label: `${it.name}: se usato, almeno ${fmt(it.semiMin * it.step)}${it.practicalMin !== null ? ' (minimo pratico del generatore: 5 g o 0,5% delle kcal)' : ''} — altrimenti 0`, kind: 'user_bound', hardness: 'hard' });
     if (it.maxQty !== null) constraints.push({ name: `ub_${it.v}`, label: `${it.name}: non oltre ${fmt(it.maxQty)}`, kind: 'user_bound', hardness: 'hard' });
     if (it.productMax !== null)
       constraints.push({ name: `pm_${it.v}`, label: `${it.name}: dose massima del produttore ${fmt(it.productMax * it.step)} — non superata in automatico: oltre serve una valutazione veterinaria`, kind: 'product_max', hardness: 'hard' });
+    if (it.omegaMax !== null)
+      constraints.push({ name: `om_${it.v}`, label: `${it.name}: limite operativo del generatore ${fmt(it.omegaMax * it.step)} (copre l’obiettivo EPA+DHA; non è un massimo clinico)`, kind: 'product_max', hardness: 'hard' });
     if (it.kind === 'supplement' && it.step === 1) constraints.push({ name: `int_${it.v}`, label: `${it.name}: solo dosi intere`, kind: 'product_max', hardness: 'hard' });
   }
+  const timeout = (r: SolveResult) =>
+    done({ ...base, constraints, outcome: r.status === 'timeout' ? 'timeout' : 'error', message: `Calcolo non completato (${r.rawStatus}): la fattibilità non è stata determinata. Nessuna quantità proposta.` });
 
-  // Fase 1: copertura dei nutrienti con dati parziali (con tutti i vincoli rigidi)
+  // H: vincoli necessari e copertura dei minimi con dati parziali (preferenze libere)
   let model = built.model;
   const cover = devObjective(built.rows, 'coverage');
-  const p1 = runSolve({ ...model, objective: cover });
-  phases.push({ name: 'Vincoli rigidi e copertura', status: p1.rawStatus, objective: p1.status === 'optimal' ? p1.objective : null });
-  if (p1.status === 'infeasible') {
+  const h = runSolve({ ...model, objective: cover });
+  phases.push({ name: 'H: vincoli necessari e copertura', status: h.rawStatus, objective: h.status === 'optimal' ? h.objective : null });
+  if (h.status === 'infeasible') {
     const conflicts = diagnose(built, runSolve);
-    return {
+    return done({
       ...base,
       constraints,
       outcome: 'infeasible',
@@ -656,78 +763,130 @@ export async function formulate(input: FormulationInput): Promise<FormulationRes
       message: conflicts.length
         ? 'Nessuna soluzione valida: i vincoli elencati non possono essere rispettati insieme con questi componenti.'
         : 'Nessuna soluzione valida con i componenti selezionati (conflitto dovuto alle dosi intere o agli arrotondamenti).',
-    };
+    });
   }
-  if (p1.status !== 'optimal') {
-    return { ...base, constraints, outcome: p1.status === 'timeout' ? 'timeout' : 'error', message: `Il calcolo non è terminato (${p1.rawStatus}). Nessuna quantità proposta.` };
-  }
-  model = fixObjective(model, cover, p1.objective, 'fix_cover');
+  if (h.status !== 'optimal') return timeout(h);
+  model = fixObjective(model, cover, h.objective, 'fix_cover');
+  let last = h;
 
-  // Fase 1b: obiettivi aggiuntivi (es. apporto raccomandato NRC di EPA+DHA), prima delle preferenze
-  const target = devObjective(built.rows, 'target');
-  if (target.length) {
-    const pt = runSolve({ ...model, objective: target });
-    phases.push({ name: 'Obiettivi aggiuntivi', status: pt.rawStatus, objective: pt.status === 'optimal' ? pt.objective : null });
-    if (pt.status === 'optimal') model = fixObjective(model, target, pt.objective, 'fix_target');
-  }
-
-  // Fase 2: avvicinarsi all'obiettivo kcal
-  const energyObj: Term[] = [{ v: 'ep', c: 1 / built.K }, { v: 'en', c: 1 / built.K }];
-  const p2 = runSolve({ ...model, objective: energyObj });
-  phases.push({ name: 'Obiettivo kcal', status: p2.rawStatus, objective: p2.status === 'optimal' ? p2.objective : null });
-  let last = p1;
-  if (p2.status === 'optimal') {
-    model = fixObjective(model, energyObj, p2.objective, 'fix_energy');
-    last = p2;
+  // oli EPA+DHA: il minor numero di unità che copre l'obiettivo, prima di qualunque preferenza (§9)
+  const omegaObj: Term[] = items.filter((it) => it.omega).map((it) => ({ v: it.v, c: it.step }));
+  if (omegaObj.length) {
+    const o = runSolve({ ...model, objective: omegaObj });
+    phases.push({ name: 'EPA+DHA: minimo indispensabile', status: o.rawStatus, objective: o.status === 'optimal' ? o.objective : null });
+    if (o.status !== 'optimal') return timeout(o);
+    model = fixObjective(model, omegaObj, o.objective, 'fix_omega');
+    last = o;
   }
 
-  // Fase 3: preferenze morbide (target personali, soglie non ufficiali, quote energetiche)
+  // P1, prima ricerca: tutti gli intervalli richiesti
+  const p1Rows = built.rows.filter((r) => r.dev?.group === 'p1');
+  let p1Stage: 1 | 2 | null = null;
+  if (p1Rows.length) {
+    const zero = new Set(p1Rows.map((r) => r.dev!.v));
+    const strict = { ...model, vars: model.vars.map((v) => (zero.has(v.name) ? { ...v, ub: 0 } : v)) };
+    const a = runSolve({ ...strict, objective: [] });
+    phases.push({ name: 'P1: prima ricerca (intervalli richiesti)', status: a.rawStatus, objective: a.status === 'optimal' ? 0 : null });
+    if (a.status === 'optimal') {
+      model = strict;
+      last = a;
+      p1Stage = 1;
+    } else if (a.status === 'infeasible') {
+      // seconda ricerca: solo gli ampliamenti documentati, avvicinandosi il più possibile agli intervalli richiesti
+      const p1Obj = devObjective(built.rows, 'p1');
+      const wide = { ...model, rows: [...model.rows, ...built.widened] };
+      const b = runSolve({ ...wide, objective: p1Obj });
+      phases.push({ name: 'P1: seconda ricerca (ampliamenti documentati)', status: b.rawStatus, objective: b.status === 'optimal' ? b.objective : null });
+      if (b.status === 'optimal') {
+        model = fixObjective(wide, p1Obj, b.objective, 'fix_p1');
+        last = b;
+        p1Stage = 2;
+        notes.push('Preferenze raggiunte solo con la seconda ricerca (ampliamenti documentati): vedi gli scostamenti.');
+      } else if (b.status === 'infeasible') {
+        // diagnostico: il candidato più vicino (H rispettati) si mostra, ma non è un menù riuscito
+        const c = runSolve({ ...model, objective: p1Obj });
+        phases.push({ name: 'P1: diagnosi', status: c.rawStatus, objective: c.status === 'optimal' ? c.objective : null });
+        if (c.status !== 'optimal') return timeout(c);
+        const proposal = toItems(built, c.values);
+        const audit = finalAudit(input, proposal, excluded);
+        const softGaps = softGapAnalysis(built, c.values, runSolve);
+        if (softGaps.length) audit.softGaps = softGaps;
+        return done({
+          ...base,
+          constraints,
+          outcome: 'preferences_unreachable',
+          items: proposal,
+          audit,
+          message: 'Preferenze non raggiungibili nemmeno con gli ampliamenti documentati. Le quantità mostrate sono solo diagnostiche (vincoli necessari rispettati): non è un menù generato.',
+        });
+      } else return timeout(b);
+    } else return timeout(a);
+  }
+
+  // altre preferenze (target personali, soglie non ufficiali, dosi consigliate dal produttore se usato)
   const pref = devObjective(built.rows, 'preference');
   if (pref.length) {
-    const p3 = runSolve({ ...model, objective: pref });
-    phases.push({ name: 'Preferenze', status: p3.rawStatus, objective: p3.status === 'optimal' ? p3.objective : null });
-    if (p3.status === 'optimal') {
-      model = fixObjective(model, pref, p3.objective, 'fix_pref');
-      last = p3;
-    }
+    const p = runSolve({ ...model, objective: pref });
+    phases.push({ name: 'Altre preferenze', status: p.rawStatus, objective: p.status === 'optimal' ? p.objective : null });
+    if (p.status !== 'optimal') return timeout(p);
+    model = fixObjective(model, pref, p.objective, 'fix_pref');
+    last = p;
   }
 
-  // Fase 4: praticità — meno integratori possibile; costo se tutti i prezzi sono noti
+  // P2: praticità — energia vicina all'obiettivo, meno integratori, porzione compatta
+  const practical: Term[] = [{ v: 'ep', c: 1 / built.K }, { v: 'en', c: 1 / built.K }];
+  for (const it of items) {
+    if (it.kind === 'supplement') practical.push({ v: it.v, c: (1e-2 * it.step) / Math.max((it.productMax ?? it.omegaMax ?? it.ub ?? 1000) * it.step, 1e-6) });
+    else practical.push({ v: it.v, c: (1e-4 * it.step) / built.K });
+  }
+  const p2 = runSolve({ ...model, objective: practical });
+  phases.push({ name: 'P2: praticità', status: p2.rawStatus, objective: p2.status === 'optimal' ? p2.objective : null });
+  if (p2.status !== 'optimal') return timeout(p2);
+  last = p2;
+
+  // P3: costo, solo con tutti i prezzi noti; non sostituisce P1 o P2
   const prices = input.unitPrices ?? {};
   const allPriced = items.every((it) => typeof prices[it.id] === 'number');
-  const practical: Term[] = items
-    .filter((it) => it.kind === 'supplement')
-    .map((it) => ({ v: it.v, c: 1e-3 / Math.max((it.productMax ?? it.ub ?? 1000) * it.step, 1e-6) * it.step }));
-  // porzione più compatta: a parità di tutto il resto, meno grammi totali di alimenti (criterio pratico, non nutrizionale)
-
-
-  for (const it of items) if (it.kind === 'food') practical.push({ v: it.v, c: (1e-4 * it.step) / built.K });
   if (input.settings.preferLowerCost && allPriced) {
-    for (const it of items) practical.push({ v: it.v, c: (prices[it.id] as number) * it.step });
-    notes.push('A parità di nutrienti è stata scelta la combinazione meno costosa con i tuoi prezzi.');
+    model = fixObjective(model, practical, p2.objective, 'fix_p2');
+    const cost: Term[] = items.map((it) => ({ v: it.v, c: (prices[it.id] as number) * it.step }));
+    const p3 = runSolve({ ...model, objective: cost });
+    phases.push({ name: 'P3: costo', status: p3.rawStatus, objective: p3.status === 'optimal' ? p3.objective : null });
+    if (p3.status === 'optimal') {
+      last = p3;
+      notes.push('A parità di vincoli, preferenze e praticità è stata scelta la combinazione meno costosa con i tuoi prezzi.');
+    }
   } else if (input.settings.preferLowerCost) {
     notes.push('Costo non usato come criterio: mancano prezzi per alcuni componenti.');
-  }
-  if (practical.length) {
-    const p4 = runSolve({ ...model, objective: practical });
-    phases.push({ name: 'Praticità e costo', status: p4.rawStatus, objective: p4.status === 'optimal' ? p4.objective : null });
-    if (p4.status === 'optimal') last = p4;
   }
 
   const proposal = toItems(built, last.values);
   for (const it of proposal) {
     if (it.qty === 0) {
       const name = items.find((x) => x.id === it.id)?.name;
-      notes.push(`${name}: quantità 0 — non necessario per rispettare i vincoli. Attiva «includi sempre» se vuoi usarlo.`);
+      notes.push(`${name}: non usato (quantità 0) — non necessario per rispettare i vincoli. Attiva «includi sempre» se vuoi usarlo.`);
     }
   }
-
-  const foodsById = Object.fromEntries(input.foods.map(({ food }) => [food.id, food]));
-  const suppById = Object.fromEntries(input.supplements.map(({ supplement }) => [supplement.id, supplement]));
-  const audit = auditRecipe({
+  // verifica indipendente sulle quantità mostrate (già intere/arrotondate ai passi)
+  const audit = finalAudit(input, proposal, excluded);
+  const softGaps = softGapAnalysis(built, last.values, runSolve);
+  if (softGaps.length) audit.softGaps = softGaps;
+  return done({
+    ...base,
+    constraints,
+    outcome: 'solved',
     items: proposal,
-    foods: foodsById,
-    supplements: suppById,
+    audit,
+    message: audit.statusLabel,
+    stats: { p1Stage },
+  } as Omit<FormulationResult, 'stats'>);
+}
+
+function finalAudit(input: FormulationInput, proposal: RecipeItem[], excluded: FormulationResult['excluded']) {
+  return auditRecipe({
+    items: proposal,
+    foods: Object.fromEntries(input.foods.map(({ food }) => [food.id, food])),
+    supplements: Object.fromEntries(input.supplements.map(({ supplement }) => [supplement.id, supplement])),
     nutrients: input.nutrients,
     limits: input.limits,
     dog: input.dog,
@@ -735,16 +894,25 @@ export async function formulate(input: FormulationInput): Promise<FormulationRes
     settings: input.settings,
     excluded: excluded.map((e) => ({ name: e.name, reason: e.reason })),
   });
-  const softGaps = softGapAnalysis(built, last.values, runSolve);
-  if (softGaps.length) audit.softGaps = softGaps;
-  return {
-    ...base,
-    constraints,
-    outcome: 'solved',
-    items: proposal,
-    audit,
-    message: audit.statusLabel,
-  };
+}
+
+/** Incompatibilità evidenti tra preferenze sulle quote macro (la somma delle quote stimate è 100%). */
+function trivialConflicts(input: FormulationInput, limits: NutrientLimit[]): Conflict[] {
+  const macro = limits.filter((l) => l.basis === 'energy_pct' && MACRO_PARTS[l.metric]);
+  const out: Conflict[] = [];
+  // per le preferenze ampliabili vale l'ampliamento massimo; per quelle fissate dal professionista il valore richiesto
+  const lo = (l: NutrientLimit) => (l.lower === null ? 0 : (p1Widening(l)?.lower ?? l.lower));
+  const hi = (l: NutrientLimit) => (l.upper === null ? 100 : (p1Widening(l)?.upper ?? l.upper));
+  const metrics = Object.keys(MACRO_PARTS);
+  const minFor = (m: string) => Math.max(0, ...macro.filter((l) => l.metric === m).map(lo));
+  const maxFor = (m: string) => Math.min(100, ...macro.filter((l) => l.metric === m).map(hi));
+  const sumMin = metrics.reduce((a, m) => a + minFor(m), 0);
+  const sumMax = metrics.reduce((a, m) => a + maxFor(m), 0);
+  if (sumMin > 100 + 1e-9) out.push({ label: `Quote energetiche: i minimi richiesti (anche ampliati) sommano a ${fmt(sumMin)}%, oltre il 100%`, kind: 'personal_soft', shortfall: sumMin - 100, direction: 'excess' });
+  if (sumMax < 100 - 1e-9) out.push({ label: `Quote energetiche: i massimi richiesti (anche ampliati) sommano a ${fmt(sumMax)}%, meno del 100%`, kind: 'personal_soft', shortfall: 100 - sumMax, direction: 'deficit' });
+  for (const m of metrics) if (minFor(m) > maxFor(m) + 1e-9) out.push({ label: `${m}: minimo oltre il massimo`, kind: 'personal_soft', metric: m, shortfall: minFor(m) - maxFor(m), direction: 'excess' });
+  void input;
+  return out;
 }
 
 /**

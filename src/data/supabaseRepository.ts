@@ -6,7 +6,7 @@ import { applyEnergyMethods } from '../engine/energy';
 import { DEFAULT_SETTINGS } from '../engine/types';
 import type { AppSettings, Dog, Recipe, RecipeVersion, UserPrice, WeightEntry } from './model';
 import type { Category } from './packageCatalog';
-import { packageRecommendedTargets } from './packageCatalog';
+import { packageRecommendedTargets, withCatalogGaps } from './packageCatalog';
 import { RecipeLimitError } from './recipeService';
 import type { FullCatalog, ImportLogEntry, ProfileHistoryEntry, Repository } from './repository';
 import { toPayload, type ImportPlan } from './catalogImport';
@@ -100,7 +100,7 @@ export class SupabaseRepository implements Repository {
       requiresReview: t.requires_review as boolean,
       enabled: t.enabled as boolean,
     }));
-    return applyEnergyMethods({
+    return withCatalogGaps(applyEnergyMethods({
       nutrients: nutrients.map((r) => ({
         id: r.id as string,
         label: r.label_it as string,
@@ -208,7 +208,7 @@ export class SupabaseRepository implements Repository {
         }),
       ),
       breedNotes: breed.map((b) => ({ id: b.id as string, breedMatch: b.breed_match as string[], text: b.note as string, source: b.source as string, metrics: b.metrics as string[] })),
-    });
+    }));
   }
 
   // ── cani ──

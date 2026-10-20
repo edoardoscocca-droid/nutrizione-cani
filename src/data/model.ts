@@ -52,6 +52,8 @@ export interface Dog {
   kcalSource: KcalSource;
   macroPreferences: MacroPreference[];
   fiberTarget: FiberTarget | null;
+  /** true solo se una digeribilità proteica ≥ 80% è garantita (documentata): senza, minimi degli aminoacidi essenziali +10%. */
+  proteinDigestibilityAtLeast80?: boolean;
   ingredientPreferences: string | null;
   targets: PersonalTarget[];
   clinicalNotes: string | null;

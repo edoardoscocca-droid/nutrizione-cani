@@ -44,6 +44,7 @@ const FORMULATION_KEYS: (keyof Dog)[] = [
   'macroPreferences',
   'fiberTarget',
   'notes',
+  'proteinDigestibilityAtLeast80',
 ];
 
 function same(a: unknown, b: unknown) {
@@ -140,14 +141,16 @@ export function toFormulationProfile(dog: Dog, breedNotes: BreedNote[], recommen
     });
   }
   const fiber = fiberPerDay(dog);
-  if (dog.fiberTarget && dog.fiberTarget.enabled !== false && fiber && (fiber.lower !== null || fiber.upper !== null)) {
+  // fibra automatica: g per 1.000 kcal (§5); quella personalizzata resta nella sua unità, senza trasformazioni silenziose
+  const auto = dog.fiberTarget?.auto;
+  if (dog.fiberTarget && dog.fiberTarget.enabled !== false && fiber && (auto || fiber.lower !== null || fiber.upper !== null)) {
     targets.push({
       id: 'fiber',
       metric: 'fiber',
-      lower: fiber.lower,
-      upper: fiber.upper,
+      lower: auto ? auto.lowerPer1000 : fiber.lower,
+      upper: auto ? auto.upperPer1000 : fiber.upper,
       unit: 'g',
-      basis: dog.fiberTarget.auto ? 'per_day' : dog.fiberTarget.basis,
+      basis: auto ? 'per_1000_kcal_me' : dog.fiberTarget.basis,
       locked: false,
       setBy: 'preferenza utente',
       setAt: dog.updatedAt.slice(0, 10),
@@ -164,6 +167,7 @@ export function toFormulationProfile(dog: Dog, breedNotes: BreedNote[], recommen
     targets,
     attentionNotes: [...breedNotesFor(dog.breed, breedNotes).map((n) => ({ text: n.text, source: n.source, metrics: n.metrics })), ...dog.notes],
     recommended: recommendedFor(dog, recommendedTargets, nutrients),
+    eaaMarginPct: dog.proteinDigestibilityAtLeast80 ? 0 : 10,
     formulationRevision: dog.formulationRevision,
   };
 }

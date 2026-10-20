@@ -140,12 +140,12 @@ export default function NewRecipe() {
         <>
           <Card>
             <Field label="Nome della ricetta" value={name} onChange={setName} placeholder="es. Manzo e avena" />
-            <T small muted>Tipo di dieta per il selenio (FEDIAF distingue umida/secca)</T>
+            <T small muted>Tipo di razione (per il selenio). Casalinga, mista o non nota: si usa il riferimento più alto, per prudenza.</T>
             <Choice
               options={[
+                { value: null, label: 'Casalinga / mista' },
                 { value: 'wet' as const, label: 'Umida' },
-                { value: 'dry' as const, label: 'Secca' },
-                { value: null, label: 'Non so' },
+                { value: 'dry' as const, label: 'Mangime secco completo' },
               ]}
               value={sel.dietMoisture}
               onChange={(v) => setSel({ ...sel, dietMoisture: v })}
@@ -266,6 +266,21 @@ export default function NewRecipe() {
               constraints={result.r.constraints}
               notes={result.r.notes}
             />
+          ) : result.r.outcome === 'preferences_unreachable' ? (
+            <>
+              <Box color="orange"><T bold>{result.r.message}</T></Box>
+              {result.r.conflicts.length > 0 && <ConflictList conflicts={result.r.conflicts} suggestions={[]} />}
+              {result.r.audit && (
+                <ResultBlock
+                  audit={result.r.audit}
+                  items={result.r.items}
+                  snapshot={{ ...snap, referenceVersionIds: [...new Set(result.input.limits.map((l) => l.referenceVersionId))], engineVersion: result.r.engineVersion }}
+                  cost={costOf({ chosenItems: result.r.items, snapshot: snap as never }, prices)}
+                  constraints={result.r.constraints}
+                  notes={result.r.notes}
+                />
+              )}
+            </>
           ) : result.r.outcome === 'infeasible' ? (
             <>
               <Box color="red"><T bold>{result.r.message}</T></Box>
@@ -279,6 +294,12 @@ export default function NewRecipe() {
           )}
           {result.r.excluded.length > 0 && result.r.outcome === 'solved' && (
             <Box color="grey"><Bullets small items={result.r.excluded.map((e) => `${e.name}: ${e.reason}`)} /></Box>
+          )}
+          {result.r.stats && (
+            <T small muted>
+              Calcolo in {(result.r.stats.durationMs / 1000).toLocaleString('it-IT', { maximumFractionDigits: 1 })} s
+              {result.r.stats.p1Stage === 2 ? ' · preferenze raggiunte con la seconda ricerca (ampliamenti documentati)' : ''}
+            </T>
           )}
           {result.r.outcome === 'solved' && <Button title="Salva ricetta" busy={!!busy} onPress={save} />}
           <Button title="← Modifica scelte" kind="secondary" onPress={() => setStep(2)} />
