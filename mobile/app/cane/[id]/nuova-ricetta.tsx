@@ -4,14 +4,16 @@ import { View } from 'react-native';
 import { foodStatus, supplementStatus } from '../../../../src/engine/catalogStatus';
 import { DIAGNOSIS_LABEL, diagnosisOf } from '../../../../src/engine/diagnosis';
 import type { FormulationInput, FormulationResult, PreliminaryResult } from '../../../../src/engine/formulate';
-import type { ItemConstraint } from '../../../../src/engine/types';
+import type { ItemConstraint, RecipeItem } from '../../../../src/engine/types';
+import { auditRecipeV2 } from '../../../../src/engine/auditV2';
+import type { AuditResult } from '../../../../src/engine/audit';
 import { MAX_RECIPES_PER_DOG, type Recipe } from '../../../../src/data/model';
 import { PROCESSING_LABEL } from '../../../../src/data/packageCatalog';
-import { assertCanAddRecipe, buildInput, costOf, digestibilityRef, selectionFromSnapshot, versionFromResult, type Selection } from '../../../../src/data/recipeService';
+import { activeRecipeCount, analysisVersion, assertCanAddRecipe, buildInput, costOf, digestibilityRef, selectionFromSnapshot, versionFromResult, type Selection } from '../../../../src/data/recipeService';
 import { uid } from '../../../../src/data/repository';
 import { useApp, useData } from '../../../lib/AppContext';
 import { formulateRemote, preliminaryRemote } from '../../../lib/engineClient';
-import { CatalogBadge, ConflictList, ResultBlock } from '../../../lib/result';
+import { CatalogBadge, ConflictList, ResultBlock, SuggestionsCard } from '../../../lib/result';
 import { Badge, Box, Bullets, Button, Card, Check, Choice, Disclaimer, ErrorBox, Field, H, Loading, NumField, Row, Screen, T } from '../../../lib/ui';
 
 type Step = 1 | 2 | 3;
@@ -42,6 +44,9 @@ export default function NewRecipe() {
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [prelim, setPrelim] = useState<PreliminaryResult | null>(null);
   const [result, setResult] = useState<{ r: FormulationResult; input: FormulationInput } | null>(null);
+  // modalità analisi: ricetta già fatta a grammi fissi (nessun generatore)
+  const [fixed, setFixed] = useState<Record<string, number | null> | null>(null);
+  const [analysis, setAnalysis] = useState<{ input: ReturnType<typeof buildInput>; items: RecipeItem[]; audit: AuditResult } | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -65,7 +70,7 @@ export default function NewRecipe() {
   if (!data || !catalog || !settings || !repo) return <Loading />;
   const { dog, recipes, prices } = data;
   if (!dog) return <Screen><T>Cane non trovato.</T></Screen>;
-  if (recipes.length >= MAX_RECIPES_PER_DOG) return <Screen><Box color="orange"><T>{dog.name} ha già {MAX_RECIPES_PER_DOG} ricette: eliminane una per crearne una nuova.</T></Box></Screen>;
+  if (activeRecipeCount(recipes) >= MAX_RECIPES_PER_DOG) return <Screen><Box color="orange"><T>{dog.name} ha già {MAX_RECIPES_PER_DOG} ricette attive: archiviane o eliminane una per crearne una nuova.</T></Box></Screen>;
 
   const toggle = (kind: 'foods' | 'supplements', id: string) =>
     setSel((s) => ({ ...s, [kind]: s[kind].some((x) => x.id === id) ? s[kind].filter((x) => x.id !== id) : [...s[kind], { id }] }));
@@ -91,8 +96,50 @@ export default function NewRecipe() {
   const calculate = () =>
     run('Calcolo delle quantità…', async () => {
       const input = buildInput(dog, sel, catalog, settings, prices);
+      setAnalysis(null);
       setResult({ r: await formulateRemote(input), input });
       setStep(3);
+    });
+  // §8 modalità analisi: stessi dati e stesse regole del generatore, sulle quantità inserite
+  const analyzeFixed = () =>
+    run('Verifica della ricetta…', async () => {
+      const input = buildInput(dog, sel, catalog, settings, prices);
+      const items: RecipeItem[] = [
+        ...sel.foods.map((f) => ({ kind: 'food' as const, id: f.id, qty: fixed?.[f.id] ?? 0 })),
+        ...sel.supplements.map((x) => ({ kind: 'supplement' as const, id: x.id, qty: fixed?.[x.id] ?? 0 })),
+      ];
+      if (!items.some((i) => i.qty > 0)) throw new Error('Inserisci almeno una quantità.');
+      const audit = auditRecipeV2({
+        items,
+        foods: Object.fromEntries(input.foods.map((f) => [f.food.id, f.food])),
+        supplements: Object.fromEntries(input.supplements.map((x) => [x.supplement.id, x.supplement])),
+        nutrients: input.nutrients,
+        limits: input.limits,
+        dog: input.dog,
+        dietMoisture: input.dietMoisture,
+        settings: input.settings,
+        config: input.config,
+      });
+      setResult(null);
+      setAnalysis({ input, items, audit });
+      setStep(3);
+    });
+  const saveAnalysis = () =>
+    run('Salvataggio…', async () => {
+      if (!analysis) return;
+      assertCanAddRecipe(await repo.listRecipes(dog.id));
+      const recipe: Recipe = { id: uid(), dogId: dog.id, name: name.trim() || 'Ricetta analizzata', isPrimary: recipes.length === 0, archived: false, currentVersionId: null, dietMoisture: sel.dietMoisture, createdAt: new Date().toISOString() };
+      await repo.createRecipe(recipe);
+      try {
+        const v = analysisVersion({ id: uid(), recipeId: recipe.id, revision: 1, author: repo.userLabel(), note: 'Ricetta già fatta, inserita a grammi fissi' }, analysis.input, analysis.items);
+        await repo.addVersion(v);
+        await repo.updateRecipe({ ...recipe, currentVersionId: v.id });
+      } catch (e) {
+        await repo.deleteRecipe(recipe.id).catch(() => undefined);
+        throw e;
+      }
+      bump();
+      router.replace(`/ricetta/${recipe.id}`);
     });
   const save = () =>
     run('Salvataggio…', async () => {
@@ -268,6 +315,37 @@ export default function NewRecipe() {
             </Card>
           )}
           <Button title="Calcola le quantità →" busy={!!busy} onPress={calculate} />
+          <Card>
+            <H level={3}>Oppure: analizza una ricetta già fatta</H>
+            <T small muted>Inserisci i grammi (o le dosi) della ricetta, per esempio quella della veterinaria: l’app non li cambia, li verifica con gli stessi controlli del generatore. I grammi sono per l’intero giorno.</T>
+            {fixed === null ? (
+              <Button title="Inserisci i grammi" kind="secondary" small onPress={() => setFixed({})} />
+            ) : (
+              <>
+                {[...sel.foods.map((f) => ({ id: f.id, name: catalog.foods.find((x) => x.id === f.id)?.name ?? f.id, unit: 'g' })), ...sel.supplements.map((x) => {
+                  const sp = catalog.supplements.find((y) => y.id === x.id);
+                  return { id: x.id, name: sp?.name ?? x.id, unit: sp?.doseUnit ?? '' };
+                })].map((it) => (
+                  <NumField key={it.id} label={`${it.name} (${it.unit}/die)`} value={fixed[it.id] ?? null} onChange={(v) => setFixed({ ...fixed, [it.id]: v })} />
+                ))}
+                <Button title="Verifica questa ricetta →" busy={!!busy} onPress={analyzeFixed} />
+              </>
+            )}
+          </Card>
+        </>
+      )}
+
+      {step === 3 && analysis && (
+        <>
+          <Box color="blue"><T small>Analisi di una ricetta già fatta: quantità inserite, nessuna formulazione. Il rapporto elenca gli esiti senza giudicare chi l’ha prescritta.</T></Box>
+          <ResultBlock
+            audit={analysis.audit}
+            items={analysis.items}
+            snapshot={{ foods: Object.fromEntries(analysis.input.foods.map((f) => [f.food.id, f.food])), supplements: Object.fromEntries(analysis.input.supplements.map((x) => [x.supplement.id, x.supplement])) }}
+            cost={costOf({ chosenItems: analysis.items, snapshot: { foods: Object.fromEntries(analysis.input.foods.map((f) => [f.food.id, f.food])), supplements: Object.fromEntries(analysis.input.supplements.map((x) => [x.supplement.id, x.supplement])) } as never }, prices)}
+          />
+          <Button title="Salva come ricetta analizzata" busy={!!busy} onPress={saveAnalysis} />
+          <Button title="← Modifica i grammi" kind="secondary" onPress={() => setStep(2)} />
         </>
       )}
 
@@ -300,7 +378,8 @@ export default function NewRecipe() {
           ) : result.r.outcome === 'infeasible' ? (
             <>
               <Box color="red"><T bold>{result.r.message}</T></Box>
-              <ConflictList conflicts={result.r.conflicts} suggestions={result.r.suggestions} />
+              <ConflictList conflicts={result.r.conflicts} suggestions={result.r.suggestionDetails?.length ? [] : result.r.suggestions} />
+              <SuggestionsCard details={result.r.suggestionDetails} />
             </>
           ) : (
             <Box color="grey">
@@ -308,13 +387,15 @@ export default function NewRecipe() {
               <Bullets small items={result.r.excluded.map((e) => `${e.name}: ${e.reason}`)} />
             </Box>
           )}
+          {result.r.outcome === 'solved' && <SuggestionsCard details={result.r.suggestionDetails} />}
           {result.r.excluded.length > 0 && result.r.outcome === 'solved' && (
             <Box color="grey"><Bullets small items={result.r.excluded.map((e) => `${e.name}: ${e.reason}`)} /></Box>
           )}
           {result.r.stats && (
             <T small muted>
               Calcolo in {(result.r.stats.durationMs / 1000).toLocaleString('it-IT', { maximumFractionDigits: 1 })} s
-              {result.r.stats.p1Stage === 2 ? ' · preferenze raggiunte con la seconda ricerca (ampliamenti documentati)' : ''}
+              {result.r.stats.caPStep ? ` · Ca:P al gradino ${result.r.stats.caPStep}` : result.r.stats.p1Stage === 2 ? ' · preferenze raggiunte con la seconda ricerca (ampliamenti documentati)' : ''}
+              {result.r.stats.doseStep === 2 ? ' · QDiet al gradino 2 (+10%)' : ''}
             </T>
           )}
           <T small muted>{DIAGNOSIS_LABEL[diagnosisOf(result.r)]}</T>

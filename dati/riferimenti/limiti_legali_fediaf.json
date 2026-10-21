@@ -1,0 +1,14 @@
+{
+  "_nota": "Massimi legali (L) FEDIAF 2025 per 100 g di sostanza secca, tabella III-3a, p. 15. Valgono per i nutrienti AGGIUNTI come additivo, sul totale del prodotto finito (§3.1.3, p. 11). Valori riportati nella specifica v2 del 21/10/2026, che li dichiara verificati sul PDF FEDIAF 2025 (settembre 2025); la sviluppatrice non ha riletto il PDF. Restano distinti dai massimi nutrizionali (N).",
+  "source": "FEDIAF 2025, tabella III-3a, p. 15 (massimi legali, per 100 g di sostanza secca)",
+  "url": "https://www.europeanpetfood.org/wp-content/uploads/2025/09/FEDIAF-Nutritional-Guidelines_2025.pdf",
+  "limits": [
+    { "metric": "copper", "upper": 2.80, "unit": "mg" },
+    { "metric": "iodine", "upper": 1.10, "unit": "mg" },
+    { "metric": "iron", "upper": 68.18, "unit": "mg" },
+    { "metric": "manganese", "upper": 17.0, "unit": "mg" },
+    { "metric": "selenium_wet", "upper": 56.8, "unit": "µg" },
+    { "metric": "zinc", "upper": 22.7, "unit": "mg" },
+    { "metric": "vitamin_d", "upper": 227, "unit": "IU" }
+  ]
+}

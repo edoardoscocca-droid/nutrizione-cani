@@ -4,8 +4,8 @@
 import type { CustomThreshold, EnergyAssignment, EnergyMethod, Food, Supplement } from '../engine/types';
 import { applyEnergyMethods, resolveFoodEnergy } from '../engine/energy';
 import { DEFAULT_SETTINGS } from '../engine/types';
-import { MAX_RECIPES_PER_DOG, type AppSettings, type Dog, type Recipe, type RecipeVersion, type UserPrice, type WeightEntry } from './model';
-import { BREED_NOTES, CATEGORIES, packageFoods, packageReferences, packageSupplements, withCatalogGaps } from './packageCatalog';
+import { MAX_RECIPES_PER_DOG, type AppSettings, type DiaryEntry, type Dog, type Recipe, type RecipeVersion, type UserPrice, type WeightEntry } from './model';
+import { BREED_NOTES, CATEGORIES, packageFoods, packageReferences, packageSupplements, packageV2Foods, packageV2Supplements, withCatalogGaps } from './packageCatalog';
 import { RecipeLimitError } from './recipeService';
 import { uid, type FullCatalog, type ImportLogEntry, type ProfileHistoryEntry, type Repository } from './repository';
 import { foodStatus, supplementStatus } from '../engine/catalogStatus';
@@ -27,13 +27,15 @@ interface Store {
   energyAssignments: EnergyAssignment[] | null;
   history: { kind: 'food' | 'supplement'; id: string; entry: ProfileHistoryEntry }[];
   imports: ImportLogEntry[];
+  /** diario (aggiunto con la specifica v2: gli archivi precedenti lo ricevono vuoto). */
+  diary: DiaryEntry[];
 }
 
 export const LOCAL_STORE_KEY = 'nutrizione-cani:prova:v1';
 const KEY = LOCAL_STORE_KEY;
 
 function empty(): Store {
-  return { dogs: [], weights: [], recipes: [], versions: [], prices: [], settings: null, foods: [], supplements: [], thresholds: null, energyMethods: null, energyAssignments: null, history: [], imports: [] };
+  return { dogs: [], weights: [], recipes: [], versions: [], prices: [], settings: null, foods: [], supplements: [], thresholds: null, energyMethods: null, energyAssignments: null, history: [], imports: [], diary: [] };
 }
 
 export class LocalRepository implements Repository {
@@ -81,8 +83,8 @@ export class LocalRepository implements Repository {
       customThresholds: this.store.thresholds ?? refs.customThresholds,
       energyMethods: this.store.energyMethods ?? refs.energyMethods,
       energyAssignments: this.store.energyAssignments ?? refs.energyAssignments,
-      foods: [...packageFoods(), ...structuredClone(TEST_FOODS)],
-      supplements: [...packageSupplements(), ...structuredClone(TEST_SUPPLEMENTS)],
+      foods: [...packageFoods(), ...packageV2Foods(), ...structuredClone(TEST_FOODS)],
+      supplements: [...packageSupplements(), ...packageV2Supplements(), ...structuredClone(TEST_SUPPLEMENTS)],
       breedNotes: BREED_NOTES,
       categories: CATEGORIES,
     };
@@ -116,6 +118,7 @@ export class LocalRepository implements Repository {
     this.store.recipes = this.store.recipes.filter((r) => r.dogId !== id);
     this.store.versions = this.store.versions.filter((v) => !recipeIds.includes(v.recipeId));
     this.store.weights = this.store.weights.filter((w) => w.dogId !== id);
+    this.store.diary = this.store.diary.filter((d) => d.dogId !== id);
     this.save();
   }
   async listWeights(dogId: string) {
@@ -130,21 +133,47 @@ export class LocalRepository implements Repository {
     return this.store.recipes.filter((r) => !dogId || r.dogId === dogId);
   }
   async createRecipe(r: Recipe) {
-    if (this.store.recipes.filter((x) => x.dogId === r.dogId).length >= MAX_RECIPES_PER_DOG) throw new RecipeLimitError();
+    if (!r.archived && this.store.recipes.filter((x) => x.dogId === r.dogId && !x.archived).length >= MAX_RECIPES_PER_DOG) throw new RecipeLimitError();
     if (r.isPrimary) this.store.recipes = this.store.recipes.map((x) => (x.dogId === r.dogId ? { ...x, isPrimary: false } : x));
     this.store.recipes.push(r);
     this.save();
     return r;
   }
   async updateRecipe(r: Recipe) {
+    const prev = this.store.recipes.find((x) => x.id === r.id);
+    // ripristino dall'archivio: conta di nuovo per il limite
+    if (prev?.archived && !r.archived && this.store.recipes.filter((x) => x.dogId === r.dogId && !x.archived).length >= MAX_RECIPES_PER_DOG) throw new RecipeLimitError();
     if (r.isPrimary) this.store.recipes = this.store.recipes.map((x) => (x.dogId === r.dogId && x.id !== r.id ? { ...x, isPrimary: false } : x));
     this.store.recipes = this.store.recipes.map((x) => (x.id === r.id ? r : x));
     this.save();
     return r;
   }
   async deleteRecipe(id: string) {
+    const versionIds = new Set(this.store.versions.filter((v) => v.recipeId === id).map((v) => v.id));
     this.store.recipes = this.store.recipes.filter((r) => r.id !== id);
     this.store.versions = this.store.versions.filter((v) => v.recipeId !== id);
+    // i giorni registrati restano con il loro profilo congelato (come «on delete set null» nel database)
+    this.store.diary = this.store.diary.map((d) => (d.recipeId === id || (d.versionId && versionIds.has(d.versionId)) ? { ...d, recipeId: null, versionId: null } : d));
+    this.save();
+  }
+
+  async listDiary(dogId: string) {
+    return this.store.diary.filter((d) => d.dogId === dogId).sort((a, b) => a.date.localeCompare(b.date));
+  }
+  async saveDiaryEntries(entries: DiaryEntry[]) {
+    for (const e of entries) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(e.date)) throw new Error(`Data non valida: ${e.date}`);
+      if (!this.store.dogs.some((d) => d.id === e.dogId)) throw new Error('Cane inesistente');
+      if (e.recipeId && !this.store.recipes.some((r) => r.id === e.recipeId && r.dogId === e.dogId)) throw new Error('La ricetta registrata non appartiene a questo cane');
+    }
+    // una sola voce attiva per cane e data: la nuova sostituisce la precedente
+    const key = (d: DiaryEntry) => `${d.dogId}|${d.date}`;
+    const incoming = new Map(entries.map((e) => [key(e), structuredClone(e)]));
+    this.store.diary = [...this.store.diary.filter((d) => !incoming.has(key(d))), ...incoming.values()];
+    this.save();
+  }
+  async deleteDiaryEntry(id: string) {
+    this.store.diary = this.store.diary.filter((d) => d.id !== id);
     this.save();
   }
   async listVersions(recipeId: string) {

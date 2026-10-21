@@ -124,8 +124,9 @@ export function normalizeForm(raw: string | undefined): string | null {
   const f = norm(raw ?? '');
   if (!f) return null;
   const code = (raw ?? '').trim();
-  if (['d_alpha_tocopherol', 'all_rac_alpha_tocopheryl_acetate', 'd_alpha_tocopheryl_acetate', 'choline_chloride'].includes(code)) return code;
+  if (['d_alpha_tocopherol', 'all_rac_alpha_tocopheryl_acetate', 'd_alpha_tocopheryl_acetate', 'choline_chloride', 'calcium_d_pantothenate'].includes(code)) return code;
   if (/colina cloruro|cloruro di colina|choline chloride/.test(f)) return 'choline_chloride';
+  if (/pantotenato|pantothenate/.test(f)) return 'calcium_d_pantothenate';
   const vitE = /tocofer|tocopher/.test(f);
   if (vitE && /acetat/.test(f)) {
     if (/all rac|tutto rac|\bdl\b|sintet|synthetic/.test(f)) return 'all_rac_alpha_tocopheryl_acetate';
@@ -274,6 +275,11 @@ const FOOD_FIELDS: Record<string, string[]> = {
   availableToFormulate: ['available to formulate', 'utilizzabile', 'attivo per la formulazione'],
   uncertainty: ['uncertainty', 'incertezza'],
   notes: ['notes', 'note'],
+  // formulazione v2 (specifica del 21/10/2026, §9): tetti di quantità, alimenti vietati, avvertenze
+  maxFreshWeightPct: ['max fresh weight pct', 'tetto peso fresco', 'tetto peso fresco pct'],
+  maxGPer1000Kcal: ['max g per 1000 kcal', 'tetto g per 1000 kcal'],
+  forbidden: ['forbidden', 'vietato'],
+  preparationWarning: ['preparation warning', 'avvertenza preparazione', 'avvertenza'],
 };
 const SUPP_FIELDS: Record<string, string[]> = {
   id: ['id', 'product id', 'supplement id', 'codice'],
@@ -699,7 +705,22 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
         if (!ps) err(`Stato di preparazione «${f.processingState}» non valido (${PROCESSING.join(', ')}).`);
         else set('processingState', ps);
       }
-      for (const k of ['speciesCut', 'preparation', 'ediblePortion', 'meMethod', 'source', 'sourceUrl', 'sourceVersion', 'uncertainty', 'notes'] as const) if (f[k] !== undefined) set(k, f[k]);
+      for (const k of ['speciesCut', 'preparation', 'ediblePortion', 'meMethod', 'source', 'sourceUrl', 'sourceVersion', 'uncertainty', 'notes', 'preparationWarning'] as const) if (f[k] !== undefined) set(k, f[k]);
+      for (const [k, max] of [['maxFreshWeightPct', 100], ['maxGPer1000Kcal', 5000]] as const) {
+        if (f[k] === undefined) continue;
+        if (CLEAR_TOKENS.has(norm(f[k]))) {
+          set(k, null);
+          continue;
+        }
+        const v = parseNumber(f[k]);
+        if (v === null || Number.isNaN(v) || !(v > 0) || v > max) err(`Tetto «${f[k]}» non valido per ${k} (numero positivo, al massimo ${max}).`);
+        else set(k, v);
+      }
+      if (f.forbidden !== undefined) {
+        const b = parseBool(f.forbidden);
+        if (b === null) err(`Valore «${f.forbidden}» non valido per forbidden (sì/no).`);
+        else set('forbidden', b);
+      }
       if (f.kcalMePer100g !== undefined && CLEAR_TOKENS.has(norm(f.kcalMePer100g))) {
         // cancellazione esplicita di un valore errato: l'energia torna sconosciuta (o calcolata dal metodo), mai zero
         set('kcalMePer100g', null);
@@ -1143,6 +1164,8 @@ export function toPayload(plan: ImportPlan): ImportPayload {
         kcal_me_per_100g: f.kcalMeOrigin === 'calculated' ? null : f.kcalMePer100g, me_method: f.kcalMeOrigin === 'calculated' ? null : (f.meMethod ?? null), source_identifier: f.source ?? null, source_url: f.sourceUrl ?? null, source_version: f.sourceVersion ?? null,
         data_status: f.dataStatus === 'verified' ? 'review_required' : f.dataStatus, uncertainty: f.uncertainty ?? null, notes: f.notes ?? null,
         available_to_formulate: f.availableToFormulate,
+        // colonne della migrazione 11 (ignorate dalla funzione precedente)
+        max_fresh_weight_pct: f.maxFreshWeightPct ?? null, max_g_per_1000_kcal: f.maxGPer1000Kcal ?? null, forbidden: !!f.forbidden, preparation_warning: f.preparationWarning ?? null,
       };
     }
     const s = i.next as Supplement;

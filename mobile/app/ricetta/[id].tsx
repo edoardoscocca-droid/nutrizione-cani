@@ -20,6 +20,7 @@ const ORIGIN: Record<RecipeVersion['origin'], string> = {
   recalculation: 'ricalcolo confermato',
   duplicate: 'nuova formulazione da copia',
   diagnostic: 'bozza diagnostica (preferenze non raggiungibili)',
+  analysis: 'analisi di una ricetta già fatta (grammi fissi)',
 };
 
 function htmlOf(name: string, dogName: string, v: RecipeVersion) {

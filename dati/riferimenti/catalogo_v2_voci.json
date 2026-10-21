@@ -1,0 +1,18 @@
+{
+  "_nota": "Voci di catalogo previste dalla specifica v2 del 21/10/2026 (§9): solo nomi e categorie, NESSUN valore nutrizionale (i dati con fonte li prepara l'IA dei dati e si importano con l'importatore). Gli alimenti vietati non sono mai utilizzabili e sono rossi se compaiono in una ricetta.",
+  "foods": [
+    { "id": "onion", "name_it": "Cipolla (vietata)", "category": "vegetable", "subcategory": "vegetable_generic", "forbidden": true, "preparation_warning": "Vietata per il cane." },
+    { "id": "garlic", "name_it": "Aglio (vietato)", "category": "vegetable", "subcategory": "vegetable_generic", "forbidden": true, "preparation_warning": "Vietato per il cane." },
+    { "id": "grapes_raisins", "name_it": "Uva e uvetta (vietate)", "category": "other", "subcategory": "other_generic", "forbidden": true, "preparation_warning": "Vietate per il cane." },
+    { "id": "xylitol", "name_it": "Xilitolo (vietato)", "category": "other", "subcategory": "other_generic", "forbidden": true, "preparation_warning": "Vietato per il cane (anche negli alimenti per uso umano che lo contengono)." },
+    { "id": "chocolate", "name_it": "Cioccolato (vietato)", "category": "other", "subcategory": "other_generic", "forbidden": true, "preparation_warning": "Vietato per il cane." },
+    { "id": "macadamia", "name_it": "Noci macadamia (vietate)", "category": "other", "subcategory": "other_generic", "forbidden": true, "preparation_warning": "Vietate per il cane." },
+    { "id": "olive_oil", "name_it": "Olio d'oliva", "category": "other", "subcategory": "fat_oil", "forbidden": false, "preparation_warning": null }
+  ],
+  "supplements": [
+    { "id": "eggshell_powder", "name_it": "Polvere di guscio d'uovo", "class": "calcium", "dose_unit": "g" },
+    { "id": "fish_oil", "name_it": "Olio di pesce", "class": "fish_oil", "dose_unit": "ml" },
+    { "id": "iodine_alga", "name_it": "Alga per lo iodio (es. kelp)", "class": "iodine", "dose_unit": "g" },
+    { "id": "vitamin_e_supplement", "name_it": "Vitamina E", "class": "vitamin", "dose_unit": "capsule" }
+  ]
+}

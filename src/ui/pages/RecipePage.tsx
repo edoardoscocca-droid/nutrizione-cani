@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { STATUS_LABEL } from '../../engine/audit';
-import { formulate } from '../../engine/formulate';
+import { formulateV2 as formulate } from '../../engine/formulateV2';
 import type { RecipeItem } from '../../engine/types';
 import type { RecipeVersion } from '../../data/model';
 import { auditOnSnapshot, costOf, editedVersion, previewRecalculation, staleFor, versionFromResult, type RecalcPreview } from '../../data/recipeService';
@@ -17,6 +17,7 @@ const ORIGIN: Record<RecipeVersion['origin'], string> = {
   recalculation: 'ricalcolo confermato',
   duplicate: 'nuova formulazione da copia',
   diagnostic: 'bozza diagnostica (preferenze non raggiungibili)',
+  analysis: 'analisi di una ricetta già fatta (grammi fissi)',
 };
 
 export function RecipePage() {

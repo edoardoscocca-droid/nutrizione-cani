@@ -96,6 +96,19 @@ export const TEST_FOODS: Food[] = [
   food('test_sunflower_oil', 'Olio vegetale (fittizio)', 'other', 'fat_oil', 880, {
     fat: 100, linoleic_acid: 62, omega6_total: 62, omega3_total: 0.2, ala: 0.2, vitamin_e: 60, vitamin_k: 5,
   }),
+  // specifica v2 (§10, collaudi A): pollo, pesce bianco e patata — sempre fittizi, solo per collaudare il generatore
+  food('test_chicken', 'Pollo (fittizio)', 'animal', 'muscle', 150, meat({ protein: 21, fat: 6.5, iron: 0.9, zinc: 1.5, copper: 0.05, vitamin_a: 30, vitamin_d: 4 })),
+  food('test_cod', 'Merluzzo (fittizio)', 'animal', 'fish', 82, meat({
+    protein: 18, fat: 0.7, linoleic_acid: 0.01, omega6_total: 0.02, omega3_total: 0.2, epa: 0.004, dha: 0.15, iodine: 0.1, selenium_wet: 30,
+    iron: 0.4, zinc: 0.5, copper: 0.03, vitamin_a: 40, vitamin_d: 40, vitamin_b12: 1, taurine: 30,
+  }), { processingState: 'cooked_steamed' }),
+  food('test_potato', 'Patata cotta (fittizio)', 'starch', 'tuber', 86, {
+    protein: 1.9, fat: 0.1, carbohydrate_available: 18, fiber: 1.8, moisture: 77, linoleic_acid: 0.03, omega6_total: 0.03, omega3_total: 0.01,
+    calcium: 0.005, phosphorus: 0.044, potassium: 0.38, sodium: 0.005, chloride: 0.05, magnesium: 0.022, copper: 0.1, iodine: 0.001, iron: 0.3,
+    manganese: 0.14, selenium_wet: 0.3, zinc: 0.3, vitamin_e: 0.01, vitamin_b1: 0.1, vitamin_b2: 0.02, vitamin_b3: 1.4, vitamin_b5: 0.5,
+    vitamin_b6: 0.3, vitamin_b9: 10, choline: 13, vitamin_c: 7, arginine: 0.1, histidine: 0.03, isoleucine: 0.07, leucine: 0.1, lysine: 0.1,
+    methionine: 0.03, methionine_cystine: 0.05, phenylalanine: 0.08, phenylalanine_tyrosine: 0.13, threonine: 0.07, tryptophan: 0.02, valine: 0.1,
+  }, { processingState: 'cooked_boiled' }),
   // T02: alimento con vitamina D mancante (null ≠ 0)
   food('test_pumpkin_no_vitd', 'Zucca senza vitamina D (fittizio)', 'vegetable', 'vegetable_generic', 26, {
     protein: 1, fat: 0.1, carbohydrate_available: 5.5, fiber: 0.5, moisture: 91, calcium: 0.021, phosphorus: 0.044, potassium: 0.34,

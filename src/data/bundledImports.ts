@@ -8,6 +8,8 @@ import foodsUpd20261020 from '../../dati/importazioni/2026-10-20/alimenti_esiste
 import foodsNew20261020 from '../../dati/importazioni/2026-10-20/alimenti_nuovi_confronto.json';
 import supps20261019 from '../../dati/importazioni/2026-10-20/integratori_riferimento_19ott.json';
 import psyllium20261020 from '../../dati/importazioni/2026-10-20/psillio_confronto.json';
+// specifica v2 del 21/10/2026 (§6): B5 del QDiet dal calcio D-pantotenato
+import qdietB520261021 from '../../dati/importazioni/2026-10-21/qdiet_b5.json';
 import type { ImportKind, ImportMode } from './catalogImport';
 
 /** In ordine: ogni file si confronta con il catalogo già aggiornato dai precedenti. */
@@ -18,4 +20,5 @@ export const BUNDLED_IMPORTS: { label: string; kind: ImportKind; data: unknown; 
   { label: 'Alimenti di confronto 20/10/2026', kind: 'foods', data: foodsNew20261020, mode: 'strict', date: '2026-10-20' },
   { label: 'Integratori 19/10/2026', kind: 'supplements', data: supps20261019, mode: 'strict', date: '2026-10-20' },
   { label: 'Psillio di confronto 20/10/2026', kind: 'supplements', data: psyllium20261020, mode: 'strict', date: '2026-10-20' },
+  { label: 'QDiet B5 21/10/2026', kind: 'supplements', data: qdietB520261021, mode: 'strict', date: '2026-10-21' },
 ];

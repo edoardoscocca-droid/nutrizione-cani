@@ -50,6 +50,16 @@
       "formLabel": "cloruro di colina (puro) → colina",
       "factor": 0.746,
       "source": "fattore stechiometrico 0,746 — approvato dalla nutrizionista il 17/10/2026"
+    },
+    {
+      "id": "calcium_d_pantothenate",
+      "nutrientId": "vitamin_b5",
+      "fromUnit": "mg",
+      "toUnit": "mg",
+      "form": "calcium_d_pantothenate",
+      "formLabel": "calcio D-pantotenato → acido pantotenico",
+      "factor": 0.92,
+      "source": "fattore 0,92 (FEDIAF 2025, tab. VII-14: 1 mg di calcio D-pantotenato = 0,92 mg di acido D-pantotenico) — conversione richiesta dalla specifica v2 del 21/10/2026 (§6); fattore da confermare sul PDF"
     }
   ]
 }

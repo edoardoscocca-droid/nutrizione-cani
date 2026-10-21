@@ -1,0 +1,145 @@
+{
+  "_nota": "Configurazione della formulazione v2 (specifiche del 21/10/2026). I valori segnati [PROPOSTA] sono scelte operative iniziali dell'utente, NON valori FEDIAF: vanno rivisti da un veterinario nutrizionista indipendente. Si possono cambiare da Impostazioni (gruppi ed energia) o modificando questo file; ogni ricetta congela la configurazione usata.",
+  "version": "v2-2026-10-21",
+  "source": "Specifiche v2 del 21/10/2026, decisioni dell'utente",
+  "energyTolerancePct": {
+    "value": 5,
+    "status": "PROPOSTA",
+    "source": "[PROPOSTA] specifica v2 §4: energia entro ±5% di kcalTarget"
+  },
+  "groups": [
+    {
+      "id": "animal",
+      "label": "Proteine animali",
+      "categories": [
+        "animal"
+      ],
+      "subcategories": [],
+      "minPctKcal": 40,
+      "maxPctKcal": 65,
+      "status": "PROPOSTA",
+      "source": "[PROPOSTA] specifica v2 §3"
+    },
+    {
+      "id": "starch",
+      "label": "Amidacei",
+      "categories": [
+        "starch"
+      ],
+      "subcategories": [],
+      "minPctKcal": 20,
+      "maxPctKcal": 40,
+      "status": "PROPOSTA",
+      "source": "[PROPOSTA] specifica v2 §3"
+    },
+    {
+      "id": "vegetable",
+      "label": "Verdure",
+      "categories": [
+        "vegetable"
+      ],
+      "subcategories": [],
+      "minPctKcal": 3,
+      "maxPctKcal": 15,
+      "status": "PROPOSTA",
+      "source": "[PROPOSTA] specifica v2 §3"
+    },
+    {
+      "id": "fat",
+      "label": "Grassi aggiunti",
+      "categories": [],
+      "subcategories": [
+        "fat_oil"
+      ],
+      "minPctKcal": 0,
+      "maxPctKcal": 12,
+      "status": "PROPOSTA",
+      "source": "[PROPOSTA] specifica v2 §3"
+    }
+  ],
+  "defaultCaps": [
+    {
+      "id": "vegetable_fresh_weight",
+      "group": "vegetable",
+      "maxFreshWeightPct": 20,
+      "status": "PROPOSTA",
+      "source": "[PROPOSTA] specifica v2 §3.2: verdure ≤ 20% del peso fresco del pasto (per alimento)"
+    },
+    {
+      "id": "oil_kcal",
+      "group": "fat",
+      "maxPctKcal": 12,
+      "status": "PROPOSTA",
+      "source": "[PROPOSTA] specifica v2 §3.2: olio ≤ 12% delle kcal (per alimento)"
+    },
+    {
+      "id": "secreting_offal_fresh_weight",
+      "secretingOffal": true,
+      "maxFreshWeightPct": 10,
+      "status": "PROPOSTA_SVILUPPATRICE",
+      "source": "Proposta della sviluppatrice, NON nella specifica: la specifica chiede un tetto a parte per le frattaglie senza indicare il valore. Da confermare o sostituire con il campo per alimento del catalogo."
+    }
+  ],
+  "levelB": {
+    "yellowFromPct": 70,
+    "status": "PROPOSTA",
+    "source": "[PROPOSTA] specifica v2 §4: giallo tra il 70% e il 100% del minimo"
+  },
+  "caPSteps": [
+    {
+      "step": 1,
+      "lower": 1.2,
+      "upper": 1.4,
+      "color": "green",
+      "label": "gradino 1 (1,2–1,4)"
+    },
+    {
+      "step": 2,
+      "lower": 1.1,
+      "upper": 1.5,
+      "color": "yellow",
+      "label": "gradino 2 (1,1–1,5)"
+    },
+    {
+      "step": 3,
+      "lower": 1.0,
+      "upper": 2.0,
+      "color": "yellow",
+      "label": "gradino 3 (limite FEDIAF adulti 1–2, non sforabile)"
+    }
+  ],
+  "doseRules": [
+    {
+      "supplementId": "qdiet",
+      "marginPct": 10,
+      "extrapolate": true,
+      "status": "PROPOSTA",
+      "source": "[PROPOSTA] specifica v2 §5: gradino 2 fino a +10% del massimo della tabella del produttore; scelta operativa dell'utente, non un margine di sicurezza dimostrato. Vale solo per il QDiet. Fuori tabella (sotto 5 kg, sopra 40 kg) si estrapola il rapporto g/kg della prima o ultima riga."
+    }
+  ],
+  "diary": {
+    "trendMinDays": 5,
+    "windows": [
+      7,
+      14
+    ],
+    "source": "Specifica v2 §7.4 e precisazione 2: 5 giorni registrati solo per le frasi sulla tendenza"
+  },
+  "maxRecipesPerDog": {
+    "value": 200,
+    "status": "PROPOSTA",
+    "source": "[PROPOSTA] specifica v2 §8; le ricette archiviate non contano"
+  },
+  "warnings": {
+    "categories": [
+      {
+        "subcategory": "fish",
+        "text": "Pesce: sempre cotto e senza sale; il tonno solo occasionalmente."
+      }
+    ],
+    "general": [
+      "Ossa: mai cotte."
+    ],
+    "source": "Specifica v2 §9"
+  }
+}

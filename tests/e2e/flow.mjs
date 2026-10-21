@@ -18,7 +18,7 @@ await shot('01-cane');
 // il campo numerico ancora attivo fa scorrere la pagina al primo clic (Chromium senza schermo): si chiude prima
 await page.evaluate(() => document.activeElement?.blur());
 await page.getByRole('button', { name: 'Salva', exact: true }).click();
-await page.waitForSelector('text=Ricette (0/10)');
+await page.getByText(/Ricette \(0\/\d+\)/).waitFor();
 await shot('02-scheda');
 await page.getByRole('link', { name: '+ Nuova ricetta' }).click();
 await page.getByLabel('Nome della ricetta').fill('Manzo, avena e carote');

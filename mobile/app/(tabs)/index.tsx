@@ -30,6 +30,7 @@ export default function DogsScreen() {
   return (
     <Screen>
       {repo?.mode === 'local' && <Badge label="PROVA · dati su questo telefono" color="orange" />}
+      {repo?.mode === 'local' && <T small muted>Le ricette e il diario di Prova non vengono copiati nell’account: i due archivi sono separati (sincronizzazione non ancora disponibile).</T>}
       <ErrorBox error={error} />
       {stale.length > 0 && (
         <Box color="orange">

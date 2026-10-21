@@ -12,6 +12,13 @@ export const BETA_CAROTENE_TO_VITAMIN_A = {
   url: 'https://www.europeanpetfood.org/wp-content/uploads/2025/09/FEDIAF-Nutritional-Guidelines_2025.pdf',
 };
 
+/** Retinolo in µg → vitamina A preformata in UI, usato solo se la vitamina A preformata in UI manca (es. verdure con
+ *  retinolo 0 documentato dalla fonte). Specifica v2 §6: «registrare il retinolo 0 documentato». */
+export const RETINOL_UG_PER_IU = {
+  ugPerIu: 0.3,
+  source: 'FEDIAF 2025, tabella VII-14: 1 UI di vitamina A = 0,3 µg di retinolo',
+};
+
 export interface VitaminAParts {
   /** vitamina A preformata dichiarata (UI); null = sconosciuta. */
   preformed: number | null;
@@ -27,8 +34,13 @@ export interface VitaminAParts {
 
 type Values = Record<string, { value: number | null } | undefined>;
 
+function preformedFrom(vitaminA: number | null, retinolUg: number | null): number | null {
+  if (vitaminA !== null) return vitaminA;
+  return retinolUg === null ? null : retinolUg / RETINOL_UG_PER_IU.ugPerIu;
+}
+
 export function vitaminAParts(nutrients: Values): VitaminAParts {
-  const pre = nutrients.vitamin_a?.value ?? null;
+  const pre = preformedFrom(nutrients.vitamin_a?.value ?? null, nutrients.vitamin_a_retinol_ug?.value ?? null);
   const bc = nutrients.beta_carotene_ug?.value ?? null;
   const fromBc = bc === null ? null : (bc / 1000) * BETA_CAROTENE_TO_VITAMIN_A.iuPerMg;
   return {
@@ -41,7 +53,19 @@ export function vitaminAParts(nutrients: Values): VitaminAParts {
 }
 
 /** Stessa regola su valori per unità di quantità già scalati (vitamina A in UI, beta-carotene in µg). */
-export function vitaminAFrom(preformed: number | null, betaCaroteneUg: number | null): { known: number | null; complete: boolean } {
-  const p = vitaminAParts({ vitamin_a: { value: preformed }, beta_carotene_ug: { value: betaCaroteneUg } });
+export function vitaminAFrom(preformed: number | null, betaCaroteneUg: number | null, retinolUg: number | null = null): { known: number | null; complete: boolean } {
+  const p = vitaminAParts({ vitamin_a: { value: preformed }, beta_carotene_ug: { value: betaCaroteneUg }, vitamin_a_retinol_ug: { value: retinolUg } });
   return { known: p.known, complete: p.complete };
+}
+
+/** Valore per 100 g o per unità come lo usa il calcolo (vitamina A del cane, valori composti EPA+DHA ecc.). */
+export function rawValueOf(nutrients: Values, id: string): number | null {
+  if (id === 'vitamin_a') return vitaminAParts(nutrients).known;
+  const v = nutrients[id]?.value;
+  if (v !== null && v !== undefined) return v;
+  const pair = ({ epa_dha: ['epa', 'dha'], methionine_cystine: ['methionine', 'cystine'], phenylalanine_tyrosine: ['phenylalanine', 'tyrosine'] } as Record<string, [string, string]>)[id];
+  if (!pair) return null;
+  const a = nutrients[pair[0]]?.value;
+  const b = nutrients[pair[1]]?.value;
+  return a !== null && a !== undefined && b !== null && b !== undefined ? a + b : null;
 }

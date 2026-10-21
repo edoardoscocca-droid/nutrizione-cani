@@ -30,6 +30,7 @@ export type LimitBasis =
   | 'ratio'
   | 'energy_pct'
   | 'per_kg_dry_matter'
+  | 'per_100g_dry_matter'
   | 'per_kg_feed_12pct_moisture';
 
 export interface NutrientLimit {
@@ -128,6 +129,14 @@ export interface Food {
   validatedAt?: string | null;
   /** lacune del catalogo segnalate e non ancora risolte con dati documentati (dati/riferimenti/lacune_catalogo.json). */
   openGaps?: string[];
+  /** tetto di quantità (formulazione v2): % del peso fresco del pasto; null = predefinito del gruppo. */
+  maxFreshWeightPct?: number | null;
+  /** tetto di quantità (formulazione v2): grammi per 1000 kcal della razione. */
+  maxGPer1000Kcal?: number | null;
+  /** alimento vietato per il cane (cipolla, aglio, uva…): mai usato, rosso se presente in una ricetta. */
+  forbidden?: boolean;
+  /** avvertenza di preparazione (es. pesce sempre cotto e senza sale). */
+  preparationWarning?: string | null;
   /** valori per 100 g, unità canonica del nutriente. */
   nutrients: Record<string, NutrientValue>;
 }
@@ -392,4 +401,5 @@ export interface RecipeItem {
   qty: number;
 }
 
-export type Color = 'red' | 'orange' | 'green' | 'blue' | 'grey' | 'purple';
+/** yellow: solo nella verifica v2 (livello B tra il 70% e il 100%, stime, gradini 2 e 3, dosi estrapolate). */
+export type Color = 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'grey' | 'purple';

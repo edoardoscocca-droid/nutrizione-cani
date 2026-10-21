@@ -66,7 +66,7 @@ insert into public.nutrients (id, label_it, canonical_unit, nutrient_group, kind
   ('carbohydrate_by_difference', 'Carboidrati per differenza (fonte)', 'g', 'source_reference', 'informational', null, 'Comprende la fibra: non equivale ai carboidrati disponibili.'),
   ('c18_2_undifferentiated', 'Acido grasso 18:2 non differenziato (fonte)', 'g', 'source_reference', 'informational', null, 'Non attribuito all''acido linoleico finché l''identità chimica non è validata.'),
   ('c20_4_undifferentiated', 'Acido grasso 20:4 non differenziato (fonte)', 'g', 'source_reference', 'informational', null, 'Non attribuito all''acido arachidonico finché l''identità chimica non è validata.'),
-  ('vitamin_a_retinol_ug', 'Retinolo (fonte, µg)', 'µg', 'source_reference', 'informational', null, 'Non convertito in UI di vitamina A senza regola approvata.'),
+  ('vitamin_a_retinol_ug', 'Retinolo (fonte, µg)', 'µg', 'source_reference', 'informational', null, 'Convertito in vitamina A preformata (1 UI = 0,3 µg, FEDIAF 2025 tab. VII-14) SOLO se manca la vitamina A preformata in UI: regola della specifica v2 del 21/10/2026 (§6, retinolo 0 documentato delle verdure).'),
   ('vitamin_a_carotenoid_iu', 'Vitamina A da carotenoidi (UI per uso umano)', 'IU (carotenoids; human labeling)', 'source_reference', 'informational', null, 'Non equivale a vitamina A per il cane e non si somma.'),
   ('beta_carotene_ug', 'Beta-carotene (fonte)', 'µg', 'source_reference', 'informational', null, 'Solo informativo.')
 on conflict (id) do nothing;
@@ -148,7 +148,8 @@ insert into public.food_categories (id, parent_id, label_it, secreting_offal, so
   ('tuber', 'starch', 'Tuberi', false, 12),
   ('legume', 'starch', 'Legumi', false, 13),
   ('vegetable_generic', 'vegetable', 'Verdure', false, 15),
-  ('fat_oil', 'other', 'Oli e grassi', false, 16)
+  ('fat_oil', 'other', 'Oli e grassi', false, 16),
+  ('other_generic', 'other', 'Altri alimenti (non classificati)', false, 18)
 on conflict (id) do nothing;
 
 insert into public.energy_methods (id, version, label, protein, fat, carbohydrate, source, approved_by, approved_at, notes, active) values
@@ -170,7 +171,8 @@ insert into public.unit_conversions (id, nutrient_id, from_unit, to_unit, form, 
   ('vite_rrr', 'vitamin_e', 'mg', 'IU', 'd_alpha_tocopherol', 'd-alfa-tocoferolo naturale (RRR)', 1.49, '1,49 UI/mg — approvato dalla nutrizionista il 16/10/2026'),
   ('vite_allrac_acetate', 'vitamin_e', 'mg', 'IU', 'all_rac_alpha_tocopheryl_acetate', 'tutto-rac/dl-alfa-tocoferil acetato (sintetico)', 1, '1 UI/mg — approvato dalla nutrizionista il 16/10/2026'),
   ('vite_rrr_acetate', 'vitamin_e', 'mg', 'IU', 'd_alpha_tocopheryl_acetate', 'd-alfa-tocoferil acetato naturale', 1.36, 'circa 1,36 UI/mg — approvato dalla nutrizionista il 16/10/2026'),
-  ('choline_chloride', 'choline', 'mg', 'mg', 'choline_chloride', 'cloruro di colina (puro) → colina', 0.746, 'fattore stechiometrico 0,746 — approvato dalla nutrizionista il 17/10/2026')
+  ('choline_chloride', 'choline', 'mg', 'mg', 'choline_chloride', 'cloruro di colina (puro) → colina', 0.746, 'fattore stechiometrico 0,746 — approvato dalla nutrizionista il 17/10/2026'),
+  ('calcium_d_pantothenate', 'vitamin_b5', 'mg', 'mg', 'calcium_d_pantothenate', 'calcio D-pantotenato → acido pantotenico', 0.92, 'fattore 0,92 (FEDIAF 2025, tab. VII-14: 1 mg di calcio D-pantotenato = 0,92 mg di acido D-pantotenico) — conversione richiesta dalla specifica v2 del 21/10/2026 (§6); fattore da confermare sul PDF')
 on conflict (id) do nothing;
 
 insert into public.foods (id, name_it, category_id, subcategory_id, processing_state, edible_portion, kcal_me_per_100g, me_method, source_identifier, source_version, data_status, available_to_formulate, notes) values
@@ -210,6 +212,23 @@ insert into public.supplements (id, name_it, brand, product_variant, class, dose
   ('bone_meal', 'Farina d’ossa', null, null, 'calcium_phosphorus', 'g', null, null, false, null, null, null, null, 'missing', false, 'SPECIFIC_PRODUCT_ASSAY_REQUIRED'),
   ('calcium_carbonate', 'Carbonato di calcio', null, null, 'calcium', 'g', null, null, false, null, null, null, null, 'missing', false, 'FORMULATION_ASSAY_REQUIRED'),
   ('multivitamin_other', 'Multivitaminico alternativo', null, null, 'multinutrient', 'g', null, null, false, null, null, null, null, 'missing', false, 'PRODUCT_SPECIFICATION_REQUIRED')
+on conflict (id) do nothing;
+
+insert into public.foods (id, name_it, category_id, subcategory_id, processing_state, edible_portion, kcal_me_per_100g, me_method, source_identifier, source_version, data_status, available_to_formulate, notes, forbidden, preparation_warning) values
+  ('onion', 'Cipolla (vietata)', 'vegetable', 'vegetable_generic', 'raw_or_unspecified', null, null, null, null, null, 'unverified', false, 'Alimento vietato (specifica v2 §9): mai usato nel calcolo.', true, 'Vietata per il cane.'),
+  ('garlic', 'Aglio (vietato)', 'vegetable', 'vegetable_generic', 'raw_or_unspecified', null, null, null, null, null, 'unverified', false, 'Alimento vietato (specifica v2 §9): mai usato nel calcolo.', true, 'Vietato per il cane.'),
+  ('grapes_raisins', 'Uva e uvetta (vietate)', 'other', 'other_generic', 'raw_or_unspecified', null, null, null, null, null, 'unverified', false, 'Alimento vietato (specifica v2 §9): mai usato nel calcolo.', true, 'Vietate per il cane.'),
+  ('xylitol', 'Xilitolo (vietato)', 'other', 'other_generic', 'raw_or_unspecified', null, null, null, null, null, 'unverified', false, 'Alimento vietato (specifica v2 §9): mai usato nel calcolo.', true, 'Vietato per il cane (anche negli alimenti per uso umano che lo contengono).'),
+  ('chocolate', 'Cioccolato (vietato)', 'other', 'other_generic', 'raw_or_unspecified', null, null, null, null, null, 'unverified', false, 'Alimento vietato (specifica v2 §9): mai usato nel calcolo.', true, 'Vietato per il cane.'),
+  ('macadamia', 'Noci macadamia (vietate)', 'other', 'other_generic', 'raw_or_unspecified', null, null, null, null, null, 'unverified', false, 'Alimento vietato (specifica v2 §9): mai usato nel calcolo.', true, 'Vietate per il cane.'),
+  ('olive_oil', 'Olio d''oliva', 'other', 'fat_oil', 'raw_or_unspecified', null, null, null, null, null, 'unverified', false, 'Voce prevista dalla specifica v2 (§9): dati da importare con fonte.', false, null)
+on conflict (id) do nothing;
+
+insert into public.supplements (id, name_it, brand, product_variant, class, dose_unit, mass_per_unit_g, kcal_per_unit, integer_dose, max_daily_units, max_daily_source, label_source, product_version, status, usable_for_optimization, notes) values
+  ('eggshell_powder', 'Polvere di guscio d''uovo', null, null, 'calcium', 'g', null, null, false, null, null, null, null, 'missing', false, 'Integratore previsto dalla specifica v2 (§9): etichetta e regole di dose da inserire.'),
+  ('fish_oil', 'Olio di pesce', null, null, 'fish_oil', 'ml', null, null, false, null, null, null, null, 'missing', false, 'Integratore previsto dalla specifica v2 (§9): etichetta e regole di dose da inserire.'),
+  ('iodine_alga', 'Alga per lo iodio (es. kelp)', null, null, 'iodine', 'g', null, null, false, null, null, null, null, 'missing', false, 'Integratore previsto dalla specifica v2 (§9): etichetta e regole di dose da inserire.'),
+  ('vitamin_e_supplement', 'Vitamina E', null, null, 'vitamin', 'capsule', null, null, true, null, null, null, null, 'missing', false, 'Integratore previsto dalla specifica v2 (§9): etichetta e regole di dose da inserire.')
 on conflict (id) do nothing;
 
 insert into public.breed_notes (id, breed_match, note, source, metrics) values

@@ -4,7 +4,8 @@
 // Uso: npm run seed:sql
 
 import { writeFileSync } from 'node:fs';
-import { BREED_NOTES, CATEGORIES, packageFoods, packageReferences, packageSupplements } from '../src/data/packageCatalog';
+import { mkdirSync } from 'node:fs';
+import { BREED_NOTES, CATEGORIES, packageFoods, packageReferences, packageSupplements, packageV2Foods, packageV2Supplements } from '../src/data/packageCatalog';
 import { TEST_FOODS, TEST_SUPPLEMENTS } from '../src/data/testFixtures';
 import type { Food, Supplement } from '../src/engine/types';
 
@@ -58,9 +59,24 @@ const suppCols = ['id', 'name_it', 'brand', 'product_variant', 'class', 'dose_un
 
 sql += insert('foods', foodCols, foodRows(packageFoods()), '(id) do nothing');
 sql += insert('supplements', suppCols, suppRows(packageSupplements()), '(id) do nothing');
+// voci della specifica v2 (§9): alimenti vietati e nomi da completare (colonne della migrazione 11)
+const v2Foods = () => insert('foods', [...foodCols, 'forbidden', 'preparation_warning'], packageV2Foods().map((f) => [...foodRows([f])[0], !!f.forbidden, f.preparationWarning ?? null]), '(id) do nothing');
+const v2Supps = () => insert('supplements', suppCols, suppRows(packageV2Supplements()), '(id) do nothing');
+sql += v2Foods() + v2Supps();
 sql += insert('breed_notes', ['id', 'breed_match', 'note', 'source', 'metrics'],
   BREED_NOTES.map((b) => [b.id, b.breedMatch, b.text, b.source, b.metrics]), '(id) do nothing');
 writeFileSync(new URL('../supabase/seed.sql', import.meta.url), sql);
+
+// stesso contenuto della specifica v2 per il database online (già popolato): da eseguire DOPO la migrazione 11
+const v2Dir = new URL('../supabase/data/2026-10-21/', import.meta.url);
+mkdirSync(v2Dir, { recursive: true });
+let v2 = '-- Specifica v2 del 21/10/2026: categoria «altri alimenti», conversione calcio D-pantotenato → B5, alimenti vietati e voci da completare.\n';
+v2 += '-- Generato da scripts/build-seed.ts. Eseguire come amministratore DOPO la migrazione 20261025000011; nessun dato esistente viene modificato.\n\n';
+v2 += insert('food_categories', ['id', 'parent_id', 'label_it', 'secreting_offal', 'sort'], CATEGORIES.filter((c) => c.id === 'other_generic').map((c) => [c.id, c.parentId, c.label, false, CATEGORIES.indexOf(c)]), '(id) do nothing');
+v2 += insert('unit_conversions', ['id', 'nutrient_id', 'from_unit', 'to_unit', 'form', 'form_label', 'factor', 'source'],
+  refs.unitConversions.filter((c) => c.id === 'calcium_d_pantothenate').map((c) => [c.id, c.nutrientId, c.fromUnit, c.toUnit, c.form, c.formLabel, c.factor, c.source]), '(id) do nothing');
+v2 += v2Foods() + v2Supps();
+writeFileSync(new URL('01_catalogo_v2.sql', v2Dir), v2);
 
 let t = '-- DATI DI PROVA FITTIZI [TEST] — solo per collaudo. Non caricarli in un archivio usato per cani reali.\n';
 t += '-- Generato da scripts/build-seed.ts. Si rimuovono con: delete from foods where data_status = \'test_fixture\'; delete from supplements where status = \'test_fixture\';\n\n';

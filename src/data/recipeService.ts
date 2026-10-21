@@ -1,9 +1,12 @@
 // Logica delle ricette, indipendente dall'archivio (locale o Supabase).
 
 import { auditRecipe, type DietMoisture } from '../engine/audit';
+import { auditRecipeV2 } from '../engine/auditV2';
+import { ENGINE_VERSION_V2, resolveConfig, type FormulationOverrides } from '../engine/configV2';
 import { recipeCost, unitPrice, type CostSummary } from '../engine/cost';
 import { toFormulationProfile, type BreedNote } from '../engine/dogProfile';
 import type { FormulationInput, FormulationResult } from '../engine/formulate';
+import type { FormulationInputV2 } from '../engine/formulateV2';
 
 /** Chi esegue il calcolo: il motore locale (web, test) o il server di calcolo (app iPhone). */
 export type Formulator = (input: FormulationInput) => Promise<FormulationResult>;
@@ -32,12 +35,17 @@ export interface CatalogState extends Catalog {
 
 export class RecipeLimitError extends Error {
   constructor() {
-    super(`Limite raggiunto: al massimo ${MAX_RECIPES_PER_DOG} ricette salvate per cane. Elimina una ricetta per crearne una nuova (nessuna ricetta viene eliminata automaticamente).`);
+    super(`Limite raggiunto: al massimo ${MAX_RECIPES_PER_DOG} ricette attive per cane (le archiviate non contano). Archivia o elimina una ricetta per crearne una nuova (nessuna ricetta viene eliminata automaticamente).`);
   }
 }
 
+/** ricette che contano per il limite: le archiviate no (specifica v2 §8). */
+export function activeRecipeCount(recipesOfDog: Recipe[]): number {
+  return recipesOfDog.filter((r) => !r.archived).length;
+}
+
 export function assertCanAddRecipe(recipesOfDog: Recipe[]) {
-  if (recipesOfDog.length >= MAX_RECIPES_PER_DOG) throw new RecipeLimitError();
+  if (activeRecipeCount(recipesOfDog) >= MAX_RECIPES_PER_DOG) throw new RecipeLimitError();
 }
 
 /** Limiti in uso: ufficiali + soglie non ufficiali attive (quelle disattivate dall'amministratore restano fuori). */
@@ -58,7 +66,7 @@ export function pricesByItem(cat: Catalog, prices: UserPrice[]): Record<string, 
   return out;
 }
 
-export function buildInput(dog: Dog, sel: Selection, cat: CatalogState, settings: EngineSettings, prices: UserPrice[]): FormulationInput {
+export function buildInput(dog: Dog, sel: Selection, cat: CatalogState, settings: EngineSettings & { formulationV2?: FormulationOverrides | null }, prices: UserPrice[]): FormulationInputV2 {
   const foods = sel.foods.map((f) => {
     const food = cat.foods.find((x) => x.id === f.id);
     if (!food) throw new Error(`Alimento non più presente in catalogo: ${f.id}`);
@@ -80,10 +88,12 @@ export function buildInput(dog: Dog, sel: Selection, cat: CatalogState, settings
     settings,
     unitPrices: pricesByItem(cat, prices),
     catalogForSuggestions: { foods: cat.foods, supplements: cat.supplements },
+    // formulazione v2: configurazione [PROPOSTA] con le modifiche dell'utente, congelata nell'istantanea
+    config: resolveConfig(settings.formulationV2),
   };
 }
 
-export function snapshotOf(input: FormulationInput, engineVersion: string, now = new Date().toISOString()): RecipeSnapshot {
+export function snapshotOf(input: FormulationInput & { config?: FormulationInputV2['config'] }, engineVersion: string, now = new Date().toISOString()): RecipeSnapshot {
   const constraints: Record<string, ItemConstraint> = {};
   for (const f of input.foods) if (f.constraint) constraints[f.food.id] = f.constraint;
   for (const s of input.supplements) if (s.constraint) constraints[s.supplement.id] = s.constraint;
@@ -100,6 +110,9 @@ export function snapshotOf(input: FormulationInput, engineVersion: string, now =
     referenceVersionIds: [...new Set(input.limits.map((l) => l.referenceVersionId))],
     dietMoisture: input.dietMoisture,
     settings: input.settings,
+    // solo i risultati del generatore v2 (e le analisi v2) congelano la configurazione: una versione del motore
+    // precedente resta verificata con le sue regole
+    ...(input.config && engineVersion === ENGINE_VERSION_V2 ? { formulationConfig: input.config } : {}),
   });
 }
 
@@ -142,9 +155,10 @@ export function versionFromResult(
   };
 }
 
-/** Verifica completa di un insieme di quantità sull'istantanea congelata. */
+/** Verifica completa di un insieme di quantità sull'istantanea congelata (v2 se l'istantanea ne ha la configurazione). */
 export function auditOnSnapshot(snapshot: RecipeSnapshot, items: RecipeItem[], excluded: { name: string; reason: string }[] = []) {
-  return auditRecipe({
+  return (snapshot.formulationConfig ? auditRecipeV2 : auditRecipe)({
+    config: snapshot.formulationConfig,
     items,
     foods: snapshot.foods,
     supplements: snapshot.supplements,
@@ -156,6 +170,40 @@ export function auditOnSnapshot(snapshot: RecipeSnapshot, items: RecipeItem[], e
     settings: snapshot.settings,
     excluded,
   });
+}
+
+/**
+ * Modalità analisi (specifica v2 §8): una ricetta già fatta (anche della veterinaria) inserita a grammi fissi viene
+ * solo verificata, con le stesse regole e gli stessi dati del generatore; nessuna quantità viene cambiata.
+ */
+export function analysisVersion(
+  args: { id: string; recipeId: string; revision: number; author: string; note?: string | null },
+  input: FormulationInputV2,
+  items: RecipeItem[],
+  now = new Date().toISOString(),
+): RecipeVersion {
+  for (const it of items) if (!(it.qty >= 0) || !Number.isFinite(it.qty)) throw new Error('Quantità non valida');
+  if (!items.some((it) => it.qty > 0)) throw new Error('Inserisci almeno una quantità.');
+  const snapshot = snapshotOf(input, ENGINE_VERSION_V2, now);
+  return {
+    id: args.id,
+    recipeId: args.recipeId,
+    revision: args.revision,
+    origin: 'analysis',
+    draft: false,
+    parentVersionId: null,
+    suggestedItems: items,
+    chosenItems: items,
+    audit: auditOnSnapshot(snapshot, items),
+    snapshot,
+    constraintsUsed: [],
+    conflicts: [],
+    engineNotes: ['Ricetta inserita a grammi fissi (modalità analisi): nessuna formulazione, solo verifica con le regole v2.'],
+    excluded: [],
+    author: args.author,
+    createdAt: now,
+    note: args.note ?? null,
+  };
 }
 
 /** Modifica esplicita delle quantità: nuova versione separata, proposta originale conservata, verifica rifatta da zero. */

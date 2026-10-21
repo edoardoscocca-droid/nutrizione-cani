@@ -256,11 +256,14 @@ describe('T10 / T16 istantanee e provenienza', () => {
 });
 
 describe('T12 ricette', () => {
-  test('11ª ricetta rifiutata senza eliminare le precedenti', () => {
-    const recipes: Recipe[] = Array.from({ length: 10 }, (_, i) => ({ id: `r${i}`, dogId: 'd', name: `R${i}`, isPrimary: i === 0, archived: false, currentVersionId: null, dietMoisture: 'wet', createdAt: '' }));
-    expect(() => assertCanAddRecipe(recipes.slice(0, 9))).not.toThrow();
-    expect(() => assertCanAddRecipe(recipes)).toThrow(/al massimo 10/);
-    expect(recipes.length).toBe(10);
+  // adattato alla specifica v2 (§8): limite portato da 10 a 200 ricette per cane [PROPOSTA], le archiviate non contano
+  test('201ª ricetta attiva rifiutata senza eliminare le precedenti; le archiviate non contano', () => {
+    const recipes: Recipe[] = Array.from({ length: 200 }, (_, i) => ({ id: `r${i}`, dogId: 'd', name: `R${i}`, isPrimary: i === 0, archived: false, currentVersionId: null, dietMoisture: 'wet', createdAt: '' }));
+    expect(() => assertCanAddRecipe(recipes.slice(0, 199))).not.toThrow();
+    expect(() => assertCanAddRecipe(recipes)).toThrow(/al massimo 200/);
+    expect(recipes.length).toBe(200);
+    const withArchived = recipes.map((r, i) => (i < 5 ? { ...r, archived: true } : r));
+    expect(() => assertCanAddRecipe(withArchived)).not.toThrow();
   });
 });
 

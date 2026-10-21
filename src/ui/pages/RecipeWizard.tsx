@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { formulate, preliminaryAnalysis, type FormulationInput, type FormulationResult, type PreliminaryResult } from '../../engine/formulate';
+import { preliminaryAnalysis, type FormulationInput, type FormulationResult, type PreliminaryResult } from '../../engine/formulate';
+// specifica v2 del 21/10/2026: stesso generatore del server di calcolo dell'app
+import { formulateV2 as formulate } from '../../engine/formulateV2';
 import { foodStatus, supplementStatus } from '../../engine/catalogStatus';
 import type { Food, ItemConstraint, Nutrient, Supplement } from '../../engine/types';
 import { StatusBadge } from './CatalogPage';

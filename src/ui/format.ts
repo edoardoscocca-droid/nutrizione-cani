@@ -34,6 +34,7 @@ export function dose(qty: number, unit: DoseUnit): string {
 export const COLOR_LABEL: Record<Color, string> = {
   red: 'Rosso — limite ufficiale non rispettato',
   orange: 'Arancione — soglia non ufficiale o preferenza',
+  yellow: 'Giallo — vicino al riferimento, stima o gradino 2',
   green: 'Verde — entro gli obiettivi controllabili',
   blue: 'Blu — monitorato, senza limite numerico',
   grey: 'Grigio — dato insufficiente, non verificabile',

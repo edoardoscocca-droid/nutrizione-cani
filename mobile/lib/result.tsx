@@ -3,7 +3,7 @@ import { Pressable, Text, View } from 'react-native';
 import type { AuditResult, CheckRow, RecipeStatus } from '../../src/engine/audit';
 import { CATALOG_STATUS_HELP, CATALOG_STATUS_LABEL, type CatalogStatus } from '../../src/engine/catalogStatus';
 import type { CostSummary } from '../../src/engine/cost';
-import type { Conflict, ConstraintInfo } from '../../src/engine/formulate';
+import type { Conflict, ConstraintInfo, SuggestionDetail } from '../../src/engine/formulate';
 import type { RecipeSnapshot } from '../../src/engine/snapshot';
 import type { Color, RecipeItem } from '../../src/engine/types';
 import { PROCESSING_LABEL } from '../../src/data/packageCatalog';
@@ -25,6 +25,7 @@ export function StatusBox({ audit }: { audit: AuditResult }) {
   const sum = audit.summary;
   const total = sum ? sum.satisfied.length + sum.notMet.length + sum.unverifiable.length : 0;
   const ring = sum && sum.notMet.length ? t.red : sum && sum.unverifiable.length ? t.grey : t.green;
+  const v2 = !!audit.v2;
   return (
     <Card>
       {audit.dataFlags.testData && <Badge label="PROVA — dati fittizi, non usare per alimentare un cane" color="orange" />}
@@ -35,7 +36,7 @@ export function StatusBox({ audit }: { audit: AuditResult }) {
           </View>
           <View style={{ flex: 1, gap: 2 }}>
             <T bold>
-              {sum.satisfied.length} di {total} fabbisogni soddisfatti
+              {sum.satisfied.length} di {total} {v2 ? 'controlli obbligatori (livello A) rispettati' : 'fabbisogni soddisfatti'}
             </T>
             {sum.notMet.length > 0 && <T small style={{ color: t.red }}>Non soddisfatti: {sum.notMet.join(', ')}</T>}
             {sum.unverifiable.length > 0 && <T small muted>Senza dati per verificarli: {sum.unverifiable.join(', ')}</T>}
@@ -52,7 +53,7 @@ export function StatusBox({ audit }: { audit: AuditResult }) {
               </View>
               <T small style={{ flex: 1 }}>
                 <T small bold>{a.label}: </T>
-                {a.color === 'green' ? 'raggiunto' : a.color === 'orange' ? 'non raggiunto' : 'non verificabile'}
+                {a.color === 'green' ? 'raggiunto' : a.color === 'grey' ? 'non verificabile' : a.color === 'yellow' ? 'vicino o su stima' : 'non raggiunto'}
                 {a.amount != null && a.required != null ? ` — ${smart(a.amount)} su ${smart(a.required)} ${a.unit}/die` : ''}
               </T>
             </Row>
@@ -61,7 +62,7 @@ export function StatusBox({ audit }: { audit: AuditResult }) {
       )}
       <Row style={{ gap: 8, alignItems: 'flex-start' }}>
         <View style={{ marginTop: 5 }}>
-          <Dot color={STATUS_COLOR[audit.status]} />
+          <Dot color={v2 && audit.status === 'PREFERENCES_VIOLATED' ? 'yellow' : STATUS_COLOR[audit.status]} />
         </View>
         <T bold style={{ flex: 1 }}>{audit.statusLabel}</T>
       </Row>
@@ -83,6 +84,7 @@ export function Warnings({ audit }: { audit: AuditResult }) {
 
 /** Preferenze e obiettivi non rispettati: intervallo richiesto, risultato, scostamento e (se individuati) i vincoli che lo impediscono. */
 export function GapsCard({ audit }: { audit: AuditResult }) {
+  if (audit.v2) return null; // nella verifica v2 gli scostamenti sono nel riepilogo «Cosa risulta»
   const missed = audit.rows.flatMap((r) => r.checks.filter((c) => c.gap && c.color === 'orange').map((c) => ({ r, c })));
   if (!missed.length) return null;
   const analysis = audit.softGaps ?? [];
@@ -188,7 +190,7 @@ export function NutrientList({ audit }: { audit: AuditResult }) {
   const [open, setOpen] = useState<CheckRow | null>(null);
   const [onlyIssues, setOnlyIssues] = useState(true);
   // da controllare: limiti non rispettati o non verificabili e note; le voci informative senza limiti restano in «tutti»
-  const rows = audit.rows.filter((r) => !onlyIssues || r.color === 'red' || r.color === 'orange' || r.purple.length > 0 || (r.color === 'grey' && r.checks.length > 0));
+  const rows = audit.rows.filter((r) => !onlyIssues || r.color === 'red' || r.color === 'orange' || r.color === 'yellow' || r.purple.length > 0 || (r.color === 'grey' && r.checks.length > 0));
   const groups = [...new Set(rows.map((r) => r.group))];
   return (
     <View style={{ gap: 8 }}>
@@ -218,6 +220,7 @@ export function NutrientList({ audit }: { audit: AuditResult }) {
                   <Dot color={r.color} />
                   {r.purple.length > 0 && <Dot color="purple" />}
                   <T style={{ flex: 1 }}>{r.label}</T>
+                  {r.level === 'A' || r.level === 'B' ? <Badge label={r.level === 'A' ? 'A' : 'B'} color={r.level === 'A' ? 'blue' : 'grey'} /> : null}
                   <T>{amountText(r)}</T>
                 </Row>
                 {!r.complete && r.missingFrom.length > 0 && (
@@ -275,6 +278,9 @@ function NutrientDetail({ row, kcal, vitaminA, onClose }: { row: CheckRow; kcal:
         )}
       </Card>
       {row.checks.length === 0 && <T muted>{row.note ?? 'Nessun limite numerico disponibile: non viene inventato.'}</T>}
+      {row.level && <T small muted>{row.level === 'A' ? 'Livello A: obbligatorio in ogni razione.' : row.level === 'B' ? 'Livello B: monitorato nel tempo (avviso nella ricetta, esito nel diario).' : 'Solo informativo.'}</T>}
+      {row.noLimitNote && <Box color="blue"><T small>{row.noLimitNote}</T></Box>}
+      {row.estimatedFrom && row.estimatedFrom.length > 0 && <T small muted>Valori stimati con fonte (segnati come stima): {row.estimatedFrom.join(', ')}.</T>}
       {row.checks.map((c) => (
         <Card key={c.limit.id}>
           <Row style={{ alignItems: 'flex-start' }}>
@@ -396,6 +402,83 @@ export function ConstraintsCard({ constraints }: { constraints: ConstraintInfo[]
   );
 }
 
+/** Verifica v2: struttura del pasto, gradini, dosi, limiti legali e riepilogo di cosa risulta sotto riferimento, eccessivo o sconosciuto. */
+export function V2Card({ audit }: { audit: AuditResult }) {
+  const [open, setOpen] = useState(false);
+  const v = audit.v2;
+  if (!v) return null;
+  const line = (c: Color, text: string, key: string) => (
+    <Row key={key} style={{ alignItems: 'flex-start' }}>
+      <View style={{ marginTop: 5 }}>
+        <Dot color={c} />
+      </View>
+      <T small style={{ flex: 1 }}>{text}</T>
+    </Row>
+  );
+  return (
+    <>
+      <Card>
+        <H level={3}>Cosa risulta</H>
+        {v.excess.length > 0 && (
+          <>
+            <T bold small>Eccessivo o fuori dose</T>
+            <Bullets small items={v.excess} />
+          </>
+        )}
+        {v.below.length > 0 && (
+          <>
+            <T bold small>Sotto riferimento</T>
+            <Bullets small items={v.below} />
+          </>
+        )}
+        {v.unknown.length > 0 && (
+          <>
+            <T bold small>Sconosciuto (dati mancanti: mai trattati come zero né compensati)</T>
+            <Bullets small items={v.unknown} />
+          </>
+        )}
+        {v.estimated.length > 0 && <T small muted>Stime con fonte: {v.estimated.length} nutrienti (dettaglio nella scheda del nutriente).</T>}
+        {!v.excess.length && !v.below.length && !v.unknown.length && <T small>Niente sotto riferimento, eccessivo o sconosciuto nei controlli disponibili.</T>}
+        <Pressable onPress={() => setOpen(!open)}>
+          <T small bold>Livelli A e B {open ? '▾' : '▸'}</T>
+        </Pressable>
+        {open && <T small muted>{v.criterion}</T>}
+      </Card>
+      <Card>
+        <H level={3}>Struttura del pasto</H>
+        {v.groups.map((g) => line(g.color, g.message, g.id))}
+        {v.caps.map((c) => line(c.color, c.message, `cap-${c.name}`))}
+        <T small muted>
+          Peso totale {v.totalWeightG === null ? 'non calcolabile' : `${num(v.totalWeightG, 0)} g`}
+          {v.caPStep ? ` · Ca:P al gradino ${v.caPStep}` : ''} · energia entro ±{num(v.energyTolerancePct, 1)}% · intervalli [PROPOSTA] modificabili in Impostazioni
+        </T>
+        {(audit.doseChecks ?? []).map((d) => line(d.color, d.message, `dose-${d.name}`))}
+        {v.legal.map((l) => line(l.color, `${l.label}: ${l.message}`, `legal-${l.metric}`))}
+        {v.forbidden.map((f) => line('red', `Alimento vietato: ${f}`, `forb-${f}`))}
+      </Card>
+    </>
+  );
+}
+
+/** Suggerimenti simulati: alimento o integratore del catalogo, quale apporto migliorerebbe e se il livello A resta rispettato. */
+export function SuggestionsCard({ details }: { details?: SuggestionDetail[] }) {
+  if (!details || !details.length) return null;
+  return (
+    <Card>
+      <H level={3}>Cosa servirebbe</H>
+      {details.map((d, i) => (
+        <Row key={`${d.candidate.id}-${i}`} style={{ alignItems: 'flex-start' }}>
+          <View style={{ marginTop: 5 }}>
+            <Dot color={!d.simulated ? 'grey' : d.levelAOk && d.qty ? 'green' : 'orange'} />
+          </View>
+          <T small style={{ flex: 1 }}>{d.text}</T>
+        </Row>
+      ))}
+      <T small muted>Suggerimenti simulati rifacendo il calcolo con il prodotto aggiunto: non viene applicato nulla, scegli tu.</T>
+    </Card>
+  );
+}
+
 const BADGE: Record<CatalogStatus, 'green' | 'orange' | 'grey'> = { verified: 'green', partial: 'orange', to_complete: 'grey' };
 export function CatalogBadge({ status, test }: { status: CatalogStatus; test?: boolean }) {
   return <Badge label={`${test ? 'PROVA · ' : ''}${CATALOG_STATUS_LABEL[status]}`} color={BADGE[status]} />;
@@ -422,10 +505,12 @@ export function ResultBlock({
   return (
     <View style={{ gap: 12 }}>
       <StatusBox audit={audit} />
+      <V2Card audit={audit} />
       <GapsCard audit={audit} />
       <Warnings audit={audit} />
       <Card>
-        <H level={3}>Dosi giornaliere</H>
+        <H level={3}>{audit.v2 ? 'Razione dell’intero giorno' : 'Dosi giornaliere'}</H>
+        {audit.v2 && <T small muted>I grammi sono per tutto il giorno, integratori compresi: puoi dividerli in 2–3 pasti, ma nel diario la razione conta una volta.</T>}
         <ItemsList items={items} snapshot={snapshot} suggested={suggested} />
         <T>
           <T bold>{num(audit.kcal ?? audit.totals.energy.known, 0)} kcal</T>

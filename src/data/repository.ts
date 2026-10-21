@@ -3,7 +3,7 @@
 import type { Food, Supplement, EnergyAssignment, EnergyMethod, CustomThreshold } from '../engine/types';
 import type { ImportPlan } from './catalogImport';
 import type { Category } from './packageCatalog';
-import type { AppSettings, Dog, Recipe, RecipeVersion, UserPrice, WeightEntry } from './model';
+import type { AppSettings, DiaryEntry, Dog, Recipe, RecipeVersion, UserPrice, WeightEntry } from './model';
 import type { CatalogState } from './recipeService';
 
 export interface FullCatalog extends CatalogState {
@@ -23,13 +23,19 @@ export interface Repository {
   addWeight(entry: WeightEntry): Promise<void>;
 
   listRecipes(dogId?: string): Promise<Recipe[]>;
-  /** deve rifiutare l'11ª ricetta per cane senza toccare le altre. */
+  /** deve rifiutare la ricetta oltre il limite per cane (le archiviate non contano) senza toccare le altre. */
   createRecipe(recipe: Recipe): Promise<Recipe>;
   updateRecipe(recipe: Recipe): Promise<Recipe>;
   deleteRecipe(id: string): Promise<void>;
   listVersions(recipeId: string): Promise<RecipeVersion[]>;
   /** le versioni sono immutabili: si aggiungono soltanto. */
   addVersion(version: RecipeVersion): Promise<void>;
+
+  /** diario: una voce per cane e data (precisazione 1 della specifica v2). */
+  listDiary(dogId: string): Promise<DiaryEntry[]>;
+  /** registra una o più date: per ogni data la nuova voce SOSTITUISCE quella esistente (una sola attiva). */
+  saveDiaryEntries(entries: DiaryEntry[]): Promise<void>;
+  deleteDiaryEntry(id: string): Promise<void>;
 
   listPrices(): Promise<UserPrice[]>;
   savePrice(price: UserPrice): Promise<void>;

@@ -3,11 +3,17 @@ import type { FormulationInput, FormulationResult, PreliminaryResult } from '../
 
 export const ENGINE_URL = (process.env.EXPO_PUBLIC_ENGINE_URL ?? 'https://nutrizione-cani-motore-q58c.onrender.com').replace(/\/$/, '');
 
-/** Il catalogo per i suggerimenti si invia solo con i prodotti utilizzabili (richiesta più leggera). */
+/** Il catalogo per i suggerimenti si invia solo con i prodotti che hanno dati (anche non ancora attivati: §3.6). */
 function slim(input: FormulationInput): FormulationInput {
   const c = input.catalogForSuggestions;
   return c
-    ? { ...input, catalogForSuggestions: { foods: c.foods.filter((f) => f.availableToFormulate), supplements: c.supplements.filter((s) => s.usableForOptimization) } }
+    ? {
+        ...input,
+        catalogForSuggestions: {
+          foods: c.foods.filter((f) => !f.forbidden && f.kcalMePer100g !== null && Object.values(f.nutrients).some((v) => v.value !== null)),
+          supplements: c.supplements.filter((s) => s.status !== 'missing' && Object.values(s.nutrients).some((v) => v.value !== null)),
+        },
+      }
     : input;
 }
 
@@ -33,7 +39,8 @@ async function post<T>(path: string, input: FormulationInput): Promise<T> {
   }
 }
 
-export const formulateRemote = (input: FormulationInput) => post<FormulationResult>('/api/formulate', input);
+/** generatore v2 (gruppi del pasto, livello A rigido, livello B morbido): stesse regole della verifica nell'app. */
+export const formulateRemote = (input: FormulationInput) => post<FormulationResult>('/api/v2/formulate', input);
 export const preliminaryRemote = (input: FormulationInput) => post<PreliminaryResult>('/api/preliminary', input);
 
 export async function engineHealth(): Promise<boolean> {

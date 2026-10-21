@@ -21,13 +21,16 @@ if (!outDir || !previewPath || !specs.length) {
 const fmt = (v: unknown) => (v === null || v === undefined ? '—' : typeof v === 'number' ? v.toLocaleString('it-IT', { maximumFractionDigits: 6 }) : String(v));
 const same = (a: number | null, b: number | null) => (a === null || b === null ? a === b : Math.abs(a - b) <= 1e-6 * Math.max(Math.abs(a), Math.abs(b), 1e-12));
 
-const cat = await new LocalRepository(null).loadCatalog({ bundledUpTo: '2026-10-16' });
+// stato di partenza: per default quello caricato in Supabase con i dati del 16/10; CATALOGO_FINO_A=2026-10-20 per i file
+// successivi al pacchetto del 20/10 (es. la correzione del QDiet del 21/10)
+const baseDate = process.env.CATALOGO_FINO_A ?? '2026-10-16';
+const cat = await new LocalRepository(null).loadCatalog({ bundledUpTo: baseDate });
 const out: string[] = [];
 const p = (s = '') => out.push(s);
 p('# Anteprima dell’importazione');
 p();
 p('Generata con `npx tsx scripts/importa-pacchetto.ts`: importatore dell’app (`src/data/catalogImport.ts`), schema definitivo JSON, modalità strict.');
-p('Confronto con il catalogo attuale (pacchetto + importazioni del 16/10, cioè lo stato caricato in Supabase con `supabase/data/2026-10-16_*.sql`).');
+p(baseDate === '2026-10-16' ? 'Confronto con il catalogo attuale (pacchetto + importazioni del 16/10, cioè lo stato caricato in Supabase con `supabase/data/2026-10-16_*.sql`).' : `Confronto con il catalogo dopo le importazioni fino al ${baseDate} (i file SQL precedenti vanno eseguiti prima).`);
 p('Nessuna ricetta, quantità o preferenza viene modificata; nessuna convalida viene attribuita (i valori aggiornati perdono la convalida).');
 p();
 let n = 0;

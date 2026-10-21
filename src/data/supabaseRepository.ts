@@ -4,7 +4,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import type { CustomThreshold, EnergyAssignment, EnergyMethod, Food, NutrientKind, NutrientLimit, NutrientValue, Supplement, UnitConversion } from '../engine/types';
 import { applyEnergyMethods } from '../engine/energy';
 import { DEFAULT_SETTINGS } from '../engine/types';
-import type { AppSettings, Dog, Recipe, RecipeVersion, UserPrice, WeightEntry } from './model';
+import type { AppSettings, DiaryEntry, Dog, Recipe, RecipeVersion, UserPrice, WeightEntry } from './model';
 import type { Category } from './packageCatalog';
 import { packageRecommendedTargets, withCatalogGaps } from './packageCatalog';
 import { RecipeLimitError } from './recipeService';
@@ -27,13 +27,24 @@ async function all(client: SupabaseClient, table: string, order = 'id'): Promise
 
 function check<T>(r: { data: T; error: { message: string; code?: string } | null }): T {
   if (r.error) {
-    if (r.error.code === 'P0010' || /al massimo 10/.test(r.error.message)) throw new RecipeLimitError();
+    if (r.error.code === 'P0010' || /al massimo \d+ ricette/.test(r.error.message)) throw new RecipeLimitError();
     throw new Error(r.error.message);
   }
   return r.data;
 }
 
 const n = (v: unknown) => (v === null || v === undefined ? null : Number(v));
+
+/** conversioni del diario tra l'app e la tabella diary_entries (stessa struttura in prova e con account). */
+export function diaryToRow(e: DiaryEntry, ownerId: string): Row {
+  return { id: e.id, owner_id: ownerId, dog_id: e.dogId, date: e.date, recipe_id: e.recipeId, version_id: e.versionId, recipe_name: e.recipeName, revision: e.revision, day: e.day, note: e.note, created_at: e.createdAt };
+}
+export function rowToDiary(r: Row): DiaryEntry {
+  return {
+    id: r.id as string, dogId: r.dog_id as string, date: String(r.date).slice(0, 10), recipeId: (r.recipe_id as string) ?? null, versionId: (r.version_id as string) ?? null,
+    recipeName: r.recipe_name as string, revision: Number(r.revision), day: r.day as DiaryEntry['day'], note: (r.note as string) ?? null, createdAt: r.created_at as string,
+  };
+}
 
 export class SupabaseRepository implements Repository {
   mode = 'supabase' as const;
@@ -174,6 +185,11 @@ export class SupabaseRepository implements Repository {
           notes: (f.notes as string) ?? null,
           validatedBy: (f.validated_by as string) ?? null,
           validatedAt: (f.validated_at as string) ?? null,
+          // colonne della migrazione 11 (assenti prima: valori predefiniti)
+          maxFreshWeightPct: n(f.max_fresh_weight_pct),
+          maxGPer1000Kcal: n(f.max_g_per_1000_kcal),
+          forbidden: (f.forbidden as boolean) ?? false,
+          preparationWarning: (f.preparation_warning as string) ?? null,
           nutrients: foodNut.get(f.id as string) ?? {},
         }),
       ),
@@ -306,6 +322,20 @@ export class SupabaseRepository implements Repository {
         ...(v.draft ? { draft: true } : {}),
       }),
     );
+  }
+
+  // ── diario (tabella della migrazione 11) ──
+  async listDiary(dogId: string) {
+    const rows = check(await this.client.from('diary_entries').select('*').eq('dog_id', dogId).order('date')) as Row[];
+    return rows.map(rowToDiary);
+  }
+  async saveDiaryEntries(entries: DiaryEntry[]) {
+    if (!entries.length) return;
+    // una sola voce per cane e data: la nuova sostituisce la precedente (vincolo unique(dog_id, date))
+    check(await this.client.from('diary_entries').upsert(entries.map((e) => diaryToRow(e, this.userId)), { onConflict: 'dog_id,date' }));
+  }
+  async deleteDiaryEntry(id: string) {
+    check(await this.client.from('diary_entries').delete().eq('id', id));
   }
 
   // ── prezzi e impostazioni ──

@@ -22,11 +22,14 @@ describe('vitamina A del cane da beta-carotene', () => {
     const pumpkin = f('pumpkin_cooked');
     expect(carrot.nutrients.beta_carotene_ug.value).toBe(8332); // dato originario USDA FDC 170394, invariato
     expect(pumpkin.nutrients.beta_carotene_ug.value).toBe(2096); // FDC 168449
-    expect(carrot.nutrients.vitamin_a?.value ?? null).toBeNull(); // preformata non documentata: resta sconosciuta
+    expect(carrot.nutrients.vitamin_a?.value ?? null).toBeNull(); // preformata in UI non dichiarata
     const c = vitaminAParts(carrot.nutrients);
     expect(c.fromBetaCarotene).toBeCloseTo(8.332 * 833, 6); // 6940,556 UI/100 g
     expect(c.known).toBeCloseTo(8.332 * 833, 6);
-    expect(c.complete).toBe(false);
+    // aggiornato con la specifica v2 (§6): il retinolo 0 documentato dalla fonte vale come preformata 0 → dato completo
+    expect(carrot.nutrients.vitamin_a_retinol_ug.value).toBe(0);
+    expect(c.preformed).toBe(0);
+    expect(c.complete).toBe(true);
     expect(vitaminAParts(pumpkin.nutrients).known).toBeCloseTo(2.096 * 833, 6);
     // le UI di etichettatura umana (17.033 per la carota) non entrano: il totale non le contiene
     expect(carrot.nutrients.vitamin_a_carotenoid_iu.value).toBe(17033);
@@ -49,7 +52,8 @@ describe('vitamina A del cane da beta-carotene', () => {
     const expected = 0.9 * 8.332 * 833 + 5.6 * 13.333333333333;
     expect(t.nutrients.vitamin_a.known).toBeCloseTo(expected, 3);
     expect(itemValue(items[0], 'vitamin_a')! * 90).toBeCloseTo(0.9 * 8.332 * 833, 6);
-    expect(t.nutrients.vitamin_a.missingFrom).toEqual([f('carrot_cooked').name]); // preformata della carota sconosciuta
+    // aggiornato con la specifica v2 (§6): retinolo 0 documentato → nessuna parte sconosciuta per la carota
+    expect(t.nutrients.vitamin_a.missingFrom).toEqual([]);
     expect(t.vitaminA!.fromBetaCarotene).toBeCloseTo(0.9 * 8.332 * 833, 6);
     expect(t.vitaminA!.betaCaroteneMg).toBeCloseTo(0.9 * 8.332, 9);
     expect(t.vitaminA!.preformed).toBeCloseTo(5.6 * 13.333333333333, 6);

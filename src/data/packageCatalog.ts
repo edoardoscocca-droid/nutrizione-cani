@@ -12,6 +12,7 @@ import energyJson from '../../dati/riferimenti/metodi_energetici.json';
 import conversionsJson from '../../dati/riferimenti/conversioni_unita.json';
 import recommendedJson from '../../dati/riferimenti/obiettivi_aggiuntivi.json';
 import gapsJson from '../../dati/riferimenti/lacune_catalogo.json';
+import v2EntriesJson from '../../dati/riferimenti/catalogo_v2_voci.json';
 import {
   buildCustomThresholds,
   buildNutrients,
@@ -51,6 +52,7 @@ export const CATEGORIES: Category[] = [
   { id: 'vegetable_generic', parentId: 'vegetable', label: 'Verdure' },
   { id: 'fat_oil', parentId: 'other', label: 'Oli e grassi' },
   { id: 'other', parentId: null, label: 'Altri alimenti' },
+  { id: 'other_generic', parentId: 'other', label: 'Altri alimenti (non classificati)' },
 ];
 
 export const PROCESSING_LABEL: Record<ProcessingState, string> = {
@@ -128,6 +130,52 @@ export function packageFoods(): Food[] {
     availableToFormulate: false,
     profileVersion: 1,
     notes: String(f.notes ?? ''),
+    nutrients: {},
+  }));
+}
+
+interface V2Entries {
+  foods: { id: string; name_it: string; category: string; subcategory: string; forbidden: boolean; preparation_warning: string | null }[];
+  supplements: { id: string; name_it: string; class: string; dose_unit: string }[];
+}
+
+/** Voci previste dalla specifica v2 (§9): alimenti vietati e nomi da completare, senza valori nutrizionali. */
+export function packageV2Foods(): Food[] {
+  return (v2EntriesJson as V2Entries).foods.map((f) => ({
+    id: f.id,
+    name: f.name_it,
+    categoryId: f.category,
+    subcategoryId: f.subcategory,
+    processingState: 'raw_or_unspecified',
+    ediblePortion: null,
+    kcalMePer100g: null,
+    dataStatus: 'unverified',
+    availableToFormulate: false,
+    profileVersion: 1,
+    forbidden: f.forbidden,
+    preparationWarning: f.preparation_warning,
+    notes: f.forbidden ? 'Alimento vietato (specifica v2 §9): mai usato nel calcolo.' : 'Voce prevista dalla specifica v2 (§9): dati da importare con fonte.',
+    nutrients: {},
+  }));
+}
+
+export function packageV2Supplements(): Supplement[] {
+  return (v2EntriesJson as V2Entries).supplements.map((s) => ({
+    id: s.id,
+    name: s.name_it,
+    supplementClass: s.class,
+    doseUnit: s.dose_unit as DoseUnit,
+    massPerUnitG: null,
+    kcalPerUnit: null,
+    integerDose: s.dose_unit === 'capsule',
+    maxDailyUnits: null,
+    maxDailySource: null,
+    labelSource: null,
+    version: null,
+    status: 'missing',
+    usableForOptimization: false,
+    profileVersion: 1,
+    notes: 'Integratore previsto dalla specifica v2 (§9): etichetta e regole di dose da inserire.',
     nutrients: {},
   }));
 }

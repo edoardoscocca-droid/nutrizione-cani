@@ -5,6 +5,8 @@ import type { UserPrice } from '../engine/cost';
 import type { ConstraintInfo, Conflict } from '../engine/formulate';
 import type { RecipeSnapshot } from '../engine/snapshot';
 import type { AttentionNote, EngineSettings, LifeStage, PersonalTarget, RecipeItem } from '../engine/types';
+import type { FormulationOverrides } from '../engine/configV2';
+import type { DayProfile } from '../engine/diary';
 
 export type KcalSource = 'estimated' | 'veterinarian' | 'user';
 
@@ -68,7 +70,8 @@ export interface WeightEntry {
   weightKg: number;
 }
 
-export const MAX_RECIPES_PER_DOG = 10;
+/** [PROPOSTA] specifica v2 §8: 200 ricette attive per cane (le archiviate non contano); stesso valore nel trigger del database. */
+export const MAX_RECIPES_PER_DOG = 200;
 
 export interface Recipe {
   id: string;
@@ -81,7 +84,8 @@ export interface Recipe {
   createdAt: string;
 }
 
-export type VersionOrigin = 'engine' | 'user_edit' | 'recalculation' | 'duplicate' | 'diagnostic';
+/** analysis = ricetta già fatta (es. della veterinaria) inserita a grammi fissi e solo verificata, senza generatore. */
+export type VersionOrigin = 'engine' | 'user_edit' | 'recalculation' | 'duplicate' | 'diagnostic' | 'analysis';
 
 export interface RecipeVersion {
   id: string;
@@ -108,6 +112,27 @@ export interface RecipeVersion {
 
 export interface AppSettings extends EngineSettings {
   disclaimerAccepted: boolean;
+  /** formulazione v2: intervalli dei gruppi e tolleranza energetica modificati dall'utente ([PROPOSTA]). */
+  formulationV2?: FormulationOverrides | null;
+}
+
+/**
+ * Diario (specifica v2 §7, precisazione 1): una ricetta = la razione dell'intero giorno, integratori compresi.
+ * Una sola voce attiva per cane e data; registrare di nuovo la stessa data sostituisce la voce precedente.
+ */
+export interface DiaryEntry {
+  id: string;
+  dogId: string;
+  /** AAAA-MM-GG */
+  date: string;
+  recipeId: string | null;
+  versionId: string | null;
+  recipeName: string;
+  revision: number;
+  /** apporti della versione registrata, congelati al momento della registrazione. */
+  day: DayProfile;
+  note: string | null;
+  createdAt: string;
 }
 
 export type { UserPrice };

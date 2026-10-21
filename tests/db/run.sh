@@ -97,4 +97,20 @@ for f in "$ROOT"/supabase/data/2026-10-20/*.sql; do "${PSQL[@]}" -d t -f "$f" >/
 [ "$("${PSQL[@]}" -d t -tA -c "select count(*) from catalog_status where id in ('beef_03','beef_15','beef_30','oat_dry','carrot_cooked','pumpkin_cooked','beef_05','beef_10','coconut_oil','flaxseed_oil','qdiet','omegor_vitality','bone_meal','psyllium_erbavoglio_husk_bio') and status = 'verified'")" = "0" ] || { echo "FALLITO: convalida attribuita"; exit 1; }
 [ "$("${PSQL[@]}" -d t -tA -c "select count(*) || ':' || coalesce(md5(string_agg(id::text || chosen_items::text, ',' order by id)), '-') from recipe_versions")" = "$RV_BEFORE" ] || { echo "FALLITO: ricette modificate"; exit 1; }
 echo "ok: pacchetto del 20/10 (Ker): profili di confronto e psillio non utilizzabili, avena «dried», QDiet calcio total e fibra sconosciuta, Omegor 1 g / 9 kcal, nessuna convalida, ricette invariate"
+# ── specifica v2 del 21/10/2026: catalogo v2 e B5 del QDiet, da SQL Editor dopo la migrazione 11 ──
+RV_BEFORE=$("${PSQL[@]}" -d t -tA -c "select count(*) || ':' || coalesce(md5(string_agg(id::text || chosen_items::text, ',' order by id)), '-') from recipe_versions")
+for f in "$ROOT"/supabase/data/2026-10-21/*.sql; do "${PSQL[@]}" -d t -f "$f" >/dev/null; done
+for f in "$ROOT"/supabase/data/2026-10-21/01_*.sql; do "${PSQL[@]}" -d t -f "$f" >/dev/null; done  # rieseguibile senza effetti
+[ "$("${PSQL[@]}" -d t -tA -c "select amount_per_unit || ':' || source_value || source_unit || ':' || chemical_form || ':' || declared_total_or_added from supplement_nutrients where supplement_id = 'qdiet' and nutrient_id = 'vitamin_b5'")" = "0.414:450mg:calcium_d_pantothenate:added" ] || { echo "FALLITO: B5 QDiet"; exit 1; }
+[ "$("${PSQL[@]}" -d t -tA -c "select factor from unit_conversions where id = 'calcium_d_pantothenate'")" = "0.92" ] || { echo "FALLITO: conversione calcio D-pantotenato"; exit 1; }
+"${PSQL[@]}" -d t -c "do \$\$ begin update foods set available_to_formulate = true where id = 'onion'; raise exception 'accettato'; exception when others then if sqlerrm = 'accettato' then raise; end if; end \$\$" >/dev/null || { echo "FALLITO: alimento vietato attivabile"; exit 1; }
+[ "$("${PSQL[@]}" -d t -tA -c "select count(*) || ':' || coalesce(md5(string_agg(id::text || chosen_items::text, ',' order by id)), '-') from recipe_versions")" = "$RV_BEFORE" ] || { echo "FALLITO: ricette modificate"; exit 1; }
+# importazione con i campi v2 del catalogo (tetti, vietato, avvertenza)
+cat > "$DATA/v2.json" <<'JSON'
+{ "foods": [ { "id": "fegato_tetto_prova", "name_it": "[prova] fegato con tetto", "category": "animal", "subcategory": "secreting_offal_liver", "max_fresh_weight_pct": 5, "max_g_per_1000_kcal": 30, "forbidden": false, "preparation_warning": "sempre cotto" } ] }
+JSON
+( cd "$ROOT" && npx tsx scripts/import-catalog.ts alimenti "$DATA/v2.json" 2>/dev/null ) > "$DATA/v2.sql"
+"${PSQL[@]}" -d t -c "$ADMIN" -f "$DATA/v2.sql" >/dev/null
+[ "$(q "select max_fresh_weight_pct || ':' || max_g_per_1000_kcal || ':' || forbidden || ':' || preparation_warning from foods where id = 'fegato_tetto_prova'")" = "5:30:false:sempre cotto" ] || { echo "FALLITO: campi v2 importati: $(q "select max_fresh_weight_pct || ':' || max_g_per_1000_kcal || ':' || forbidden || ':' || preparation_warning from foods where id = 'fegato_tetto_prova'")"; exit 1; }
+echo "ok: specifica v2 — migrazione 11 e dati del 21/10: B5 del QDiet 0,414 mg/g dal calcio D-pantotenato, alimenti vietati non attivabili, tetti e avvertenze importati, limite 200 ricette (archiviate escluse), diario una voce per data con RLS, ricette invariate"
 echo "Test database: tutti superati"

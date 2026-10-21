@@ -5,7 +5,7 @@ import { STATUS_LABEL } from '../../../../src/engine/audit';
 import { breedNotesFor } from '../../../../src/engine/dogProfile';
 import { mer, rer, WEIGHT_GAP_MESSAGE, weightGapNeedsWarning } from '../../../../src/engine/energy';
 import { KCAL_SOURCE_LABEL, MAX_RECIPES_PER_DOG, type Recipe } from '../../../../src/data/model';
-import { staleFor } from '../../../../src/data/recipeService';
+import { activeRecipeCount, staleFor } from '../../../../src/data/recipeService';
 import { num } from '../../../../src/ui/format';
 import { useApp, useData } from '../../../lib/AppContext';
 import { Badge, Box, Button, Card, ErrorBox, Field, H, Loading, Row, Screen, Sheet, T } from '../../../lib/ui';
@@ -30,7 +30,8 @@ export default function DogScreen() {
   const { dog, recipes, versions, weights } = data;
   if (!dog) return <Screen><T>Cane non trovato.</T></Screen>;
   const notes = catalog ? breedNotesFor(dog.breed, catalog.breedNotes) : [];
-  const full = recipes.length >= MAX_RECIPES_PER_DOG;
+  const active = activeRecipeCount(recipes);
+  const full = active >= MAX_RECIPES_PER_DOG;
   const act = async (fn: () => Promise<unknown>) => {
     setError(null);
     try {
@@ -75,16 +76,17 @@ export default function DogScreen() {
         <T bold>Obiettivo: {dog.kcalTarget ? `${num(dog.kcalTarget, 0)} kcal/die — ${KCAL_SOURCE_LABEL[dog.kcalSource]}` : 'da impostare'}</T>
         {weights.length > 1 && <T small muted>Storico peso: {weights.map((w) => `${new Date(w.date).toLocaleDateString('it-IT')} ${num(w.weightKg, 1)} kg`).join(' · ')}</T>}
       </Card>
+      <Button title="Diario: cosa ha mangiato →" kind="secondary" onPress={() => router.push(`/cane/${dog.id}/diario`)} />
       <Row style={{ justifyContent: 'space-between' }}>
-        <H level={2}>Ricette ({recipes.length}/{MAX_RECIPES_PER_DOG})</H>
+        <H level={2}>Ricette ({active}/{MAX_RECIPES_PER_DOG}{recipes.length > active ? ` + ${recipes.length - active} archiviate` : ''})</H>
       </Row>
       {full ? (
-        <Box color="orange"><T small>Limite di {MAX_RECIPES_PER_DOG} ricette raggiunto: elimina una ricetta per crearne una nuova.</T></Box>
+        <Box color="orange"><T small>Limite di {MAX_RECIPES_PER_DOG} ricette attive raggiunto: archivia o elimina una ricetta per crearne una nuova.</T></Box>
       ) : (
         <Button title="+ Nuova ricetta" onPress={() => router.push(`/cane/${dog.id}/nuova-ricetta`)} disabled={!dog.kcalTarget} />
       )}
       {!dog.kcalTarget && <T small muted>Imposta prima l’obiettivo kcal nel profilo.</T>}
-      {recipes.length === MAX_RECIPES_PER_DOG - 1 && <T small muted>Puoi salvare ancora una sola ricetta.</T>}
+      {active === MAX_RECIPES_PER_DOG - 1 && <T small muted>Puoi salvare ancora una sola ricetta.</T>}
       {[...recipes]
         .sort((a, b) => Number(b.isPrimary) - Number(a.isPrimary) || Number(a.archived) - Number(b.archived))
         .map((r) => {
@@ -107,7 +109,7 @@ export default function DogScreen() {
             </Card>
           );
         })}
-      <T small muted>Le ricette archiviate restano salvate e contano nel limite di {MAX_RECIPES_PER_DOG}.</T>
+      <T small muted>Le ricette archiviate restano salvate e non contano nel limite di {MAX_RECIPES_PER_DOG}.</T>
       <View style={{ height: 12 }} />
       <Button
         title="Elimina cane"

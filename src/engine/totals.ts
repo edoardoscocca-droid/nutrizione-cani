@@ -8,7 +8,7 @@
 //    composizione dichiarata; il totale è un limite inferiore e la verifica lo segnala come incertezza.
 
 import type { EnergyFactors, Food, Nutrient, RecipeItem, Supplement } from './types';
-import { vitaminAFrom } from './vitaminA';
+import { RETINOL_UG_PER_IU, vitaminAFrom } from './vitaminA';
 
 export interface ItemData {
   item: RecipeItem;
@@ -136,7 +136,7 @@ export function compoundValue(nutrients: Record<string, { value: number | null }
 
 export function itemValue(d: ItemData, nutrientId: string): number | null {
   // vitamina A del cane: preformata + beta-carotene × fattore FEDIAF (src/engine/vitaminA.ts)
-  if (nutrientId === 'vitamin_a') return vitaminAFrom(d.valuePerQty('vitamin_a'), d.valuePerQty('beta_carotene_ug')).known;
+  if (nutrientId === 'vitamin_a') return vitaminAFrom(d.valuePerQty('vitamin_a'), d.valuePerQty('beta_carotene_ug'), d.valuePerQty('vitamin_a_retinol_ug')).known;
   const direct = d.valuePerQty(nutrientId);
   if (direct !== null) return direct;
   const pair = COMPOUNDS[nutrientId];
@@ -165,7 +165,7 @@ export function totalNutrient(items: ItemData[], nutrientId: string): Total {
     // una parte nota e l'altra sconosciuta: la parte nota conta, l'altra resta sconosciuta (non zero)
     for (const d of items) {
       if (!(d.item.qty > 0)) continue;
-      const v = vitaminAFrom(d.valuePerQty('vitamin_a'), d.valuePerQty('beta_carotene_ug'));
+      const v = vitaminAFrom(d.valuePerQty('vitamin_a'), d.valuePerQty('beta_carotene_ug'), d.valuePerQty('vitamin_a_retinol_ug'));
       if (v.known === null || v.complete) continue;
       if (d.kind === 'food') {
         t.complete = false;
@@ -304,7 +304,8 @@ export function computeTotals(items: ItemData[], nutrients: Nutrient[], legacyFa
   const vitaminA = { preformed: 0, fromBetaCarotene: 0, betaCaroteneMg: 0, preformedUnknown: [] as string[], betaCaroteneUnknown: [] as string[] };
   for (const d of items) {
     if (!(d.item.qty > 0)) continue;
-    const pre = d.valuePerQty('vitamin_a');
+    const retinol = d.valuePerQty('vitamin_a_retinol_ug');
+    const pre = d.valuePerQty('vitamin_a') ?? (retinol === null ? null : retinol / RETINOL_UG_PER_IU.ugPerIu);
     const bc = d.valuePerQty('beta_carotene_ug');
     if (pre === null) vitaminA.preformedUnknown.push(d.name);
     else vitaminA.preformed += pre * d.item.qty;

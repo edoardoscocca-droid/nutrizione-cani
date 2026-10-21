@@ -31,6 +31,8 @@ export interface LimitCheck {
   uncertain?: string;
   /** intervallo richiesto, risultato e scostamento (nella base del limite). */
   gap?: { requested: string; result: number; deviation: number; unit: string };
+  /** verifica v2: livello A (obbligatorio nella razione), B (monitorato nel tempo) o solo informativo. */
+  level?: 'A' | 'B' | 'info';
 }
 
 export interface CheckRow {
@@ -51,6 +53,12 @@ export interface CheckRow {
   color: Color;
   purple: string[];
   note?: string;
+  /** verifica v2: livello più alto fra i controlli della riga. */
+  level?: 'A' | 'B' | 'info';
+  /** verifica v2: componenti il cui valore è una stima con fonte (§6). */
+  estimatedFrom?: string[];
+  /** verifica v2: «nessun limite FEDIAF applicabile» quando non c'è un massimo che valga per questa ricetta. */
+  noLimitNote?: string;
 }
 
 export type RecipeStatus =
@@ -124,6 +132,61 @@ export interface AuditResult {
   warnings: string[];
   dataFlags: { testData: boolean; estimated: string[]; reviewRequiredLimits: string[] };
   totals: RecipeTotals;
+  /** presente solo nella verifica v2 (specifica del 21/10/2026). */
+  v2?: AuditV2Extra;
+}
+
+export interface GroupShare {
+  id: string;
+  label: string;
+  kcal: number;
+  /** % delle kcal note della razione. */
+  pct: number | null;
+  grams: number;
+  foods: string[];
+  range: [number, number];
+  color: Color;
+  message: string;
+}
+
+export interface CapCheck {
+  name: string;
+  color: Color;
+  message: string;
+}
+
+export interface LegalCheck {
+  metric: string;
+  label: string;
+  /** massimo legale per 100 g di sostanza secca. */
+  limit: number;
+  unit: string;
+  /** concentrazione dei soli contributi noti con il denominatore prudente (umidità mancante → sostanza secca 0). */
+  value: number | null;
+  color: Color;
+  message: string;
+}
+
+export interface AuditV2Extra {
+  configVersion: string;
+  energyTolerancePct: number;
+  groups: GroupShare[];
+  caps: CapCheck[];
+  totalWeightG: number | null;
+  /** sostanza secca: [ipotesi prudente, massima possibile] in g. */
+  dryMatterG: [number, number | null];
+  moistureMissing: string[];
+  caPStep: 1 | 2 | 3 | null;
+  doseSteps: { name: string; step: 1 | 2 | null; extrapolated: boolean }[];
+  legal: LegalCheck[];
+  forbidden: string[];
+  /** riepilogo per l'utente: cosa risulta sotto riferimento, eccessivo o sconosciuto. */
+  below: string[];
+  excess: string[];
+  unknown: string[];
+  estimated: string[];
+  /** spiegazione breve dei due livelli, da mostrare nell'app. */
+  criterion: string;
 }
 
 /**
@@ -172,7 +235,7 @@ export function itemDataList(items: RecipeItem[], foods: Record<string, Food>, s
   });
 }
 
-const EAA = new Set(['arginine', 'histidine', 'isoleucine', 'leucine', 'lysine', 'methionine', 'methionine_cystine', 'phenylalanine', 'phenylalanine_tyrosine', 'threonine', 'tryptophan', 'valine']);
+export const EAA = new Set(['arginine', 'histidine', 'isoleucine', 'leucine', 'lysine', 'methionine', 'methionine_cystine', 'phenylalanine', 'phenylalanine_tyrosine', 'threonine', 'tryptophan', 'valine']);
 
 /** Limiti applicabili alla fase di vita e al tipo di dieta (selenio umido/secco). */
 export function applicableLimits(limits: NutrientLimit[], dog: DogFormulationProfile, dietMoisture: DietMoisture): NutrientLimit[] {
@@ -379,7 +442,7 @@ export function needsBasisConfirmation(s: Supplement | undefined): boolean {
   return !!s && Object.values(s.nutrients).some((v) => v.value !== null && /PER_KG_ASSUMED_CONFIRM/.test(v.method ?? ''));
 }
 
-const COLOR_RANK: Record<Color, number> = { red: 5, grey: 4, orange: 3, green: 2, blue: 1, purple: 0 };
+const COLOR_RANK: Record<Color, number> = { red: 6, grey: 5, orange: 4, yellow: 3, green: 2, blue: 1, purple: 0 };
 
 function worst(colors: Color[]): Color {
   return colors.reduce<Color>((a, c) => (COLOR_RANK[c] > COLOR_RANK[a] ? c : a), 'blue');

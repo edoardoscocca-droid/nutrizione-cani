@@ -3,6 +3,7 @@
 // o degli standard non cambia i valori delle ricette esistenti, ma le segnala come da aggiornare.
 
 import type { DietMoisture } from './audit';
+import type { FormulationConfig } from './configV2';
 import { methodKey } from './energy';
 import type { DogFormulationProfile, EnergyFactors, EngineSettings, Food, ItemConstraint, Nutrient, NutrientLimit, RecipeItem, Supplement } from './types';
 
@@ -20,6 +21,8 @@ export interface RecipeSnapshot {
   factors?: EnergyFactors;
   dietMoisture: DietMoisture;
   settings: EngineSettings;
+  /** formulazione v2: configurazione congelata (gruppi, tetti, gradini, limiti legali). Assente = verifica precedente. */
+  formulationConfig?: FormulationConfig;
 }
 
 export interface Dependency {

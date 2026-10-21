@@ -78,6 +78,23 @@ export type Outcome = 'solved' | 'infeasible' | 'blocked' | 'timeout' | 'error' 
  */
 export { DIAGNOSIS_LABEL, diagnosisOf, type Diagnosis } from './diagnosis';
 
+export interface SuggestionDetail {
+  metric: string | null;
+  label: string;
+  candidate: { kind: 'food' | 'supplement'; id: string; name: string; toActivate: boolean };
+  /** esito della simulazione: il generatore rifatto con il candidato aggiunto. */
+  simulated: boolean;
+  feasible: boolean;
+  /** quantità proposta del candidato nella simulazione. */
+  qty?: number;
+  unit?: string;
+  /** apporto del nutriente prima e dopo (testo), se calcolabile. */
+  before?: string | null;
+  after?: string | null;
+  levelAOk?: boolean;
+  text: string;
+}
+
 export interface FormulationResult {
   outcome: Outcome;
   engineVersion: string;
@@ -91,10 +108,12 @@ export interface FormulationResult {
   audit: AuditResult | null;
   message: string;
   /** tempi e ricerche: durata totale, numero di risoluzioni, ricerca P1 che ha avuto successo (1 = intervalli richiesti, 2 = ampliati). */
-  stats?: { durationMs: number; solves: number; p1Stage: 1 | 2 | null };
+  stats?: { durationMs: number; solves: number; p1Stage: 1 | 2 | 3 | null; caPStep?: 1 | 2 | 3 | null; doseStep?: 1 | 2 | null };
+  /** formulazione v2: suggerimenti simulati (aggiunta di un alimento o integratore del catalogo, verificata sul livello A). */
+  suggestionDetails?: SuggestionDetail[];
 }
 
-interface ModelItem {
+export interface ModelItem {
   kind: 'food' | 'supplement';
   id: string;
   name: string;
@@ -126,7 +145,7 @@ interface ModelItem {
   omegaMax: number | null;
 }
 
-function rawValue(nutrients: Record<string, { value: number | null } | undefined>, id: string): number | null {
+export function rawValue(nutrients: Record<string, { value: number | null } | undefined>, id: string): number | null {
   // vitamina A del cane: preformata + beta-carotene × fattore FEDIAF (stessa regola della verifica)
   if (id === 'vitamin_a') return vitaminAParts(nutrients).known;
   const v = nutrients[id]?.value;
@@ -199,7 +218,7 @@ export function checkUsability(input: FormulationInput) {
   return { foods, supplements, excluded };
 }
 
-function buildItems(input: FormulationInput, foods: FormulationInput['foods'], supplements: FormulationInput['supplements'], notes: string[] = []): ModelItem[] {
+export function buildItems(input: FormulationInput, foods: FormulationInput['foods'], supplements: FormulationInput['supplements'], notes: string[] = []): ModelItem[] {
   const st = input.settings;
   const items: ModelItem[] = [];
   const K = input.dog.kcalTarget ?? 0;
@@ -284,9 +303,9 @@ function buildItems(input: FormulationInput, foods: FormulationInput['foods'], s
 }
 
 /** coverage = minimi con dati parziali (H non dimostrabile); p1 = preferenze prioritarie (§3); preference = altre preferenze. */
-type DevGroup = 'coverage' | 'p1' | 'preference';
+export type DevGroup = 'coverage' | 'p1' | 'preference';
 
-interface BuiltRow extends Row {
+export interface BuiltRow extends Row {
   info: ConstraintInfo;
   /** scala per normalizzare scarti/violazioni. */
   scale: number;
@@ -328,7 +347,7 @@ export function p1Widening(l: NutrientLimit): { lower: number | null; upper: num
   return null;
 }
 
-function buildRows(
+export function buildRows(
   input: FormulationInput,
   items: ModelItem[],
   limits: NutrientLimit[],
@@ -449,7 +468,7 @@ function buildRows(
   return { rows, widened, extraVars };
 }
 
-interface Built {
+export interface Built {
   model: Model;
   rows: BuiltRow[];
   /** righe della seconda ricerca (preferenze P1 ampliate). */
@@ -538,7 +557,7 @@ function devObjective(rows: BuiltRow[], group: DevGroup): Term[] {
   return rows.filter((r) => r.dev?.group === group).map((r) => ({ v: r.dev!.v, c: 1 / r.scale }));
 }
 
-function fixObjective(model: Model, terms: Term[], opt: number, name: string): Model {
+export function fixObjective(model: Model, terms: Term[], opt: number, name: string): Model {
   if (!terms.length) return model;
   const slack = Math.max(1e-7, Math.abs(opt) * 1e-6);
   return { ...model, rows: [...model.rows, { name, terms, op: '<=', rhs: opt + slack }] };
@@ -556,7 +575,7 @@ function diagnose(built: Built, highsSolve: (m: Model) => SolveResult): Conflict
  * @param forced riga morbida da rendere rigida (senza scarto): serve a capire quali vincoli rigidi impediscono
  *        di rispettare una preferenza o un obiettivo aggiuntivo.
  */
-function diagnoseWith(built: Built, highsSolve: (m: Model) => SolveResult, relaxEnergy: boolean, forced?: BuiltRow): Conflict[] | null {
+export function diagnoseWith(built: Built, highsSolve: (m: Model) => SolveResult, relaxEnergy: boolean, forced?: BuiltRow): Conflict[] | null {
   const rows: Row[] = [];
   const vars: VarDef[] = built.model.vars.map((v) => {
     if (relaxEnergy && (v.name === 'ep' || v.name === 'en')) return { ...v, ub: null };
@@ -649,7 +668,7 @@ function diagnoseWith(built: Built, highsSolve: (m: Model) => SolveResult, relax
   return out;
 }
 
-function suggestionsFor(conflicts: Conflict[], input: FormulationInput, items: ModelItem[]): string[] {
+export function suggestionsFor(conflicts: Conflict[], input: FormulationInput, items: ModelItem[]): string[] {
   const out: string[] = [];
   const label = new Map(input.nutrients.map((n) => [n.id, n.label]));
   const selected = new Set(items.map((i) => i.id));
@@ -691,7 +710,7 @@ function suggestionsFor(conflicts: Conflict[], input: FormulationInput, items: M
   return [...new Set(out)];
 }
 
-function toItems(built: Built, values: Record<string, number>): RecipeItem[] {
+export function toItems(built: Built, values: Record<string, number>): RecipeItem[] {
   return built.items.map((it) => {
     const k = Math.round(values[it.v] ?? 0);
     const qty = Number((k * it.step).toFixed(6));

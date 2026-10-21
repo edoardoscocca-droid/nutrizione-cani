@@ -40,6 +40,8 @@ const light = {
   redBg: '#fbddda',
   orange: '#9c4a00',
   orangeBg: '#ffead9',
+  yellow: '#7a5d00',
+  yellowBg: '#fff4c2',
   green: '#0e6b4c',
   greenBg: '#dff7ee',
   blue: '#2a33b8',
@@ -68,6 +70,8 @@ const dark: typeof light = {
   redBg: '#3a1c1c',
   orange: '#ffb27a',
   orangeBg: '#3a2616',
+  yellow: '#ffd84d',
+  yellowBg: '#3a3214',
   green: '#6fddb3',
   greenBg: '#12352a',
   blue: '#a9b0ff',
@@ -92,10 +96,10 @@ export function useTheme(): Theme {
 }
 
 export function colorOf(t: Theme, c: Color | 'accent') {
-  return { red: t.red, orange: t.orange, green: t.green, blue: t.blue, grey: t.grey, purple: t.purple, accent: t.accent }[c];
+  return { red: t.red, orange: t.orange, yellow: t.yellow, green: t.green, blue: t.blue, grey: t.grey, purple: t.purple, accent: t.accent }[c];
 }
 export function bgOf(t: Theme, c: Color) {
-  return { red: t.redBg, orange: t.orangeBg, green: t.greenBg, blue: t.blueBg, grey: t.greyBg, purple: t.purpleBg }[c];
+  return { red: t.redBg, orange: t.orangeBg, yellow: t.yellowBg, green: t.greenBg, blue: t.blueBg, grey: t.greyBg, purple: t.purpleBg }[c];
 }
 
 export function Screen({ children, scroll = true }: { children: ReactNode; scroll?: boolean }) {
@@ -272,7 +276,7 @@ export function Check({ label, value, onChange, right }: { label: ReactNode; val
   );
 }
 
-export function Badge({ label, color = 'green' }: { label: string; color?: 'green' | 'orange' | 'grey' | 'red' | 'purple' | 'blue' }) {
+export function Badge({ label, color = 'green' }: { label: string; color?: Color }) {
   const t = useTheme();
   return (
     <View style={{ backgroundColor: bgOf(t, color), borderRadius: 999, paddingHorizontal: 10, paddingVertical: 3, alignSelf: 'flex-start' }}>

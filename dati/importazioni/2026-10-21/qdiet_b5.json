@@ -1,0 +1,386 @@
+{
+ "_nota": "Correzione del 21/10/2026 (specifica v2 §6): B5 del QDiet dal calcio D-pantotenato dichiarato (450 mg/kg). Stesso record del 19/10 per tutti gli altri campi.",
+ "supplements": [
+  {
+   "id": "qdiet",
+   "name_it": "Q.Diet Compensa (standard, NON Crescita/Ultra)",
+   "brand": "Q.Diet",
+   "product_variant": "Compensa polvere standard",
+   "class": "multinutrient",
+   "dose_unit": "g",
+   "integer_dose": false,
+   "kcal_per_unit": 0.96,
+   "label_source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf",
+   "source_url": "https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf",
+   "product_version": "Catalogo 2024, polvere standard; scheda produttore consultata 2026-10-19",
+   "data_status": "review_required",
+   "label_added_only": true,
+   "usable_for_optimization": true,
+   "dose_guide": {
+    "points": [
+     {
+      "weight_kg": 5,
+      "min": 1,
+      "max": 1.5
+     },
+     {
+      "weight_kg": 10,
+      "min": 1.5,
+      "max": 3
+     },
+     {
+      "weight_kg": 20,
+      "min": 3,
+      "max": 6
+     },
+     {
+      "weight_kg": 30,
+      "min": 4.5,
+      "max": 9
+     },
+     {
+      "weight_kg": 40,
+      "min": 6,
+      "max": 12
+     }
+    ],
+    "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf",
+    "note": "Intervalli d’impiego, non limiti tossicologici; misurino raso 3 g. Nessuna estrapolazione oltre la tabella autorizzata da questo file."
+   },
+   "notes": "Composizione: sostanze minerali, maltodestrina. Energia dichiarata 96 kcal/100 g. Ceneri grezze 73%; fibra GREZZA 0,01%, non equiparata alla fibra alimentare totale. Calcio D-pantotenato 450 mg/kg conteggiato come vitamina B5 con il fattore 0,92 (specifica v2 del 21/10/2026, §6). Colina: conversione 0,746 assumendo cloruro puro; contributo dell’additivo, non analisi totale. Nutrienti non dichiarati NA. Nessun lotto fisico indicato.",
+   "nutrients": {
+    "protein": {
+     "value": 4.25,
+     "unit": "g",
+     "status": "label",
+     "basis": "per_100g",
+     "declared_total_or_added": "total",
+     "source": "Componenti analitici Q.Diet: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf ; https://www.qdiet.it/products/compensa-250-g"
+    },
+    "fat": {
+     "value": 0.07,
+     "unit": "g",
+     "status": "label",
+     "basis": "per_100g",
+     "declared_total_or_added": "total",
+     "source": "Componenti analitici Q.Diet: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf ; https://www.qdiet.it/products/compensa-250-g"
+    },
+    "carbohydrate_available": {
+     "value": "NA"
+    },
+    "fiber": {
+     "value": "NA"
+    },
+    "moisture": {
+     "value": 3.0,
+     "unit": "g",
+     "status": "label",
+     "basis": "per_100g",
+     "declared_total_or_added": "total",
+     "source": "Componenti analitici Q.Diet: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf ; https://www.qdiet.it/products/compensa-250-g"
+    },
+    "linoleic_acid": {
+     "value": "NA"
+    },
+    "ala": {
+     "value": "NA"
+    },
+    "epa": {
+     "value": "NA"
+    },
+    "dha": {
+     "value": "NA"
+    },
+    "epa_dha": {
+     "value": "NA"
+    },
+    "omega3_total": {
+     "value": "NA"
+    },
+    "omega6_total": {
+     "value": "NA"
+    },
+    "arachidonic_acid": {
+     "value": "NA"
+    },
+    "calcium": {
+     "value": 18.0,
+     "unit": "g",
+     "status": "label",
+     "basis": "per_100g",
+     "declared_total_or_added": "total",
+     "source": "Componenti analitici Q.Diet: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf ; https://www.qdiet.it/products/compensa-250-g"
+    },
+    "phosphorus": {
+     "value": 6.5,
+     "unit": "g",
+     "status": "label",
+     "basis": "per_100g",
+     "declared_total_or_added": "total",
+     "source": "Componenti analitici Q.Diet: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf ; https://www.qdiet.it/products/compensa-250-g"
+    },
+    "potassium": {
+     "value": 7.5,
+     "unit": "g",
+     "status": "label",
+     "basis": "per_100g",
+     "declared_total_or_added": "total",
+     "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+    },
+    "sodium": {
+     "value": 2.0,
+     "unit": "g",
+     "status": "label",
+     "basis": "per_100g",
+     "declared_total_or_added": "total",
+     "source": "Componenti analitici Q.Diet: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf ; https://www.qdiet.it/products/compensa-250-g"
+    },
+    "chloride": {
+     "value": "NA"
+    },
+    "magnesium": {
+     "value": 1.5,
+     "unit": "g",
+     "status": "label",
+     "basis": "per_100g",
+     "declared_total_or_added": "total",
+     "source": "Componenti analitici Q.Diet: https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf ; https://www.qdiet.it/products/compensa-250-g"
+    },
+    "copper": {
+     "value": 250.0,
+     "unit": "mg",
+     "status": "label",
+     "basis": "per_kg",
+     "declared_total_or_added": "added",
+     "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+    },
+    "iodine": {
+     "value": 45.0,
+     "unit": "mg",
+     "status": "label",
+     "basis": "per_kg",
+     "declared_total_or_added": "added",
+     "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+    },
+    "iron": {
+     "value": 1250.0,
+     "unit": "mg",
+     "status": "label",
+     "basis": "per_kg",
+     "declared_total_or_added": "added",
+     "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+    },
+    "manganese": {
+     "value": 300.0,
+     "unit": "mg",
+     "status": "label",
+     "basis": "per_kg",
+     "declared_total_or_added": "added",
+     "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+    },
+    "selenium_wet": {
+     "value": 4000.0,
+     "unit": "µg",
+     "status": "label",
+     "basis": "per_kg",
+     "declared_total_or_added": "added",
+     "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+    },
+    "zinc": {
+     "value": 2000.0,
+     "unit": "mg",
+     "status": "label",
+     "basis": "per_kg",
+     "declared_total_or_added": "added",
+     "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+    },
+    "vitamin_a": {
+     "value": 250000.0,
+     "unit": "IU",
+     "status": "label",
+     "basis": "per_kg",
+     "declared_total_or_added": "added",
+     "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+    },
+    "vitamin_d": {
+     "value": 25000.0,
+     "unit": "IU",
+     "status": "label",
+     "basis": "per_kg",
+     "declared_total_or_added": "added",
+     "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+    },
+    "vitamin_e": {
+     "value": 2000,
+     "unit": "mg",
+     "status": "label",
+     "basis": "per_kg",
+     "declared_total_or_added": "added",
+     "form": "all_rac_alpha_tocopheryl_acetate",
+     "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+    },
+    "vitamin_b1": {
+     "value": 75.0,
+     "unit": "mg",
+     "status": "label",
+     "basis": "per_kg",
+     "declared_total_or_added": "added",
+     "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+    },
+    "vitamin_b2": {
+     "value": 250.0,
+     "unit": "mg",
+     "status": "label",
+     "basis": "per_kg",
+     "declared_total_or_added": "added",
+     "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+    },
+    "vitamin_b3": {
+     "value": 50.0,
+     "unit": "mg",
+     "status": "label",
+     "basis": "per_kg",
+     "declared_total_or_added": "added",
+     "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+    },
+    "vitamin_b5": {
+     "value": 450,
+     "unit": "mg",
+     "status": "label",
+     "basis": "per_kg",
+     "declared_total_or_added": "added",
+     "form": "calcium_d_pantothenate",
+     "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf",
+     "method": "Massa dichiarata del calcio D-pantotenato; convertita in acido pantotenico × 0,92 (conversione approvata calcium_d_pantothenate). Non sommare a una seconda voce B5."
+    },
+    "vitamin_b6": {
+     "value": 50.0,
+     "unit": "mg",
+     "status": "label",
+     "basis": "per_kg",
+     "declared_total_or_added": "added",
+     "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+    },
+    "vitamin_b9": {
+     "value": 10000.0,
+     "unit": "µg",
+     "status": "label",
+     "basis": "per_kg",
+     "declared_total_or_added": "added",
+     "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+    },
+    "vitamin_b12": {
+     "value": 1000.0,
+     "unit": "µg",
+     "status": "label",
+     "basis": "per_kg",
+     "declared_total_or_added": "added",
+     "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+    },
+    "choline": {
+     "value": 90000,
+     "unit": "mg",
+     "status": "label",
+     "basis": "per_kg",
+     "declared_total_or_added": "added",
+     "form": "choline_chloride",
+     "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf",
+     "method": "Massa dichiarata del cloruro di colina; conversione prevista 0,746 assumendo sale puro. Non sommare a una seconda voce colina."
+    },
+    "vitamin_c": {
+     "value": 1250.0,
+     "unit": "mg",
+     "status": "label",
+     "basis": "per_kg",
+     "declared_total_or_added": "added",
+     "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+    },
+    "vitamin_b7": {
+     "value": 2500.0,
+     "unit": "µg",
+     "status": "label",
+     "basis": "per_kg",
+     "declared_total_or_added": "added",
+     "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+    },
+    "vitamin_k": {
+     "value": "NA"
+    },
+    "arginine": {
+     "value": "NA"
+    },
+    "histidine": {
+     "value": "NA"
+    },
+    "isoleucine": {
+     "value": "NA"
+    },
+    "leucine": {
+     "value": "NA"
+    },
+    "lysine": {
+     "value": "NA"
+    },
+    "methionine": {
+     "value": "NA"
+    },
+    "methionine_cystine": {
+     "value": "NA"
+    },
+    "phenylalanine": {
+     "value": "NA"
+    },
+    "phenylalanine_tyrosine": {
+     "value": "NA"
+    },
+    "threonine": {
+     "value": "NA"
+    },
+    "tryptophan": {
+     "value": "NA"
+    },
+    "valine": {
+     "value": "NA"
+    },
+    "taurine": {
+     "value": 50000.0,
+     "unit": "mg",
+     "status": "label",
+     "basis": "per_kg",
+     "declared_total_or_added": "added",
+     "source": "Q.Diet Compensa polvere standard, catalogo Q.Diet 2024 p.19 (pagina PDF 19); additivi per kg. https://www.nuovafattoriaallocca.it/wp-content/uploads/2024/05/CATALOGO-Q.DIET-2024.pdf"
+    },
+    "l_carnitine": {
+     "value": "NA"
+    },
+    "cystine": {
+     "value": "NA"
+    },
+    "tyrosine": {
+     "value": "NA"
+    },
+    "energy_food_kcal": {
+     "value": "NA"
+    },
+    "carbohydrate_by_difference": {
+     "value": "NA"
+    },
+    "c18_2_undifferentiated": {
+     "value": "NA"
+    },
+    "c20_4_undifferentiated": {
+     "value": "NA"
+    },
+    "vitamin_a_retinol_ug": {
+     "value": "NA"
+    },
+    "vitamin_a_carotenoid_iu": {
+     "value": "NA"
+    },
+    "beta_carotene_ug": {
+     "value": "NA"
+    }
+   }
+  }
+ ]
+}
