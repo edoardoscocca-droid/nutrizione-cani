@@ -133,6 +133,10 @@ export interface Food {
   maxFreshWeightPct?: number | null;
   /** tetto di quantità (formulazione v2): grammi per 1000 kcal della razione. */
   maxGPer1000Kcal?: number | null;
+  /** resa di preparazione documentata: g di alimento pronto per 1 g pesato nello stato del profilo (es. riso secco → cotto). */
+  preparedYield?: number | null;
+  /** fonte della resa di preparazione. */
+  preparedYieldSource?: string | null;
   /** alimento vietato per il cane (cipolla, aglio, uva…): mai usato, rosso se presente in una ricetta. */
   forbidden?: boolean;
   /** avvertenza di preparazione (es. pesce sempre cotto e senza sale). */

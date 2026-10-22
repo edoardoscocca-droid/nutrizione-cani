@@ -105,7 +105,7 @@ export default function DogScreen() {
                 {cur?.audit.dataFlags.testData && <Badge label="PROVA" color="orange" />}
                 {stale.length > 0 && <Badge label="da ricalcolare" color="orange" />}
               </Row>
-              <T small muted>{cur ? `${STATUS_LABEL[cur.audit.status]} · versione ${cur.revision}` : 'nessuna versione'}</T>
+              <T small muted>{cur ? `${(cur.audit.statusLabel ?? STATUS_LABEL[cur.audit.status])} · versione ${cur.revision}` : 'nessuna versione'}</T>
             </Card>
           );
         })}

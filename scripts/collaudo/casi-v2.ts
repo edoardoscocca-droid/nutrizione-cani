@@ -6,6 +6,7 @@
 
 import { applyPreset, presetFor } from '../../src/data/formulationPresets';
 import { LocalRepository } from '../../src/data/localRepository';
+import type { FullCatalog } from '../../src/data/repository';
 import type { Dog } from '../../src/data/model';
 import { activeLimits, buildInput, type CatalogState } from '../../src/data/recipeService';
 import type { AuditResult } from '../../src/engine/audit';
@@ -16,7 +17,7 @@ import type { FormulationInputV2 } from '../../src/engine/formulateV2';
 import { recommendedFor } from '../../src/engine/recommended';
 import { DEFAULT_SETTINGS, type DogFormulationProfile, type RecipeItem } from '../../src/engine/types';
 
-export async function catalogV2(): Promise<CatalogState> {
+export async function catalogV2(): Promise<FullCatalog> {
   return new LocalRepository(null).loadCatalog();
 }
 
@@ -42,7 +43,8 @@ export const MENU_SETS: { id: string; label: string; foods: string[]; supplement
   { id: 'A3', label: 'pesce bianco + patata + zucca', foods: ['test_cod', 'test_potato', 'pumpkin_cooked', 'test_sunflower_oil'], supplements: ['test_multi', 'test_bone_meal', 'test_fish_oil_caps'] },
   { id: 'A3b', label: 'sardine + patata + carota', foods: ['test_sardine', 'test_potato', 'carrot_cooked'], supplements: ['test_multi', 'test_bone_meal'] },
 ];
-/** combinazione che con i valori [PROPOSTA] non è realizzabile (riso pesato secco): riportata, non nascosta. */
+/** riso pesato secco: prima del 22/10 era in conflitto con verdure ≥ 3% e ≤ 20% del peso; ora il 3% è una preferenza e il
+ *  tetto di peso, senza resa di cottura documentata, non è determinabile (segnalato, non forzato). */
 export const CONFLICT_SET = { id: 'A3c', label: 'sardine + riso (pesato secco) + carota', foods: ['test_sardine', 'test_rice', 'carrot_cooked'], supplements: ['test_multi', 'test_bone_meal'] };
 
 export function syntheticDog(kcal: number, weightKg: number, idealKg: number, cat: CatalogState): DogFormulationProfile {
@@ -105,22 +107,32 @@ export const KER_PRESCRIPTION: RecipeItem[] = [
  */
 export const MAX_G_PER_1000_KCAL = 1300;
 
-export function practical(r: FormulationResult): { ok: boolean; reasons: string[]; a: AuditResult | null } {
+export function practical(r: FormulationResult): { ok: boolean; reasons: string[]; limitations: string[]; a: AuditResult | null } {
   const a = r.audit;
   const reasons: string[] = [];
-  if (r.outcome !== 'solved' || !a?.v2) return { ok: false, reasons: [`esito ${r.outcome}: ${r.message}`], a: a ?? null };
+  // preferenze non raggiunte e controlli non determinabili (es. resa di cottura mancante): elencati, non bloccanti
+  const limitations: string[] = [];
+  if (r.outcome !== 'solved' || !a?.v2) return { ok: false, reasons: [`esito ${r.outcome}: ${r.message}`], limitations, a: a ?? null };
   const red = a.rows.flatMap((x) => x.checks.filter((c) => c.color === 'red').map((c) => `${x.label}: ${c.message}`));
   const aGrey = a.rows.flatMap((x) => x.checks.filter((c) => c.level === 'A' && c.color === 'grey').map((c) => `${x.label}: ${c.message}`));
   if (red.length) reasons.push(`rossi: ${red.join('; ')}`);
   if (aGrey.length) reasons.push(`livello A non verificabile: ${aGrey.join('; ')}`);
   if (a.energyRow.color !== 'green') reasons.push(`energia: ${a.energyRow.note}`);
-  for (const g of a.v2.groups) if (g.color !== 'green' && !(g.foods.length === 0 && g.range[0] === 0)) reasons.push(g.message);
-  for (const c of a.v2.caps) if (c.color !== 'green') reasons.push(c.message);
+  for (const g of a.v2.groups) {
+    if (g.color === 'green' || (g.foods.length === 0 && g.range[0] === 0)) continue;
+    if (/sotto la preferenza|preferenza, non vincolo/.test(g.message)) limitations.push(g.message);
+    else reasons.push(g.message);
+  }
+  for (const c of a.v2.caps) {
+    if (c.color === 'green') continue;
+    if (c.color === 'grey') limitations.push(c.message);
+    else reasons.push(c.message);
+  }
   for (const d of a.doseChecks ?? []) if (d.color === 'red') reasons.push(d.message);
   if (a.v2.forbidden.length) reasons.push(`vietati: ${a.v2.forbidden.join(', ')}`);
   const w = a.v2.totalWeightG;
   if (w === null || !a.kcal || (w * 1000) / a.kcal > MAX_G_PER_1000_KCAL) reasons.push(`peso totale ${w} g per ${a.kcal} kcal oltre ${MAX_G_PER_1000_KCAL} g/1000 kcal`);
-  return { ok: reasons.length === 0, reasons, a };
+  return { ok: reasons.length === 0, reasons, limitations, a };
 }
 
 /** elenco dei livelli B non verdi (consentiti nei menù positivi, ma elencati). */

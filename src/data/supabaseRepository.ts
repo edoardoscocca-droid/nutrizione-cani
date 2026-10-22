@@ -190,6 +190,8 @@ export class SupabaseRepository implements Repository {
           maxGPer1000Kcal: n(f.max_g_per_1000_kcal),
           forbidden: (f.forbidden as boolean) ?? false,
           preparationWarning: (f.preparation_warning as string) ?? null,
+          preparedYield: n(f.prepared_yield),
+          preparedYieldSource: (f.prepared_yield_source as string) ?? null,
           nutrients: foodNut.get(f.id as string) ?? {},
         }),
       ),

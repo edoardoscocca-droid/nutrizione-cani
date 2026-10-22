@@ -113,4 +113,15 @@ JSON
 "${PSQL[@]}" -d t -c "$ADMIN" -f "$DATA/v2.sql" >/dev/null
 [ "$(q "select max_fresh_weight_pct || ':' || max_g_per_1000_kcal || ':' || forbidden || ':' || preparation_warning from foods where id = 'fegato_tetto_prova'")" = "5:30:false:sempre cotto" ] || { echo "FALLITO: campi v2 importati: $(q "select max_fresh_weight_pct || ':' || max_g_per_1000_kcal || ':' || forbidden || ':' || preparation_warning from foods where id = 'fegato_tetto_prova'")"; exit 1; }
 echo "ok: specifica v2 — migrazione 11 e dati del 21/10: B5 del QDiet 0,414 mg/g dal calcio D-pantotenato, alimenti vietati non attivabili, tetti e avvertenze importati, limite 200 ricette (archiviate escluse), diario una voce per data con RLS, ricette invariate"
+# ── procedura del 22/10: controllo di sola lettura, ripristino e nuova applicazione ──
+"${PSQL[@]}" -d t -c "\\pset footer off" -f "$ROOT/supabase/verifica/stato_online.sql" > "$DATA/stato.txt"
+grep -q "migrazione 11 v2 e diario (tabella diary_entries) | true" "$DATA/stato.txt" && grep -q "0.414 calcium_d_pantothenate" "$DATA/stato.txt" || { echo "FALLITO: controllo di stato"; cat "$DATA/stato.txt"; exit 1; }
+RV_BEFORE=$("${PSQL[@]}" -d t -tA -c "select count(*) || ':' || coalesce(md5(string_agg(id::text || chosen_items::text, ',' order by id)), '-') from recipe_versions")
+"${PSQL[@]}" -d t -f "$ROOT/supabase/ripristino/20261022_annulla_v2.sql" >/dev/null
+[ "$("${PSQL[@]}" -d t -tA -c "select (to_regclass('public.diary_entries') is null)::text || ':' || (not exists(select 1 from information_schema.columns where table_name = 'foods' and column_name = 'forbidden'))::text || ':' || (not exists(select 1 from supplement_nutrients where supplement_id = 'qdiet' and nutrient_id = 'vitamin_b5'))::text")" = "true:true:true" ] || { echo "FALLITO: ripristino"; exit 1; }
+[ "$("${PSQL[@]}" -d t -tA -c "select count(*) || ':' || coalesce(md5(string_agg(id::text || chosen_items::text, ',' order by id)), '-') from recipe_versions")" = "$RV_BEFORE" ] || { echo "FALLITO: il ripristino ha toccato le ricette"; exit 1; }
+"${PSQL[@]}" -d t -f "$ROOT/supabase/migrations/20261025000011_formulazione_v2_diario.sql" >/dev/null
+for f in "$ROOT"/supabase/data/2026-10-21/*.sql; do "${PSQL[@]}" -d t -f "$f" >/dev/null; done
+[ "$("${PSQL[@]}" -d t -tA -c "select amount_per_unit from supplement_nutrients where supplement_id = 'qdiet' and nutrient_id = 'vitamin_b5'")" = "0.414" ] || { echo "FALLITO: nuova applicazione"; exit 1; }
+echo "ok: controllo di sola lettura, ripristino della v2 (ricette intatte) e nuova applicazione dei tre file"
 echo "Test database: tutti superati"

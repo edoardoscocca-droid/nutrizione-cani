@@ -23,7 +23,8 @@ await shot('02-scheda');
 await page.getByRole('link', { name: '+ Nuova ricetta' }).click();
 await page.getByLabel('Nome della ricetta').fill('Manzo, avena e carote');
 await page.getByLabel('Umida').check();
-for (const n of ['[TEST] Manzo (fittizio)', '[TEST] Avena (fittizio)', '[TEST] Carote (fittizio)', 'Agnello']) await page.locator('label.pick', { hasText: n }).first().locator('input').check();
+// manzo reale del catalogo di prova (beef_03): è il prodotto aggiornato dall'importazione più avanti
+for (const n of ['Macinato di manzo crudo 3% grassi', '[TEST] Avena (fittizio)', '[TEST] Carote (fittizio)', 'Agnello']) await page.locator('label.pick', { hasText: n }).first().locator('input').check();
 await shot('03-alimenti');
 await page.getByRole('button', { name: /Analisi preliminare/ }).click();
 await page.waitForSelector('text=Analisi preliminare (indicativa)');
@@ -46,13 +47,14 @@ await page.getByRole('link', { name: 'Catalogo' }).click();
 await page.waitForSelector('text=Da completare');
 await shot('08-catalogo');
 await page.getByRole('button', { name: 'Importa' }).click();
+// schema definitivo (dal commit e2e56fe): ID «test_» riservati, base per_100g, stato del valore obbligatorio
 const H = 'product_id,nutrient_id,value_per_100g,unit,basis,source_id,status\n';
-await page.getByLabel('…oppure incolla qui il contenuto').fill(H + 'test_beef,Calcio,15,mg,raw,TEST analisi 2,\ntest_beef,vitamina a,3,mgg,raw,TEST,\n');
+await page.getByLabel('…oppure incolla qui il contenuto').fill(H + 'beef_03,Calcio,15,mg,per_100g,analisi e2e,measured\nbeef_03,vitamina a,3,mgg,per_100g,analisi e2e,measured\n');
 await page.getByRole('button', { name: 'Analizza (anteprima)' }).click();
 await page.waitForSelector('text=non riconosciuta');
 const disabled = await page.getByRole('button', { name: 'Conferma importazione' }).isDisabled();
 await shot('09-import-errori');
-await page.getByLabel('…oppure incolla qui il contenuto').fill(H + 'test_beef,Calcio,15,mg,raw,TEST analisi 2,\n');
+await page.getByLabel('…oppure incolla qui il contenuto').fill(H + 'beef_03,Calcio,15,mg,per_100g,analisi e2e,measured\n');
 await page.getByRole('button', { name: 'Analizza (anteprima)' }).click();
 await page.waitForSelector('text=risulteranno');
 await shot('10-import-anteprima');

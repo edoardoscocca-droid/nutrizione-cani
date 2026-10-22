@@ -17,10 +17,13 @@ Nessuna chiave va mai scritta in chat o nel codice.
    - `supabase/migrations/20261022000008_import_schema_definitivo.sql` (schema di importazione definitivo)
    - `supabase/migrations/20261023000009_bozze_diagnostiche.sql` (bozze diagnostiche delle ricette)
    - `supabase/migrations/20261024000010_zeri_calcolati.sql` (zeri documentati: ammesso anche lo zero calcolato da valori documentati)
+   - `supabase/migrations/20261025000011_formulazione_v2_diario.sql` (specifica v2: campi del catalogo, 200 ricette, diario)
    8. `supabase/seed.sql` (dizionario, FEDIAF 2025, soglie C, categorie, nomi di alimenti e integratori, nota Irish Wolfhound)
    9. i dati reali ricevuti: `supabase/data/2026-10-16_alimenti.sql` e `supabase/data/2026-10-16_integratori.sql`,
       poi il pacchetto del 20/10 nell'ordine dei numeri: `supabase/data/2026-10-20/01_…` → `04_…`
       (anteprima in `docs/IMPORTAZIONE_2026-10-20_ANTEPRIMA.md`; richiede la migrazione `…000010_zeri_calcolati.sql`)
+      e infine `supabase/data/2026-10-21/01_catalogo_v2.sql` e `02_qdiet_b5.sql` (richiedono la migrazione 11).
+      Prima di eseguire su un progetto già in uso: `docs/SUPABASE_STATO_E_PROCEDURA_2026-10-22.md` (controllo, backup, ripristino)
    10. facoltativo, solo per provare: `supabase/seed_test_fixtures.sql` (dati **[TEST] fittizi**; si tolgono con le due righe in cima al file)
 
    In alternativa, con la Supabase CLI: `supabase link` e `supabase db push`, poi il seed.
@@ -61,6 +64,6 @@ Importazioni massive e convalida: vedi `docs/CATALOGO.md`.
 - RLS attiva su tutte le tabelle; accesso anonimo negato.
 - Cani, ricette, versioni, prezzi e impostazioni: ognuno vede e modifica solo i propri.
 - Cataloghi e standard: lettura per gli utenti, scrittura solo con `is_admin()` verificato dal database.
-- Versioni di ricetta immutabili; massimo 10 ricette per cane imposto anche dal database.
+- Versioni di ricetta immutabili; massimo 200 ricette attive per cane (le archiviate non contano) imposto anche dal database (migrazione 11).
 - Controlli nel database: unità uguale a quella del dizionario, `null` ≠ 0 (uno zero va dichiarato), nessun alimento
   attivabile senza energia e stato del dato, soglie non ufficiali mai rosse o rigide.

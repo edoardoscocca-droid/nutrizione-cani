@@ -7,7 +7,11 @@ alter table public.foods
   add column if not exists max_fresh_weight_pct numeric check (max_fresh_weight_pct > 0 and max_fresh_weight_pct <= 100),
   add column if not exists max_g_per_1000_kcal numeric check (max_g_per_1000_kcal > 0),
   add column if not exists forbidden boolean not null default false,
-  add column if not exists preparation_warning text;
+  add column if not exists preparation_warning text,
+  -- resa di preparazione documentata (g pronti per 1 g pesato), con fonte obbligatoria: serve ai tetti in % del peso
+  add column if not exists prepared_yield numeric check (prepared_yield > 0 and prepared_yield <= 10),
+  add column if not exists prepared_yield_source text;
+alter table public.foods add constraint foods_prepared_yield_source check (prepared_yield is null or coalesce(prepared_yield_source, '') <> '');
 -- un alimento vietato non è mai utilizzabile nel calcolo
 alter table public.foods add constraint foods_forbidden_not_available check (not (forbidden and available_to_formulate));
 
@@ -26,11 +30,12 @@ begin
     if kind = 'foods' then
       insert into public.foods as t (id, name_it, category_id, subcategory_id, species_cut, processing_state, preparation, edible_portion,
                              kcal_me_per_100g, me_method, source_identifier, source_url, source_version, data_status, uncertainty, notes, available_to_formulate, profile_changed_at,
-                             max_fresh_weight_pct, max_g_per_1000_kcal, forbidden, preparation_warning)
+                             max_fresh_weight_pct, max_g_per_1000_kcal, forbidden, preparation_warning, prepared_yield, prepared_yield_source)
       values (p ->> 'id', p ->> 'name_it', p ->> 'category_id', p ->> 'subcategory_id', p ->> 'species_cut', p ->> 'processing_state', p ->> 'preparation',
               p ->> 'edible_portion', (p ->> 'kcal_me_per_100g')::numeric, p ->> 'me_method', p ->> 'source_identifier', p ->> 'source_url', p ->> 'source_version',
               coalesce(p ->> 'data_status', 'unverified'), p ->> 'uncertainty', p ->> 'notes', coalesce((p ->> 'available_to_formulate')::boolean, false) and not coalesce((p ->> 'forbidden')::boolean, false), now(),
-              (p ->> 'max_fresh_weight_pct')::numeric, (p ->> 'max_g_per_1000_kcal')::numeric, coalesce((p ->> 'forbidden')::boolean, false), p ->> 'preparation_warning')
+              (p ->> 'max_fresh_weight_pct')::numeric, (p ->> 'max_g_per_1000_kcal')::numeric, coalesce((p ->> 'forbidden')::boolean, false), p ->> 'preparation_warning',
+              (p ->> 'prepared_yield')::numeric, p ->> 'prepared_yield_source')
       on conflict (id) do update set
         name_it = excluded.name_it, category_id = excluded.category_id, subcategory_id = excluded.subcategory_id, species_cut = excluded.species_cut,
         processing_state = excluded.processing_state, preparation = excluded.preparation, edible_portion = excluded.edible_portion,
@@ -38,7 +43,8 @@ begin
         source_version = excluded.source_version, data_status = excluded.data_status, uncertainty = excluded.uncertainty, notes = excluded.notes,
         available_to_formulate = coalesce((p ->> 'available_to_formulate')::boolean, t.available_to_formulate) and not excluded.forbidden,
         max_fresh_weight_pct = excluded.max_fresh_weight_pct, max_g_per_1000_kcal = excluded.max_g_per_1000_kcal,
-        forbidden = excluded.forbidden, preparation_warning = excluded.preparation_warning;
+        forbidden = excluded.forbidden, preparation_warning = excluded.preparation_warning,
+        prepared_yield = excluded.prepared_yield, prepared_yield_source = excluded.prepared_yield_source;
     else
       insert into public.supplements as t (id, name_it, brand, product_variant, class, dose_unit, mass_per_unit_g, gross_mass_per_unit_g, kcal_per_unit, integer_dose, max_daily_units,
                                    max_daily_source, label_source, source_url, data_status, label_added_only, product_version, status, notes, usable_for_optimization, dose_guide, profile_changed_at)

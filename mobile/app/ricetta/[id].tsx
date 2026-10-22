@@ -203,7 +203,7 @@ export default function RecipeScreen() {
               {v.id === current?.id ? ' · in uso' : ''}
             </T>
             <T small muted>
-              {new Date(v.createdAt).toLocaleString('it-IT')} · {STATUS_LABEL[v.audit.status]}
+              {new Date(v.createdAt).toLocaleString('it-IT')} · {(v.audit.statusLabel ?? STATUS_LABEL[v.audit.status])}
             </T>
           </Card>
         ))}
@@ -226,7 +226,7 @@ export default function RecipeScreen() {
                   ))}
                 </Card>
                 <T>
-                  Stato: {STATUS_LABEL[shown.audit.status]} → <T bold>{preview.result.audit.statusLabel}</T>
+                  Stato: {(shown.audit.statusLabel ?? STATUS_LABEL[shown.audit.status])} → <T bold>{preview.result.audit.statusLabel}</T>
                 </T>
                 <Button title="Conferma e crea nuova versione" busy={!!busy} onPress={confirmRecalc} />
               </>

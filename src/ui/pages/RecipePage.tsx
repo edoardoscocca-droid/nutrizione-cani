@@ -209,7 +209,7 @@ export function RecipePage() {
           {[...versions].reverse().map((v) => (
             <li key={v.id} className={v.id === shown.id ? 'on' : ''}>
               <button className="ghost" onClick={() => { setViewId(v.id); setEditing(null); }}>
-                v{v.revision} · {ORIGIN[v.origin]} · {new Date(v.createdAt).toLocaleDateString('it-IT')} · {STATUS_LABEL[v.audit.status]}
+                v{v.revision} · {ORIGIN[v.origin]} · {new Date(v.createdAt).toLocaleDateString('it-IT')} · {(v.audit.statusLabel ?? STATUS_LABEL[v.audit.status])}
                 {v.id === current?.id && ' · in uso'}
               </button>
             </li>
@@ -247,7 +247,7 @@ export function RecipePage() {
                 </tbody>
               </table>
               <p>
-                Stato: <strong>{STATUS_LABEL[shown.audit.status]}</strong> → <strong>{preview.result.audit.statusLabel}</strong>
+                Stato: <strong>{(shown.audit.statusLabel ?? STATUS_LABEL[shown.audit.status])}</strong> → <strong>{preview.result.audit.statusLabel}</strong>
               </p>
               <div className="row">
                 <button disabled={busy} onClick={confirmRecalc}>Conferma e crea nuova versione</button>

@@ -14,7 +14,7 @@
 import { applicableLimits, type AuditResult } from './audit';
 import { A_MINIMA, auditRecipeV2 } from './auditV2';
 import { foodStatus, supplementStatus } from './catalogStatus';
-import { capOf, DEFAULT_CONFIG, doseRuleOf, ENGINE_VERSION_V2, groupOf, type FormulationConfig, type MealGroup } from './configV2';
+import { capOf, DEFAULT_CONFIG, doseRuleOf, ENGINE_VERSION_V2, groupOf, missingActivationNutrients, preparedFactor, weighingStateLabel, type FormulationConfig, type MealGroup } from './configV2';
 import { doseRangeFor } from './doseGuide';
 import { fediafReferenceKcal } from './energy';
 import {
@@ -56,6 +56,8 @@ interface StepPlan {
 interface V2Built extends Built {
   /** variabili di scostamento del livello B (una per minimo). */
   bVars: string[];
+  /** scostamenti dalle preferenze della struttura del pasto (minimo delle verdure, tetti non verificabili), con il peso. */
+  prefTerms: Term[];
   constraints: ConstraintInfo[];
 }
 
@@ -109,11 +111,24 @@ export async function formulateV2(input: FormulationInputV2): Promise<Formulatio
   const excluded = [...usable.excluded];
   // alimenti vietati (§9): mai usati
   const foods = usable.foods.filter(({ food }) => {
-    if (!food.forbidden) return true;
-    excluded.push({ kind: 'food', id: food.id, name: food.name, reason: 'alimento vietato per il cane (§9): mai usato' });
+    if (food.forbidden) {
+      excluded.push({ kind: 'food', id: food.id, name: food.name, reason: 'alimento vietato per il cane (§9): mai usato' });
+      return false;
+    }
+    // prodotti concentrati (es. fegato): i nutrienti determinanti vanno documentati prima dell'uso
+    const miss = missingActivationNutrients(food, cfg);
+    if (miss.length) {
+      excluded.push({ kind: 'food', id: food.id, name: food.name, reason: `prodotto concentrato: mancano dati determinanti (${miss.join(', ')}) — da documentare prima dell'uso` });
+      return false;
+    }
+    return true;
+  });
+  const supplements = usable.supplements.filter(({ supplement: sp }) => {
+    const miss = missingActivationNutrients(sp, cfg);
+    if (!miss.length) return true;
+    excluded.push({ kind: 'supplement', id: sp.id, name: sp.name, reason: `prodotto concentrato: mancano dati determinanti (${miss.join(', ')}) — da documentare prima dell'uso` });
     return false;
   });
-  const supplements = usable.supplements;
   const base = { engineVersion: ENGINE_VERSION_V2, excluded, notes, phases, conflicts: [] as Conflict[], suggestions: [] as string[], constraints: [] as ConstraintInfo[], items: [] as RecipeItem[], audit: null as AuditResult | null };
   const done = (r: Omit<FormulationResult, 'stats'> & { stats?: Partial<NonNullable<FormulationResult['stats']>> }): FormulationResult => ({
     ...r,
@@ -133,7 +148,9 @@ export async function formulateV2(input: FormulationInputV2): Promise<Formulatio
   if (input.dog.lifeStage !== 'adult_maintenance') notes.push('Nessuno standard disponibile per questa fase di vita: il calcolo considera solo energia, struttura del pasto e target personali.');
 
   // §3: un gruppo con minimo > 0 senza alimenti selezionati → la selezione non basta; si propone cosa aggiungere
-  const missingGroups = cfg.groups.filter((g) => g.minPctKcal > 0 && !foods.some(({ food }) => groupOf(food, cfg)?.id === g.id));
+  const hasGroup = (g: MealGroup) => foods.some(({ food }) => groupOf(food, cfg)?.id === g.id);
+  for (const g of cfg.groups) if (g.minIsPreference && g.minPctKcal > 0 && !hasGroup(g)) notes.push(`${g.label}: nessun alimento selezionato — la preferenza di almeno ${g.minPctKcal}% delle kcal non è raggiunta (non è un vincolo).`);
+  const missingGroups = cfg.groups.filter((g) => g.minPctKcal > 0 && !g.minIsPreference && !hasGroup(g));
   if (missingGroups.length) {
     const details = missingGroups.flatMap((g) => groupCandidates(g, input, cfg));
     return done({
@@ -223,6 +240,14 @@ export async function formulateV2(input: FormulationInputV2): Promise<Formulatio
   let last = chosen.res;
   const bObj: Term[] = built.bVars.map((v) => ({ v, c: 1 }));
   let model = fixObjective(built.model, bObj, last.objective, 'fix_b');
+  // preferenze della struttura del pasto (verdure ≥ 3% delle kcal, tetti di peso non verificabili per resa mancante)
+  if (built.prefTerms.length) {
+    const pr = runSolve({ ...model, objective: built.prefTerms });
+    phases.push({ name: 'Preferenze della struttura del pasto', status: pr.rawStatus, objective: pr.status === 'optimal' ? pr.objective : null });
+    if (pr.status !== 'optimal') return timeout(pr, built.constraints);
+    model = fixObjective(model, built.prefTerms, pr.objective, 'fix_pref');
+    last = pr;
+  }
   const omegaObj: Term[] = items0.filter((it) => it.omega).map((it) => ({ v: it.v, c: it.step }));
   if (omegaObj.length) {
     const o = runSolve({ ...model, objective: omegaObj });
@@ -336,6 +361,7 @@ function buildV2(
 
   // minimi di livello A e B, massimi nutrizionali
   const bVars: string[] = [];
+  const prefTerms: Term[] = [];
   const bSkipped: string[] = [];
   const aSkipped: string[] = [];
   for (const l of limits) {
@@ -425,17 +451,39 @@ function buildV2(
   for (const { g, its } of groupsUsed.values()) {
     const ids = new Set(its.map((x) => x.v));
     const share = (p: number): Term[] => items.map((it) => ({ v: it.v, c: (ids.has(it.v) ? it.kcal : 0) - (p / 100) * it.kcal }));
-    if (g.minPctKcal > 0) hard(`grp_lo_${g.id}`, share(g.minPctKcal), '>=', 0, K, { label: `${g.label}: almeno ${g.minPctKcal}% delle kcal (struttura del pasto, [PROPOSTA])`, kind: 'user_bound' });
+    if (g.minPctKcal > 0 && g.minIsPreference) {
+      // preferenza: scostamento in kcal penalizzato, nessun vincolo rigido
+      const sv = `pg_${g.id}`;
+      vars.push({ name: sv, lb: 0, ub: null, integer: false });
+      prefTerms.push({ v: sv, c: 1 / K });
+      const name = `grp_lo_${g.id}`;
+      rows.push({ name, terms: [...share(g.minPctKcal), { v: sv, c: 1 }], op: '>=', rhs: 0, scale: K, dev: { v: sv, group: 'preference' }, info: { name, label: `${g.label}: almeno ${g.minPctKcal}% delle kcal — preferenza, non vincolo ([PROPOSTA], decisione del 22/10)`, kind: 'personal_soft', hardness: 'soft' } });
+    } else if (g.minPctKcal > 0) hard(`grp_lo_${g.id}`, share(g.minPctKcal), '>=', 0, K, { label: `${g.label}: almeno ${g.minPctKcal}% delle kcal (struttura del pasto, [PROPOSTA])`, kind: 'user_bound' });
     if (g.maxPctKcal < 100) hard(`grp_hi_${g.id}`, share(g.maxPctKcal), '<=', 0, K, { label: `${g.label}: al più ${g.maxPctKcal}% delle kcal (struttura del pasto, [PROPOSTA])`, kind: 'user_bound' });
   }
-  // tetti di quantità per alimento (catalogo o predefinito del gruppo)
-  const massTerms = (p: number, self: ModelItem): Term[] => items.map((it) => ({ v: it.v, c: (it.v === self.v ? it.step : 0) - (p / 100) * massPerStep(it, supById.get(it.id)) }));
+  // tetti di quantità per alimento (catalogo o predefinito): % del peso degli ALIMENTI della razione pronta, senza acqua
+  // aggiunta né integratori. Gli alimenti pesati crudi o secchi da cuocere contano con la resa documentata; se manca,
+  // il denominatore non è determinabile: il tetto diventa una preferenza (sul peso come pesato) e la verifica lo segnala.
+  const factorOf = (it: ModelItem) => (it.kind === 'food' ? preparedFactor(foodById.get(it.id)!, cfg) : 0);
+  const noYield = items.filter((it) => it.kind === 'food' && factorOf(it) === null).map((it) => `${it.name} (${weighingStateLabel(foodById.get(it.id)!)})`);
+  const massTerms = (p: number, self: ModelItem): Term[] => items.map((it) => ({ v: it.v, c: (it.v === self.v ? it.step * (factorOf(it) ?? 1) : 0) - (p / 100) * it.step * (factorOf(it) ?? 1) }));
+  if (noYield.length && items.some((it) => it.kind === 'food' && capOf(foodById.get(it.id)!, cfg).maxFreshWeightPct !== null))
+    notes.push(`Tetti in % del peso non verificabili e usati come preferenza: manca la resa di cottura documentata per ${noYield.join(', ')} (la resa non viene inventata; i nutrienti restano calcolati sul peso come pesato).`);
   for (const it of items) {
     if (it.kind !== 'food') continue;
     const f = foodById.get(it.id)!;
     const cap = capOf(f, cfg);
     const src = cap.source.join('; ');
-    if (cap.maxFreshWeightPct !== null) hard(`cap_fw_${it.v}`, massTerms(cap.maxFreshWeightPct, it), '<=', 0, 100, { label: `${f.name}: al più ${cap.maxFreshWeightPct}% del peso fresco del pasto (${src})`, kind: 'user_bound' });
+    if (cap.maxFreshWeightPct !== null) {
+      const label = `${f.name} (${weighingStateLabel(f)}): al più ${cap.maxFreshWeightPct}% del peso degli alimenti della razione (${src})`;
+      if (noYield.length) {
+        const sv = `pc_${it.v}`;
+        vars.push({ name: sv, lb: 0, ub: null, integer: false });
+        prefTerms.push({ v: sv, c: 1 / 100 });
+        const name = `cap_fw_${it.v}`;
+        rows.push({ name, terms: [...massTerms(cap.maxFreshWeightPct, it), { v: sv, c: -1 }], op: '<=', rhs: 0, scale: 100, dev: { v: sv, group: 'preference' }, info: { name, label: `${label} — preferenza: denominatore non determinabile senza resa di cottura`, kind: 'personal_soft', hardness: 'soft' } });
+      } else hard(`cap_fw_${it.v}`, massTerms(cap.maxFreshWeightPct, it), '<=', 0, 100, { label, kind: 'user_bound' });
+    }
     if (cap.maxPctKcal !== null) hard(`cap_kc_${it.v}`, items.map((x) => ({ v: x.v, c: (x.v === it.v ? x.kcal : 0) - (cap.maxPctKcal! / 100) * x.kcal })), '<=', 0, K, { label: `${f.name}: al più ${cap.maxPctKcal}% delle kcal (${src})`, kind: 'user_bound' });
     if (cap.maxGPer1000Kcal !== null) hard(`cap_g_${it.v}`, items.map((x) => ({ v: x.v, c: (x.v === it.v ? x.step : 0) - (cap.maxGPer1000Kcal! / 1000) * x.kcal })), '<=', 0, 100, { label: `${f.name}: al più ${cap.maxGPer1000Kcal} g per 1000 kcal (${src})`, kind: 'user_bound' });
   }
@@ -481,6 +529,7 @@ function buildV2(
     energyDev: ['ep', 'en'],
     K,
     bVars,
+    prefTerms,
     constraints,
   };
 }

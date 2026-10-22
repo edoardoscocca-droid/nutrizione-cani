@@ -280,6 +280,9 @@ const FOOD_FIELDS: Record<string, string[]> = {
   maxGPer1000Kcal: ['max g per 1000 kcal', 'tetto g per 1000 kcal'],
   forbidden: ['forbidden', 'vietato'],
   preparationWarning: ['preparation warning', 'avvertenza preparazione', 'avvertenza'],
+  // resa di preparazione documentata (g pronti per 1 g pesato nello stato del profilo, es. riso secco → cotto)
+  preparedYield: ['prepared yield', 'resa', 'resa di cottura'],
+  preparedYieldSource: ['prepared yield source', 'fonte resa', 'fonte resa di cottura'],
 };
 const SUPP_FIELDS: Record<string, string[]> = {
   id: ['id', 'product id', 'supplement id', 'codice'],
@@ -705,7 +708,16 @@ export function planImport(parsed: ParsedImport, catalog: CatalogForImport, file
         if (!ps) err(`Stato di preparazione «${f.processingState}» non valido (${PROCESSING.join(', ')}).`);
         else set('processingState', ps);
       }
-      for (const k of ['speciesCut', 'preparation', 'ediblePortion', 'meMethod', 'source', 'sourceUrl', 'sourceVersion', 'uncertainty', 'notes', 'preparationWarning'] as const) if (f[k] !== undefined) set(k, f[k]);
+      for (const k of ['speciesCut', 'preparation', 'ediblePortion', 'meMethod', 'source', 'sourceUrl', 'sourceVersion', 'uncertainty', 'notes', 'preparationWarning', 'preparedYieldSource'] as const) if (f[k] !== undefined) set(k, f[k]);
+      if (f.preparedYield !== undefined) {
+        if (CLEAR_TOKENS.has(norm(f.preparedYield))) set('preparedYield', null);
+        else {
+          const v = parseNumber(f.preparedYield);
+          if (v === null || Number.isNaN(v) || !(v > 0) || v > 10) err(`Resa «${f.preparedYield}» non valida (g di alimento pronto per 1 g pesato, tra 0 e 10).`);
+          else if (!(f.preparedYieldSource ?? (n.preparedYieldSource as string | undefined))?.trim()) err('Resa di preparazione senza fonte (prepared_yield_source): la resa non si inserisce senza documentazione.');
+          else set('preparedYield', v);
+        }
+      }
       for (const [k, max] of [['maxFreshWeightPct', 100], ['maxGPer1000Kcal', 5000]] as const) {
         if (f[k] === undefined) continue;
         if (CLEAR_TOKENS.has(norm(f[k]))) {
@@ -1166,6 +1178,7 @@ export function toPayload(plan: ImportPlan): ImportPayload {
         available_to_formulate: f.availableToFormulate,
         // colonne della migrazione 11 (ignorate dalla funzione precedente)
         max_fresh_weight_pct: f.maxFreshWeightPct ?? null, max_g_per_1000_kcal: f.maxGPer1000Kcal ?? null, forbidden: !!f.forbidden, preparation_warning: f.preparationWarning ?? null,
+        prepared_yield: f.preparedYield ?? null, prepared_yield_source: f.preparedYieldSource ?? null,
       };
     }
     const s = i.next as Supplement;

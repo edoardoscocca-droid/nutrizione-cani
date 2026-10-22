@@ -1,6 +1,6 @@
 {
   "_nota": "Configurazione della formulazione v2 (specifiche del 21/10/2026). I valori segnati [PROPOSTA] sono scelte operative iniziali dell'utente, NON valori FEDIAF: vanno rivisti da un veterinario nutrizionista indipendente. Si possono cambiare da Impostazioni (gruppi ed energia) o modificando questo file; ogni ricetta congela la configurazione usata.",
-  "version": "v2-2026-10-21",
+  "version": "v2-2026-10-22",
   "source": "Specifiche v2 del 21/10/2026, decisioni dell'utente",
   "energyTolerancePct": {
     "value": 5,
@@ -42,7 +42,8 @@
       "minPctKcal": 3,
       "maxPctKcal": 15,
       "status": "PROPOSTA",
-      "source": "[PROPOSTA] specifica v2 §3"
+      "source": "[PROPOSTA] specifica v2 §3; decisione dell'utente del 22/10/2026: il minimo del 3% delle kcal è una preferenza, non un vincolo rigido (il massimo 15% resta)",
+      "minIsPreference": true
     },
     {
       "id": "fat",
@@ -63,7 +64,7 @@
       "group": "vegetable",
       "maxFreshWeightPct": 20,
       "status": "PROPOSTA",
-      "source": "[PROPOSTA] specifica v2 §3.2: verdure ≤ 20% del peso fresco del pasto (per alimento)"
+      "source": "[PROPOSTA] specifica v2 §3.2: verdure ≤ 20% del peso degli alimenti pronti della razione (per alimento)"
     },
     {
       "id": "oil_kcal",
@@ -73,11 +74,21 @@
       "source": "[PROPOSTA] specifica v2 §3.2: olio ≤ 12% delle kcal (per alimento)"
     },
     {
-      "id": "secreting_offal_fresh_weight",
+      "id": "liver_fresh_weight",
+      "subcategory": "secreting_offal_liver",
+      "maxFreshWeightPct": 5,
+      "status": "SCELTA_OPERATIVA",
+      "source": "Scelta operativa dell'app (decisione dell'utente del 22/10/2026): fegato ≤ 5% del peso degli alimenti della razione, senza acqua aggiunta. Non è un limite FEDIAF né una garanzia di sicurezza: vitamina A, rame e gli altri controlli restano applicabili e possono richiedere quantità inferiori."
+    },
+    {
+      "id": "other_secreting_offal_fresh_weight",
       "secretingOffal": true,
+      "excludeSubcategories": [
+        "secreting_offal_liver"
+      ],
       "maxFreshWeightPct": 10,
-      "status": "PROPOSTA_SVILUPPATRICE",
-      "source": "Proposta della sviluppatrice, NON nella specifica: la specifica chiede un tetto a parte per le frattaglie senza indicare il valore. Da confermare o sostituire con il campo per alimento del catalogo."
+      "status": "PROVVISORIO",
+      "source": "Tetto operativo provvisorio per le frattaglie secernenti diverse dal fegato (rene, milza, altre): ≤ 10% del peso degli alimenti della razione. Non attribuito a FEDIAF. Il cuore non è una frattaglia secernente e non ha questo tetto."
     }
   ],
   "levelB": {
@@ -141,5 +152,39 @@
       "Ossa: mai cotte."
     ],
     "source": "Specifica v2 §9"
+  },
+  "preparedWeight": {
+    "needsYield": {
+      "categories": [
+        "starch"
+      ],
+      "processingStates": [
+        "raw",
+        "dried",
+        "raw_or_unspecified"
+      ]
+    },
+    "source": "Decisione dell'utente del 22/10/2026: i tetti in % del peso si calcolano sul peso degli alimenti della razione pronta (senza acqua aggiunta e senza integratori). Cereali, tuberi e legumi pesati crudi o secchi servono la resa di cottura documentata (campo prepared_yield del catalogo); se manca, la resa non si inventa: il tetto diventa una preferenza e il controllo segnala il limite."
+  },
+  "activationRequirements": [
+    {
+      "subcategory": "secreting_offal_liver",
+      "nutrients": [
+        "vitamin_a",
+        "copper"
+      ],
+      "source": "Decisione dell'utente del 22/10/2026: prodotti concentrati — nutrienti determinanti documentati prima dell'uso nel generatore"
+    },
+    {
+      "supplementClass": "iodine",
+      "nutrients": [
+        "iodine"
+      ],
+      "source": "Decisione dell'utente del 22/10/2026: alghe da iodio — iodio documentato prima dell'uso"
+    }
+  ],
+  "decisions": {
+    "epaDha": "EPA+DHA (apporto raccomandato NRC) è un obiettivo morbido di livello B nella v2 — confermato dall'utente il 22/10/2026.",
+    "testWeightCriterion": "1.300 g per 1000 kcal è solo un criterio dei collaudi, non un limite nutrizionale — confermato dall'utente il 22/10/2026."
   }
 }

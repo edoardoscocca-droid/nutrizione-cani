@@ -37,6 +37,7 @@ function block(title: string, r: FormulationResult) {
   for (const d of a.doseChecks ?? []) p(`- Dose: ${d.message}`);
   const chk = practical(r);
   p(`- Pratico (criterio del §10 A): ${chk.ok ? 'sì' : `no — ${chk.reasons.join('; ')}`}`);
+  if (chk.limitations.length) p(`- Preferenze non raggiunte o controlli non determinabili (elencati, non bloccanti): ${chk.limitations.join(' ')}`);
   const b = levelBIssues(a);
   p(`- Livello B non verde (consentito, elencato): ${b.length ? b.join(', ') : 'nessuno'}`);
   if (a.v2!.unknown.length) p(`- Sconosciuti: ${a.v2!.unknown.map((u) => u.split(':')[0]).join(', ')}`);
@@ -44,15 +45,23 @@ function block(title: string, r: FormulationResult) {
   p();
 }
 
-p('# Collaudi della specifica v2 — 21/10/2026');
+p('# Collaudi della specifica v2 — aggiornati al 22/10/2026');
 p();
 p('Generato con `npx tsx scripts/collaudo/collaudi-v2.ts`; gli stessi casi sono test automatici in `tests/spec-v2-2026-10-21.test.ts`. Configurazione: `dati/riferimenti/formulazione_v2.json` (valori [PROPOSTA]).');
 p('Catalogo della modalità prova (dati reali importati fino al 21/10). **Dati [TEST] = fittizi**: agnello, pollo, merluzzo, sardine, patata, riso, olio vegetale e gli integratori di prova; zucca e carota sono i profili reali USDA. Nessun salvataggio.');
 p();
+p('**Regole in vigore dal 22/10** (decisioni dell’utente):');
+p('- verdure ≥ 3% delle kcal: preferenza, non vincolo (massimo 15% invariato); porzione minima pratica (5 g o 0,5% delle kcal) mantenuta;');
+p('- tetti in % del peso: sul peso degli alimenti della razione pronta, senza acqua aggiunta né integratori. Cereali, tuberi e legumi pesati crudi o secchi servono la resa di cottura documentata; se manca il tetto diventa una preferenza e la verifica lo segnala «non verificabile» (la resa non si inventa);');
+p('- fegato ≤ 5% del peso degli alimenti (scelta operativa, non FEDIAF); altre frattaglie secernenti ≤ 10% (provvisorio, non FEDIAF); cuore senza tetto;');
+p('- fegato e alghe da iodio esclusi finché vitamina A e rame (fegato) o iodio (alghe) non sono documentati; i prodotti con solo il nome restano esclusi;');
+p('- superamento della dose del QDiet descritto come tale (percentuale, margine configurato), non come «limite ufficiale»;');
+p('- EPA+DHA obiettivo morbido di livello B; 1.300 g per 1000 kcal solo come criterio di questi collaudi.');
+p();
 p('## A. Menù positivi (900, 1.340, 2.700 kcal)');
 p();
 for (const pr of ENERGY_PROFILES) for (const set of MENU_SETS) block(`${set.id} ${set.label} — ${pr.kcal} kcal (${pr.weightKg} kg)`, await formulateV2(menuInput(cat, pr, set)));
-block(`${CONFLICT_SET.id} ${CONFLICT_SET.label} — 1.340 kcal (in conflitto con i valori [PROPOSTA])`, await formulateV2(menuInput(cat, ENERGY_PROFILES[1], CONFLICT_SET)));
+block(`${CONFLICT_SET.id} ${CONFLICT_SET.label} — 1.340 kcal (prima del 22/10 in conflitto con i valori [PROPOSTA])`, await formulateV2(menuInput(cat, ENERGY_PROFILES[1], CONFLICT_SET)));
 p('## B. Ker e Garmr (dati reali)');
 p();
 block('(4) Ker generato da zero, 1.340 kcal', await formulateV2(realInput(cat, kerDog(), KER_FOODS, KER_SUPPS, true)));

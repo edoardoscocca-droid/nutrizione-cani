@@ -59,7 +59,7 @@
       "form": "calcium_d_pantothenate",
       "formLabel": "calcio D-pantotenato → acido pantotenico",
       "factor": 0.92,
-      "source": "fattore 0,92 (FEDIAF 2025, tab. VII-14: 1 mg di calcio D-pantotenato = 0,92 mg di acido D-pantotenico) — conversione richiesta dalla specifica v2 del 21/10/2026 (§6); fattore da confermare sul PDF"
+      "source": "fattore 0,92 (FEDIAF 2025, tab. VII-14: 1 mg di calcio D-pantotenato = 0,92 mg di acido D-pantotenico) — conversione richiesta dalla specifica v2 del 21/10/2026 (§6), fattore confermato dall'utente il 22/10/2026; forma e valore originali conservati"
     }
   ]
 }

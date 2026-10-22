@@ -117,7 +117,7 @@ export function DogPage() {
                   </span>
                 </div>
                 <div className="small">
-                  {cur ? `${STATUS_LABEL[cur.audit.status]} · versione ${cur.revision}` : 'nessuna versione salvata'}
+                  {cur ? `${(cur.audit.statusLabel ?? STATUS_LABEL[cur.audit.status])} · versione ${cur.revision}` : 'nessuna versione salvata'}
                   {stale.length > 0 && <span className="tag orange">da ricalcolare</span>}
                 </div>
                 <div className="row wrap">

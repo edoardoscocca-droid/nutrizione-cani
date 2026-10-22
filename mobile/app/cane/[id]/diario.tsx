@@ -90,10 +90,15 @@ export default function DiaryScreen() {
       setBusy(false);
     };
     if (replaced.length) {
-      Alert.alert('Sostituire i giorni già registrati?', `${replaced.length} ${replaced.length === 1 ? 'giorno ha' : 'giorni hanno'} già una ricetta: per ogni data vale una sola ricetta, la nuova sostituisce la precedente.`, [
-        { text: 'Annulla', style: 'cancel' },
-        { text: 'Sostituisci', onPress: () => void go() },
-      ]);
+      const list = replaced.map((e) => `${it(e.date)}: ${e.recipeName}`).join('\n');
+      Alert.alert(
+        replaced.length === 1 ? 'Sostituire l’intera giornata?' : `Sostituire ${replaced.length} giornate intere?`,
+        `Già registrato:\n${list}\n\nLa ricetta di ogni data è la razione dell’intero giorno: «${chosen.name}» la sostituisce per intero (gli apporti registrati prima per quelle date non contano più).`,
+        [
+          { text: 'Annulla', style: 'cancel' },
+          { text: 'Sostituisci', style: 'destructive', onPress: () => void go() },
+        ],
+      );
     } else await go();
   };
 
@@ -125,7 +130,7 @@ export default function DiaryScreen() {
       <ErrorBox error={error} />
       <Card>
         <H level={3}>Registra cosa ha mangiato</H>
-        <T small muted>Ogni ricetta è la razione dell’intero giorno, integratori compresi. Se la dividi in 2 o 3 pasti conta comunque una volta. Una sola ricetta per giorno: registrare di nuovo una data sostituisce la ricetta precedente.</T>
+        <T small muted>Ogni ricetta è la razione dell’intero giorno, integratori compresi: puoi dividerla fra pranzo e cena o in più pasti, ma si registra una sola volta. Ogni data ha una sola ricetta: registrarne un’altra nella stessa data sostituisce l’intera giornata (ti viene chiesta conferma).</T>
         {usable.length === 0 ? (
           <T small>Nessuna ricetta salvata da registrare.</T>
         ) : (

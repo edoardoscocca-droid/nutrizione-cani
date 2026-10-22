@@ -1,6 +1,6 @@
 # Schema di importazione del catalogo (definitivo)
 
-App Nutrizione cani · versione del 19/10/2026 · formato: **JSON**, codifica **UTF-8**.
+App Nutrizione cani · versione del 22/10/2026 (campi della formulazione v2 aggiunti; il resto invariato dal 19/10) · formato: **JSON**, codifica **UTF-8**.
 
 Questo documento descrive le regole che l’importatore applica davvero. Un file con anche un solo errore viene rifiutato per intero: non si salva niente. Ogni errore indica il prodotto, il campo o nutriente e il motivo.
 
@@ -31,6 +31,14 @@ Questo documento descrive le regole che l’importatore applica davvero. Un file
 | `data_status` | facoltativo | Qualità del profilo: `unverified` (predefinito), `estimated`, `review_required`. `verified` è un errore: si ottiene solo con la convalida nell’app. |
 | `available_to_formulate` | facoltativo | `true`/`false` (predefinito `false`). Torna `false` se il prodotto risulta «da completare». |
 | `uncertainty`, `notes` | facoltativi | Testo. |
+| `prepared_yield` | facoltativo, con fonte | **Resa di preparazione documentata**: grammi di alimento pronto per 1 g pesato nello stato `processing_state` (es. riso pesato secco → cotto). Serve solo ai tetti in % del peso della razione pronta; i nutrienti restano sul peso come pesato. Tra 0 e 10. Senza resa, per cereali, tuberi e legumi pesati crudi o secchi il tetto non è verificabile (la resa non si stima). |
+| `prepared_yield_source` | con `prepared_yield` | Fonte della resa (pesata, tabella, scheda). Una resa senza fonte è un errore. |
+| `max_fresh_weight_pct` | facoltativo | Tetto per alimento in % del peso degli alimenti della razione pronta (senza acqua aggiunta né integratori). Sostituisce il predefinito della categoria (fegato 5%, altre frattaglie secernenti 10%, verdure 20%). |
+| `max_g_per_1000_kcal` | facoltativo | Tetto per alimento in grammi per 1000 kcal della razione. |
+| `forbidden` | facoltativo | `true` = alimento vietato per il cane: mai utilizzabile, rosso se presente in una ricetta. |
+| `preparation_warning` | facoltativo | Avvertenza di preparazione mostrata nella ricetta (es. «sempre cotto e senza sale»). |
+
+**Prodotti concentrati**: fegato (`secreting_offal_liver`) e integratori di classe `iodine` (alghe) non vengono usati dal generatore finché non sono documentati i nutrienti determinanti: fegato → vitamina A (preformata o retinolo **e** beta-carotene) e rame; alghe → iodio.
 
 Valori degli alimenti: **per 100 g di parte edibile, nello stato `processing_state`** (come si pesa), salvo `basis` diverso (sezione 4).
 
@@ -68,7 +76,7 @@ Valori degli integratori: **per una unità di dose** (1 g, 1 ml, 1 capsula, 1 co
 | `status` | con un numero | `measured` (analisi o banca dati), `label` (dichiarato in etichetta), `calculated` (calcolato: spiegare in `method`), `estimated` (stima), `analytical_zero` (zero documentato, solo con `value` 0). Nessun valore predefinito. |
 | `source` | se diversa dal prodotto | Fonte del singolo valore. |
 | `method` | facoltativo | Come è stato ottenuto (es. «per differenza»). |
-| `form` | vitamina E in mg, cloruro di colina | Forma chimica: `d_alpha_tocopherol` (1,49 UI/mg), `all_rac_alpha_tocopheryl_acetate` (1 UI/mg), `d_alpha_tocopheryl_acetate` (1,36 UI/mg), `choline_chloride` (× 0,746 → colina). Per altri nutrienti è solo registrata. |
+| `form` | vitamina E in mg, cloruro di colina, calcio D-pantotenato | Forma chimica: `d_alpha_tocopherol` (1,49 UI/mg), `all_rac_alpha_tocopheryl_acetate` (1 UI/mg), `d_alpha_tocopheryl_acetate` (1,36 UI/mg), `choline_chloride` (× 0,746 → colina), `calcium_d_pantothenate` (× 0,92 → acido pantotenico, per `vitamin_b5`). Valore, unità e forma originali restano registrati. Per altri nutrienti la forma è solo registrata. |
 | `basis` | facoltativo | Base del valore nella fonte. Alimenti: `per_100g` (predefinito), `per_kg`, `per_g`. Integratori: `per_dose` (predefinito), `per_kg`, `per_100g`, `per_g`. Va indicata esplicitamente: non si deduce mai da nome, note o confezione. |
 | `basis_mass` | integratori in capsule/compresse/misurini con base per massa | `content` (riferita al contenuto: serve `content_mass_per_unit_g`) o `gross` (riferita all’unità intera: serve `gross_mass_per_unit_g`). Se la massa non è documentata: errore. Con dose in `ml` le basi per massa non sono ammesse (servirebbe la densità). |
 | `per_dose` | facoltativo | Solo con base `per_dose`: numero di dosi a cui si riferisce il valore (es. `2` = valore per 2 capsule); l’app divide. |
@@ -110,6 +118,7 @@ Quattro cose distinte, mai dedotte l’una dall’altra:
 | starch | legume | Legumi |
 | vegetable | vegetable_generic | Verdure |
 | other | fat_oil | Oli e grassi |
+| other | other_generic | Altri alimenti (non classificati; es. voci vietate) |
 
 ## 7. Codici dei nutrienti
 
@@ -142,7 +151,7 @@ Quattro cose distinte, mai dedotte l’una dall’altra:
 | `manganese` | Manganese | mg | Minerali | richiesto |
 | `selenium_wet` | Selenio (diete umide) | µg | Minerali | richiesto |
 | `zinc` | Zinco | mg | Minerali | richiesto |
-| `vitamin_a` | Vitamina A | IU | Vitamine e colina | richiesto; solo in UI (da µg di retinolo non c’è un fattore approvato: errore) |
+| `vitamin_a` | Vitamina A | IU | Vitamine e colina | richiesto; **solo la vitamina A preformata**, in UI. Il retinolo in µg va in `vitamin_a_retinol_ug` e il beta-carotene in `beta_carotene_ug`: il motore li converte (1 UI = 0,3 µg di retinolo, usato solo se manca la preformata in UI; 1 mg di beta-carotene = 833 UI). Non sommare le UI «per uso umano» da carotenoidi |
 | `vitamin_d` | Vitamina D | IU | Vitamine e colina | richiesto; µg → UI × 40 automatico |
 | `vitamin_e` | Vitamina E | IU | Vitamine e colina | richiesto; da mg serve `form` |
 | `vitamin_b1` | Vitamina B1 / tiamina | mg | Vitamine e colina | richiesto |
@@ -176,9 +185,9 @@ Quattro cose distinte, mai dedotte l’una dall’altra:
 | `carbohydrate_by_difference` | Carboidrati per differenza (fonte) | g | Solo fonte | solo dato di fonte, non entra nei calcoli |
 | `c18_2_undifferentiated` | Acido grasso 18:2 non differenziato (fonte) | g | Solo fonte | solo dato di fonte, non entra nei calcoli |
 | `c20_4_undifferentiated` | Acido grasso 20:4 non differenziato (fonte) | g | Solo fonte | solo dato di fonte, non entra nei calcoli |
-| `vitamin_a_retinol_ug` | Retinolo (fonte, µg) | µg | Solo fonte | solo dato di fonte, non entra nei calcoli |
+| `vitamin_a_retinol_ug` | Retinolo (fonte, µg) | µg | Solo fonte | entra nei calcoli come vitamina A preformata (÷ 0,3) **solo se** `vitamin_a` manca |
 | `vitamin_a_carotenoid_iu` | Vitamina A da carotenoidi (UI per uso umano) | IU (carotenoids; human labeling) | Solo fonte | solo dato di fonte, non entra nei calcoli |
-| `beta_carotene_ug` | Beta-carotene (fonte) | µg | Solo fonte | solo dato di fonte, non entra nei calcoli |
+| `beta_carotene_ug` | Beta-carotene (fonte) | µg | Fonte, convertito | entra nella vitamina A del cane: mg × 833 UI (FEDIAF 2025 tab. VII-14) |
 
 ## 8. Controlli prima del salvataggio
 
@@ -196,20 +205,10 @@ Quattro cose distinte, mai dedotte l’una dall’altra:
 - Prodotti TEST (`test_…`, «[TEST] …»): non si creano né si modificano con l’importazione.
 - Prodotti reali già presenti: per aggiornarli usare **lo stesso id**; un nome uguale con un id diverso è un errore (niente duplicati).
 
-| id già presente | Nome |
-|---|---|
-| `beef_03` | Macinato di manzo crudo 3% grassi |
-| `beef_15` | Macinato di manzo crudo 15% grassi |
-| `beef_30` | Macinato di manzo crudo 30% grassi |
-| `oat_dry` | Avena in fiocchi secca non fortificata |
-| `carrot_cooked` | Carota cotta al vapore (proxy USDA bollita) |
-| `pumpkin_cooked` | Zucca cotta al vapore (proxy USDA bollita) |
-| `qdiet` | Q.Diet Compensa (standard, NON Crescita/Ultra) — integratore |
-| `omegor_vitality` | Omegor Vitality 1000 (capsula) — integratore |
-| `bone_meal` | Farina d’ossa (marca/prodotto NON confermato) — integratore |
+L’elenco completo degli identificativi già presenti (con dati, solo nome, vietati) è in `IDENTIFICATIVI_ESISTENTI.md`.
 
 Un file che usa uno di questi id **aggiorna** quel prodotto: includerlo solo se si vogliono davvero sostituirne i dati.
 
 ## 10. Modelli
 
-`alimenti.json` e `integratori.json` (allegati) contengono valori **di esempio** e mostrano tutti i casi: base per kg e per 100 g, dato non disponibile, zero documentato, stima, forma chimica, aggiunto/totale, capsula con massa del contenuto nota e massa lorda ignota. Sono stati importati senza errori e, reimportati, risultano invariati.
+`alimenti.json`, `integratori.json` e `alimenti_v2.json` (allegati) contengono valori **di esempio** e mostrano tutti i casi: base per kg e per 100 g, dato non disponibile, zero documentato, stima, forma chimica, aggiunto/totale, capsula con massa del contenuto nota e massa lorda ignota. Sono stati importati senza errori e, reimportati, risultano invariati. `alimenti_v2.json` mostra i campi del 22/10 (resa di cottura con fonte, tetto per alimento, avvertenza) su un riso secco e un fegato di esempio.

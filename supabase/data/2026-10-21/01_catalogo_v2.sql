@@ -6,7 +6,7 @@ insert into public.food_categories (id, parent_id, label_it, secreting_offal, so
 on conflict (id) do nothing;
 
 insert into public.unit_conversions (id, nutrient_id, from_unit, to_unit, form, form_label, factor, source) values
-  ('calcium_d_pantothenate', 'vitamin_b5', 'mg', 'mg', 'calcium_d_pantothenate', 'calcio D-pantotenato → acido pantotenico', 0.92, 'fattore 0,92 (FEDIAF 2025, tab. VII-14: 1 mg di calcio D-pantotenato = 0,92 mg di acido D-pantotenico) — conversione richiesta dalla specifica v2 del 21/10/2026 (§6); fattore da confermare sul PDF')
+  ('calcium_d_pantothenate', 'vitamin_b5', 'mg', 'mg', 'calcium_d_pantothenate', 'calcio D-pantotenato → acido pantotenico', 0.92, 'fattore 0,92 (FEDIAF 2025, tab. VII-14: 1 mg di calcio D-pantotenato = 0,92 mg di acido D-pantotenico) — conversione richiesta dalla specifica v2 del 21/10/2026 (§6), fattore confermato dall''utente il 22/10/2026; forma e valore originali conservati')
 on conflict (id) do nothing;
 
 insert into public.foods (id, name_it, category_id, subcategory_id, processing_state, edible_portion, kcal_me_per_100g, me_method, source_identifier, source_version, data_status, available_to_formulate, notes, forbidden, preparation_warning) values

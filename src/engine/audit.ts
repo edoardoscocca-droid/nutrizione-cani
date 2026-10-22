@@ -173,6 +173,12 @@ export interface AuditV2Extra {
   groups: GroupShare[];
   caps: CapCheck[];
   totalWeightG: number | null;
+  /** peso degli alimenti come pesati (stato del profilo) e della razione pronta (null se manca una resa documentata). */
+  weighedFoodsG?: number;
+  preparedFoodsG?: number | null;
+  yieldMissing?: string[];
+  /** in rosso solo per una dose oltre l'indicazione del produttore (nessun limite nutrizionale superato). */
+  doseOnlyFailure?: boolean;
   /** sostanza secca: [ipotesi prudente, massima possibile] in g. */
   dryMatterG: [number, number | null];
   moistureMissing: string[];

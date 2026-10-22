@@ -449,7 +449,7 @@ export function V2Card({ audit }: { audit: AuditResult }) {
         {v.groups.map((g) => line(g.color, g.message, g.id))}
         {v.caps.map((c) => line(c.color, c.message, `cap-${c.name}`))}
         <T small muted>
-          Peso totale {v.totalWeightG === null ? 'non calcolabile' : `${num(v.totalWeightG, 0)} g`}
+          Alimenti come pesati {num(v.weighedFoodsG ?? 0, 0)} g · razione pronta {v.preparedFoodsG == null ? `non determinabile (manca la resa di cottura per ${(v.yieldMissing ?? []).join(', ')})` : `${num(v.preparedFoodsG, 0)} g`}
           {v.caPStep ? ` · Ca:P al gradino ${v.caPStep}` : ''} · energia entro ±{num(v.energyTolerancePct, 1)}% · intervalli [PROPOSTA] modificabili in Impostazioni
         </T>
         {(audit.doseChecks ?? []).map((d) => line(d.color, d.message, `dose-${d.name}`))}

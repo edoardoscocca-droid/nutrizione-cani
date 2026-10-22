@@ -16,13 +16,18 @@ export interface MealGroup {
   subcategories: string[];
   minPctKcal: number;
   maxPctKcal: number;
+  /** il minimo è una preferenza (scostamento penalizzato), non un vincolo rigido (verdure, decisione del 22/10). */
+  minIsPreference?: boolean;
   source: string;
 }
 
 export interface DefaultCap {
   id: string;
   group?: string;
+  /** vale solo per questa sottocategoria (es. fegato): ha la precedenza sui predefiniti più generali. */
+  subcategory?: string;
   secretingOffal?: boolean;
+  excludeSubcategories?: string[];
   maxFreshWeightPct?: number;
   maxPctKcal?: number;
   source: string;
@@ -67,6 +72,10 @@ export interface FormulationConfig {
   legalSource: string;
   categoryWarnings: { subcategory: string; text: string }[];
   generalWarnings: string[];
+  /** alimenti pesati in uno stato diverso da quello servito (crudi o secchi da cuocere): serve la resa documentata. */
+  needsYield: { categories: string[]; processingStates: string[] };
+  /** nutrienti determinanti che devono essere documentati prima dell'uso nel generatore (prodotti concentrati). */
+  activationRequirements: { subcategory?: string; supplementClass?: string; nutrients: string[]; source: string }[];
 }
 
 /** Modifiche dell'utente da Impostazioni (solo intervalli dei gruppi ed energia). */
@@ -86,6 +95,8 @@ const raw = configJson as unknown as {
   diary: { trendMinDays: number; windows: number[] };
   maxRecipesPerDog: { value: number };
   warnings: { categories: { subcategory: string; text: string }[]; general: string[] };
+  preparedWeight: { needsYield: { categories: string[]; processingStates: string[] } };
+  activationRequirements: FormulationConfig['activationRequirements'];
 };
 
 export const DEFAULT_CONFIG: FormulationConfig = {
@@ -103,6 +114,8 @@ export const DEFAULT_CONFIG: FormulationConfig = {
   legalSource: (legalJson as { source: string }).source,
   categoryWarnings: raw.warnings.categories,
   generalWarnings: raw.warnings.general,
+  needsYield: raw.preparedWeight.needsYield,
+  activationRequirements: raw.activationRequirements,
 };
 
 export function resolveConfig(over?: FormulationOverrides | null): FormulationConfig {
@@ -139,16 +152,20 @@ export interface FoodCap {
 /** Tetto di quantità di un alimento: campo del catalogo se presente, altrimenti il predefinito del suo gruppo. */
 export function capOf(food: Food, cfg: FormulationConfig): FoodCap {
   const g = groupOf(food, cfg);
-  const defaults = cfg.defaultCaps.filter((c) => (c.group && c.group === g?.id) || (c.secretingOffal && isSecretingOffal(food)));
+  const defaults = cfg.defaultCaps.filter(
+    (c) => (c.group && c.group === g?.id) || (c.subcategory && c.subcategory === food.subcategoryId) || (c.secretingOffal && isSecretingOffal(food) && !(c.excludeSubcategories ?? []).includes(food.subcategoryId)),
+  );
   const pick = (k: 'maxFreshWeightPct' | 'maxPctKcal') => {
-    const ds = defaults.filter((d) => d[k] !== undefined);
+    // il predefinito della sottocategoria (es. fegato) ha la precedenza su quelli generali
+    const all = defaults.filter((d) => d[k] !== undefined);
+    const ds = all.some((d) => d.subcategory) ? all.filter((d) => d.subcategory) : all;
     return ds.length ? { v: Math.min(...ds.map((d) => d[k] as number)), src: ds.map((d) => d.source) } : null;
   };
   const fw = food.maxFreshWeightPct ?? null;
   const dfw = pick('maxFreshWeightPct');
   const dk = pick('maxPctKcal');
   const source: string[] = [];
-  if (fw !== null) source.push(`catalogo: ${food.name} ≤ ${fw}% del peso fresco`);
+  if (fw !== null) source.push(`catalogo: ${food.name} ≤ ${fw}% del peso degli alimenti`);
   else if (dfw) source.push(...dfw.src);
   if (dk) source.push(...dk.src);
   if (food.maxGPer1000Kcal !== null && food.maxGPer1000Kcal !== undefined) source.push(`catalogo: ${food.name} ≤ ${food.maxGPer1000Kcal} g per 1000 kcal`);
@@ -162,4 +179,36 @@ export function doseRuleOf(supplementId: string, cfg: FormulationConfig): DoseRu
 export function caPStepOf(ratio: number, cfg: FormulationConfig): CaPStep | null {
   const eps = 1e-9;
   return [...cfg.caPSteps].sort((a, b) => a.step - b.step).find((s) => ratio >= s.lower - eps && ratio <= s.upper + eps) ?? null;
+}
+
+const STATE_LABEL: Record<string, string> = {
+  raw: 'pesato crudo', cooked_boiled: 'pesato cotto (bollito)', cooked_steamed: 'pesato cotto al vapore', cooked_baked: 'pesato cotto al forno',
+  cooked_other: 'pesato cotto', dried: 'pesato secco', canned: 'pesato in scatola', raw_or_unspecified: 'stato di pesata non indicato',
+};
+export const weighingStateLabel = (f: Pick<Food, 'processingState'>) => STATE_LABEL[f.processingState] ?? f.processingState;
+
+/**
+ * Peso dell'alimento nella razione pronta per 1 g pesato. 1 se il profilo è già nello stato servito; la resa documentata
+ * per cereali, tuberi e legumi pesati crudi o secchi; null se la resa servirebbe ma manca (mai inventata).
+ */
+export function preparedFactor(f: Food, cfg: FormulationConfig): number | null {
+  if (f.preparedYield && f.preparedYield > 0) return f.preparedYield;
+  const needs = cfg.needsYield.categories.includes(f.categoryId) && cfg.needsYield.processingStates.includes(f.processingState);
+  return needs ? null : 1;
+}
+
+/** nutrienti determinanti non documentati per un prodotto concentrato (vuoto = utilizzabile). */
+export function missingActivationNutrients(p: { subcategoryId?: string; supplementClass?: string | null; nutrients: Record<string, { value: number | null } | undefined> }, cfg: FormulationConfig): string[] {
+  const reqs = cfg.activationRequirements.filter((r) => (r.subcategory && r.subcategory === p.subcategoryId) || (r.supplementClass && r.supplementClass === p.supplementClass));
+  const out: string[] = [];
+  for (const r of reqs) {
+    for (const n of r.nutrients) {
+      const known =
+        n === 'vitamin_a'
+          ? (p.nutrients.vitamin_a?.value ?? p.nutrients.vitamin_a_retinol_ug?.value ?? null) !== null && (p.nutrients.beta_carotene_ug?.value ?? null) !== null
+          : (p.nutrients[n]?.value ?? null) !== null;
+      if (!known && !out.includes(n)) out.push(n);
+    }
+  }
+  return out;
 }

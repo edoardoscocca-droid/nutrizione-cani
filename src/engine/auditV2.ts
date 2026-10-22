@@ -7,7 +7,7 @@
 // Le ricette salvate con la verifica precedente restano come sono (la versione v1 non cambia).
 
 import { auditRecipe, EAA, itemDataList, needsBasisConfirmation, type AuditInput, type AuditResult, type CapCheck, type CheckRow, type DoseCheck, type GroupShare, type LegalCheck, type LimitCheck, type RecipeStatus } from './audit';
-import { capOf, caPStepOf, DEFAULT_CONFIG, doseRuleOf, groupOf, type FormulationConfig } from './configV2';
+import { capOf, caPStepOf, DEFAULT_CONFIG, doseRuleOf, groupOf, preparedFactor, weighingStateLabel, type FormulationConfig } from './configV2';
 import { doseRangeFor, weightSpan } from './doseGuide';
 import { itemValue, type ItemData, type Total } from './totals';
 import type { Color, Food, NutrientLimit, Supplement, ValueStatus } from './types';
@@ -334,6 +334,7 @@ export function auditRecipeV2(input: AuditV2Input): AuditResult {
 
   // ── dosi degli integratori (§5) ──
   const doseChecks: DoseCheck[] = [];
+  const doseOver: string[] = [];
   const doseSteps: NonNullable<AuditResult['v2']>['doseSteps'] = [];
   for (const it of active) {
     if (it.kind !== 'supplement') continue;
@@ -357,7 +358,13 @@ export function auditRecipeV2(input: AuditV2Input): AuditResult {
         doseChecks.push({ name: s.name, qty: it.qty, unit: u, range: r, color: 'yellow', message: `${s.name}: ${fmt(it.qty)} ${u}/die${per(it.qty)} supera di poco l’indicazione del produttore (+${fmt(Math.round(over * 10) / 10)}%, gradino 2 fino a +${rule.marginPct}%; ${where}). Scelta operativa dell’utente, non un margine di sicurezza dimostrato.` });
         doseSteps.push({ name: s.name, step: 2, extrapolated: !!r.extrapolated });
       } else {
-        doseChecks.push({ name: s.name, qty: it.qty, unit: u, range: r, color: 'red', message: `${s.name}: ${fmt(it.qty)} ${u}/die${per(it.qty)} supera il massimo del produttore di +${fmt(Math.round(over * 10) / 10)}% (${where})${rule ? `, oltre il gradino 2 (+${rule.marginPct}%)` : ''}. Serve una valutazione veterinaria.` });
+        // dose del produttore e margine operativo sono cose distinte dai limiti nutrizionali e legali dei nutrienti
+        const overText = `+${fmt(Math.round(over * 10) / 10)}%`;
+        doseOver.push(`${s.name} ${fmt(it.qty)} ${u}/die${per(it.qty)}: ${overText} sul massimo indicato dal produttore (${fmt(r.max)} ${u}/die${r.extrapolated ? ', estrapolato' : ''}); margine operativo configurato per il generatore ${rule ? `+${rule.marginPct}%, superato anch’esso` : 'nessuno per questo prodotto'}`);
+        doseChecks.push({
+          name: s.name, qty: it.qty, unit: u, range: r, color: 'red',
+          message: `${s.name}: ${fmt(it.qty)} ${u}/die${per(it.qty)} supera la dose massima indicata dal produttore di ${overText} (${where})${rule ? ` e il margine operativo configurato (+${rule.marginPct}%)` : ''}. È l’indicazione d’uso del produttore, non un limite nutrizionale e non una prova di tossicità: i limiti dei singoli nutrienti si controllano a parte. Serve una valutazione veterinaria.`,
+        });
         doseSteps.push({ name: s.name, step: null, extrapolated: !!r.extrapolated });
       }
     } else if (s.maxDailyUnits !== null && s.maxDailySource) {
@@ -383,22 +390,38 @@ export function auditRecipeV2(input: AuditV2Input): AuditResult {
     const grams = its.reduce((a, it) => a + it.qty, 0);
     const inRange = pct !== null && pct >= g.minPctKcal - 1e-6 && pct <= g.maxPctKcal + 1e-6;
     const color: Color = !its.length && g.minPctKcal > 0 ? 'yellow' : pct === null ? 'grey' : inRange ? 'green' : 'yellow';
+    const range = g.minIsPreference ? `${g.minPctKcal}% preferito, al più ${g.maxPctKcal}%` : `intervallo proposto ${g.minPctKcal}–${g.maxPctKcal}%`;
+    const belowPref = g.minIsPreference && pct !== null && pct < g.minPctKcal - 1e-6;
     const message = !its.length
-      ? g.minPctKcal > 0 ? `${g.label}: nessun alimento del gruppo (intervallo proposto ${g.minPctKcal}–${g.maxPctKcal}% kcal).` : `${g.label}: nessuno.`
-      : `${g.label}: ${fmt(Math.round(grams))} g, ${fmt(Math.round(k))} kcal${pct !== null ? ` = ${fmt(Math.round(pct * 10) / 10)}%` : ''} (intervallo proposto ${g.minPctKcal}–${g.maxPctKcal}%)${inRange ? '' : ' — fuori dall’intervallo'}.`;
+      ? g.minPctKcal > 0 ? `${g.label}: nessun alimento del gruppo (${range} delle kcal${g.minIsPreference ? '; preferenza, non vincolo' : ''}).` : `${g.label}: nessuno.`
+      : `${g.label}: ${fmt(Math.round(grams))} g come pesati, ${fmt(Math.round(k))} kcal${pct !== null ? ` = ${fmt((belowPref ? Math.floor(pct * 100) : Math.round(pct * 100)) / 100)}%` : ''} (${range})${inRange ? '' : belowPref ? ' — sotto la preferenza (non è un vincolo)' : ' — fuori dall’intervallo'}.`;
     return { id: g.id, label: g.label, kcal: k, pct, grams, foods: its.map((it) => foods[it.id].name), range: [g.minPctKcal, g.maxPctKcal], color, message };
   });
+  // tetti in % del peso: sul peso degli ALIMENTI della razione pronta (senza acqua aggiunta né integratori); per cereali,
+  // tuberi e legumi pesati crudi o secchi serve la resa documentata, altrimenti il controllo non è determinabile
+  const activeFoods = active.filter((it) => it.kind === 'food');
+  const weighedFoods = activeFoods.reduce((a, it) => a + it.qty, 0);
+  const yieldMissing = activeFoods.filter((it) => preparedFactor(foods[it.id], cfg) === null).map((it) => `${foods[it.id].name} (${weighingStateLabel(foods[it.id])})`);
+  const preparedFoods = yieldMissing.length ? null : activeFoods.reduce((a, it) => a + it.qty * (preparedFactor(foods[it.id], cfg) as number), 0);
   const caps: CapCheck[] = [];
+  let capUndetermined = false;
   for (const it of active) {
     if (it.kind !== 'food') continue;
     const f = foods[it.id];
     const cap = capOf(f, cfg);
     const parts: string[] = [];
     let over = false;
-    if (cap.maxFreshWeightPct !== null && totalWeight > 0) {
-      const v = (100 * it.qty) / totalWeight;
-      over ||= v > cap.maxFreshWeightPct + 1e-6;
-      parts.push(`${fmt(Math.round(v * 10) / 10)}% del peso (tetto ${cap.maxFreshWeightPct}%)`);
+    if (cap.maxFreshWeightPct !== null && weighedFoods > 0) {
+      const self = it.qty * (preparedFactor(f, cfg) ?? 1);
+      if (preparedFoods !== null) {
+        const v = (100 * self) / preparedFoods;
+        over ||= v > cap.maxFreshWeightPct + 1e-6;
+        parts.push(`${fmt(Math.round(v * 10) / 10)}% del peso degli alimenti della razione pronta (tetto ${cap.maxFreshWeightPct}%; ${weighingStateLabel(f)})`);
+      } else {
+        capUndetermined = true;
+        const v = (100 * self) / weighedFoods;
+        parts.push(`tetto del ${cap.maxFreshWeightPct}% non verificabile: manca la resa di cottura documentata per ${names(yieldMissing)}; sul peso come pesato sarebbe ${fmt(Math.round(v * 10) / 10)}%`);
+      }
     }
     if (cap.maxPctKcal !== null && kcal) {
       const v = (100 * foodKcal(it)) / kcal;
@@ -410,7 +433,7 @@ export function auditRecipeV2(input: AuditV2Input): AuditResult {
       over ||= v > cap.maxGPer1000Kcal + 1e-6;
       parts.push(`${fmt(Math.round(v))} g per 1000 kcal (tetto ${cap.maxGPer1000Kcal})`);
     }
-    if (parts.length) caps.push({ name: f.name, color: over ? 'yellow' : 'green', message: `${f.name}: ${parts.join(', ')}${over ? ' — oltre il tetto proposto' : ''}.` });
+    if (parts.length) caps.push({ name: f.name, color: over ? 'yellow' : capUndetermined && cap.maxFreshWeightPct !== null ? 'grey' : 'green', message: `${f.name}: ${parts.join(', ')}${over ? ' — oltre il tetto' : ''}.` });
   }
 
   // ── blocchi, avvisi e stato ──
@@ -453,6 +476,10 @@ export function auditRecipeV2(input: AuditV2Input): AuditResult {
     groups.some((g) => g.color !== 'green' && !(g.foods.length === 0 && g.range[0] === 0)) ||
     caps.some((c) => c.color !== 'green');
   const status: RecipeStatus = aRed ? 'FAILS_OFFICIAL_LIMITS' : blockers.length ? 'INSUFFICIENT_DATA' : bIssue ? 'PREFERENCES_VIOLATED' : 'VERIFIED_AVAILABLE_CHECKS';
+  // il superamento della dose del produttore si descrive per quello che è, non come «limite ufficiale»
+  const nutrientRed = aChecks.some((x) => x.c.color === 'red') || forbidden.length > 0 || energyBad;
+  const doseText = doseOver.length ? `Dose oltre l’indicazione del produttore — ${doseOver.join('; ')}. Non è un limite nutrizionale né una prova di tossicità: serve una valutazione veterinaria.` : '';
+  const statusLabel = status === 'FAILS_OFFICIAL_LIMITS' && !nutrientRed && doseText ? doseText : STATUS_LABEL_V2[status] + (status === 'FAILS_OFFICIAL_LIMITS' && doseText ? `; inoltre: ${doseText}` : '');
 
   // ── riepilogo per l'utente ──
   const below = [
@@ -479,7 +506,7 @@ export function auditRecipeV2(input: AuditV2Input): AuditResult {
   return {
     ...base,
     status,
-    statusLabel: STATUS_LABEL_V2[status],
+    statusLabel,
     summary,
     additional,
     doseChecks,
@@ -493,6 +520,10 @@ export function auditRecipeV2(input: AuditV2Input): AuditResult {
       groups,
       caps,
       totalWeightG: massUnknown ? null : totalWeight,
+      weighedFoodsG: weighedFoods,
+      preparedFoodsG: preparedFoods,
+      yieldMissing,
+      doseOnlyFailure: status === 'FAILS_OFFICIAL_LIMITS' && !nutrientRed && doseOver.length > 0,
       dryMatterG: [dmLow, massUnknown ? null : dmHigh],
       moistureMissing,
       caPStep,

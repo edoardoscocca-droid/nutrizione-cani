@@ -1,0 +1,52 @@
+{
+  "foods": [
+    {
+      "id": "esempio_riso_secco",
+      "name_it": "ESEMPIO Riso bianco secco",
+      "category": "starch",
+      "subcategory": "cereal",
+      "processing_state": "dried",
+      "preparation": "pesato secco, poi bollito in acqua senza sale",
+      "edible_portion": "100% parte edibile",
+      "source": "ESEMPIO Banca dati alimenti, scheda 2222",
+      "source_version": "2025-01",
+      "data_status": "unverified",
+      "available_to_formulate": false,
+      "prepared_yield": 2.8,
+      "prepared_yield_source": "ESEMPIO pesata documentata: 100 g secchi → 280 g cotti scolati",
+      "notes": "VALORI DI ESEMPIO: mostrano solo il formato, non sono dati reali.",
+      "nutrients": {
+        "protein": { "value": 7.0, "unit": "g", "status": "measured" },
+        "fat": { "value": 0.6, "unit": "g", "status": "measured" },
+        "carbohydrate_available": { "value": 78, "unit": "g", "status": "calculated", "method": "per differenza meno fibra" },
+        "fiber": { "value": 1.2, "unit": "g", "status": "measured" },
+        "moisture": { "value": 12, "unit": "g", "status": "measured" },
+        "linoleic_acid": { "value": "NA" },
+        "calcium": { "value": 10, "unit": "mg", "status": "measured" },
+        "phosphorus": { "value": 110, "unit": "mg", "status": "measured" }
+      }
+    },
+    {
+      "id": "esempio_fegato_bovino_crudo",
+      "name_it": "ESEMPIO Fegato bovino crudo",
+      "category": "animal",
+      "subcategory": "secreting_offal_liver",
+      "processing_state": "raw",
+      "preparation": "pesato crudo",
+      "source": "ESEMPIO Banca dati alimenti, scheda 3333",
+      "data_status": "unverified",
+      "available_to_formulate": false,
+      "max_fresh_weight_pct": 4,
+      "preparation_warning": "ESEMPIO avvertenza di preparazione",
+      "notes": "VALORI DI ESEMPIO. Prodotto concentrato: vitamina A (preformata o retinolo, e beta-carotene) e rame vanno documentati prima dell'uso.",
+      "nutrients": {
+        "protein": { "value": 20, "unit": "g", "status": "measured" },
+        "fat": { "value": 3.6, "unit": "g", "status": "measured" },
+        "moisture": { "value": 71, "unit": "g", "status": "measured" },
+        "vitamin_a_retinol_ug": { "value": 4900, "unit": "µg", "status": "measured" },
+        "beta_carotene_ug": { "value": 230, "unit": "µg", "status": "measured" },
+        "copper": { "value": 9.8, "unit": "mg", "status": "measured" }
+      }
+    }
+  ]
+}

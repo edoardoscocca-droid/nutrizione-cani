@@ -8,7 +8,8 @@ import type { DiaryEntry, Recipe } from '../src/data/model';
 import { analysisVersion, assertCanAddRecipe, snapshotOf, versionFromResult } from '../src/data/recipeService';
 import { diaryToRow, rowToDiary } from '../src/data/supabaseRepository';
 import { auditRecipeV2 } from '../src/engine/auditV2';
-import { DEFAULT_CONFIG, ENGINE_VERSION_V2, resolveConfig } from '../src/engine/configV2';
+import { capOf, DEFAULT_CONFIG, ENGINE_VERSION_V2, missingActivationNutrients, resolveConfig } from '../src/engine/configV2';
+import { parseImport, planImport } from '../src/data/catalogImport';
 import { dateRange, dayProfileOf, periodSummary, splitIntoMeals, type DayNutrient, type DayProfile, type DiaryDay } from '../src/engine/diary';
 import { doseRangeFor } from '../src/engine/doseGuide';
 import { formulateV2 } from '../src/engine/formulateV2';
@@ -65,11 +66,35 @@ describe('A. menù positivi obbligatori (900, 1.340, 2.700 kcal)', () => {
       });
     }
   }
-  test('combinazione in conflitto con i valori [PROPOSTA] (riso pesato secco): l’app lo dice, non forza quantità', async () => {
+  test('riso pesato secco (decisione del 22/10): nessun conflitto artificiale, tetto di peso non verificabile senza resa', async () => {
     const r = await formulateV2(menuInput(cat, ENERGY_PROFILES[1], CONFLICT_SET));
-    expect(r.outcome).toBe('infeasible');
-    expect(r.items).toEqual([]);
-    expect(r.conflicts.map((c) => c.label).join(' ')).toMatch(/Verdure: almeno 3% delle kcal/);
+    expect(r.outcome).toBe('solved');
+    const chk = practical(r);
+    expect(chk.reasons).toEqual([]);
+    const carrot = r.audit!.v2!.caps.find((c) => /Carota/.test(c.name))!;
+    expect(carrot.color).toBe('grey');
+    expect(carrot.message).toMatch(/non verificabile: manca la resa di cottura documentata per \[TEST\] Riso \(fittizio\) \(pesato crudo\)/);
+    expect(r.notes.join(' ')).toMatch(/la resa non viene inventata/);
+    expect(r.audit!.v2!.preparedFoodsG).toBeNull();
+    // con una resa documentata il tetto torna rigido e verificabile sul peso della razione pronta
+    const inp = menuInput(cat, ENERGY_PROFILES[1], CONFLICT_SET);
+    const cooked = { ...inp, foods: inp.foods.map((f) => (f.food.id === 'test_rice' ? { food: { ...f.food, preparedYield: 2.5, preparedYieldSource: 'resa di prova fittizia' } } : f)) };
+    const r2 = await formulateV2(cooked);
+    expect(r2.audit!.v2!.preparedFoodsG).toBeGreaterThan(r2.audit!.v2!.weighedFoodsG!);
+    expect(r2.audit!.v2!.caps.find((c) => /Carota/.test(c.name))!.color).toBe('green');
+  });
+
+  test('verdure: il 3% delle kcal è una preferenza (non vincolo); il minimo pratico della porzione resta', async () => {
+    const r = await formulateV2(menuInput(cat, ENERGY_PROFILES[1], MENU_SETS[0]));
+    const g = r.audit!.v2!.groups.find((x) => x.id === 'vegetable')!;
+    expect(g.message).toMatch(/3% preferito/);
+    expect(r.constraints.find((c) => /Verdure: almeno 3%/.test(c.label))!.hardness).toBe('soft');
+    const pumpkin = r.items.find((i) => i.id === 'pumpkin_cooked')!.qty;
+    expect(pumpkin === 0 || pumpkin >= 5).toBe(true); // mai quantità simboliche
+    // senza verdure il menù esce comunque e la preferenza non raggiunta è dichiarata
+    const noVeg = await formulateV2(menuInput(cat, ENERGY_PROFILES[1], { foods: ['test_lamb', 'test_potato'], supplements: ['test_multi', 'test_bone_meal'] }));
+    expect(noVeg.outcome).toBe('solved');
+    expect(noVeg.notes.join(' ')).toMatch(/Verdure: nessun alimento selezionato — la preferenza di almeno 3%/);
   });
 });
 
@@ -78,7 +103,8 @@ describe('B. Ker e Garmr (dati reali)', () => {
     const r = await formulateV2(realInput(cat, kerDog(), KER_FOODS, KER_SUPPS));
     expect(r.outcome).toBe('solved');
     const a = r.audit!;
-    for (const c of a.v2!.caps) expect(c.color).toBe('green');
+    // avena pesata secca senza resa documentata: il tetto in % del peso è segnalato come non verificabile, non inventato
+    for (const c of a.v2!.caps) expect(c.color === 'green' || (c.color === 'grey' && /resa di cottura/.test(c.message))).toBe(true);
     for (const g of a.v2!.groups) expect(g.color === 'green' || g.foods.length === 0).toBe(true);
     const q = r.items.find((i) => i.id === 'qdiet')!.qty;
     const range = doseRangeFor(supp('qdiet').doseGuide, 30.2)!;
@@ -86,8 +112,9 @@ describe('B. Ker e Garmr (dati reali)', () => {
     // linoleico sconosciuto per carne, avena e carota: resta grigio, non diventa un vincolo da compensare
     expect(a.rows.find((x) => x.metric === 'linoleic_acid')!.color).toBe('grey');
     expect(r.notes.join(' ')).toMatch(/non usati dal generatore per dati mancanti[^.]*Acido linoleico/);
+    // la preferenza sul peso come pesato è rispettata (denominatore: soli alimenti, senza integratori)
     const carrot = r.items.find((i) => i.id === 'carrot_cooked')!.qty;
-    expect(carrot).toBeLessThanOrEqual(0.2 * a.v2!.totalWeightG! + 1e-6);
+    expect(carrot).toBeLessThanOrEqual(0.2 * a.v2!.weighedFoodsG! + 1e-6);
     expect(a.status).not.toBe('FAILS_OFFICIAL_LIMITS');
   });
 
@@ -423,3 +450,56 @@ describe('ricette, configurazione e dati', () => {
     expect(activated(cat, ['x']).foods.length).toBe(cat.foods.length);
   });
 });
+
+describe('decisioni del 22/10/2026', () => {
+  test('fegato ≤ 5% del peso degli alimenti, altre frattaglie secernenti ≤ 10%, cuore senza tetto; nessuno attribuito a FEDIAF', async () => {
+    expect(capOf(food('test_beef_liver'), DEFAULT_CONFIG).maxFreshWeightPct).toBe(5);
+    expect(capOf(food('test_beef_kidney'), DEFAULT_CONFIG).maxFreshWeightPct).toBe(10);
+    expect(capOf(food('test_beef_spleen'), DEFAULT_CONFIG).maxFreshWeightPct).toBe(10);
+    expect(capOf(food('test_beef_heart'), DEFAULT_CONFIG).maxFreshWeightPct).toBeNull();
+    expect(capOf(food('test_beef_liver'), DEFAULT_CONFIG).source.join(' ')).toMatch(/Non è un limite FEDIAF né una garanzia di sicurezza/);
+    expect(capOf(food('test_beef_kidney'), DEFAULT_CONFIG).source.join(' ')).toMatch(/Non attribuito a FEDIAF/);
+    const r = await formulateV2(menuInput(cat, ENERGY_PROFILES[1], { foods: ['test_beef', 'test_beef_liver', 'test_potato', 'pumpkin_cooked'], supplements: ['test_multi', 'test_bone_meal'] }));
+    expect(r.outcome).toBe('solved');
+    const liver = r.items.find((i) => i.id === 'test_beef_liver')!.qty;
+    expect(liver).toBeLessThanOrEqual(0.05 * r.audit!.v2!.weighedFoodsG! + 1e-6); // tutti gli alimenti qui sono già nello stato servito
+    expect(r.audit!.v2!.caps.find((c) => /Fegato/.test(c.name))!.message).toMatch(/pesato crudo/);
+  });
+
+  test('prodotti concentrati: senza i nutrienti determinanti documentati (fegato: vitamina A e rame; alghe: iodio) non si usano', async () => {
+    const liverNoCopper: Food = { ...food('test_beef_liver'), id: 'liver_nocu', name: '[TEST] Fegato senza rame', nutrients: { ...food('test_beef_liver').nutrients, copper: { value: null, status: 'unknown' } } };
+    expect(missingActivationNutrients(liverNoCopper, DEFAULT_CONFIG)).toEqual(['copper']);
+    const alga: Supplement = { ...supp('test_multi'), id: 'alga', name: '[TEST] Alga', supplementClass: 'iodine', nutrients: { ...supp('test_multi').nutrients, iodine: { value: null, status: 'unknown' } } };
+    expect(missingActivationNutrients(alga, DEFAULT_CONFIG)).toEqual(['iodine']);
+    const inp = menuInput(cat, ENERGY_PROFILES[1], MENU_SETS[0]);
+    const r = await formulateV2({ ...inp, foods: [...inp.foods, { food: liverNoCopper }], supplements: [...inp.supplements, { supplement: alga }] });
+    expect(r.excluded.map((e) => e.id).sort()).toEqual(['alga', 'liver_nocu']);
+    expect(r.excluded[0].reason).toMatch(/da documentare prima dell'uso/);
+    // i prodotti presenti solo come nomi (senza profilo) restano esclusi dalla generazione
+    const names = await formulateV2({ ...inp, foods: [...inp.foods, { food: { ...food('lamb_meat'), availableToFormulate: true } }] });
+    expect(names.excluded.some((e) => e.id === 'lamb_meat' && /da completare/.test(e.reason))).toBe(true);
+  });
+
+  test('dose del QDiet nella prescrizione di Ker: descritta come superamento dell’indicazione del produttore e del margine, non come limite ufficiale', () => {
+    const a = auditFixed(realInput(cat, kerDog(), KER_FOODS, KER_SUPPS), KER_PRESCRIPTION);
+    expect(a.v2!.doseOnlyFailure).toBe(true);
+    expect(a.statusLabel).not.toMatch(/limiti ufficiali/);
+    expect(a.statusLabel).toMatch(/Dose oltre l’indicazione del produttore — Q\.Diet .*13 g\/die \(0,43 g\/kg\): \+43,5% sul massimo indicato dal produttore \(9,06 g\/die\); margine operativo configurato per il generatore \+10%, superato anch’esso/);
+    expect(a.statusLabel).toMatch(/non una prova di tossicità|né una prova di tossicità/);
+    const d = a.doseChecks!.find((x) => x.name.startsWith('Q.Diet'))!;
+    expect(d.color).toBe('red'); // l'avviso resta
+    expect(d.message).toMatch(/non un limite nutrizionale e non una prova di tossicità/);
+    // i valori «aggiunti» restano aggiunti (mai trasformati in totali), le lacune restano sconosciute
+    expect(supp('qdiet').nutrients.zinc.declared).toBe('added');
+    expect(supp('qdiet').nutrients.fiber.value).toBeNull();
+  });
+
+  test('resa di preparazione: importabile solo con fonte; mai inventata', () => {
+    const plan = (o: object) => planImport(parseImport(JSON.stringify({ foods: [{ id: 'riso_prova', name_it: 'Riso prova', category: 'starch', subcategory: 'cereal', processing_state: 'dried', ...o }] }), 'foods', cat.nutrients), cat, 'x');
+    expect(plan({ prepared_yield: 2.8 }).items[0].errors.map((e) => e.message).join(' ')).toMatch(/senza fonte/);
+    const ok = plan({ prepared_yield: 2.8, prepared_yield_source: 'pesata documentata' });
+    expect(ok.items[0].errors).toEqual([]);
+    expect((ok.items[0].next as Food).preparedYield).toBe(2.8);
+  });
+});
+
