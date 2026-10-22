@@ -63,7 +63,7 @@ export class LocalRepository implements Repository {
   }
 
   userLabel() {
-    return this.memoryOnly ? 'Prova (dati non salvati su questo dispositivo)' : 'Prova su questo dispositivo';
+    return this.memoryOnly ? 'Memoria del telefono non disponibile (dati non salvati)' : 'Questo iPhone';
   }
 
   async isAdmin() {

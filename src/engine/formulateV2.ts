@@ -231,7 +231,7 @@ export async function formulateV2(input: FormulationInputV2): Promise<Formulatio
       suggestionDetails: details,
       message: conflicts.length
         ? 'Nessun menù rispetta tutto il livello A con questi ingredienti, nemmeno con i gradini consentiti: i vincoli elencati sono incompatibili. Vedi cosa servirebbe.'
-        : 'Nessun menù rispetta tutto il livello A con questi ingredienti (conflitto dovuto alle dosi intere o agli arrotondamenti).',
+        : 'Nessun menù rispetta tutto il livello A con questi ingredienti. La diagnosi automatica non è riuscita a isolare il vincolo responsabile: di solito è la combinazione di più limiti (per esempio rapporto Ca:P e massimo di fosforo), oppure le dosi intere. Prova ad aggiungere o cambiare un alimento o un integratore.',
     });
   }
 

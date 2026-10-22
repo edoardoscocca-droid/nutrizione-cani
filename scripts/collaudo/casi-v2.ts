@@ -1,7 +1,7 @@
 // Casi dei collaudi della specifica v2 del 21/10/2026 (§10), condivisi da tests/spec-v2-2026-10-21.test.ts e da
-// scripts/collaudo/collaudi-v2.ts. Catalogo = modalità prova con tutte le importazioni incluse (dati reali dove ci
-// sono) + dati di prova FITTIZI [TEST] dove i dati reali mancano (agnello, pollo, merluzzo, sardine, patata, riso, olio):
-// i menù positivi del punto A non possono ancora usare dati reali perché quegli alimenti in catalogo sono solo nomi.
+// scripts/collaudo/collaudi-v2.ts. Catalogo = archivio locale dell'app con tutte le importazioni incluse (dal 22/10 il
+// catalogo unico con dati reali) + dati di prova FITTIZI [TEST], nascosti nell'app e usati solo dai test automatici
+// (MENU_SETS). Gli stessi menù con dati reali sono in REAL_MENU_SETS.
 // Nessuna ricetta, prescrizione o dato del catalogo viene modificato: le attivazioni valgono solo per la copia in memoria.
 
 import { applyPreset, presetFor } from '../../src/data/formulationPresets';
@@ -43,6 +43,14 @@ export const MENU_SETS: { id: string; label: string; foods: string[]; supplement
   { id: 'A3', label: 'pesce bianco + patata + zucca', foods: ['test_cod', 'test_potato', 'pumpkin_cooked', 'test_sunflower_oil'], supplements: ['test_multi', 'test_bone_meal', 'test_fish_oil_caps'] },
   { id: 'A3b', label: 'sardine + patata + carota', foods: ['test_sardine', 'test_potato', 'carrot_cooked'], supplements: ['test_multi', 'test_bone_meal'] },
 ];
+/** Gli stessi menù con i dati reali del catalogo unico del 22/10 e gli integratori reali (QDiet, farina d'ossa, Omegor). */
+export const REAL_SUPPS = ['qdiet', 'bone_meal', 'omegor_vitality'];
+export const REAL_MENU_SETS: { id: string; label: string; foods: string[]; supplements: string[] }[] = [
+  { id: 'R1', label: 'agnello magro + zucca + patata + olio di girasole', foods: ['lamb_lean_raw', 'pumpkin_cooked', 'potato_yellow_cooked', 'sunflower_oil'], supplements: REAL_SUPPS },
+  { id: 'R2', label: 'petto di pollo + riso bianco cotto + carota + olio di girasole', foods: ['chicken_breast_raw', 'rice_white_cooked', 'carrot_cooked', 'sunflower_oil'], supplements: REAL_SUPPS },
+  { id: 'R3', label: 'merluzzo + patata + zucca + olio di girasole', foods: ['cod_raw', 'potato_yellow_cooked', 'pumpkin_cooked', 'sunflower_oil'], supplements: REAL_SUPPS },
+  { id: 'R4', label: 'sardine al naturale + patata + carota', foods: ['sardine_canned_water', 'potato_yellow_cooked', 'carrot_cooked'], supplements: ['qdiet', 'bone_meal'] },
+];
 /** riso pesato secco: prima del 22/10 era in conflitto con verdure ≥ 3% e ≤ 20% del peso; ora il 3% è una preferenza e il
  *  tetto di peso, senza resa di cottura documentata, non è determinabile (segnalato, non forzato). */
 export const CONFLICT_SET = { id: 'A3c', label: 'sardine + riso (pesato secco) + carota', foods: ['test_sardine', 'test_rice', 'carrot_cooked'], supplements: ['test_multi', 'test_bone_meal'] };
@@ -54,6 +62,7 @@ export function syntheticDog(kcal: number, weightKg: number, idealKg: number, ca
 }
 
 export function menuInput(cat: CatalogState, profile: (typeof ENERGY_PROFILES)[number], set: { foods: string[]; supplements: string[] }, simulate = false): FormulationInputV2 {
+  const real = ![...set.foods, ...set.supplements].some((id) => id.startsWith('test_'));
   const c = activated(cat, [...set.foods, ...set.supplements]);
   return {
     dog: syntheticDog(profile.kcal, profile.weightKg, profile.idealKg, cat),
@@ -63,7 +72,8 @@ export function menuInput(cat: CatalogState, profile: (typeof ENERGY_PROFILES)[n
     limits: activeLimits(cat),
     dietMoisture: null,
     settings: DEFAULT_SETTINGS,
-    catalogForSuggestions: { foods: cat.foods, supplements: cat.supplements },
+    // con i dati reali i suggerimenti non propongono i prodotti di prova [TEST] (come nell'app)
+    catalogForSuggestions: real ? { foods: cat.foods.filter((f) => f.dataStatus !== 'test_fixture'), supplements: cat.supplements.filter((x) => x.status !== 'test_fixture') } : { foods: cat.foods, supplements: cat.supplements },
     config: DEFAULT_CONFIG,
     simulateSuggestions: simulate,
   };

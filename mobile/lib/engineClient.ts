@@ -1,17 +1,18 @@
 // Il calcolo dei grammi (ottimizzazione + verifica) avviene sul server di calcolo, con lo stesso motore dell'app web.
+import { isTestFixture } from '../../src/data/catalogVisibility';
 import type { FormulationInput, FormulationResult, PreliminaryResult } from '../../src/engine/formulate';
 
 export const ENGINE_URL = (process.env.EXPO_PUBLIC_ENGINE_URL ?? 'https://nutrizione-cani-motore-q58c.onrender.com').replace(/\/$/, '');
 
-/** Il catalogo per i suggerimenti si invia solo con i prodotti che hanno dati (anche non ancora attivati: §3.6). */
+/** Il catalogo per i suggerimenti si invia solo con i prodotti che hanno dati (anche non ancora attivati: §3.6), senza i dati di prova [TEST]. */
 function slim(input: FormulationInput): FormulationInput {
   const c = input.catalogForSuggestions;
   return c
     ? {
         ...input,
         catalogForSuggestions: {
-          foods: c.foods.filter((f) => !f.forbidden && f.kcalMePer100g !== null && Object.values(f.nutrients).some((v) => v.value !== null)),
-          supplements: c.supplements.filter((s) => s.status !== 'missing' && Object.values(s.nutrients).some((v) => v.value !== null)),
+          foods: c.foods.filter((f) => !f.forbidden && !isTestFixture(f) && f.kcalMePer100g !== null && Object.values(f.nutrients).some((v) => v.value !== null)),
+          supplements: c.supplements.filter((s) => s.status !== 'missing' && !isTestFixture(s) && Object.values(s.nutrients).some((v) => v.value !== null)),
         },
       }
     : input;

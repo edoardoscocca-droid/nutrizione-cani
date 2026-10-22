@@ -4,7 +4,7 @@ import { KCAL_SOURCE_LABEL } from '../../../src/data/model';
 import { staleFor } from '../../../src/data/recipeService';
 import { num } from '../../../src/ui/format';
 import { useApp, useData } from '../../lib/AppContext';
-import { Badge, Box, Button, Card, ErrorBox, FONTS, Row, Screen, T, useTheme } from '../../lib/ui';
+import { Box, Button, Card, ErrorBox, FONTS, Row, Screen, T, useTheme } from '../../lib/ui';
 
 export default function DogsScreen() {
   const { catalog, repo } = useApp();
@@ -29,8 +29,7 @@ export default function DogsScreen() {
       : [];
   return (
     <Screen>
-      {repo?.mode === 'local' && <Badge label="PROVA · dati su questo telefono" color="orange" />}
-      {repo?.mode === 'local' && <T small muted>Le ricette e il diario di Prova non vengono copiati nell’account: i due archivi sono separati (sincronizzazione non ancora disponibile).</T>}
+      {repo?.mode === 'local' && <T small muted>Cani, ricette e diario sono salvati su questo iPhone; i grammi si calcolano sul server di calcolo.</T>}
       <ErrorBox error={error} />
       {stale.length > 0 && (
         <Box color="orange">

@@ -7,6 +7,7 @@ import type { FormulationInput, FormulationResult, PreliminaryResult } from '../
 import type { ItemConstraint, RecipeItem } from '../../../../src/engine/types';
 import { auditRecipeV2 } from '../../../../src/engine/auditV2';
 import type { AuditResult } from '../../../../src/engine/audit';
+import { listedInApp } from '../../../../src/data/catalogVisibility';
 import { MAX_RECIPES_PER_DOG, type Recipe } from '../../../../src/data/model';
 import { PROCESSING_LABEL } from '../../../../src/data/packageCatalog';
 import { activeRecipeCount, analysisVersion, assertCanAddRecipe, buildInput, costOf, digestibilityRef, selectionFromSnapshot, versionFromResult, type Selection } from '../../../../src/data/recipeService';
@@ -58,14 +59,16 @@ export default function NewRecipe() {
     setName(`${data.source.recipe.name} (copia)`);
   }
 
+  // i prodotti già scelti (es. copia di una ricetta) restano visibili anche se nascosti dagli elenchi
+  const chosen = useMemo(() => new Set([...sel.foods, ...sel.supplements].map((x) => x.id)), [sel]);
   const groups = useMemo(() => {
     if (!catalog) return [];
     const q = query.trim().toLowerCase();
     return catalog.categories
       .filter((c) => c.parentId)
-      .map((c) => ({ cat: c, parent: catalog.categories.find((p) => p.id === c.parentId), foods: catalog.foods.filter((f) => f.subcategoryId === c.id && (!q || f.name.toLowerCase().includes(q))) }))
+      .map((c) => ({ cat: c, parent: catalog.categories.find((p) => p.id === c.parentId), foods: catalog.foods.filter((f) => f.subcategoryId === c.id && listedInApp(f, chosen) && (!q || f.name.toLowerCase().includes(q))) }))
       .filter((g) => g.foods.length);
-  }, [catalog, query]);
+  }, [catalog, query, chosen]);
 
   if (!data || !catalog || !settings || !repo) return <Loading />;
   const { dog, recipes, prices } = data;
@@ -284,7 +287,7 @@ export default function NewRecipe() {
           <Card>
             <H level={3}>Integratori disponibili</H>
             <T small muted>Solo quelli selezionati entrano nel calcolo. Nessun prodotto o dose viene inventato.</T>
-            {catalog.supplements.map((s) => {
+            {catalog.supplements.filter((s) => listedInApp(s, chosen)).map((s) => {
               const st = supplementStatus(s, catalog.nutrients);
               return (
                 <Check

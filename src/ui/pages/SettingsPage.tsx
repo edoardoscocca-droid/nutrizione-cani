@@ -31,7 +31,7 @@ export function SettingsPage() {
       </div>
       <div className="card">
         <h3>Account</h3>
-        <p>{repo.mode === 'supabase' ? `Connesso come ${repo.userLabel()} (dati su Supabase)` : `${repo.userLabel()}: dati di prova fittizi, solo su questo dispositivo.`}</p>
+        <p>{repo.mode === 'supabase' ? `Connesso come ${repo.userLabel()} (dati su Supabase)` : `${repo.userLabel()}: dati salvati solo su questo dispositivo.`}</p>
         {(repo.mode === 'supabase' || supabaseConfigured) && <button className="secondary" onClick={signOut}>{repo.mode === 'supabase' ? 'Esci' : 'Passa all’accesso con account'}</button>}
       </div>
       <Disclaimer />

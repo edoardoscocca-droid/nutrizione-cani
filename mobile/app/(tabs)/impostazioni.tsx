@@ -58,7 +58,7 @@ export default function SettingsScreen() {
       </Card>
       <Card>
         <H level={3}>Account</H>
-        <T>{repo.mode === 'supabase' ? `Connesso come ${repo.userLabel()}` : `${repo.userLabel()}: dati solo su questo telefono.`}</T>
+        <T>{repo.mode === 'supabase' ? `Connesso come ${repo.userLabel()}` : `${repo.userLabel()}: cani, ricette, diario e catalogo sono salvati su questo iPhone.`}</T>
         {(repo.mode === 'supabase' || supabaseConfigured) && <Button title={repo.mode === 'supabase' ? 'Esci' : 'Accedi con account'} kind="secondary" onPress={signOut} />}
       </Card>
       <Disclaimer />

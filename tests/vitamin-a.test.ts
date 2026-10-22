@@ -7,7 +7,8 @@ import { LocalRepository } from '../src/data/localRepository';
 import { computeTotals, foodData, itemValue } from '../src/engine/totals';
 import { BETA_CAROTENE_TO_VITAMIN_A, vitaminAParts } from '../src/engine/vitaminA';
 
-const cat = await new LocalRepository(null).loadCatalog();
+// dati del 20/10 (prima del catalogo unico del 22/10, che arrotonda alcuni valori: vedi tests/catalogo-2026-10-22.test.ts)
+const cat = await new LocalRepository(null).loadCatalog({ bundledUpTo: '2026-10-21' });
 const f = (id: string) => cat.foods.find((x) => x.id === id)!;
 
 describe('vitamina A del cane da beta-carotene', () => {

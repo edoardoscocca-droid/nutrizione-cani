@@ -7,7 +7,7 @@ import { DEFAULT_CONFIG } from '../../src/engine/configV2';
 import type { FormulationResult } from '../../src/engine/formulate';
 import { formulateV2 } from '../../src/engine/formulateV2';
 import type { RecipeItem } from '../../src/engine/types';
-import { catalogV2, CONFLICT_SET, ENERGY_PROFILES, garmrDog, GARMR_FOODS, GARMR_SUPPS, KER_FOODS, KER_PRESCRIPTION, KER_SUPPS, kerDog, levelBIssues, menuInput, MENU_SETS, practical, realInput } from './casi-v2';
+import { catalogV2, CONFLICT_SET, REAL_MENU_SETS, ENERGY_PROFILES, garmrDog, GARMR_FOODS, GARMR_SUPPS, KER_FOODS, KER_PRESCRIPTION, KER_SUPPS, kerDog, levelBIssues, menuInput, MENU_SETS, practical, realInput } from './casi-v2';
 
 const cat = await catalogV2();
 const out: string[] = [];
@@ -45,10 +45,10 @@ function block(title: string, r: FormulationResult) {
   p();
 }
 
-p('# Collaudi della specifica v2 — aggiornati al 22/10/2026');
+p('# Collaudi della specifica v2 — dati reali del catalogo del 22/10/2026');
 p();
 p('Generato con `npx tsx scripts/collaudo/collaudi-v2.ts`; gli stessi casi sono test automatici in `tests/spec-v2-2026-10-21.test.ts`. Configurazione: `dati/riferimenti/formulazione_v2.json` (valori [PROPOSTA]).');
-p('Catalogo della modalità prova (dati reali importati fino al 21/10). **Dati [TEST] = fittizi**: agnello, pollo, merluzzo, sardine, patata, riso, olio vegetale e gli integratori di prova; zucca e carota sono i profili reali USDA. Nessun salvataggio.');
+p('Catalogo dell’archivio locale dell’app, con il catalogo unico corretto del 22/10 (95 alimenti reali). I **dati [TEST]** sono fittizi, nascosti nell’app e usati solo per il confronto del punto A-bis e per i test automatici. Nessun salvataggio.');
 p();
 p('**Regole in vigore dal 22/10** (decisioni dell’utente):');
 p('- verdure ≥ 3% delle kcal: preferenza, non vincolo (massimo 15% invariato); porzione minima pratica (5 g o 0,5% delle kcal) mantenuta;');
@@ -58,7 +58,16 @@ p('- fegato e alghe da iodio esclusi finché vitamina A e rame (fegato) o iodio 
 p('- superamento della dose del QDiet descritto come tale (percentuale, margine configurato), non come «limite ufficiale»;');
 p('- EPA+DHA obiettivo morbido di livello B; 1.300 g per 1000 kcal solo come criterio di questi collaudi.');
 p();
-p('## A. Menù positivi (900, 1.340, 2.700 kcal)');
+p('## A. Menù con i dati reali del catalogo del 22/10 (900, 1.340, 2.700 kcal)');
+p();
+p('Alimenti reali del catalogo unico; integratori reali: Q.Diet Compensa, farina d’ossa Grau, Omegor Vitality 1000. Nessun dato inventato: dove manca un valore resta sconosciuto.');
+p();
+for (const pr of ENERGY_PROFILES) for (const set of REAL_MENU_SETS) block(`${set.id} ${set.label} — ${pr.kcal} kcal (${pr.weightKg} kg)`, await formulateV2(menuInput(cat, pr, set, true)));
+p('**Perché R3 (merluzzo) non ha soluzione** — verificato togliendo un vincolo alla volta: senza il massimo del fosforo (4 g/1000 kcal, FEDIAF) il menù si risolve. Il merluzzo ha molto fosforo per caloria (203 mg per 77 kcal) e l’unica fonte di calcio selezionata è la farina d’ossa, che porta quasi altrettanto fosforo (Ca 22,6%, P 17,7%): per arrivare a Ca:P ≥ 1 ne servirebbe tanta da superare il massimo di fosforo. Servirebbe una fonte di calcio senza fosforo (carbonato di calcio o polvere di guscio d’uovo), oggi nel catalogo solo come nome, senza valori. Il risultato è corretto, non un errore dei dati.');
+p();
+p('**Perché nessun menù reale risulta «pratico»** — non per gli alimenti: alcuni controlli di livello A restano non verificabili per i dati degli integratori. Il Q.Diet dichiara solo le quantità aggiunte di rame, ferro, iodio, manganese, selenio, zinco e vitamina D, quindi i limiti legali sul totale non si possono dimostrare; la farina d’ossa non dichiara vitamina A, vitamina D ed energia. Servono le composizioni totali dai produttori (vedi `docs/QDIET_DATI_DA_RICHIEDERE_2026-10-22.md`).');
+p();
+p('## A-bis. Menù di controllo con i dati fittizi [TEST] (gli stessi dei test automatici)');
 p();
 for (const pr of ENERGY_PROFILES) for (const set of MENU_SETS) block(`${set.id} ${set.label} — ${pr.kcal} kcal (${pr.weightKg} kg)`, await formulateV2(menuInput(cat, pr, set)));
 block(`${CONFLICT_SET.id} ${CONFLICT_SET.label} — 1.340 kcal (prima del 22/10 in conflitto con i valori [PROPOSTA])`, await formulateV2(menuInput(cat, ENERGY_PROFILES[1], CONFLICT_SET)));

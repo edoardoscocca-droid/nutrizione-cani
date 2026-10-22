@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { View } from 'react-native';
 import { unitPrice, type PriceMode, type UserPrice } from '../../../src/engine/cost';
+import { listedInApp } from '../../../src/data/catalogVisibility';
 import { uid } from '../../../src/data/repository';
 import { DOSE_LABEL, euro } from '../../../src/ui/format';
 import { useApp, useData } from '../../lib/AppContext';
@@ -16,9 +17,10 @@ export default function PricesScreen() {
   const [draft, setDraft] = useState<Partial<UserPrice>>({ mode: 'package_mass' });
   const [error, setError] = useState<string | null>(null);
   if (!catalog || !repo || !prices) return <Loading />;
+  const priced = new Set(prices.map((x) => x.productId));
   const products = [
-    ...catalog.foods.map((f) => ({ kind: 'food' as const, id: f.id, name: f.name, doseUnit: 'g' as const, massPerUnitG: null })),
-    ...catalog.supplements.map((s) => ({ kind: 'supplement' as const, id: s.id, name: s.name, doseUnit: s.doseUnit, massPerUnitG: s.massPerUnitG })),
+    ...catalog.foods.filter((f) => listedInApp(f, priced)).map((f) => ({ kind: 'food' as const, id: f.id, name: f.name, doseUnit: 'g' as const, massPerUnitG: null })),
+    ...catalog.supplements.filter((s) => listedInApp(s, priced)).map((s) => ({ kind: 'supplement' as const, id: s.id, name: s.name, doseUnit: s.doseUnit, massPerUnitG: s.massPerUnitG })),
   ].filter((p) => !query || p.name.toLowerCase().includes(query.toLowerCase()));
   const add = async (p: (typeof products)[number]) => {
     setError(null);

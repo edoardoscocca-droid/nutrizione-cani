@@ -227,7 +227,8 @@ describe('collaudo di Ker, seconda parte (20/10/2026)', () => {
   });
 
   test('catalogo della prova con il pacchetto del 20/10: profili di confronto e psillio non utilizzabili, nessuna convalida', async () => {
-    const cat = await new LocalRepository(null).loadCatalog();
+    // stato prima del catalogo unico del 22/10 (che attiva l'olio di cocco)
+    const cat = await new LocalRepository(null).loadCatalog({ bundledUpTo: '2026-10-21' });
     for (const id of ['beef_05', 'beef_10', 'coconut_oil', 'flaxseed_oil']) expect(cat.foods.find((f) => f.id === id)?.availableToFormulate).toBe(false);
     const ps = cat.supplements.find((s) => s.id === 'psyllium_erbavoglio_husk_bio')!;
     expect(ps.usableForOptimization).toBe(false);

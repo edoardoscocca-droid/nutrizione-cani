@@ -1,6 +1,7 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Alert, View } from 'react-native';
+import { isTestFixture } from '../../../../src/data/catalogVisibility';
 import { resolveConfig } from '../../../../src/engine/configV2';
 import { dateRange, dayProfileOf, diarySuggestions, periodSummary, type DiarySuggestion, type PeriodCheck } from '../../../../src/engine/diary';
 import { toFormulationProfile } from '../../../../src/engine/dogProfile';
@@ -112,7 +113,7 @@ export default function DiaryScreen() {
     if (!v) return setError('Nessuna ricetta registrata con versione disponibile per simulare l’aggiunta.');
     const metrics = summary.checks.filter((c) => (c.kind === 'min' || c.kind === 'recommended') && (c.color === 'red' || c.color === 'orange' || c.color === 'yellow') && (c.pctOfMin ?? 100) < 100).map((c) => c.metric).slice(0, 4);
     if (!metrics.length) return setSugg([]);
-    setSugg(diarySuggestions({ metrics, version: v, catalog: { foods: catalog.foods, supplements: catalog.supplements, nutrients: catalog.nutrients }, config: cfg }));
+    setSugg(diarySuggestions({ metrics, version: v, catalog: { foods: catalog.foods.filter((f) => !isTestFixture(f)), supplements: catalog.supplements.filter((x) => !isTestFixture(x)), nutrients: catalog.nutrients }, config: cfg }));
   };
 
   const sorted = [...(summary?.checks ?? [])].sort((a, b) => RANK[a.color] - RANK[b.color]);
@@ -122,11 +123,7 @@ export default function DiaryScreen() {
   return (
     <Screen>
       <Stack.Screen options={{ title: `Diario di ${dog.name}` }} />
-      {repo.mode === 'local' && (
-        <Box color="blue">
-          <T small>Modalità Prova: il diario resta su questo dispositivo e non viene copiato nell’account (archivi separati, nessuna sincronizzazione per ora).</T>
-        </Box>
-      )}
+      {repo.mode === 'local' && <T small muted>Il diario è salvato su questo iPhone.</T>}
       <ErrorBox error={error} />
       <Card>
         <H level={3}>Registra cosa ha mangiato</H>

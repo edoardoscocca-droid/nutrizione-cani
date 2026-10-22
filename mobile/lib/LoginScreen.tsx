@@ -35,9 +35,9 @@ export default function LoginScreen() {
           )}
         </Card>
       ) : (
-        <T muted>Il database condiviso non è ancora collegato: per ora l’app funziona in prova, con i dati salvati su questo telefono.</T>
+        <T muted>L’account non è collegato: l’app funziona con i dati salvati su questo iPhone.</T>
       )}
-      <Button title="Prova senza account (dati su questo telefono)" kind="secondary" onPress={useLocal} />
+      <Button title="Usa senza account (dati su questo iPhone)" kind="secondary" onPress={useLocal} />
       <Disclaimer compact />
     </Screen>
   );

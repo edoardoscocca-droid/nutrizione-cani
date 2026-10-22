@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { CATALOG_STATUS_LABEL, foodStatus, supplementStatus, type CatalogStatus } from '../../../src/engine/catalogStatus';
+import { listedInApp } from '../../../src/data/catalogVisibility';
 import { PROCESSING_LABEL } from '../../../src/data/packageCatalog';
 import { useApp } from '../../lib/AppContext';
 import { CatalogBadge } from '../../lib/result';
@@ -16,8 +17,8 @@ export default function CatalogScreen() {
   const q = query.trim().toLowerCase();
   const items =
     tab === 'foods'
-      ? catalog.foods.map((f) => ({ id: f.id, name: f.name, sub: `${catalog.categories.find((c) => c.id === f.subcategoryId)?.label ?? ''} · ${PROCESSING_LABEL[f.processingState]}`, st: foodStatus(f, catalog.nutrients), test: f.dataStatus === 'test_fixture', active: f.availableToFormulate }))
-      : catalog.supplements.map((s) => ({ id: s.id, name: s.name, sub: `per ${s.doseUnit}`, st: supplementStatus(s, catalog.nutrients), test: s.status === 'test_fixture', active: s.usableForOptimization }));
+      ? catalog.foods.filter((f) => listedInApp(f)).sort((a, b) => Number(!!a.forbidden) - Number(!!b.forbidden)).map((f) => ({ id: f.id, name: f.name, sub: `${catalog.categories.find((c) => c.id === f.subcategoryId)?.label ?? ''} · ${PROCESSING_LABEL[f.processingState]}`, st: foodStatus(f, catalog.nutrients), test: f.dataStatus === 'test_fixture', active: f.availableToFormulate }))
+      : catalog.supplements.filter((s) => listedInApp(s)).map((s) => ({ id: s.id, name: s.name, sub: `per ${s.doseUnit}`, st: supplementStatus(s, catalog.nutrients), test: s.status === 'test_fixture', active: s.usableForOptimization }));
   const count = (st: CatalogStatus) => items.filter((i) => i.st.status === st).length;
   return (
     <Screen>
@@ -26,7 +27,7 @@ export default function CatalogScreen() {
           ? isAdmin
             ? 'Sei amministratore: puoi importare, convalidare e attivare i prodotti.'
             : 'Consultazione: il catalogo lo modificano solo gli amministratori.'
-          : 'Prova: il catalogo si modifica solo su questo telefono. Con l’account condiviso solo gli amministratori possono farlo.'}
+          : 'Il catalogo è salvato su questo iPhone: puoi importare, attivare e modificare i prodotti.'}
       </T>
       {isAdmin && (
         <Row wrap>
