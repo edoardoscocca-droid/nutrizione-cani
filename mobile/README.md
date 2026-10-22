@@ -4,7 +4,7 @@ App Expo (SDK 58) con lo **stesso motore, le stesse regole e lo stesso database*
 Il calcolo dei grammi (ottimizzazione + verifica) avviene sul server di calcolo `../server` pubblicato su Render:
 https://nutrizione-cani-motore-q58c.onrender.com (piano gratuito: il primo calcolo dopo una pausa può impiegare fino a un minuto).
 
-- Senza Supabase collegato l'app parte in **prova**: dati salvati sul telefono, catalogo del pacchetto + dati [TEST] + dati ricevuti.
+- Senza Supabase collegato (situazione attuale) l'app usa l'**archivio locale**: dati salvati sul telefono, catalogo del pacchetto + cataloghi ricevuti (`src/data/bundledImports.ts`). I dati di prova [TEST] restano nel catalogo per i test ma sono nascosti dagli elenchi.
 - Con `EXPO_PUBLIC_SUPABASE_URL` e `EXPO_PUBLIC_SUPABASE_ANON_KEY` (da impostare su expo.dev → progetto → Environment variables,
   mai in chat) usa l'archivio condiviso con accesso via codice email.
 
